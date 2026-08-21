@@ -14,10 +14,7 @@ class PlaceholderScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Core Configurado',
-          style: theme.textTheme.titleLarge,
-        ),
+        title: Text('Core Configurado', style: theme.textTheme.titleLarge),
         backgroundColor: theme.colorScheme.primaryContainer,
       ),
       body: Center(
@@ -53,7 +50,7 @@ class PlaceholderScreen extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {},
                     child: const Text('Botón de prueba'),
-                  )
+                  ),
                 ],
               ),
             ),

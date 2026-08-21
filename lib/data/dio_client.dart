@@ -10,23 +10,29 @@ class DioClient {
       defaultValue: 'http://localhost:8080',
     );
 
-    final dio = Dio(BaseOptions(
-      baseUrl: baseUrl,
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
-    ));
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: baseUrl,
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+      ),
+    );
 
-    dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) {
-        if (bearerToken != null) {
-          options.headers['Authorization'] = 'Bearer $bearerToken';
-        }
-        handler.next(options);
-      },
-    ));
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          if (bearerToken != null) {
+            options.headers['Authorization'] = 'Bearer $bearerToken';
+          }
+          handler.next(options);
+        },
+      ),
+    );
 
     if (kDebugMode) {
-      dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
+      dio.interceptors.add(
+        LogInterceptor(requestBody: true, responseBody: true),
+      );
     }
 
     return dio;
