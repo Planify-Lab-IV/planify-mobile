@@ -1,4 +1,33 @@
-{
+﻿{
   "@@locale": "es",
-  "helloTest": "Hola, esta es una prueba de i18n"
+  "helloTest": "Hola, esta es una prueba de i18n",
+  "loginTitle": "Acceso de Organizador",
+  "loginSubtitle": "Inicia sesión para gestionar y planificar tus eventos",
+  "identifierLabel": "Correo o usuario",
+  "identifierHint": "organizador@planify.com",
+  "identifierRequired": "Por favor ingresa tu correo o usuario",
+  "identifierInvalid": "Ingresa un correo electrónico válido",
+  "passwordLabel": "Contraseña",
+  "passwordHint": "••••••••",
+  "passwordRequired": "Por favor ingresa tu contraseña",
+  "passwordMinLength": "La contraseña debe tener al menos 6 caracteres",
+  "loginButton": "Iniciar Sesión",
+  "loggingIn": "Iniciando sesión...",
+  "loginErrorGeneric": "No se pudo iniciar sesión. Intenta nuevamente.",
+  "loginErrorInvalidCredentials": "Credenciales inválidas. Verifica tu correo y contraseña.",
+  "logoutButton": "Cerrar Sesión",
+  "welcomeOrganizer": "¡Bienvenido, {name}!",
+  "@welcomeOrganizer": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Organizador"
+      }
+    }
+  },
+  "organizerPanelTitle": "Panel de Organizador",
+  "sessionActiveDescription": "Has iniciado sesión correctamente como organizador de eventos en Planify.",
+  "tokenLabel": "Token de Sesión",
+  "roleLabel": "Rol",
+  "emailLabel": "Correo"
 }

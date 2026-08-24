@@ -1,4 +1,33 @@
-{
+﻿{
   "@@locale": "en",
-  "helloTest": "Hello, this is an i18n test"
+  "helloTest": "Hello, this is an i18n test",
+  "loginTitle": "Organizer Access",
+  "loginSubtitle": "Sign in to manage and plan your events",
+  "identifierLabel": "Email or username",
+  "identifierHint": "organizer@planify.com",
+  "identifierRequired": "Please enter your email or username",
+  "identifierInvalid": "Please enter a valid email address",
+  "passwordLabel": "Password",
+  "passwordHint": "••••••••",
+  "passwordRequired": "Please enter your password",
+  "passwordMinLength": "Password must be at least 6 characters",
+  "loginButton": "Sign In",
+  "loggingIn": "Signing in...",
+  "loginErrorGeneric": "Could not sign in. Please try again.",
+  "loginErrorInvalidCredentials": "Invalid credentials. Please verify your email and password.",
+  "logoutButton": "Sign Out",
+  "welcomeOrganizer": "Welcome, {name}!",
+  "@welcomeOrganizer": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Organizer"
+      }
+    }
+  },
+  "organizerPanelTitle": "Organizer Dashboard",
+  "sessionActiveDescription": "You have successfully signed in as an event organizer on Planify.",
+  "tokenLabel": "Session Token",
+  "roleLabel": "Role",
+  "emailLabel": "Email"
 }
