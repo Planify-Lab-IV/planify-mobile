@@ -1,24 +1,37 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:planify/core/providers/core_providers.dart';
+import 'package:planify/data/secure_storage.dart';
+import 'package:planify/features/auth/data/fake_auth_repository.dart';
+import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
 import 'package:planify/main.dart';
 
 void main() {
-  testWidgets('Smoke test de PlaceholderScreen', (WidgetTester tester) async {
-    // 1. Levantamos la app envuelta en Riverpod (exactamente igual que en tu main.dart)
-    await tester.pumpWidget(const ProviderScope(child: MyApp()));
+  testWidgets('Smoke test de inicio de la aplicación Planify', (
+    WidgetTester tester,
+  ) async {
+    // 1. Levantamos la app envuelta en Riverpod
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authRepositoryProvider.overrideWithValue(
+            FakeAuthRepository(delay: Duration.zero),
+          ),
+          secureStorageProvider.overrideWithValue(FakeSecureStorage()),
+          localeNotifierProvider.overrideWith(
+            (ref) => LocaleNotifier()..setLocale(const Locale('es')),
+          ),
+        ],
+        child: const MyApp(),
+      ),
+    );
 
-    // 2. Le decimos al tester que espere a que se carguen los idiomas y colores
+    // 2. Esperamos a que se carguen los delegados de idiomas y el tema
     await tester.pumpAndSettle();
 
-    // 3. LA PRUEBA: Verificamos que se haya cargado tu pantalla buscando un texto
-    expect(find.text('Hola, esta es una prueba de i18n'), findsOneWidget);
+    // 3. Verificamos que la app inicie en la pantalla de Login de Organizador en español
+    expect(find.text('Acceso de Organizador'), findsOneWidget);
+    expect(find.text('Iniciar Sesión'), findsOneWidget);
   });
 }
