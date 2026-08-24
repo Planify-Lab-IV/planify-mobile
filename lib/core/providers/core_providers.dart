@@ -13,6 +13,7 @@ final dioClientProvider = Provider<Dio>((ref) {
   return DioClient.create(storage: storage);
 });
 
+// maneja el idioma
 class LocaleNotifier extends StateNotifier<Locale?> {
   LocaleNotifier() : super(null);
 
