@@ -1,3 +1,4 @@
+// Future es equivalente a una Promise en javascript
 abstract class SecureStorage {
   Future<void> saveToken(String token);
   Future<String?> getToken();
@@ -5,6 +6,7 @@ abstract class SecureStorage {
 }
 
 class FakeSecureStorage implements SecureStorage {
+  // variable privada
   String? _fakeStorage;
 
   @override

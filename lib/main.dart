@@ -22,9 +22,9 @@ class MyApp extends StatelessWidget {
       // Configuración de idiomas
       localizationsDelegates: const [
         AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate, // traduce DatePicker, TimePicker, etc.
+        GlobalWidgetsLocalizations.delegate, // maneja la dir en la que se lee el texto
+        GlobalCupertinoLocalizations.delegate, // cupertino equivale a estilo visual de apple, traduce esos elementos
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       locale: const Locale('es'),
