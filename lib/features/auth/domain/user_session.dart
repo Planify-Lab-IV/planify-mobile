@@ -1,4 +1,4 @@
-enum UserRole { organizer, attendee, admin }
+enum UserRole { organizer, attendee, admin, anonymous }
 
 class UserSession {
   final String userId;
@@ -14,6 +14,9 @@ class UserSession {
     required this.role,
     required this.token,
   });
+
+  bool get isAnonymous => role == UserRole.anonymous;
+  bool get isOrganizer => role == UserRole.organizer;
 
   // esto es como el equals, y por las mismas razones que en java, lo esta overrideando
   @override

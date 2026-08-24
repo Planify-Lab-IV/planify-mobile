@@ -37,6 +37,17 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  Future<void> loginAnonymously() async {
+    state = const AuthLoading();
+    try {
+      final session = await _repository.loginAnonymously();
+      await _storage.saveToken(session.token);
+      state = AuthAuthenticated(session);
+    } catch (_) {
+      state = const AuthError(AuthFailureReason.unknown);
+    }
+  }
+
   Future<void> logout() async {
     state = const AuthLoading();
     try {

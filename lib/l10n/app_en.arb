@@ -1,8 +1,6 @@
 ﻿{
   "@@locale": "en",
   "helloTest": "Hello, this is an i18n test",
-  "loginTitle": "Organizer Access",
-  "loginSubtitle": "Sign in to manage and plan your events",
   "identifierLabel": "Email or username",
   "identifierHint": "organizer@planify.com",
   "identifierRequired": "Please enter your email or username",
@@ -25,9 +23,14 @@
       }
     }
   },
+  "welcome": "Welcome!"
   "organizerPanelTitle": "Organizer Dashboard",
   "sessionActiveDescription": "You have successfully signed in as an event organizer on Planify.",
   "tokenLabel": "Session Token",
   "roleLabel": "Role",
-  "emailLabel": "Email"
+  "emailLabel": "Email",
+  "continueAsGuest": "Continue as guest",
+  "orDivider": "or",
+  "loginTitle": "Sign In",
+  "loginSubtitle": "Sign in to your account or continue as guest"
 }

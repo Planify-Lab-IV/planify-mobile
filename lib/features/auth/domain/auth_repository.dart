@@ -6,6 +6,8 @@ abstract class AuthRepository {
     required String password,
   });
 
+  Future<UserSession> loginAnonymously();
+
   Future<void> logout();
 
   Future<UserSession?> getCurrentSession();

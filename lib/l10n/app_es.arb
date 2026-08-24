@@ -1,8 +1,6 @@
 ﻿{
   "@@locale": "es",
   "helloTest": "Hola, esta es una prueba de i18n",
-  "loginTitle": "Acceso de Organizador",
-  "loginSubtitle": "Inicia sesión para gestionar y planificar tus eventos",
   "identifierLabel": "Correo o usuario",
   "identifierHint": "organizador@planify.com",
   "identifierRequired": "Por favor ingresa tu correo o usuario",
@@ -25,9 +23,14 @@
       }
     }
   },
+  "welcome": "¡Bienvenido!",
   "organizerPanelTitle": "Panel de Organizador",
   "sessionActiveDescription": "Has iniciado sesión correctamente como organizador de eventos en Planify.",
   "tokenLabel": "Token de Sesión",
   "roleLabel": "Rol",
-  "emailLabel": "Correo"
+  "emailLabel": "Correo",
+  "continueAsGuest": "Continuar como invitado",
+  "orDivider": "o",
+  "loginTitle": "Iniciar Sesión",
+  "loginSubtitle": "Ingresa a tu cuenta o continúa como invitado"
 }

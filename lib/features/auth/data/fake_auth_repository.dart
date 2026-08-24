@@ -17,7 +17,7 @@ class FakeAuthRepository implements AuthRepository {
       await Future.delayed(delay);
     }
 
-    final trimmedIdentifier = identifier.trim().toLowerCase();
+    final trimmedIdentifier = identifier.trim();
     final trimmedPassword = password.trim();
 
     // Simulación de error de red para testing
@@ -25,26 +25,37 @@ class FakeAuthRepository implements AuthRepository {
       throw const NetworkAuthException();
     }
 
-    // Regla de login fake: cualquier email con @planify.com o usuario organizador con contraseña >= 6 caracteres
-    final isValidOrganizer =
-        (trimmedIdentifier == 'organizador@planify.com' ||
-            trimmedIdentifier.endsWith('@planify.com') ||
-            trimmedIdentifier == 'organizador') &&
-        trimmedPassword.length >= 6;
-
-    if (!isValidOrganizer) {
+    if (trimmedIdentifier.isEmpty || trimmedPassword.length < 6) {
       throw const InvalidCredentialsException();
     }
 
     final session = UserSession(
-      userId: 'org-12345',
-      email: trimmedIdentifier.contains('@')
-          ? trimmedIdentifier
-          : '$trimmedIdentifier@planify.com',
-      name: 'Organizador Planify',
+      userId: 'org-${DateTime.now().millisecondsSinceEpoch}',
+      email: trimmedIdentifier,
+      name: trimmedIdentifier.contains('@')
+          ? trimmedIdentifier.split('@').first
+          : trimmedIdentifier,
       role: UserRole.organizer,
       token:
-          'fake-jwt-token-org-12345-${DateTime.now().millisecondsSinceEpoch}',
+          'fake-org-token-${DateTime.now().millisecondsSinceEpoch}',
+    );
+
+    _currentSession = session;
+    return session;
+  }
+
+  @override
+  Future<UserSession> loginAnonymously() async {
+    if (delay > Duration.zero) {
+      await Future.delayed(delay);
+    }
+
+    final session = UserSession(
+      userId: 'anon-${DateTime.now().millisecondsSinceEpoch}',
+      email: '',
+      name: '',
+      role: UserRole.anonymous,
+      token: 'fake-guest-token-${DateTime.now().millisecondsSinceEpoch}',
     );
 
     _currentSession = session;
