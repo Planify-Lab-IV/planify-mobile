@@ -88,4 +88,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get loginSubtitle => 'Ingresa a tu cuenta o continúa como invitado';
+
+  @override
+  String get appTagline => 'Organizá tus planes, sin vueltas';
 }

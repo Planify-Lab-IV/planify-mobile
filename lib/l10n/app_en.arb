@@ -32,5 +32,6 @@
   "continueAsGuest": "Continue as guest",
   "orDivider": "or",
   "loginTitle": "Sign In",
-  "loginSubtitle": "Sign in to your account or continue as guest"
+  "loginSubtitle": "Sign in to your account or continue as guest",
+  "appTagline": "Organize your plans, effortlessly"
 }

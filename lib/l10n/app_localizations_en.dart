@@ -86,4 +86,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginSubtitle => 'Sign in to your account or continue as guest';
+
+  @override
+  String get appTagline => 'Organize your plans, effortlessly';
 }

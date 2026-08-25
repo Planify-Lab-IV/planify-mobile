@@ -247,6 +247,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ingresa a tu cuenta o continúa como invitado'**
   String get loginSubtitle;
+
+  /// No description provided for @appTagline.
+  ///
+  /// In es, this message translates to:
+  /// **'Organizá tus planes, sin vueltas'**
+  String get appTagline;
 }
 
 class _AppLocalizationsDelegate

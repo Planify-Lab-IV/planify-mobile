@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:planify/core/widgets/planify_logo.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../widgets/login_form.dart';
 
 // que sea un ConsumerStatefulWidget le permite tener estado local, como el texto que vas escribiendo
@@ -18,6 +19,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final i18n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: SafeArea(
@@ -40,13 +42,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     'Planify',
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: AppColors.onSurface,
+                      color: AppColors.darkBlue,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
 
                   Text(
-                    'organiza tus planes, sin vueltas',
+                    i18n.appTagline,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: AppColors.onSurfaceVariant,
                     ),

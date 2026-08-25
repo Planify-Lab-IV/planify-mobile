@@ -106,14 +106,13 @@ class _LoginFormState extends ConsumerState<LoginForm> {
               ],
 
               // Input: Correo o Usuario
-              Text(i18n.identifierLabel, style: theme.textTheme.titleSmall),
               const SizedBox(height: AppSpacing.xs),
               TextFormField(
                 key: const Key('identifier_input'),
                 controller: _identifierController,
                 enabled: !isLoading,
                 decoration: InputDecoration(
-                  hintText: i18n.identifierHint,
+                  hintText: i18n.identifierLabel,
                   prefixIcon: const Icon(Icons.person_outline_rounded),
                 ),
                 validator: (value) {
@@ -128,7 +127,6 @@ class _LoginFormState extends ConsumerState<LoginForm> {
               const SizedBox(height: AppSpacing.md),
 
               // Input: Contraseña
-              Text(i18n.passwordLabel, style: theme.textTheme.titleSmall),
               const SizedBox(height: AppSpacing.xs),
               TextFormField(
                 key: const Key('password_input'),
@@ -136,7 +134,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                 enabled: !isLoading,
                 obscureText: _obscurePassword,
                 decoration: InputDecoration(
-                  hintText: i18n.passwordHint,
+                  hintText: i18n.passwordLabel,
                   prefixIcon: const Icon(Icons.lock_outline_rounded),
                   suffixIcon: IconButton(
                     icon: Icon(
