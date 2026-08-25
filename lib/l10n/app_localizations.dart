@@ -104,18 +104,6 @@ abstract class AppLocalizations {
   /// **'Hola, esta es una prueba de i18n'**
   String get helloTest;
 
-  /// No description provided for @loginTitle.
-  ///
-  /// In es, this message translates to:
-  /// **'Acceso de Organizador'**
-  String get loginTitle;
-
-  /// No description provided for @loginSubtitle.
-  ///
-  /// In es, this message translates to:
-  /// **'Inicia sesión para gestionar y planificar tus eventos'**
-  String get loginSubtitle;
-
   /// No description provided for @identifierLabel.
   ///
   /// In es, this message translates to:
@@ -200,6 +188,12 @@ abstract class AppLocalizations {
   /// **'¡Bienvenido, {name}!'**
   String welcomeOrganizer(String name);
 
+  /// No description provided for @welcome.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Bienvenido!'**
+  String get welcome;
+
   /// No description provided for @organizerPanelTitle.
   ///
   /// In es, this message translates to:
@@ -229,6 +223,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Correo'**
   String get emailLabel;
+
+  /// No description provided for @continueAsGuest.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar como invitado'**
+  String get continueAsGuest;
+
+  /// No description provided for @orDivider.
+  ///
+  /// In es, this message translates to:
+  /// **'o'**
+  String get orDivider;
+
+  /// No description provided for @loginTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciar Sesión'**
+  String get loginTitle;
+
+  /// No description provided for @loginSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa a tu cuenta o continúa como invitado'**
+  String get loginSubtitle;
 }
 
 class _AppLocalizationsDelegate

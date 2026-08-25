@@ -23,7 +23,7 @@
       }
     }
   },
-  "welcome": "Welcome!"
+  "welcome": "Welcome!",
   "organizerPanelTitle": "Organizer Dashboard",
   "sessionActiveDescription": "You have successfully signed in as an event organizer on Planify.",
   "tokenLabel": "Session Token",

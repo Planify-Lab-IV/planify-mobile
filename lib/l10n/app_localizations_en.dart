@@ -12,12 +12,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helloTest => 'Hello, this is an i18n test';
 
   @override
-  String get loginTitle => 'Organizer Access';
-
-  @override
-  String get loginSubtitle => 'Sign in to manage and plan your events';
-
-  @override
   String get identifierLabel => 'Email or username';
 
   @override
@@ -63,6 +57,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get welcome => 'Welcome!';
+
+  @override
   String get organizerPanelTitle => 'Organizer Dashboard';
 
   @override
@@ -77,4 +74,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get emailLabel => 'Email';
+
+  @override
+  String get continueAsGuest => 'Continue as guest';
+
+  @override
+  String get orDivider => 'or';
+
+  @override
+  String get loginTitle => 'Sign In';
+
+  @override
+  String get loginSubtitle => 'Sign in to your account or continue as guest';
 }
