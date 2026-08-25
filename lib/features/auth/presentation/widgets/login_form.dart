@@ -201,11 +201,15 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                     borderRadius: BorderRadius.circular(AppRadius.card),
                   ),
                 ),
-                onPressed: isLoading
-                    ? null
-                    : () => ref
-                          .read(authNotifierProvider.notifier)
-                          .loginAnonymously(),
+                onPressed: () {
+                  // TODO(PLANIFY-31): Diálogo con username y PIN
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Acceso de invitado en desarrollo (PLANIFY-31)'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                },
                 child: Text(i18n.continueAsGuest),
               ),
             ],
