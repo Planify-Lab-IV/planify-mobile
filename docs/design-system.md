@@ -100,12 +100,12 @@ Implementación: `lib/core/theme/app_spacing.dart`
 
 | Token | Valor | Uso |
 |---|---|---|
-| `radiusSm` | 8 | Elementos pequeños (chips, tags). |
-| `cardRadius` | 16 | Tarjetas. |
-| `radiusLg` | 20 | Contenedores grandes. |
-| `radiusXl` | 28 | Modales, bottom sheets. |
-| `barRadius` | 24 | Barras de navegación / búsqueda. |
-| `pillRadius` | 999 | Elementos tipo píldora (botones redondeados por completo). |
+| `sm` | 8 | Elementos pequeños (chips, tags). |
+| `card` | 16 | Tarjetas. |
+| `lg` | 20 | Contenedores grandes. |
+| `xl` | 28 | Modales, bottom sheets. |
+| `bar` | 24 | Barras de navegación / búsqueda. |
+| `pill` | 999 | Elementos tipo píldora (botones redondeados por completo). |
 
 Implementación: `lib/core/theme/app_radius.dart`
 

@@ -52,9 +52,7 @@ class DioClient {
 
     // si corres la app en debug logea todo
     if (kDebugMode) {
-      dio.interceptors.add(
-        LogInterceptor(requestBody: true, responseBody: true),
-      );
+      dio.interceptors.add(LogInterceptor());
     }
 
     return dio;
