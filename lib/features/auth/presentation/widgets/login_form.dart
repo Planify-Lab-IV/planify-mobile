@@ -16,7 +16,8 @@ class LoginForm extends ConsumerStatefulWidget {
 
 class _LoginFormState extends ConsumerState<LoginForm> {
   final _formKey = GlobalKey<FormState>(); // valida la informacion del forms
-  final _identifierController = TextEditingController(); // guarda en tiempo real lo que el usuario escribe en el input
+  final _identifierController =
+      TextEditingController(); // guarda en tiempo real lo que el usuario escribe en el input
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
 
@@ -35,10 +36,12 @@ class _LoginFormState extends ConsumerState<LoginForm> {
       // Cierra el teclado
       FocusScope.of(context).unfocus();
 
-      ref.read(authNotifierProvider.notifier).login(
-        identifier: _identifierController.text,
-        password: _passwordController.text,
-      );
+      ref
+          .read(authNotifierProvider.notifier)
+          .login(
+            identifier: _identifierController.text,
+            password: _passwordController.text,
+          );
     }
   }
 
@@ -74,11 +77,9 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                   padding: const EdgeInsets.all(AppSpacing.sm),
                   decoration: BoxDecoration(
                     color: theme.colorScheme.errorContainer,
-                    borderRadius: BorderRadius.
-                    circular(AppRadius.sm),
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
                     border: Border.all(
-                      color: theme.colorScheme.error.
-                      withValues(alpha: 0.5),
+                      color: theme.colorScheme.error.withValues(alpha: 0.5),
                     ),
                   ),
                   child: Row(
@@ -91,12 +92,9 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Text(
-                          _getErrorMessage(authState.reason,
-                              i18n),
-                          style: theme.textTheme.bodySmall?.
-                          copyWith(
-                            color: theme.colorScheme.
-                            onErrorContainer,
+                          _getErrorMessage(authState.reason, i18n),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onErrorContainer,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -108,10 +106,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
               ],
 
               // Input: Correo o Usuario
-              Text(
-                i18n.identifierLabel,
-                style: theme.textTheme.titleSmall,
-              ),
+              Text(i18n.identifierLabel, style: theme.textTheme.titleSmall),
               const SizedBox(height: AppSpacing.xs),
               TextFormField(
                 key: const Key('identifier_input'),
@@ -119,14 +114,12 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                 enabled: !isLoading,
                 decoration: InputDecoration(
                   hintText: i18n.identifierHint,
-                  prefixIcon: const Icon(Icons.
-                  person_outline_rounded),
+                  prefixIcon: const Icon(Icons.person_outline_rounded),
                 ),
                 validator: (value) {
                   final trimmed = value?.trim() ?? '';
                   if (trimmed.isEmpty) return i18n.identifierRequired;
-                  if (trimmed.contains('@') && !trimmed.
-                  contains('.')) {
+                  if (trimmed.contains('@') && !trimmed.contains('.')) {
                     return i18n.identifierInvalid;
                   }
                   return null;
@@ -135,10 +128,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
               const SizedBox(height: AppSpacing.md),
 
               // Input: Contraseña
-              Text(
-                i18n.passwordLabel,
-                style: theme.textTheme.titleSmall,
-              ),
+              Text(i18n.passwordLabel, style: theme.textTheme.titleSmall),
               const SizedBox(height: AppSpacing.xs),
               TextFormField(
                 key: const Key('password_input'),
@@ -147,8 +137,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                 obscureText: _obscurePassword,
                 decoration: InputDecoration(
                   hintText: i18n.passwordHint,
-                  prefixIcon: const Icon(Icons.
-                  lock_outline_rounded),
+                  prefixIcon: const Icon(Icons.lock_outline_rounded),
                   suffixIcon: IconButton(
                     icon: Icon(
                       _obscurePassword
@@ -156,8 +145,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                           : Icons.visibility_off_outlined,
                     ),
                     onPressed: () =>
-                        setState(() => _obscurePassword =
-                        !_obscurePassword),
+                        setState(() => _obscurePassword = !_obscurePassword),
                   ),
                 ),
                 validator: (value) {
@@ -175,13 +163,13 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                 onPressed: isLoading ? null : _submit,
                 child: isLoading
                     ? const SizedBox(
-                  height: 22,
-                  width: 22,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.5,
-                    color: Colors.white,
-                  ),
-                )
+                        height: 22,
+                        width: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          color: Colors.white,
+                        ),
+                      )
                     : Text(i18n.loginButton),
               ),
               const SizedBox(height: AppSpacing.md),
@@ -189,11 +177,11 @@ class _LoginFormState extends ConsumerState<LoginForm> {
               // Separador "o"
               Row(
                 children: [
-                  const Expanded(child: Divider(color: AppColors.
-                  outline)),
+                  const Expanded(child: Divider(color: AppColors.outline)),
                   Padding(
-                    padding: const EdgeInsets.
-                    symmetric(horizontal: AppSpacing.sm),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm,
+                    ),
                     child: Text(
                       i18n.orDivider,
                       style: theme.textTheme.bodySmall?.copyWith(
@@ -201,8 +189,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                       ),
                     ),
                   ),
-                  const Expanded(child: Divider(color: AppColors.
-                  outline)),
+                  const Expanded(child: Divider(color: AppColors.outline)),
                 ],
               ),
               const SizedBox(height: AppSpacing.md),
@@ -213,15 +200,14 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size.fromHeight(50),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.
-                    circular(AppRadius.card),
+                    borderRadius: BorderRadius.circular(AppRadius.card),
                   ),
                 ),
                 onPressed: isLoading
                     ? null
                     : () => ref
-                    .read(authNotifierProvider.notifier)
-                    .loginAnonymously(),
+                          .read(authNotifierProvider.notifier)
+                          .loginAnonymously(),
                 child: Text(i18n.continueAsGuest),
               ),
             ],

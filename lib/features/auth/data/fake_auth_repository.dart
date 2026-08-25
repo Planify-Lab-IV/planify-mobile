@@ -36,8 +36,7 @@ class FakeAuthRepository implements AuthRepository {
           ? trimmedIdentifier.split('@').first
           : trimmedIdentifier,
       role: UserRole.organizer,
-      token:
-          'fake-org-token-${DateTime.now().millisecondsSinceEpoch}',
+      token: 'fake-org-token-${DateTime.now().millisecondsSinceEpoch}',
     );
 
     _currentSession = session;

@@ -1,10 +1,6 @@
-﻿import '../../domain/user_session.dart';
+import '../../domain/user_session.dart';
 
-enum AuthFailureReason {
-  invalidCredentials,
-  networkError,
-  unknown,
-}
+enum AuthFailureReason { invalidCredentials, networkError, unknown }
 
 abstract class AuthState {
   const AuthState();

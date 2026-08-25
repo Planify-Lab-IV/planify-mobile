@@ -21,8 +21,11 @@ class UserSession {
   // esto es como el equals, y por las mismas razones que en java, lo esta overrideando
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||  // si apuntan al mismo espacio de memoria -> true
-      other is UserSession &&    // si las propiedades de los objetos son iguales
+      identical(
+        this,
+        other,
+      ) || // si apuntan al mismo espacio de memoria -> true
+      other is UserSession && // si las propiedades de los objetos son iguales
           runtimeType == other.runtimeType &&
           userId == other.userId &&
           email == other.email &&

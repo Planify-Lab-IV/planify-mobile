@@ -1,4 +1,4 @@
-﻿import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/data/secure_storage.dart';
 import 'package:planify/features/auth/data/fake_auth_repository.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_notifier.dart';
@@ -34,19 +34,22 @@ void main() {
       expect(storedToken, equals(authState.session.token));
     });
 
-    test('login fallido cambia a AuthError con motivo y no guarda token', () async {
-      await notifier.login(
-        identifier: 'invalido@externo.com',
-        password: '123',
-      );
+    test(
+      'login fallido cambia a AuthError con motivo y no guarda token',
+      () async {
+        await notifier.login(
+          identifier: 'invalido@externo.com',
+          password: '123',
+        );
 
-      expect(notifier.state, isA<AuthError>());
-      final errorState = notifier.state as AuthError;
-      expect(errorState.reason, equals(AuthFailureReason.invalidCredentials));
+        expect(notifier.state, isA<AuthError>());
+        final errorState = notifier.state as AuthError;
+        expect(errorState.reason, equals(AuthFailureReason.invalidCredentials));
 
-      final storedToken = await storage.getToken();
-      expect(storedToken, isNull);
-    });
+        final storedToken = await storage.getToken();
+        expect(storedToken, isNull);
+      },
+    );
 
     test('logout elimina token y cambia a AuthUnauthenticated', () async {
       await notifier.login(

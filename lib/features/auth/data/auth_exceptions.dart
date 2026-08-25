@@ -1,4 +1,4 @@
-﻿abstract class AuthException implements Exception {
+abstract class AuthException implements Exception {
   const AuthException();
 }
 
