@@ -2,6 +2,7 @@
 import '../../../../data/secure_storage.dart';
 import '../../data/auth_exceptions.dart';
 import '../../domain/auth_repository.dart';
+import '../../domain/user_session.dart';
 import 'auth_state.dart';
 
 // en base a una accion, cambia el estado de la pantalla 'login'
@@ -9,7 +10,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository _repository;
   final SecureStorage _storage;
 
-  AuthNotifier(this._repository, this._storage) : super(const AuthInitial());
+  AuthNotifier(this._repository, this._storage) : super(const AuthInitial()) {
+    checkAuthStatus();
+  }
 
   Future<void> login({
     required String identifier,
@@ -61,17 +64,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> checkAuthStatus() async {
+    state = const AuthLoading();
     try {
-      final token = await _storage.getToken();
-      if (token == null || token.isEmpty) {
-        state = const AuthUnauthenticated();
-        return;
-      }
-
       final session = await _repository.getCurrentSession();
       if (session != null) {
         state = AuthAuthenticated(session);
       } else {
+        await _storage.deleteToken();
         state = const AuthUnauthenticated();
       }
     } catch (_) {

@@ -7,8 +7,9 @@ import 'auth_state.dart';
 
 // el provider puede ser accedido globalmente por los widgets
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
+  final storage = ref.watch(secureStorageProvider);
   // Punto de extensión: en PLANIFY-36 se puede reemplazar por HttpAuthRepository(dio: ref.watch(dioClientProvider))
-  return FakeAuthRepository();
+  return FakeAuthRepository(storage: storage);
 });
 
 final authNotifierProvider = StateNotifierProvider<AuthNotifier, AuthState>((

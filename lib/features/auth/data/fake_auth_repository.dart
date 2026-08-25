@@ -1,12 +1,17 @@
+import '../../../data/secure_storage.dart';
 import '../domain/auth_repository.dart';
 import '../domain/user_session.dart';
 import 'auth_exceptions.dart';
 
 class FakeAuthRepository implements AuthRepository {
+  final SecureStorage _storage;
   final Duration delay;
   UserSession? _currentSession;
 
-  FakeAuthRepository({this.delay = const Duration(milliseconds: 800)});
+  FakeAuthRepository({
+    required this._storage,
+    this.delay = const Duration(milliseconds: 800)
+  });
 
   @override
   Future<UserSession> login({
@@ -29,14 +34,15 @@ class FakeAuthRepository implements AuthRepository {
       throw const InvalidCredentialsException();
     }
 
+    // creo el token con la info del usuario
     final session = UserSession(
-      userId: 'org-${DateTime.now().millisecondsSinceEpoch}',
+      userId: 'org-${trimmedIdentifier.hashCode.abs()}',
       email: trimmedIdentifier,
       name: trimmedIdentifier.contains('@')
           ? trimmedIdentifier.split('@').first
           : trimmedIdentifier,
       role: UserRole.organizer,
-      token: 'fake-org-token-${DateTime.now().millisecondsSinceEpoch}',
+      token: 'fake-org-token:$trimmedIdentifier:${DateTime.now().millisecondsSinceEpoch}}',
     );
 
     _currentSession = session;
@@ -69,11 +75,33 @@ class FakeAuthRepository implements AuthRepository {
     _currentSession = null;
   }
 
+  // en el repo real, sacaria el token de la session y se la paso al back para que
+  // lo valide y me devuelva al usuario
   @override
   Future<UserSession?> getCurrentSession() async {
     if (delay > Duration.zero) {
       await Future.delayed(delay);
     }
+
+    if (_currentSession != null) return _currentSession;
+
+    // si la app se cerro y volvio a abrir, lee el token guardado
+    final token = await _storage.getToken();
+    if (token == null || token.isEmpty) return null;
+
+    // esto simula la decodificacion del token JWT sin backend
+    final parts = token.split(':');
+    final email = parts.length > 1 ? parts[1] : '';
+    final name = email.contains('@') ? email.split('@').first : email;
+
+    _currentSession = UserSession(
+      userId: 'org-${email.hashCode.abs()}',
+      email: email,
+      name: name,
+      role: UserRole.organizer,
+      token: token,
+    );
+
     return _currentSession;
   }
 }
