@@ -69,7 +69,9 @@ class OrganizerHomeScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppSpacing.md),
                     Text(
-                      i18n.welcomeOrganizer(session.name),
+                      session.isAnonymous
+                          ? i18n.welcome
+                          : i18n.welcomeOrganizer(session.name),
                       style: theme.textTheme.headlineSmall,
                       textAlign: TextAlign.center,
                     ),
@@ -89,7 +91,7 @@ class OrganizerHomeScreen extends ConsumerWidget {
                     _buildInfoRow(
                       context,
                       label: i18n.emailLabel,
-                      value: session.email,
+                      value: session.email.isEmpty ? '-' : session.email,
                       icon: Icons.email_outlined,
                     ),
                     const SizedBox(height: AppSpacing.sm),

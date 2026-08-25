@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/providers/core_providers.dart';
 import 'package:planify/core/theme/app_theme.dart';
+import 'package:planify/core/widgets/planify_logo.dart';
 import 'package:planify/data/secure_storage.dart';
 import 'package:planify/features/auth/data/fake_auth_repository.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
@@ -42,16 +43,19 @@ Widget _buildTestApp({
 
 void main() {
   group('LoginScreen Widget Tests', () {
-    testWidgets('renderiza campos y botón de inicio de sesión correctamente', (
+    testWidgets('renderiza logo, titulo, eslogan, campos y botones', (
       tester,
     ) async {
       await tester.pumpWidget(_buildTestApp());
       await tester.pumpAndSettle();
 
-      expect(find.text('Acceso de Organizador'), findsOneWidget);
+      expect(find.byType(PlanifyLogo), findsOneWidget);
+      expect(find.text('Planify'), findsOneWidget);
+      expect(find.text('Organizá tus planes, sin vueltas'), findsOneWidget);
       expect(find.byKey(const Key('identifier_input')), findsOneWidget);
       expect(find.byKey(const Key('password_input')), findsOneWidget);
       expect(find.byKey(const Key('login_submit_button')), findsOneWidget);
+      expect(find.byKey(const Key('guest_login_button')), findsOneWidget);
     });
 
     testWidgets('muestra errores de validación si los campos están vacíos', (
@@ -78,7 +82,7 @@ void main() {
 
       await tester.enterText(
         find.byKey(const Key('identifier_input')),
-        'organizador@planify.com',
+        'lucas@gmail.com',
       );
       await tester.enterText(find.byKey(const Key('password_input')), '123');
 
@@ -91,33 +95,35 @@ void main() {
       );
     });
 
+    testWidgets('ingreso como invitado navega a la pantalla principal', (
+      tester,
+    ) async {
+      final fakeRepo = FakeAuthRepository(delay: Duration.zero);
+      final fakeStorage = FakeSecureStorage();
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authRepositoryProvider.overrideWithValue(fakeRepo),
+            secureStorageProvider.overrideWithValue(fakeStorage),
+            localeNotifierProvider.overrideWith(
+              (ref) => LocaleNotifier()..setLocale(const Locale('es')),
+            ),
+          ],
+          child: const MyApp(),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('guest_login_button')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(OrganizerHomeScreen), findsOneWidget);
+      expect(find.text('¡Bienvenido!'), findsOneWidget);
+    });
+
     testWidgets(
-      'muestra banner de error ante credenciales inválidas respetando i18n',
-      (tester) async {
-        await tester.pumpWidget(_buildTestApp());
-        await tester.pumpAndSettle();
-
-        await tester.enterText(
-          find.byKey(const Key('identifier_input')),
-          'usuario@desconocido.com',
-        );
-        await tester.enterText(
-          find.byKey(const Key('password_input')),
-          'password123',
-        );
-
-        await tester.tap(find.byKey(const Key('login_submit_button')));
-        await tester.pumpAndSettle();
-
-        expect(
-          find.text('Credenciales inválidas. Verifica tu correo y contraseña.'),
-          findsOneWidget,
-        );
-      },
-    );
-
-    testWidgets(
-      'flujo completo: login exitoso con navegación a OrganizerHomeScreen y logout',
+      'flujo completo: login como organizador navega a OrganizerHomeScreen y logout',
       (tester) async {
         final fakeRepo = FakeAuthRepository(delay: Duration.zero);
         final fakeStorage = FakeSecureStorage();
@@ -136,13 +142,11 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        // Estamos en LoginScreen en español
-        expect(find.text('Acceso de Organizador'), findsOneWidget);
+        expect(find.text('Planify'), findsOneWidget);
 
-        // Ingresamos datos de organizador
         await tester.enterText(
           find.byKey(const Key('identifier_input')),
-          'organizador@planify.com',
+          'lucas@gmail.com',
         );
         await tester.enterText(
           find.byKey(const Key('password_input')),
@@ -152,18 +156,14 @@ void main() {
         await tester.tap(find.byKey(const Key('login_submit_button')));
         await tester.pumpAndSettle();
 
-        // Navegó a OrganizerHomeScreen
         expect(find.byType(OrganizerHomeScreen), findsOneWidget);
-        expect(find.text('¡Bienvenido, Organizador Planify!'), findsOneWidget);
+        expect(find.text('¡Bienvenido, lucas!'), findsOneWidget);
 
-        // Aseguramos visibilidad y presionamos el botón de logout
         await tester.ensureVisible(find.byKey(const Key('logout_button')));
         await tester.tap(find.byKey(const Key('logout_button')));
         await tester.pumpAndSettle();
 
-        // Vuelve a LoginScreen
         expect(find.byType(LoginScreen), findsOneWidget);
-        expect(find.text('Acceso de Organizador'), findsOneWidget);
       },
     );
   });

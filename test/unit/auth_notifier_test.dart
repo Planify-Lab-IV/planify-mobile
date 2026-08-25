@@ -22,17 +22,32 @@ void main() {
 
     test('login exitoso guarda token y cambia a AuthAuthenticated', () async {
       await notifier.login(
-        identifier: 'organizador@planify.com',
+        identifier: 'lucas@gmail.com',
         password: 'password123',
       );
 
       expect(notifier.state, isA<AuthAuthenticated>());
       final authState = notifier.state as AuthAuthenticated;
-      expect(authState.session.email, equals('organizador@planify.com'));
+      expect(authState.session.email, equals('lucas@gmail.com'));
+      expect(authState.session.isOrganizer, isTrue);
 
       final storedToken = await storage.getToken();
       expect(storedToken, equals(authState.session.token));
     });
+
+    test(
+      'loginAnonymously guarda token y cambia a AuthAuthenticated con rol anonymous',
+      () async {
+        await notifier.loginAnonymously();
+
+        expect(notifier.state, isA<AuthAuthenticated>());
+        final authState = notifier.state as AuthAuthenticated;
+        expect(authState.session.isAnonymous, isTrue);
+
+        final storedToken = await storage.getToken();
+        expect(storedToken, equals(authState.session.token));
+      },
+    );
 
     test(
       'login fallido cambia a AuthError con motivo y no guarda token',
@@ -53,7 +68,7 @@ void main() {
 
     test('logout elimina token y cambia a AuthUnauthenticated', () async {
       await notifier.login(
-        identifier: 'organizador@planify.com',
+        identifier: 'lucas@gmail.com',
         password: 'password123',
       );
 

@@ -11,15 +11,30 @@ void main() {
       repository = FakeAuthRepository(delay: Duration.zero);
     });
 
-    test('login exitoso con email de organizador válido', () async {
-      final session = await repository.login(
-        identifier: 'organizador@planify.com',
-        password: 'password123',
-      );
+    test(
+      'login exitoso con cualquier usuario y contraseña >= 6 caracteres',
+      () async {
+        final session = await repository.login(
+          identifier: 'lucas@gmail.com',
+          password: 'password123',
+        );
 
-      expect(session.userId, equals('org-12345'));
-      expect(session.email, equals('organizador@planify.com'));
-      expect(session.role, equals(UserRole.organizer));
+        expect(session.email, equals('lucas@gmail.com'));
+        expect(session.name, equals('lucas'));
+        expect(session.role, equals(UserRole.organizer));
+        expect(session.token, isNotEmpty);
+        expect(session.isOrganizer, isTrue);
+
+        final current = await repository.getCurrentSession();
+        expect(current, equals(session));
+      },
+    );
+
+    test('loginAnonymously devuelve sesión con rol anonymous', () async {
+      final session = await repository.loginAnonymously();
+
+      expect(session.isAnonymous, isTrue);
+      expect(session.role, equals(UserRole.anonymous));
       expect(session.token, isNotEmpty);
 
       final current = await repository.getCurrentSession();
@@ -27,7 +42,7 @@ void main() {
     });
 
     test(
-      'login con credenciales inválidas arroja InvalidCredentialsException',
+      'login con contraseña menor a 6 caracteres arroja InvalidCredentialsException',
       () async {
         expect(
           () => repository.login(
@@ -51,7 +66,7 @@ void main() {
 
     test('logout limpia la sesión actual', () async {
       await repository.login(
-        identifier: 'organizador@planify.com',
+        identifier: 'lucas@gmail.com',
         password: 'password123',
       );
 
