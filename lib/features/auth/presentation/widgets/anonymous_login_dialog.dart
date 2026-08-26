@@ -30,19 +30,23 @@ class _AnonymousLoginDialogState extends ConsumerState<AnonymousLoginDialog> {
     super.dispose();
   }
 
-  void _submit() {
+  void _submit() async {
     ref.read(authNotifierProvider.notifier).clearError();
 
     if (_formKey.currentState?.validate() ?? false) {
       FocusScope.of(context).unfocus();
 
-      ref
+      await ref
           .read(authNotifierProvider.notifier)
           .loginAnonymously(
             name: _nameController.text,
             pin: _pinController.text,
             eventId: widget.eventId,
           );
+
+      if (mounted && ref.read(authNotifierProvider) is AuthAuthenticated) {
+        Navigator.of(context).pop();
+      }
     }
   }
 
