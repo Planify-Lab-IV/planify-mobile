@@ -99,9 +99,7 @@ class _CreateEventStep1ScreenState
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size.fromHeight(50),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        AppRadius.card,
-                      ),
+                      borderRadius: BorderRadius.circular(AppRadius.card),
                     ),
                     side: const BorderSide(color: AppColors.primary),
                   ),
