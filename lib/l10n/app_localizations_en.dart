@@ -136,4 +136,68 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get eventLabel => 'Event';
+
+  @override
+  String get createEventTitle => 'Create Event';
+
+  @override
+  String get createEventButton => 'Create new event';
+
+  @override
+  String get step1Badge => 'Step 1 of 2';
+
+  @override
+  String get step1Title => 'Basic information';
+
+  @override
+  String get step1Subtitle => 'Enter your event\'s name and location.';
+
+  @override
+  String get eventNameLabel => 'Event name';
+
+  @override
+  String get eventNameHint => 'e.g. Lucas\'s Birthday';
+
+  @override
+  String get eventNameRequired => 'Please enter the event name';
+
+  @override
+  String get eventLocationLabel => 'Location or address';
+
+  @override
+  String get eventLocationHint => 'e.g. Lucas\' house or 1234 Main St';
+
+  @override
+  String get eventLocationRequired => 'Please enter the event location';
+
+  @override
+  String get continueButton => 'Continue';
+
+  @override
+  String get backButton => 'Back';
+
+  @override
+  String get step2Badge => 'Step 2 of 2';
+
+  @override
+  String get step2Title => 'Step 2: Coming soon';
+
+  @override
+  String get step2Subtitle =>
+      'In the next steps you will be able to configure date, time, and participants.';
+
+  @override
+  String get draftSummaryTitle => 'Draft summary';
+
+  @override
+  String get draftEventName => 'Name';
+
+  @override
+  String get draftEventLocation => 'Location';
+
+  @override
+  String get generateWithAi => 'Generate with AI';
+
+  @override
+  String get generateWithAiComingSoon => 'AI event generation coming soon';
 }
