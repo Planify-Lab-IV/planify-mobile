@@ -1,4 +1,4 @@
-﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/providers/core_providers.dart';
 import '../../data/fake_auth_repository.dart';
 import '../../domain/auth_repository.dart';
@@ -17,5 +17,5 @@ final authNotifierProvider = StateNotifierProvider<AuthNotifier, AuthState>((
 ) {
   final repository = ref.watch(authRepositoryProvider);
   final storage = ref.watch(secureStorageProvider);
-  return AuthNotifier(repository, storage);
+  return AuthNotifier(repository, storage)..checkAuthStatus();
 });

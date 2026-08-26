@@ -46,7 +46,7 @@ class MyApp extends ConsumerWidget {
           session: session,
         ),
         AuthLoading() => const Scaffold(
-          body: Center(child: CircularProgressIndicator())
+          body: Center(child: CircularProgressIndicator()),
         ),
         _ => const LoginScreen(),
       },

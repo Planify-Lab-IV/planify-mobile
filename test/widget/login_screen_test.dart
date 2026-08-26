@@ -95,38 +95,30 @@ void main() {
       );
     });
 
-    testWidgets('ingreso como invitado navega a la pantalla principal', (
-      tester,
-    ) async {
-      final fakeRepo = FakeAuthRepository(delay: Duration.zero);
-      final fakeStorage = FakeSecureStorage();
+    testWidgets(
+      'ingreso como invitado muestra mensaje de funcionalidad en desarrollo',
+      (tester) async {
+        await tester.pumpWidget(_buildTestApp());
+        await tester.pumpAndSettle();
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            authRepositoryProvider.overrideWithValue(fakeRepo),
-            secureStorageProvider.overrideWithValue(fakeStorage),
-            localeNotifierProvider.overrideWith(
-              (ref) => LocaleNotifier()..setLocale(const Locale('es')),
-            ),
-          ],
-          child: const MyApp(),
-        ),
-      );
-      await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('guest_login_button')));
+        await tester.pump();
 
-      await tester.tap(find.byKey(const Key('guest_login_button')));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(OrganizerHomeScreen), findsOneWidget);
-      expect(find.text('¡Bienvenido!'), findsOneWidget);
-    });
+        expect(
+          find.text('Acceso de invitado en desarrollo (PLANIFY-31)'),
+          findsOneWidget,
+        );
+      },
+    );
 
     testWidgets(
       'flujo completo: login como organizador navega a OrganizerHomeScreen y logout',
       (tester) async {
-        final fakeRepo = FakeAuthRepository(delay: Duration.zero);
         final fakeStorage = FakeSecureStorage();
+        final fakeRepo = FakeAuthRepository(
+          storage: fakeStorage,
+          delay: Duration.zero,
+        );
 
         await tester.pumpWidget(
           ProviderScope(

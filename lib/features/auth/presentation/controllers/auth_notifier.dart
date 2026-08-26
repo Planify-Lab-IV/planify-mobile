@@ -1,8 +1,7 @@
-﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../data/secure_storage.dart';
 import '../../data/auth_exceptions.dart';
 import '../../domain/auth_repository.dart';
-import '../../domain/user_session.dart';
 import 'auth_state.dart';
 
 // en base a una accion, cambia el estado de la pantalla 'login'
@@ -10,9 +9,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository _repository;
   final SecureStorage _storage;
 
-  AuthNotifier(this._repository, this._storage) : super(const AuthInitial()) {
-    checkAuthStatus();
-  }
+  AuthNotifier(this._repository, this._storage) : super(const AuthInitial());
 
   Future<void> login({
     required String identifier,
@@ -70,7 +67,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
       if (session != null) {
         state = AuthAuthenticated(session);
       } else {
-        await _storage.deleteToken();
         state = const AuthUnauthenticated();
       }
     } catch (_) {

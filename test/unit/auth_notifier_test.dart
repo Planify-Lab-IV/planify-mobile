@@ -11,8 +11,8 @@ void main() {
     late AuthNotifier notifier;
 
     setUp(() {
-      repository = FakeAuthRepository(delay: Duration.zero);
       storage = FakeSecureStorage();
+      repository = FakeAuthRepository(storage: storage, delay: Duration.zero);
       notifier = AuthNotifier(repository, storage);
     });
 
@@ -77,6 +77,17 @@ void main() {
       expect(notifier.state, isA<AuthUnauthenticated>());
       final storedToken = await storage.getToken();
       expect(storedToken, isNull);
+    });
+
+    test('checkAuthStatus restaura sesion si hay token guardado', () async {
+      await storage.saveToken('fake-org-token:lucas@gmail.com:123456');
+
+      await notifier.checkAuthStatus();
+
+      expect(notifier.state, isA<AuthAuthenticated>());
+      final authState = notifier.state as AuthAuthenticated;
+      expect(authState.session.email, equals('lucas@gmail.com'));
+      expect(authState.session.name, equals('lucas'));
     });
   });
 }

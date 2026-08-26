@@ -205,7 +205,9 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                   // TODO(PLANIFY-31): Diálogo con username y PIN
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Acceso de invitado en desarrollo (PLANIFY-31)'),
+                      content: Text(
+                        'Acceso de invitado en desarrollo (PLANIFY-31)',
+                      ),
                       duration: Duration(seconds: 2),
                     ),
                   );

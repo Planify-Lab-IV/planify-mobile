@@ -9,9 +9,9 @@ class FakeAuthRepository implements AuthRepository {
   UserSession? _currentSession;
 
   FakeAuthRepository({
-    required this._storage,
-    this.delay = const Duration(milliseconds: 800)
-  });
+    SecureStorage? storage,
+    this.delay = const Duration(milliseconds: 800),
+  }) : _storage = storage ?? FakeSecureStorage();
 
   @override
   Future<UserSession> login({
@@ -34,15 +34,18 @@ class FakeAuthRepository implements AuthRepository {
       throw const InvalidCredentialsException();
     }
 
+    final isEmail = trimmedIdentifier.contains('@');
+
     // creo el token con la info del usuario
     final session = UserSession(
       userId: 'org-${trimmedIdentifier.hashCode.abs()}',
-      email: trimmedIdentifier,
-      name: trimmedIdentifier.contains('@')
-          ? trimmedIdentifier.split('@').first
-          : trimmedIdentifier,
+      // si el usuario no escribio el mail, en el posta eso lo recibiria del back, aca simulamos eso
+      email: isEmail ? trimmedIdentifier : '$trimmedIdentifier@example.com',
+      // lo mismo aca
+      name: isEmail ? trimmedIdentifier.split('@').first : trimmedIdentifier,
       role: UserRole.organizer,
-      token: 'fake-org-token:$trimmedIdentifier:${DateTime.now().millisecondsSinceEpoch}}',
+      token:
+          'fake-org-token:$trimmedIdentifier:${DateTime.now().millisecondsSinceEpoch}',
     );
 
     _currentSession = session;
