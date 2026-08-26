@@ -96,7 +96,7 @@ class OrganizerHomeScreen extends ConsumerWidget {
                     _buildInfoRow(
                       context,
                       label: i18n.roleLabel,
-                      value: session.role.name.toUpperCase(),
+                      value: i18n.organizerRole,
                       icon: Icons.badge_outlined,
                     ),
                     const SizedBox(height: AppSpacing.xl),

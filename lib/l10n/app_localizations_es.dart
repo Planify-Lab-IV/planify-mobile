@@ -129,4 +129,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get sessionActiveParticipantDescription =>
       'Has ingresado correctamente como participante del evento.';
+
+  @override
+  String get guestRole => 'Invitado';
+
+  @override
+  String get organizerRole => 'Organizador';
 }

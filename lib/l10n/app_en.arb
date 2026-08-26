@@ -45,5 +45,7 @@
   "loginErrorInvalidPin": "Invalid PIN. Please check the code and try again.",
   "eventIdLabel": "Event ID",
   "participantPanelTitle": "Participant Dashboard",
-  "sessionActiveParticipantDescription": "You have successfully joined as an event participant."
+  "sessionActiveParticipantDescription": "You have successfully joined as an event participant.",
+  "guestRole": "Guest",
+  "organizerRole": "Organizer"
 }

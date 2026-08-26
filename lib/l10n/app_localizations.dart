@@ -325,6 +325,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Has ingresado correctamente como participante del evento.'**
   String get sessionActiveParticipantDescription;
+
+  /// No description provided for @guestRole.
+  ///
+  /// In es, this message translates to:
+  /// **'Invitado'**
+  String get guestRole;
+
+  /// No description provided for @organizerRole.
+  ///
+  /// In es, this message translates to:
+  /// **'Organizador'**
+  String get organizerRole;
 }
 
 class _AppLocalizationsDelegate
