@@ -47,5 +47,6 @@
   "participantPanelTitle": "Participant Dashboard",
   "sessionActiveParticipantDescription": "You have successfully joined as an event participant.",
   "guestRole": "Guest",
-  "organizerRole": "Organizer"
+  "organizerRole": "Organizer",
+  "eventLabel": "Event"
 }

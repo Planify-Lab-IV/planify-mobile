@@ -47,5 +47,6 @@
   "participantPanelTitle": "Panel de Participante",
   "sessionActiveParticipantDescription": "Has ingresado correctamente como participante del evento.",
   "guestRole": "Invitado",
-  "organizerRole": "Organizador"
+  "organizerRole": "Organizador",
+  "eventLabel": "Evento"
 }

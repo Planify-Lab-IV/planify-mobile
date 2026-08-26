@@ -8,6 +8,11 @@ import '../../../auth/domain/user_session.dart';
 import '../../../auth/presentation/controllers/auth_providers.dart';
 import '../../../auth/presentation/controllers/auth_state.dart';
 
+// Punto de extensión: en PLANIFY-30 esto consultará la API real.
+final eventNameProvider = Provider.family<String, String>((ref, eventId) {
+  return 'Evento Planify';
+});
+
 class ParticipantHomeScreen extends ConsumerWidget {
   final AnonymousSession session;
 
@@ -18,6 +23,7 @@ class ParticipantHomeScreen extends ConsumerWidget {
     final i18n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final authState = ref.watch(authNotifierProvider);
+    final eventName = ref.watch(eventNameProvider(session.eventId));
     final isLoggingOut = authState is AuthLoading;
 
     return Scaffold(
@@ -95,8 +101,8 @@ class ParticipantHomeScreen extends ConsumerWidget {
                     const SizedBox(height: AppSpacing.sm),
                     _buildInfoRow(
                       context,
-                      label: i18n.eventIdLabel,
-                      value: session.eventId,
+                      label: i18n.eventLabel,
+                      value: eventName,
                       icon: Icons.event_available_rounded,
                     ),
                     const SizedBox(height: AppSpacing.sm),

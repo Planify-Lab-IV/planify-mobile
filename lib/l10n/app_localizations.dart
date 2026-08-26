@@ -337,6 +337,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Organizador'**
   String get organizerRole;
+
+  /// No description provided for @eventLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Evento'**
+  String get eventLabel;
 }
 
 class _AppLocalizationsDelegate

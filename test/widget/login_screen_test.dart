@@ -154,7 +154,8 @@ void main() {
 
         expect(find.byType(ParticipantHomeScreen), findsOneWidget);
         expect(find.text('¡Bienvenido, Lucas Invitado!'), findsOneWidget);
-        expect(find.text('ID del Evento: '), findsOneWidget);
+        expect(find.text('Evento: '), findsOneWidget);
+        expect(find.text('Evento Planify'), findsOneWidget);
 
         await tester.ensureVisible(find.byKey(const Key('logout_button')));
         await tester.tap(find.byKey(const Key('logout_button')));

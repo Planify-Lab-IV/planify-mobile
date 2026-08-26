@@ -133,4 +133,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get organizerRole => 'Organizer';
+
+  @override
+  String get eventLabel => 'Event';
 }
