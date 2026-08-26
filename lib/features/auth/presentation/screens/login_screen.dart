@@ -9,7 +9,9 @@ import '../widgets/login_form.dart';
 // que sea un ConsumerStatefulWidget le permite tener estado local, como el texto que vas escribiendo
 // en los campos y si la contraseña esta oculta o visible con el ojito
 class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+  final String? eventId;
+
+  const LoginScreen({super.key, this.eventId});
 
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
@@ -55,7 +57,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   const SizedBox(height: AppSpacing.xl),
 
-                  const LoginForm(),
+                  // cuando llamo a widget estoy accediendo a las variables que tiene
+                  // guardadas el login screen
+                  LoginForm(eventId: widget.eventId),
                 ],
               ),
             ),

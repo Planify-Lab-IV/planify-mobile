@@ -13,6 +13,9 @@ import 'package:planify/features/home/presentation/screens/organizer_home_screen
 import 'package:planify/l10n/app_localizations.dart';
 import 'package:planify/main.dart';
 
+import 'package:planify/features/auth/presentation/widgets/anonymous_login_dialog.dart';
+import 'package:planify/features/home/presentation/screens/participant_home_screen.dart';
+
 Widget _buildTestApp({
   FakeAuthRepository? fakeAuthRepo,
   FakeSecureStorage? fakeStorage,
@@ -95,19 +98,70 @@ void main() {
       );
     });
 
+    testWidgets('ingreso como invitado abre AnonymousLoginDialog', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_buildTestApp());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('guest_login_button')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AnonymousLoginDialog), findsOneWidget);
+    });
+
     testWidgets(
-      'ingreso como invitado muestra mensaje de funcionalidad en desarrollo',
+      'flujo completo: login como invitado navega a ParticipantHomeScreen y logout',
       (tester) async {
-        await tester.pumpWidget(_buildTestApp());
+        final fakeStorage = FakeSecureStorage();
+        final fakeRepo = FakeAuthRepository(
+          storage: fakeStorage,
+          delay: Duration.zero,
+        );
+
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              authRepositoryProvider.overrideWithValue(fakeRepo),
+              secureStorageProvider.overrideWithValue(fakeStorage),
+              localeNotifierProvider.overrideWith(
+                (ref) => LocaleNotifier()..setLocale(const Locale('es')),
+              ),
+            ],
+            child: const MyApp(),
+          ),
+        );
         await tester.pumpAndSettle();
 
-        await tester.tap(find.byKey(const Key('guest_login_button')));
-        await tester.pump();
+        expect(find.text('Planify'), findsOneWidget);
 
-        expect(
-          find.text('Acceso de invitado en desarrollo (PLANIFY-31)'),
-          findsOneWidget,
+        await tester.tap(find.byKey(const Key('guest_login_button')));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(AnonymousLoginDialog), findsOneWidget);
+
+        await tester.enterText(
+          find.byKey(const Key('anonymous_name_input')),
+          'Lucas Invitado',
         );
+        await tester.enterText(
+          find.byKey(const Key('anonymous_pin_input')),
+          '1234',
+        );
+
+        await tester.tap(find.byKey(const Key('anonymous_submit_button')));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(ParticipantHomeScreen), findsOneWidget);
+        expect(find.text('¡Bienvenido, Lucas Invitado!'), findsOneWidget);
+        expect(find.text('Evento: '), findsOneWidget);
+        expect(find.text('Evento Planify'), findsOneWidget);
+
+        await tester.ensureVisible(find.byKey(const Key('logout_button')));
+        await tester.tap(find.byKey(const Key('logout_button')));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(LoginScreen), findsOneWidget);
       },
     );
 

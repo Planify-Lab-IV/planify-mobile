@@ -37,13 +37,12 @@ class FakeAuthRepository implements AuthRepository {
     final isEmail = trimmedIdentifier.contains('@');
 
     // creo el token con la info del usuario
-    final session = UserSession(
+    final session = OrganizerSession(
       userId: 'org-${trimmedIdentifier.hashCode.abs()}',
       // si el usuario no escribio el mail, en el posta eso lo recibiria del back, aca simulamos eso
       email: isEmail ? trimmedIdentifier : '$trimmedIdentifier@example.com',
       // lo mismo aca
       name: isEmail ? trimmedIdentifier.split('@').first : trimmedIdentifier,
-      role: UserRole.organizer,
       token:
           'fake-org-token:$trimmedIdentifier:${DateTime.now().millisecondsSinceEpoch}',
     );
@@ -53,17 +52,39 @@ class FakeAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<UserSession> loginAnonymously() async {
+  Future<UserSession> loginAnonymously({
+    required String name,
+    required String pin,
+    String? eventId,
+  }) async {
     if (delay > Duration.zero) {
       await Future.delayed(delay);
     }
 
-    final session = UserSession(
-      userId: 'anon-${DateTime.now().millisecondsSinceEpoch}',
-      email: '',
-      name: '',
-      role: UserRole.anonymous,
-      token: 'fake-guest-token-${DateTime.now().millisecondsSinceEpoch}',
+    final trimmedName = name.trim();
+    final trimmedPin = pin.trim();
+
+    // Simulación de error de red para testing
+    if (trimmedName == 'network.error' || trimmedPin == '0000') {
+      throw const NetworkAuthException();
+    }
+
+    if (trimmedPin == '9999') {
+      throw const InvalidPinException();
+    }
+
+    if (trimmedName.isEmpty || trimmedPin.length < 4) {
+      throw const InvalidPinException();
+    }
+
+    final resolvedEventId = eventId ?? 'evt-fake-id';
+
+    final session = AnonymousSession(
+      userId: 'anon-${trimmedName.hashCode.abs()}',
+      name: trimmedName,
+      eventId: resolvedEventId,
+      token:
+          'fake-guest-token:$trimmedName:$resolvedEventId:${DateTime.now().millisecondsSinceEpoch}',
     );
 
     _currentSession = session;
@@ -94,14 +115,25 @@ class FakeAuthRepository implements AuthRepository {
 
     // esto simula la decodificacion del token JWT sin backend
     final parts = token.split(':');
+    if (token.startsWith('fake-guest-token:')) {
+      final name = parts.length > 1 ? parts[1] : 'Invitado';
+      final eventId = parts.length > 2 ? parts[2] : 'evt-fake-demo';
+      _currentSession = AnonymousSession(
+        userId: 'anon-${name.hashCode.abs()}',
+        name: name,
+        eventId: eventId,
+        token: token,
+      );
+      return _currentSession;
+    }
+
     final email = parts.length > 1 ? parts[1] : '';
     final name = email.contains('@') ? email.split('@').first : email;
 
-    _currentSession = UserSession(
+    _currentSession = OrganizerSession(
       userId: 'org-${email.hashCode.abs()}',
       email: email,
       name: name,
-      role: UserRole.organizer,
       token: token,
     );
 
