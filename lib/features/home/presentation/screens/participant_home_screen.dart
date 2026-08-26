@@ -103,7 +103,7 @@ class ParticipantHomeScreen extends ConsumerWidget {
                     _buildInfoRow(
                       context,
                       label: i18n.roleLabel,
-                      value:i18n.guestRole,
+                      value: i18n.guestRole,
                       icon: Icons.badge_outlined,
                     ),
                     const SizedBox(height: AppSpacing.xl),
