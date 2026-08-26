@@ -72,10 +72,7 @@ class AnonymousSession extends UserSession {
 
   @override
   bool operator ==(Object other) =>
-      identical(
-        this,
-        other,
-      ) ||
+      identical(this, other) ||
       other is AnonymousSession &&
           runtimeType == other.runtimeType &&
           userId == other.userId &&

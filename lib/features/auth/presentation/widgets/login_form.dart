@@ -213,9 +213,8 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                         showDialog<void>(
                           context: context,
                           barrierDismissible: !isLoading,
-                          builder: (dialogContext) => AnonymousLoginDialog(
-                            eventId: widget.eventId,
-                          ),
+                          builder: (dialogContext) =>
+                              AnonymousLoginDialog(eventId: widget.eventId),
                         );
                       },
                 child: Text(i18n.continueAsGuest),
