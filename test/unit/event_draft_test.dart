@@ -23,32 +23,35 @@ void main() {
       expect(draft.isStep1Valid, isFalse);
     });
 
-    test('isStep1Valid returns true only when name and location are not blank', () {
-      expect(
-        const EventDraft(name: '', location: '').isStep1Valid,
-        isFalse,
-      );
-      expect(
-        const EventDraft(name: 'Fiesta', location: '').isStep1Valid,
-        isFalse,
-      );
-      expect(
-        const EventDraft(name: '', location: 'Casa').isStep1Valid,
-        isFalse,
-      );
-      expect(
-        const EventDraft(name: '   ', location: 'Casa').isStep1Valid,
-        isFalse,
-      );
-      expect(
-        const EventDraft(name: 'Fiesta', location: '   ').isStep1Valid,
-        isFalse,
-      );
-      expect(
-        const EventDraft(name: 'Fiesta', location: 'Casa de Lucas').isStep1Valid,
-        isTrue,
-      );
-    });
+    test(
+      'isStep1Valid returns true only when name and location are not blank',
+      () {
+        expect(const EventDraft(name: '', location: '').isStep1Valid, isFalse);
+        expect(
+          const EventDraft(name: 'Fiesta', location: '').isStep1Valid,
+          isFalse,
+        );
+        expect(
+          const EventDraft(name: '', location: 'Casa').isStep1Valid,
+          isFalse,
+        );
+        expect(
+          const EventDraft(name: '   ', location: 'Casa').isStep1Valid,
+          isFalse,
+        );
+        expect(
+          const EventDraft(name: 'Fiesta', location: '   ').isStep1Valid,
+          isFalse,
+        );
+        expect(
+          const EventDraft(
+            name: 'Fiesta',
+            location: 'Casa de Lucas',
+          ).isStep1Valid,
+          isTrue,
+        );
+      },
+    );
 
     test('copyWith copies and overrides fields correctly', () {
       const draft = EventDraft(name: 'Asado', location: 'Club');
@@ -98,16 +101,19 @@ void main() {
       expect(notifier.state.location, isEmpty);
     });
 
-    test('updateBasicInfo actualiza nombre y lugar con strings limpios (trim)', () {
-      notifier.updateBasicInfo(
-        name: '  Cumpleaños de Lucas  ',
-        location: '  Av. Corrientes 1234  ',
-      );
+    test(
+      'updateBasicInfo actualiza nombre y lugar con strings limpios (trim)',
+      () {
+        notifier.updateBasicInfo(
+          name: '  Cumpleaños de Lucas  ',
+          location: '  Av. Corrientes 1234  ',
+        );
 
-      expect(notifier.state.name, equals('Cumpleaños de Lucas'));
-      expect(notifier.state.location, equals('Av. Corrientes 1234'));
-      expect(notifier.state.isStep1Valid, isTrue);
-    });
+        expect(notifier.state.name, equals('Cumpleaños de Lucas'));
+        expect(notifier.state.location, equals('Av. Corrientes 1234'));
+        expect(notifier.state.isStep1Valid, isTrue);
+      },
+    );
 
     test('updateName actualiza solo el nombre', () {
       notifier.updateBasicInfo(name: 'Original', location: 'Lugar');
@@ -126,10 +132,7 @@ void main() {
     });
 
     test('reset restablece el borrador al estado vacío', () {
-      notifier.updateBasicInfo(
-        name: 'Evento a borrar',
-        location: 'Ubicacion',
-      );
+      notifier.updateBasicInfo(name: 'Evento a borrar', location: 'Ubicacion');
       expect(notifier.state.isEmpty, isFalse);
 
       notifier.reset();

@@ -48,7 +48,10 @@ void main() {
       expect(find.text('Crear Evento'), findsOneWidget);
       expect(find.text('Paso 1 de 2'), findsOneWidget);
       expect(find.text('Información básica'), findsOneWidget);
-      expect(find.text('Ingresá el nombre y el lugar de tu evento.'), findsOneWidget);
+      expect(
+        find.text('Ingresá el nombre y el lugar de tu evento.'),
+        findsOneWidget,
+      );
       expect(find.byKey(const Key('event_name_input')), findsOneWidget);
       expect(find.byKey(const Key('event_location_input')), findsOneWidget);
       expect(find.byKey(const Key('wizard_continue_button')), findsOneWidget);
@@ -60,6 +63,9 @@ void main() {
       await tester.pumpWidget(_buildTestApp());
       await tester.pumpAndSettle();
 
+      await tester.ensureVisible(
+        find.byKey(const Key('wizard_continue_button')),
+      );
       await tester.tap(find.byKey(const Key('wizard_continue_button')));
       await tester.pumpAndSettle();
 
@@ -90,6 +96,9 @@ void main() {
         '   ',
       );
 
+      await tester.ensureVisible(
+        find.byKey(const Key('wizard_continue_button')),
+      );
       await tester.tap(find.byKey(const Key('wizard_continue_button')));
       await tester.pumpAndSettle();
 
@@ -118,6 +127,9 @@ void main() {
           'Av. Corrientes 1234',
         );
 
+        await tester.ensureVisible(
+          find.byKey(const Key('wizard_continue_button')),
+        );
         await tester.tap(find.byKey(const Key('wizard_continue_button')));
         await tester.pumpAndSettle();
 
@@ -152,6 +164,9 @@ void main() {
         );
 
         // 2. Avanzar a Paso 2
+        await tester.ensureVisible(
+          find.byKey(const Key('wizard_continue_button')),
+        );
         await tester.tap(find.byKey(const Key('wizard_continue_button')));
         await tester.pumpAndSettle();
 
@@ -160,6 +175,7 @@ void main() {
         expect(find.text('Club Social'), findsOneWidget);
 
         // 3. Volver al Paso 1 con el botón atrás
+        await tester.ensureVisible(find.byKey(const Key('step2_back_button')));
         await tester.tap(find.byKey(const Key('step2_back_button')));
         await tester.pumpAndSettle();
 
@@ -178,6 +194,9 @@ void main() {
         await tester.enterText(
           find.byKey(const Key('event_location_input')),
           'Quinta de Pedro',
+        );
+        await tester.ensureVisible(
+          find.byKey(const Key('wizard_continue_button')),
         );
         await tester.tap(find.byKey(const Key('wizard_continue_button')));
         await tester.pumpAndSettle();

@@ -3,20 +3,14 @@ import '../../domain/models/event_draft.dart';
 
 class EventDraftNotifier extends StateNotifier<EventDraft> {
   EventDraftNotifier([EventDraft? initialDraft])
-      : super(initialDraft ?? const EventDraft.empty());
+    : super(initialDraft ?? const EventDraft.empty());
 
-  /// Actualiza los datos mínimos del Paso 1 (Información básica)
-  void updateBasicInfo({
-    required String name,
-    required String location,
-  }) {
-    state = state.copyWith(
-      name: name.trim(),
-      location: location.trim(),
-    );
+  // actualiza los datos del paso 1
+  void updateBasicInfo({required String name, required String location}) {
+    state = state.copyWith(name: name.trim(), location: location.trim());
   }
 
-  /// Actualiza únicamente el nombre del evento
+  // actualiza el nombre del evento
   void updateName(String name) {
     state = state.copyWith(name: name.trim());
   }

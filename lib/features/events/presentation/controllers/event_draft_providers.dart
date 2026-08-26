@@ -4,5 +4,5 @@ import 'event_draft_notifier.dart';
 
 final eventDraftProvider =
     StateNotifierProvider<EventDraftNotifier, EventDraft>((ref) {
-  return EventDraftNotifier();
-});
+      return EventDraftNotifier();
+    });

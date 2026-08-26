@@ -41,7 +41,9 @@ class _CreateEventStep1ScreenState
       FocusScope.of(context).unfocus();
 
       // Guardamos los datos en el estado central del borrador
-      ref.read(eventDraftProvider.notifier).updateBasicInfo(
+      ref
+          .read(eventDraftProvider.notifier)
+          .updateBasicInfo(
             name: _nameController.text,
             location: _locationController.text,
           );

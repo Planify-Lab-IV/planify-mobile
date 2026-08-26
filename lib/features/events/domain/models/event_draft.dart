@@ -1,53 +1,33 @@
 import 'package:flutter/material.dart';
 
 class EventDraft {
-  // Paso 1: Información básica
+  // informacion del paso 1
   final String name;
   final String location;
 
-  // Pasos futuros (fecha, hora, detalles adicionales)
-  final DateTime? date;
-  final TimeOfDay? startTime;
-  final TimeOfDay? endTime;
-  final String? description;
+  // aca se agregaria la informacion de los proximos pasos
+
 
   const EventDraft({
     this.name = '',
     this.location = '',
-    this.date,
-    this.startTime,
-    this.endTime,
-    this.description,
   });
 
   const EventDraft.empty() : this();
 
   bool get isEmpty =>
       name.trim().isEmpty &&
-      location.trim().isEmpty &&
-      date == null &&
-      startTime == null &&
-      endTime == null &&
-      (description == null || description!.trim().isEmpty);
+      location.trim().isEmpty;
 
-  bool get isStep1Valid =>
-      name.trim().isNotEmpty && location.trim().isNotEmpty;
+  bool get isStep1Valid => name.trim().isNotEmpty && location.trim().isNotEmpty;
 
   EventDraft copyWith({
     String? name,
     String? location,
-    DateTime? date,
-    TimeOfDay? startTime,
-    TimeOfDay? endTime,
-    String? description,
   }) {
     return EventDraft(
       name: name ?? this.name,
       location: location ?? this.location,
-      date: date ?? this.date,
-      startTime: startTime ?? this.startTime,
-      endTime: endTime ?? this.endTime,
-      description: description ?? this.description,
     );
   }
 
@@ -57,23 +37,15 @@ class EventDraft {
       other is EventDraft &&
           runtimeType == other.runtimeType &&
           name == other.name &&
-          location == other.location &&
-          date == other.date &&
-          startTime == other.startTime &&
-          endTime == other.endTime &&
-          description == other.description;
+          location == other.location;
 
   @override
   int get hashCode =>
       name.hashCode ^
-      location.hashCode ^
-      date.hashCode ^
-      startTime.hashCode ^
-      endTime.hashCode ^
-      description.hashCode;
+      location.hashCode;
 
   @override
   String toString() {
-    return 'EventDraft(name: $name, location: $location, date: $date, startTime: $startTime, endTime: $endTime)';
+    return 'EventDraft(name: $name, location: $location)';
   }
 }
