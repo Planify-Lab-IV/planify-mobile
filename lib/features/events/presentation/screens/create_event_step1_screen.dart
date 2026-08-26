@@ -101,20 +101,13 @@ class _CreateEventStep1ScreenState
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           // Campo: Nombre del evento
-                          Text(
-                            i18n.eventNameLabel,
-                            style: theme.textTheme.titleSmall?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.onSurface,
-                            ),
-                          ),
                           const SizedBox(height: AppSpacing.xs),
                           TextFormField(
                             key: const Key('event_name_input'),
                             controller: _nameController,
                             textInputAction: TextInputAction.next,
                             decoration: InputDecoration(
-                              hintText: i18n.eventNameHint,
+                              hintText: i18n.eventNameLabel,
                               prefixIcon: const Icon(
                                 Icons.celebration_outlined,
                                 color: AppColors.primary,
@@ -130,13 +123,6 @@ class _CreateEventStep1ScreenState
                           const SizedBox(height: AppSpacing.lg),
 
                           // Campo: Lugar del evento (lugarTexto)
-                          Text(
-                            i18n.eventLocationLabel,
-                            style: theme.textTheme.titleSmall?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.onSurface,
-                            ),
-                          ),
                           const SizedBox(height: AppSpacing.xs),
                           TextFormField(
                             key: const Key('event_location_input'),
@@ -144,7 +130,7 @@ class _CreateEventStep1ScreenState
                             textInputAction: TextInputAction.done,
                             onFieldSubmitted: (_) => _onContinue(),
                             decoration: InputDecoration(
-                              hintText: i18n.eventLocationHint,
+                              hintText: i18n.eventLocationLabel,
                               prefixIcon: const Icon(
                                 Icons.location_on_outlined,
                                 color: AppColors.primary,

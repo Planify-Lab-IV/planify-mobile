@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../domain/models/event_draft.dart';
+import '../../domain/event_draft.dart';
 
 class EventDraftNotifier extends StateNotifier<EventDraft> {
   EventDraftNotifier([EventDraft? initialDraft])

@@ -3,7 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
-import 'package:planify/features/events/domain/models/event_draft.dart';
+import 'package:planify/features/events/domain/event_draft.dart';
 import 'package:planify/features/events/presentation/controllers/event_draft_notifier.dart';
 import 'package:planify/features/events/presentation/controllers/event_draft_providers.dart';
 import 'package:planify/features/events/presentation/screens/create_event_step1_screen.dart';
