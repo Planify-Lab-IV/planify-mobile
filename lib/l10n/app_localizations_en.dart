@@ -120,4 +120,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get eventIdLabel => 'Event ID';
+
+  @override
+  String get participantPanelTitle => 'Participant Dashboard';
+
+  @override
+  String get sessionActiveParticipantDescription =>
+      'You have successfully joined as an event participant.';
 }

@@ -122,4 +122,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get eventIdLabel => 'ID del Evento';
+
+  @override
+  String get participantPanelTitle => 'Panel de Participante';
+
+  @override
+  String get sessionActiveParticipantDescription =>
+      'Has ingresado correctamente como participante del evento.';
 }

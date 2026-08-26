@@ -313,6 +313,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'ID del Evento'**
   String get eventIdLabel;
+
+  /// No description provided for @participantPanelTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Panel de Participante'**
+  String get participantPanelTitle;
+
+  /// No description provided for @sessionActiveParticipantDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Has ingresado correctamente como participante del evento.'**
+  String get sessionActiveParticipantDescription;
 }
 
 class _AppLocalizationsDelegate

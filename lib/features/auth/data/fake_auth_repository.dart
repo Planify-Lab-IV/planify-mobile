@@ -69,7 +69,7 @@ class FakeAuthRepository implements AuthRepository {
       throw const NetworkAuthException();
     }
 
-    if (trimmedPin == '9999' || trimmedPin == '1111') {
+    if (trimmedPin == '9999') {
       throw const InvalidPinException();
     }
 
@@ -77,7 +77,7 @@ class FakeAuthRepository implements AuthRepository {
       throw const InvalidPinException();
     }
 
-    final resolvedEventId = eventId ?? 'evt-fake-demo';
+    final resolvedEventId = eventId ?? 'evt-fake-id';
 
     final session = AnonymousSession(
       userId: 'anon-${trimmedName.hashCode.abs()}',

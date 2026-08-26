@@ -8,10 +8,10 @@ import '../../../auth/domain/user_session.dart';
 import '../../../auth/presentation/controllers/auth_providers.dart';
 import '../../../auth/presentation/controllers/auth_state.dart';
 
-class OrganizerHomeScreen extends ConsumerWidget {
-  final OrganizerSession session;
+class ParticipantHomeScreen extends ConsumerWidget {
+  final AnonymousSession session;
 
-  const OrganizerHomeScreen({super.key, required this.session});
+  const ParticipantHomeScreen({super.key, required this.session});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,7 +23,7 @@ class OrganizerHomeScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          i18n.organizerPanelTitle,
+          i18n.participantPanelTitle,
           style: theme.textTheme.titleLarge?.copyWith(
             color: theme.colorScheme.onPrimaryContainer,
           ),
@@ -61,7 +61,7 @@ class OrganizerHomeScreen extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(AppRadius.card),
                         ),
                         child: Icon(
-                          Icons.verified_user_rounded,
+                          Icons.badge_outlined,
                           size: 40,
                           color: theme.colorScheme.primary,
                         ),
@@ -75,7 +75,7 @@ class OrganizerHomeScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
-                      i18n.sessionActiveDescription,
+                      i18n.sessionActiveParticipantDescription,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: AppColors.onSurfaceVariant,
                       ),
@@ -85,12 +85,19 @@ class OrganizerHomeScreen extends ConsumerWidget {
                     const Divider(color: AppColors.outline),
                     const SizedBox(height: AppSpacing.md),
 
-                    // Información de sesión
+                    // Información de sesión del participante
                     _buildInfoRow(
                       context,
-                      label: i18n.emailLabel,
-                      value: session.email,
-                      icon: Icons.email_outlined,
+                      label: i18n.nameLabel,
+                      value: session.name,
+                      icon: Icons.person_outline_rounded,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    _buildInfoRow(
+                      context,
+                      label: i18n.eventIdLabel,
+                      value: session.eventId,
+                      icon: Icons.event_available_rounded,
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     _buildInfoRow(
