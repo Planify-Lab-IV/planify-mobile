@@ -91,4 +91,62 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get appTagline => 'Organizá tus planes, sin vueltas';
+
+  @override
+  String get createEventTitle => 'Crear Evento';
+
+  @override
+  String get createEventButton => 'Crear nuevo evento';
+
+  @override
+  String get step1Badge => 'Paso 1 de 2';
+
+  @override
+  String get step1Title => 'Información básica';
+
+  @override
+  String get step1Subtitle => 'Ingresá el nombre y el lugar de tu evento.';
+
+  @override
+  String get eventNameLabel => 'Nombre del evento';
+
+  @override
+  String get eventNameHint => 'Ej. Cumpleaños de Lucas';
+
+  @override
+  String get eventNameRequired => 'Por favor ingresa el nombre del evento';
+
+  @override
+  String get eventLocationLabel => 'Lugar o dirección';
+
+  @override
+  String get eventLocationHint => 'Ej. Casa de Lucas o Av. Corrientes 1234';
+
+  @override
+  String get eventLocationRequired => 'Por favor ingresa el lugar del evento';
+
+  @override
+  String get continueButton => 'Continuar';
+
+  @override
+  String get backButton => 'Atrás';
+
+  @override
+  String get step2Badge => 'Paso 2 de 2';
+
+  @override
+  String get step2Title => 'Paso 2: Próximamente';
+
+  @override
+  String get step2Subtitle =>
+      'En los próximos pasos podrás configurar fecha, hora, gastos y participantes.';
+
+  @override
+  String get draftSummaryTitle => 'Resumen del borrador';
+
+  @override
+  String get draftEventName => 'Nombre';
+
+  @override
+  String get draftEventLocation => 'Lugar';
 }

@@ -1,4 +1,4 @@
-﻿{
+{
   "@@locale": "es",
   "helloTest": "Hola, esta es una prueba de i18n",
   "identifierLabel": "Correo o usuario",
@@ -33,5 +33,24 @@
   "orDivider": "o",
   "loginTitle": "Iniciar Sesión",
   "loginSubtitle": "Ingresa a tu cuenta o continúa como invitado",
-  "appTagline": "Organizá tus planes, sin vueltas"
+  "appTagline": "Organizá tus planes, sin vueltas",
+  "createEventTitle": "Crear Evento",
+  "createEventButton": "Crear nuevo evento",
+  "step1Badge": "Paso 1 de 2",
+  "step1Title": "Información básica",
+  "step1Subtitle": "Ingresá el nombre y el lugar de tu evento.",
+  "eventNameLabel": "Nombre del evento",
+  "eventNameHint": "Ej. Cumpleaños de Lucas",
+  "eventNameRequired": "Por favor ingresa el nombre del evento",
+  "eventLocationLabel": "Lugar o dirección",
+  "eventLocationHint": "Ej. Casa de Lucas o Av. Corrientes 1234",
+  "eventLocationRequired": "Por favor ingresa el lugar del evento",
+  "continueButton": "Continuar",
+  "backButton": "Atrás",
+  "step2Badge": "Paso 2 de 2",
+  "step2Title": "Paso 2: Próximamente",
+  "step2Subtitle": "En los próximos pasos podrás configurar fecha, hora, gastos y participantes.",
+  "draftSummaryTitle": "Resumen del borrador",
+  "draftEventName": "Nombre",
+  "draftEventLocation": "Lugar"
 }

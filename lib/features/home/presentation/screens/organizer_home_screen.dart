@@ -7,6 +7,8 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../auth/domain/user_session.dart';
 import '../../../auth/presentation/controllers/auth_providers.dart';
 import '../../../auth/presentation/controllers/auth_state.dart';
+import '../../../events/presentation/controllers/event_draft_providers.dart';
+import '../../../events/presentation/screens/create_event_step1_screen.dart';
 
 class OrganizerHomeScreen extends ConsumerWidget {
   final UserSession session;
@@ -102,6 +104,23 @@ class OrganizerHomeScreen extends ConsumerWidget {
                       icon: Icons.badge_outlined,
                     ),
                     const SizedBox(height: AppSpacing.xl),
+
+                    // Botón Crear Evento
+                    ElevatedButton.icon(
+                      key: const Key('create_event_button'),
+                      onPressed: () {
+                        ref.read(eventDraftProvider.notifier).reset();
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (context) =>
+                                const CreateEventStep1Screen(),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.add_rounded),
+                      label: Text(i18n.createEventButton),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
 
                     // Botón de Cerrar Sesión
                     OutlinedButton.icon(

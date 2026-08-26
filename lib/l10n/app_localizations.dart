@@ -253,6 +253,120 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Organizá tus planes, sin vueltas'**
   String get appTagline;
+
+  /// No description provided for @createEventTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear Evento'**
+  String get createEventTitle;
+
+  /// No description provided for @createEventButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear nuevo evento'**
+  String get createEventButton;
+
+  /// No description provided for @step1Badge.
+  ///
+  /// In es, this message translates to:
+  /// **'Paso 1 de 2'**
+  String get step1Badge;
+
+  /// No description provided for @step1Title.
+  ///
+  /// In es, this message translates to:
+  /// **'Información básica'**
+  String get step1Title;
+
+  /// No description provided for @step1Subtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá el nombre y el lugar de tu evento.'**
+  String get step1Subtitle;
+
+  /// No description provided for @eventNameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre del evento'**
+  String get eventNameLabel;
+
+  /// No description provided for @eventNameHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Cumpleaños de Lucas'**
+  String get eventNameHint;
+
+  /// No description provided for @eventNameRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor ingresa el nombre del evento'**
+  String get eventNameRequired;
+
+  /// No description provided for @eventLocationLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Lugar o dirección'**
+  String get eventLocationLabel;
+
+  /// No description provided for @eventLocationHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Casa de Lucas o Av. Corrientes 1234'**
+  String get eventLocationHint;
+
+  /// No description provided for @eventLocationRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor ingresa el lugar del evento'**
+  String get eventLocationRequired;
+
+  /// No description provided for @continueButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar'**
+  String get continueButton;
+
+  /// No description provided for @backButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Atrás'**
+  String get backButton;
+
+  /// No description provided for @step2Badge.
+  ///
+  /// In es, this message translates to:
+  /// **'Paso 2 de 2'**
+  String get step2Badge;
+
+  /// No description provided for @step2Title.
+  ///
+  /// In es, this message translates to:
+  /// **'Paso 2: Próximamente'**
+  String get step2Title;
+
+  /// No description provided for @step2Subtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'En los próximos pasos podrás configurar fecha, hora, gastos y participantes.'**
+  String get step2Subtitle;
+
+  /// No description provided for @draftSummaryTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Resumen del borrador'**
+  String get draftSummaryTitle;
+
+  /// No description provided for @draftEventName.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get draftEventName;
+
+  /// No description provided for @draftEventLocation.
+  ///
+  /// In es, this message translates to:
+  /// **'Lugar'**
+  String get draftEventLocation;
 }
 
 class _AppLocalizationsDelegate

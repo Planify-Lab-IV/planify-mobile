@@ -1,4 +1,4 @@
-﻿{
+{
   "@@locale": "en",
   "helloTest": "Hello, this is an i18n test",
   "identifierLabel": "Email or username",
@@ -33,5 +33,24 @@
   "orDivider": "or",
   "loginTitle": "Sign In",
   "loginSubtitle": "Sign in to your account or continue as guest",
-  "appTagline": "Organize your plans, effortlessly"
+  "appTagline": "Organize your plans, effortlessly",
+  "createEventTitle": "Create Event",
+  "createEventButton": "Create new event",
+  "step1Badge": "Step 1 of 2",
+  "step1Title": "Basic information",
+  "step1Subtitle": "Enter your event's name and location.",
+  "eventNameLabel": "Event name",
+  "eventNameHint": "e.g. Lucas's Birthday",
+  "eventNameRequired": "Please enter the event name",
+  "eventLocationLabel": "Location or address",
+  "eventLocationHint": "e.g. Lucas' house or 1234 Main St",
+  "eventLocationRequired": "Please enter the event location",
+  "continueButton": "Continue",
+  "backButton": "Back",
+  "step2Badge": "Step 2 of 2",
+  "step2Title": "Step 2: Coming soon",
+  "step2Subtitle": "In the next steps you will be able to configure date, time, and participants.",
+  "draftSummaryTitle": "Draft summary",
+  "draftEventName": "Name",
+  "draftEventLocation": "Location"
 }
