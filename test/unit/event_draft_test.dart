@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/events/domain/event_draft.dart';
 import 'package:planify/features/events/presentation/controllers/event_draft_notifier.dart';
@@ -9,10 +8,6 @@ void main() {
       const draft = EventDraft();
       expect(draft.name, isEmpty);
       expect(draft.location, isEmpty);
-      expect(draft.date, isNull);
-      expect(draft.startTime, isNull);
-      expect(draft.endTime, isNull);
-      expect(draft.description, isNull);
       expect(draft.isEmpty, isTrue);
       expect(draft.isStep1Valid, isFalse);
     });
@@ -55,20 +50,14 @@ void main() {
 
     test('copyWith copies and overrides fields correctly', () {
       const draft = EventDraft(name: 'Asado', location: 'Club');
-      final date = DateTime(2026, 12, 31);
-      const time = TimeOfDay(hour: 20, minute: 0);
-
-      final updated = draft.copyWith(
-        location: 'Parque',
-        date: date,
-        startTime: time,
-      );
+      final updated = draft.copyWith(location: 'Parque');
 
       expect(updated.name, equals('Asado'));
       expect(updated.location, equals('Parque'));
-      expect(updated.date, equals(date));
-      expect(updated.startTime, equals(time));
-      expect(updated.endTime, isNull);
+
+      final updatedName = draft.copyWith(name: 'Fiesta');
+      expect(updatedName.name, equals('Fiesta'));
+      expect(updatedName.location, equals('Club'));
     });
 
     test('equality and hashCode work as expected', () {

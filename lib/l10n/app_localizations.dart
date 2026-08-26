@@ -457,6 +457,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Lugar'**
   String get draftEventLocation;
+
+  /// No description provided for @generateWithAi.
+  ///
+  /// In es, this message translates to:
+  /// **'Generar con IA'**
+  String get generateWithAi;
+
+  /// No description provided for @generateWithAiComingSoon.
+  ///
+  /// In es, this message translates to:
+  /// **'Generación de eventos con IA disponible próximamente'**
+  String get generateWithAiComingSoon;
 }
 
 class _AppLocalizationsDelegate

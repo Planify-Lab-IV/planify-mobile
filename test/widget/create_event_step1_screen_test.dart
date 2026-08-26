@@ -55,7 +55,28 @@ void main() {
       expect(find.byKey(const Key('event_name_input')), findsOneWidget);
       expect(find.byKey(const Key('event_location_input')), findsOneWidget);
       expect(find.byKey(const Key('wizard_continue_button')), findsOneWidget);
+      expect(find.byKey(const Key('generate_with_ai_button')), findsOneWidget);
+      expect(find.text('Generar con IA'), findsOneWidget);
     });
+
+    testWidgets(
+      'pulsar Generar con IA muestra mensaje de funcionalidad próxima',
+      (tester) async {
+        await tester.pumpWidget(_buildTestApp());
+        await tester.pumpAndSettle();
+
+        await tester.ensureVisible(
+          find.byKey(const Key('generate_with_ai_button')),
+        );
+        await tester.tap(find.byKey(const Key('generate_with_ai_button')));
+        await tester.pump();
+
+        expect(
+          find.text('Generación de eventos con IA disponible próximamente'),
+          findsOneWidget,
+        );
+      },
+    );
 
     testWidgets('muestra errores de validación si los campos están vacíos', (
       tester,

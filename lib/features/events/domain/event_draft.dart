@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class EventDraft {
   // informacion del paso 1
   final String name;
@@ -7,24 +5,15 @@ class EventDraft {
 
   // aca se agregaria la informacion de los proximos pasos
 
-
-  const EventDraft({
-    this.name = '',
-    this.location = '',
-  });
+  const EventDraft({this.name = '', this.location = ''});
 
   const EventDraft.empty() : this();
 
-  bool get isEmpty =>
-      name.trim().isEmpty &&
-      location.trim().isEmpty;
+  bool get isEmpty => name.trim().isEmpty && location.trim().isEmpty;
 
   bool get isStep1Valid => name.trim().isNotEmpty && location.trim().isNotEmpty;
 
-  EventDraft copyWith({
-    String? name,
-    String? location,
-  }) {
+  EventDraft copyWith({String? name, String? location}) {
     return EventDraft(
       name: name ?? this.name,
       location: location ?? this.location,
@@ -40,9 +29,7 @@ class EventDraft {
           location == other.location;
 
   @override
-  int get hashCode =>
-      name.hashCode ^
-      location.hashCode;
+  int get hashCode => name.hashCode ^ location.hashCode;
 
   @override
   String toString() {

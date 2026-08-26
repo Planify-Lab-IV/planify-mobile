@@ -196,4 +196,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get draftEventLocation => 'Lugar';
+
+  @override
+  String get generateWithAi => 'Generar con IA';
+
+  @override
+  String get generateWithAiComingSoon =>
+      'Generación de eventos con IA disponible próximamente';
 }

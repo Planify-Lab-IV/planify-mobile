@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../controllers/event_draft_providers.dart';
@@ -92,6 +93,31 @@ class _CreateEventStep1ScreenState
                   subtitle: i18n.step1Subtitle,
                 ),
                 const SizedBox(height: AppSpacing.lg),
+                // Botón Generar con IA
+                OutlinedButton.icon(
+                  key: const Key('generate_with_ai_button'),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        AppRadius.card,
+                      ),
+                    ),
+                    side: const BorderSide(color: AppColors.primary),
+                  ),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(i18n.generateWithAiComingSoon),
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.auto_awesome_rounded),
+                  label: Text(i18n.generateWithAi),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(AppSpacing.xl),

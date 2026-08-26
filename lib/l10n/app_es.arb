@@ -67,5 +67,7 @@
     "step2Subtitle": "En los próximos pasos podrás configurar fecha, hora, gastos y participantes.",
     "draftSummaryTitle": "Resumen del borrador",
     "draftEventName": "Nombre",
-    "draftEventLocation": "Lugar"
+    "draftEventLocation": "Lugar",
+    "generateWithAi": "Generar con IA",
+    "generateWithAiComingSoon": "Generación de eventos con IA disponible próximamente"
 }
