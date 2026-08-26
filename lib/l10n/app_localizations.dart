@@ -103,6 +103,156 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Hola, esta es una prueba de i18n'**
   String get helloTest;
+
+  /// No description provided for @identifierLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo o usuario'**
+  String get identifierLabel;
+
+  /// No description provided for @identifierHint.
+  ///
+  /// In es, this message translates to:
+  /// **'organizador@planify.com'**
+  String get identifierHint;
+
+  /// No description provided for @identifierRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor ingresa tu correo o usuario'**
+  String get identifierRequired;
+
+  /// No description provided for @identifierInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa un correo electrónico válido'**
+  String get identifierInvalid;
+
+  /// No description provided for @passwordLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña'**
+  String get passwordLabel;
+
+  /// No description provided for @passwordHint.
+  ///
+  /// In es, this message translates to:
+  /// **'••••••••'**
+  String get passwordHint;
+
+  /// No description provided for @passwordRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor ingresa tu contraseña'**
+  String get passwordRequired;
+
+  /// No description provided for @passwordMinLength.
+  ///
+  /// In es, this message translates to:
+  /// **'La contraseña debe tener al menos 6 caracteres'**
+  String get passwordMinLength;
+
+  /// No description provided for @loginButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciar Sesión'**
+  String get loginButton;
+
+  /// No description provided for @loggingIn.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciando sesión...'**
+  String get loggingIn;
+
+  /// No description provided for @loginErrorGeneric.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo iniciar sesión. Intenta nuevamente.'**
+  String get loginErrorGeneric;
+
+  /// No description provided for @loginErrorInvalidCredentials.
+  ///
+  /// In es, this message translates to:
+  /// **'Credenciales inválidas. Verifica tu correo y contraseña.'**
+  String get loginErrorInvalidCredentials;
+
+  /// No description provided for @logoutButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar Sesión'**
+  String get logoutButton;
+
+  /// No description provided for @welcomeOrganizer.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Bienvenido, {name}!'**
+  String welcomeOrganizer(String name);
+
+  /// No description provided for @welcome.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Bienvenido!'**
+  String get welcome;
+
+  /// No description provided for @organizerPanelTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Panel de Organizador'**
+  String get organizerPanelTitle;
+
+  /// No description provided for @sessionActiveDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Has iniciado sesión correctamente como organizador de eventos en Planify.'**
+  String get sessionActiveDescription;
+
+  /// No description provided for @tokenLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Token de Sesión'**
+  String get tokenLabel;
+
+  /// No description provided for @roleLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Rol'**
+  String get roleLabel;
+
+  /// No description provided for @emailLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo'**
+  String get emailLabel;
+
+  /// No description provided for @continueAsGuest.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar como invitado'**
+  String get continueAsGuest;
+
+  /// No description provided for @orDivider.
+  ///
+  /// In es, this message translates to:
+  /// **'o'**
+  String get orDivider;
+
+  /// No description provided for @loginTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciar Sesión'**
+  String get loginTitle;
+
+  /// No description provided for @loginSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa a tu cuenta o continúa como invitado'**
+  String get loginSubtitle;
+
+  /// No description provided for @appTagline.
+  ///
+  /// In es, this message translates to:
+  /// **'Organizá tus planes, sin vueltas'**
+  String get appTagline;
 }
 
 class _AppLocalizationsDelegate

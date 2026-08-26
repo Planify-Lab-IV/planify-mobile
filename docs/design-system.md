@@ -1,9 +1,9 @@
-# Design System — Planify
+﻿# Design System — Planify
 
 Este documento es la **fuente de verdad versionada** de los tokens de diseño de la app Flutter. Si existe un diseño aprobado posterior en Figma que modifica algún valor, **este documento se actualiza primero**, antes de tocar el código.
 
 - **Referencia funcional y visual:** [Design System](https://www.figma.com/design/0WRCDg9IXpespwQL97utp9/Planify-Design-System?node-id=0-1&p=f&t=2w6tj7IPHZrKMd66-0)
-- **Ubicación de la implementación:** `lib/shared/theme/`
+- **Ubicación de la implementación:** `lib/core/theme/`
 
 ---
 
@@ -44,7 +44,7 @@ Este documento es la **fuente de verdad versionada** de los tokens de diseño de
 | `surface` | `#FFFFFF` | `onSurface` | `#14162B` |
 | `surfaceContainerHighest` | `#DBEAFE` | `onSurfaceVariant` | `#6B7280` |
 
-> **Nota:** `tertiaryContainer` y `errorContainer` **no** se definen como hex fijos. Se derivan en runtime con `Color.lerp` (mezcla de `tertiary`/`error` con blanco) para evitar duplicar valores hardcodeados. Ver implementación en `lib/shared/theme/app_theme.dart`.
+> **Nota:** `tertiaryContainer` y `errorContainer` **no** se definen como hex fijos. Se derivan en runtime con `Color.lerp` (mezcla de `tertiary`/`error` con blanco) para evitar duplicar valores hardcodeados. Ver implementación en `lib/core/theme/app_theme.dart`.
 
 ### Colores semánticos adicionales (`AppColors`)
 
@@ -79,7 +79,7 @@ Además del `ColorScheme` de Material 3, se exponen los colores semánticos (`su
 - Cuerpo (Body) → `onSurface`
 - Texto secundario (Label) → `onSurfaceVariant`
 
-Implementación: `lib/shared/theme/app_typography.dart`
+Implementación: `lib/core/theme/app_typography.dart`
 
 ---
 
@@ -94,7 +94,7 @@ Implementación: `lib/shared/theme/app_typography.dart`
 | `xl` | 32 |
 | `xxl` | 48 |
 
-Implementación: `lib/shared/theme/app_spacing.dart`
+Implementación: `lib/core/theme/app_spacing.dart`
 
 ## 6. Radios
 
@@ -107,7 +107,7 @@ Implementación: `lib/shared/theme/app_spacing.dart`
 | `bar` | 24 | Barras de navegación / búsqueda. |
 | `pill` | 999 | Elementos tipo píldora (botones redondeados por completo). |
 
-Implementación: `lib/shared/theme/app_radius.dart`
+Implementación: `lib/core/theme/app_radius.dart`
 
 ## 7. Dimensiones base
 
@@ -117,7 +117,7 @@ Implementación: `lib/shared/theme/app_radius.dart`
 | Padding de input | 16 |
 | Elevación de card | 1 |
 
-Implementación: `lib/shared/theme/app_radius.dart` (`AppDimens`)
+Implementación: `lib/core/theme/app_radius.dart` (`AppDimens`)
 
 ---
 
