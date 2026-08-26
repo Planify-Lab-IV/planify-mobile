@@ -6,6 +6,10 @@ class InvalidCredentialsException extends AuthException {
   const InvalidCredentialsException();
 }
 
+class InvalidPinException extends AuthException {
+  const InvalidPinException();
+}
+
 class NetworkAuthException extends AuthException {
   const NetworkAuthException();
 }

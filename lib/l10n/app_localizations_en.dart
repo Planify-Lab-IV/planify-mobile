@@ -89,4 +89,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appTagline => 'Organize your plans, effortlessly';
+
+  @override
+  String get nameLabel => 'Name';
+
+  @override
+  String get nameRequired => 'Please enter your name';
+
+  @override
+  String get nameMinLength => 'Name must be at least 2 characters';
+
+  @override
+  String get pinLabel => 'Event PIN';
+
+  @override
+  String get pinRequired => 'Please enter the event PIN';
+
+  @override
+  String get pinMinLength => 'PIN must be at least 4 characters';
+
+  @override
+  String get joinButton => 'Join';
+
+  @override
+  String get cancelButton => 'Cancel';
+
+  @override
+  String get loginErrorInvalidPin =>
+      'Invalid PIN. Please check the code and try again.';
+
+  @override
+  String get eventIdLabel => 'Event ID';
+
+  @override
+  String get participantPanelTitle => 'Participant Dashboard';
+
+  @override
+  String get sessionActiveParticipantDescription =>
+      'You have successfully joined as an event participant.';
+
+  @override
+  String get guestRole => 'Guest';
+
+  @override
+  String get organizerRole => 'Organizer';
+
+  @override
+  String get eventLabel => 'Event';
 }

@@ -1,15 +1,13 @@
 enum UserRole { organizer, attendee, admin, anonymous }
 
-class UserSession {
+sealed class UserSession {
   final String userId;
-  final String email;
   final String name;
   final UserRole role;
   final String token;
 
   const UserSession({
     required this.userId,
-    required this.email,
     required this.name,
     required this.role,
     required this.token,
@@ -17,6 +15,17 @@ class UserSession {
 
   bool get isAnonymous => role == UserRole.anonymous;
   bool get isOrganizer => role == UserRole.organizer;
+}
+
+class OrganizerSession extends UserSession {
+  final String email;
+
+  const OrganizerSession({
+    required super.userId,
+    required super.name,
+    required this.email,
+    required super.token,
+  }) : super(role: UserRole.organizer);
 
   // esto es como el equals, y por las mismas razones que en java, lo esta overrideando
   @override
@@ -25,7 +34,7 @@ class UserSession {
         this,
         other,
       ) || // si apuntan al mismo espacio de memoria -> true
-      other is UserSession && // si las propiedades de los objetos son iguales
+      other is OrganizerSession && // si las propiedades de los objetos son iguales
           runtimeType == other.runtimeType &&
           userId == other.userId &&
           email == other.email &&
@@ -47,6 +56,41 @@ class UserSession {
 
   @override
   String toString() {
-    return 'UserSession(userId: $userId, email: $email, name: $name, role: $role)';
+    return 'OrganizerSession(userId: $userId, email: $email, name: $name, role: $role)';
+  }
+}
+
+class AnonymousSession extends UserSession {
+  final String eventId;
+
+  const AnonymousSession({
+    required super.userId,
+    required super.name,
+    required super.token,
+    required this.eventId,
+  }) : super(role: UserRole.anonymous);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AnonymousSession &&
+          runtimeType == other.runtimeType &&
+          userId == other.userId &&
+          name == other.name &&
+          role == other.role &&
+          token == other.token &&
+          eventId == other.eventId;
+
+  @override
+  int get hashCode =>
+      userId.hashCode ^
+      name.hashCode ^
+      role.hashCode ^
+      token.hashCode ^
+      eventId.hashCode;
+
+  @override
+  String toString() {
+    return 'AnonymousSession(userId: $userId, name: $name, role: $role, eventId: $eventId)';
   }
 }

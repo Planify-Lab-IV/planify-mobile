@@ -1,4 +1,4 @@
-﻿{
+{
   "@@locale": "en",
   "helloTest": "Hello, this is an i18n test",
   "identifierLabel": "Email or username",
@@ -33,5 +33,20 @@
   "orDivider": "or",
   "loginTitle": "Sign In",
   "loginSubtitle": "Sign in to your account or continue as guest",
-  "appTagline": "Organize your plans, effortlessly"
+  "appTagline": "Organize your plans, effortlessly",
+  "nameLabel": "Name",
+  "nameRequired": "Please enter your name",
+  "nameMinLength": "Name must be at least 2 characters",
+  "pinLabel": "Event PIN",
+  "pinRequired": "Please enter the event PIN",
+  "pinMinLength": "PIN must be at least 4 characters",
+  "joinButton": "Join",
+  "cancelButton": "Cancel",
+  "loginErrorInvalidPin": "Invalid PIN. Please check the code and try again.",
+  "eventIdLabel": "Event ID",
+  "participantPanelTitle": "Participant Dashboard",
+  "sessionActiveParticipantDescription": "You have successfully joined as an event participant.",
+  "guestRole": "Guest",
+  "organizerRole": "Organizer",
+  "eventLabel": "Event"
 }

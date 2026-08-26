@@ -1,4 +1,4 @@
-﻿{
+{
   "@@locale": "es",
   "helloTest": "Hola, esta es una prueba de i18n",
   "identifierLabel": "Correo o usuario",
@@ -33,5 +33,20 @@
   "orDivider": "o",
   "loginTitle": "Iniciar Sesión",
   "loginSubtitle": "Ingresa a tu cuenta o continúa como invitado",
-  "appTagline": "Organizá tus planes, sin vueltas"
+  "appTagline": "Organizá tus planes, sin vueltas",
+  "nameLabel": "Nombre o apodo",
+  "nameRequired": "Por favor ingresa tu nombre",
+  "nameMinLength": "El nombre debe tener al menos 2 caracteres",
+  "pinLabel": "PIN del evento",
+  "pinRequired": "Por favor ingresa el PIN del evento",
+  "pinMinLength": "El PIN debe tener al menos 4 caracteres",
+  "joinButton": "Ingresar",
+  "cancelButton": "Cancelar",
+  "loginErrorInvalidPin": "PIN incorrecto. Verifica el código e intenta nuevamente.",
+  "eventIdLabel": "ID del Evento",
+  "participantPanelTitle": "Panel de Participante",
+  "sessionActiveParticipantDescription": "Has ingresado correctamente como participante del evento.",
+  "guestRole": "Invitado",
+  "organizerRole": "Organizador",
+  "eventLabel": "Evento"
 }

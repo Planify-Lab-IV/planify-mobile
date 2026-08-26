@@ -6,7 +6,11 @@ abstract class AuthRepository {
     required String password,
   });
 
-  Future<UserSession> loginAnonymously();
+  Future<UserSession> loginAnonymously({
+    required String name,
+    required String pin,
+    String? eventId,
+  });
 
   Future<void> logout();
 

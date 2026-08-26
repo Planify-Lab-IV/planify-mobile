@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/data/secure_storage.dart';
 import 'package:planify/features/auth/data/fake_auth_repository.dart';
+import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_notifier.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_state.dart';
 
@@ -20,32 +21,56 @@ void main() {
       expect(notifier.state, isA<AuthInitial>());
     });
 
-    test('login exitoso guarda token y cambia a AuthAuthenticated', () async {
-      await notifier.login(
-        identifier: 'lucas@gmail.com',
-        password: 'password123',
-      );
-
-      expect(notifier.state, isA<AuthAuthenticated>());
-      final authState = notifier.state as AuthAuthenticated;
-      expect(authState.session.email, equals('lucas@gmail.com'));
-      expect(authState.session.isOrganizer, isTrue);
-
-      final storedToken = await storage.getToken();
-      expect(storedToken, equals(authState.session.token));
-    });
-
     test(
-      'loginAnonymously guarda token y cambia a AuthAuthenticated con rol anonymous',
+      'login exitoso guarda token y cambia a AuthAuthenticated con OrganizerSession',
       () async {
-        await notifier.loginAnonymously();
+        await notifier.login(
+          identifier: 'lucas@gmail.com',
+          password: 'password123',
+        );
 
         expect(notifier.state, isA<AuthAuthenticated>());
         final authState = notifier.state as AuthAuthenticated;
-        expect(authState.session.isAnonymous, isTrue);
+        expect(authState.session, isA<OrganizerSession>());
+        final orgSession = authState.session as OrganizerSession;
+        expect(orgSession.email, equals('lucas@gmail.com'));
+        expect(orgSession.isOrganizer, isTrue);
 
         final storedToken = await storage.getToken();
-        expect(storedToken, equals(authState.session.token));
+        expect(storedToken, equals(orgSession.token));
+      },
+    );
+
+    test(
+      'loginAnonymously guarda token y cambia a AuthAuthenticated con AnonymousSession',
+      () async {
+        await notifier.loginAnonymously(name: 'Lucas', pin: '1234');
+
+        expect(notifier.state, isA<AuthAuthenticated>());
+        final authState = notifier.state as AuthAuthenticated;
+        expect(authState.session, isA<AnonymousSession>());
+        final anonSession = authState.session as AnonymousSession;
+        expect(anonSession.name, equals('Lucas'));
+        expect(anonSession.isAnonymous, isTrue);
+        expect(anonSession.eventId, equals('evt-fake-id'));
+
+        final storedToken = await storage.getToken();
+        expect(storedToken, equals(anonSession.token));
+        expect(storedToken!.contains('1234'), isFalse);
+      },
+    );
+
+    test(
+      'loginAnonymously con PIN inválido cambia a AuthError(invalidPin) y no guarda token',
+      () async {
+        await notifier.loginAnonymously(name: 'Lucas', pin: '9999');
+
+        expect(notifier.state, isA<AuthError>());
+        final errorState = notifier.state as AuthError;
+        expect(errorState.reason, equals(AuthFailureReason.invalidPin));
+
+        final storedToken = await storage.getToken();
+        expect(storedToken, isNull);
       },
     );
 
@@ -86,8 +111,10 @@ void main() {
 
       expect(notifier.state, isA<AuthAuthenticated>());
       final authState = notifier.state as AuthAuthenticated;
-      expect(authState.session.email, equals('lucas@gmail.com'));
-      expect(authState.session.name, equals('lucas'));
+      expect(authState.session, isA<OrganizerSession>());
+      final orgSession = authState.session as OrganizerSession;
+      expect(orgSession.email, equals('lucas@gmail.com'));
+      expect(orgSession.name, equals('lucas'));
     });
   });
 }

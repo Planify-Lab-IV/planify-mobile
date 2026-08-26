@@ -6,9 +6,12 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../controllers/auth_providers.dart';
 import '../controllers/auth_state.dart';
+import 'anonymous_login_dialog.dart';
 
 class LoginForm extends ConsumerStatefulWidget {
-  const LoginForm({super.key});
+  final String? eventId;
+
+  const LoginForm({super.key, this.eventId});
 
   @override
   ConsumerState<LoginForm> createState() => _LoginFormState();
@@ -47,6 +50,8 @@ class _LoginFormState extends ConsumerState<LoginForm> {
 
   String _getErrorMessage(AuthFailureReason reason, AppLocalizations i18n) {
     switch (reason) {
+      case AuthFailureReason.invalidPin:
+        return i18n.loginErrorInvalidPin;
       case AuthFailureReason.invalidCredentials:
         return i18n.loginErrorInvalidCredentials;
       case AuthFailureReason.networkError:
@@ -201,17 +206,17 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                     borderRadius: BorderRadius.circular(AppRadius.card),
                   ),
                 ),
-                onPressed: () {
-                  // TODO(PLANIFY-31): Diálogo con username y PIN
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        'Acceso de invitado en desarrollo (PLANIFY-31)',
-                      ),
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
-                },
+                onPressed: isLoading
+                    ? null
+                    : () {
+                        ref.read(authNotifierProvider.notifier).clearError();
+                        showDialog<void>(
+                          context: context,
+                          barrierDismissible: !isLoading,
+                          builder: (dialogContext) =>
+                              AnonymousLoginDialog(eventId: widget.eventId),
+                        );
+                      },
                 child: Text(i18n.continueAsGuest),
               ),
             ],

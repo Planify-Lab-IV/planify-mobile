@@ -37,12 +37,29 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  Future<void> loginAnonymously() async {
+  Future<void> loginAnonymously({
+    required String name,
+    required String pin,
+    String? eventId,
+  }) async {
     state = const AuthLoading();
     try {
-      final session = await _repository.loginAnonymously();
+      final session = await _repository.loginAnonymously(
+        name: name,
+        pin: pin,
+        eventId: eventId,
+      );
+
+      // Persistencia segura del token (la UI nunca toca _storage directamente)
       await _storage.saveToken(session.token);
+
       state = AuthAuthenticated(session);
+    } on InvalidPinException {
+      state = const AuthError(AuthFailureReason.invalidPin);
+    } on InvalidCredentialsException {
+      state = const AuthError(AuthFailureReason.invalidCredentials);
+    } on NetworkAuthException {
+      state = const AuthError(AuthFailureReason.networkError);
     } catch (_) {
       state = const AuthError(AuthFailureReason.unknown);
     }
