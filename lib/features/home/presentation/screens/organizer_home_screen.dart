@@ -101,15 +101,6 @@ class OrganizerHomeScreen extends ConsumerWidget {
                       value: session.role.name.toUpperCase(),
                       icon: Icons.badge_outlined,
                     ),
-                    const SizedBox(height: AppSpacing.sm),
-                    _buildInfoRow(
-                      context,
-                      label: i18n.tokenLabel,
-                      value: session.token.length > 25
-                          ? '${session.token.substring(0, 22)}...'
-                          : session.token,
-                      icon: Icons.vpn_key_outlined,
-                    ),
                     const SizedBox(height: AppSpacing.xl),
 
                     // Botón de Cerrar Sesión
