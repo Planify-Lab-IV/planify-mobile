@@ -253,6 +253,66 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Organizá tus planes, sin vueltas'**
   String get appTagline;
+
+  /// No description provided for @nameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre o apodo'**
+  String get nameLabel;
+
+  /// No description provided for @nameRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor ingresa tu nombre'**
+  String get nameRequired;
+
+  /// No description provided for @nameMinLength.
+  ///
+  /// In es, this message translates to:
+  /// **'El nombre debe tener al menos 2 caracteres'**
+  String get nameMinLength;
+
+  /// No description provided for @pinLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'PIN del evento'**
+  String get pinLabel;
+
+  /// No description provided for @pinRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor ingresa el PIN del evento'**
+  String get pinRequired;
+
+  /// No description provided for @pinMinLength.
+  ///
+  /// In es, this message translates to:
+  /// **'El PIN debe tener al menos 4 caracteres'**
+  String get pinMinLength;
+
+  /// No description provided for @joinButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresar'**
+  String get joinButton;
+
+  /// No description provided for @cancelButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar'**
+  String get cancelButton;
+
+  /// No description provided for @loginErrorInvalidPin.
+  ///
+  /// In es, this message translates to:
+  /// **'PIN incorrecto. Verifica el código e intenta nuevamente.'**
+  String get loginErrorInvalidPin;
+
+  /// No description provided for @eventIdLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'ID del Evento'**
+  String get eventIdLabel;
 }
 
 class _AppLocalizationsDelegate
