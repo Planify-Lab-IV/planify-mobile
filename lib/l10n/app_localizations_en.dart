@@ -180,11 +180,94 @@ class AppLocalizationsEn extends AppLocalizations {
   String get step2Badge => 'Step 2 of 2';
 
   @override
-  String get step2Title => 'Step 2: Coming soon';
+  String get step2Title => 'Group and participants';
 
   @override
   String get step2Subtitle =>
-      'In the next steps you will be able to configure date, time, and participants.';
+      'Choose an existing group or create a new one with its members.';
+
+  @override
+  String get existingGroupOption => 'Existing group';
+
+  @override
+  String get newGroupOption => 'Create new group';
+
+  @override
+  String get selectGroupLabel => 'Select group';
+
+  @override
+  String get selectGroupHint => 'Choose a group...';
+
+  @override
+  String get selectGroupRequired => 'Please select a group';
+
+  @override
+  String get loadingGroups => 'Loading groups...';
+
+  @override
+  String get errorLoadingGroups => 'Could not load groups';
+
+  @override
+  String get retryButton => 'Retry';
+
+  @override
+  String get noGroupsAvailable =>
+      'You have no created groups. You can create a new one.';
+
+  @override
+  String get newGroupNameLabel => 'New group name';
+
+  @override
+  String get newGroupNameHint => 'e.g. Football Friends';
+
+  @override
+  String get newGroupNameRequired => 'Please enter the group name';
+
+  @override
+  String get memberIdentifierLabel => 'Member (email or username)';
+
+  @override
+  String get memberIdentifierHint => 'example@email.com or @username';
+
+  @override
+  String get addMemberButton => 'Add';
+
+  @override
+  String get memberAlreadyAdded => 'This member has already been added';
+
+  @override
+  String get memberIdentifierEmpty => 'Enter a valid email or username';
+
+  @override
+  String membersListTitle(int count) {
+    return 'Members ($count)';
+  }
+
+  @override
+  String get createEventSubmitButton => 'Create Event';
+
+  @override
+  String get creatingEventLoading => 'Creating event...';
+
+  @override
+  String get createEventErrorGeneric =>
+      'Could not create event. Please try again.';
+
+  @override
+  String get createEventSuccessTitle => 'Event created successfully!';
+
+  @override
+  String get createEventSuccessSubtitle =>
+      'Your event is ready and assigned to its group.';
+
+  @override
+  String get createdEventIdLabel => 'Event ID';
+
+  @override
+  String get assignedGroupLabel => 'Assigned group';
+
+  @override
+  String get backToHomeButton => 'Back to home';
 
   @override
   String get draftSummaryTitle => 'Draft summary';
