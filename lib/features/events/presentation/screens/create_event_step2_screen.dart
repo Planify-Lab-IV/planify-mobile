@@ -169,92 +169,87 @@ class _CreateEventStep2ScreenState
                   const SizedBox(height: AppSpacing.md),
                 ],
 
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppSpacing.xl),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // Selector de modo: Grupo existente vs Crear grupo nuevo
-                          SegmentedButton<bool>(
-                            key: const Key('group_mode_selector'),
-                            segments: [
-                              ButtonSegment<bool>(
-                                value: false,
-                                label: Text(i18n.existingGroupOption),
-                                icon: const Icon(Icons.groups_outlined),
-                              ),
-                              ButtonSegment<bool>(
-                                value: true,
-                                label: Text(i18n.newGroupOption),
-                                icon: const Icon(Icons.group_add_outlined),
-                              ),
-                            ],
-                            selected: {draft.isNewGroup},
-                            onSelectionChanged: isLoading
-                                ? null
-                                : (newSelection) {
-                                    ref
-                                        .read(eventDraftProvider.notifier)
-                                        .setIsNewGroup(newSelection.first);
-                                  },
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Selector de modo: Grupo existente vs Crear grupo nuevo
+                      SegmentedButton<bool>(
+                        key: const Key('group_mode_selector'),
+                        segments: [
+                          ButtonSegment<bool>(
+                            value: false,
+                            label: Text(i18n.existingGroupOption),
+                            icon: const Icon(Icons.groups_outlined),
                           ),
-                          const SizedBox(height: AppSpacing.lg),
+                          ButtonSegment<bool>(
+                            value: true,
+                            label: Text(i18n.newGroupOption),
+                            icon: const Icon(Icons.group_add_outlined),
+                          ),
+                        ],
+                        selected: {draft.isNewGroup},
+                        onSelectionChanged: isLoading
+                            ? null
+                            : (newSelection) {
+                                ref
+                                    .read(eventDraftProvider.notifier)
+                                    .setIsNewGroup(newSelection.first);
+                              },
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
 
-                          // Contenido según el modo seleccionado
-                          if (!draft.isNewGroup)
-                            _buildExistingGroupSection(context, myGroupsAsync)
-                          else
-                            _buildNewGroupSection(context, draft),
+                      // Contenido según el modo seleccionado
+                      if (!draft.isNewGroup)
+                        _buildExistingGroupSection(context, myGroupsAsync)
+                      else
+                        _buildNewGroupSection(context, draft),
 
-                          const SizedBox(height: AppSpacing.xl),
+                      const SizedBox(height: AppSpacing.xl),
 
-                          // Botones de acción (Atrás y Crear Evento)
-                          Row(
-                            children: [
-                              OutlinedButton.icon(
-                                key: const Key('wizard_step2_back_button'),
-                                style: OutlinedButton.styleFrom(
-                                  minimumSize: const Size(100, 52),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                      AppRadius.card,
-                                    ),
-                                  ),
-                                ),
-                                onPressed: isLoading
-                                    ? null
-                                    : () => Navigator.of(context).pop(),
-                                icon: const Icon(Icons.arrow_back_rounded),
-                                label: Text(i18n.backButton),
-                              ),
-                              const SizedBox(width: AppSpacing.md),
-                              Expanded(
-                                child: ElevatedButton.icon(
-                                  key: const Key('create_event_submit_button'),
-                                  onPressed: isLoading ? null : _onSubmit,
-                                  icon: isLoading
-                                      ? null
-                                      : const Icon(Icons.check_rounded),
-                                  label: isLoading
-                                      ? const SizedBox(
-                                          width: 22,
-                                          height: 22,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2.5,
-                                            color: Colors.white,
-                                          ),
-                                        )
-                                      : Text(i18n.createEventSubmitButton),
+                      // Botones de acción (Atrás y Crear Evento)
+                      Row(
+                        children: [
+                          OutlinedButton.icon(
+                            key: const Key('wizard_step2_back_button'),
+                            style: OutlinedButton.styleFrom(
+                              minimumSize: const Size(100, 52),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  AppRadius.card,
                                 ),
                               ),
-                            ],
+                            ),
+                            onPressed: isLoading
+                                ? null
+                                : () => Navigator.of(context).pop(),
+                            icon: const Icon(Icons.arrow_back_rounded),
+                            label: Text(i18n.backButton),
+                          ),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              key: const Key('create_event_submit_button'),
+                              onPressed: isLoading ? null : _onSubmit,
+                              icon: isLoading
+                                  ? null
+                                  : const Icon(Icons.check_rounded),
+                              label: isLoading
+                                  ? const SizedBox(
+                                      width: 22,
+                                      height: 22,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2.5,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : Text(i18n.createEventSubmitButton),
+                            ),
                           ),
                         ],
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ],
@@ -561,101 +556,92 @@ class _CreateEventStep2ScreenState
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 500),
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.xl),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Center(
-                      child: Container(
-                        width: 72,
-                        height: 72,
-                        decoration: BoxDecoration(
-                          color: AppColors.lightBlue,
-                          borderRadius: BorderRadius.circular(AppRadius.card),
-                        ),
-                        child: const Icon(
-                          Icons.check_circle_outline_rounded,
-                          size: 44,
-                          color: AppColors.success,
-                        ),
-                      ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Center(
+                  child: Container(
+                    width: 72,
+                    height: 72,
+                    decoration: BoxDecoration(
+                      color: AppColors.lightBlue,
+                      borderRadius: BorderRadius.circular(AppRadius.card),
                     ),
-                    const SizedBox(height: AppSpacing.md),
-                    Text(
-                      i18n.createEventSuccessTitle,
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
+                    child: const Icon(
+                      Icons.check_circle_outline_rounded,
+                      size: 44,
+                      color: AppColors.success,
                     ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      i18n.createEventSuccessSubtitle,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: AppColors.onSurfaceVariant,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-                    const Divider(color: AppColors.outline),
-                    const SizedBox(height: AppSpacing.md),
-
-                    // Resumen del evento creado
-                    _buildSummaryTile(
-                      context,
-                      label: i18n.createdEventIdLabel,
-                      value: event.id as String,
-                      valueKey: const Key('created_event_id'),
-                      icon: Icons.tag_rounded,
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    _buildSummaryTile(
-                      context,
-                      label: i18n.eventNameLabel,
-                      value: event.name as String,
-                      valueKey: const Key('created_event_name'),
-                      icon: Icons.celebration_outlined,
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    _buildSummaryTile(
-                      context,
-                      label: i18n.eventLocationLabel,
-                      value: event.location as String,
-                      valueKey: const Key('created_event_location'),
-                      icon: Icons.location_on_outlined,
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    _buildSummaryTile(
-                      context,
-                      label: i18n.assignedGroupLabel,
-                      value: groupDisplayName,
-                      valueKey: const Key('created_event_group'),
-                      icon: Icons.groups_outlined,
-                    ),
-
-                    const SizedBox(height: AppSpacing.xl),
-
-                    // Botón para volver al inicio
-                    ElevatedButton.icon(
-                      key: const Key('back_to_home_button'),
-                      onPressed: () {
-                        ref.read(eventDraftProvider.notifier).reset();
-                        ref
-                            .read(createEventNotifierProvider.notifier)
-                            .resetState();
-                        Navigator.of(
-                          context,
-                        ).popUntil((route) => route.isFirst);
-                      },
-                      icon: const Icon(Icons.home_rounded),
-                      label: Text(i18n.backToHomeButton),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+                const SizedBox(height: AppSpacing.md),
+                Text(
+                  i18n.createEventSuccessTitle,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  i18n.createEventSuccessSubtitle,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: AppColors.onSurfaceVariant,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                const Divider(color: AppColors.outline),
+                const SizedBox(height: AppSpacing.md),
+
+                // Resumen del evento creado
+                _buildSummaryTile(
+                  context,
+                  label: i18n.createdEventIdLabel,
+                  value: event.id as String,
+                  valueKey: const Key('created_event_id'),
+                  icon: Icons.tag_rounded,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                _buildSummaryTile(
+                  context,
+                  label: i18n.eventNameLabel,
+                  value: event.name as String,
+                  valueKey: const Key('created_event_name'),
+                  icon: Icons.celebration_outlined,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                _buildSummaryTile(
+                  context,
+                  label: i18n.eventLocationLabel,
+                  value: event.location as String,
+                  valueKey: const Key('created_event_location'),
+                  icon: Icons.location_on_outlined,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                _buildSummaryTile(
+                  context,
+                  label: i18n.assignedGroupLabel,
+                  value: groupDisplayName,
+                  valueKey: const Key('created_event_group'),
+                  icon: Icons.groups_outlined,
+                ),
+
+                const SizedBox(height: AppSpacing.xl),
+
+                // Botón para volver al inicio
+                ElevatedButton.icon(
+                  key: const Key('back_to_home_button'),
+                  onPressed: () {
+                    ref.read(eventDraftProvider.notifier).reset();
+                    ref.read(createEventNotifierProvider.notifier).resetState();
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                  },
+                  icon: const Icon(Icons.home_rounded),
+                  label: Text(i18n.backToHomeButton),
+                ),
+              ],
             ),
           ),
         ),

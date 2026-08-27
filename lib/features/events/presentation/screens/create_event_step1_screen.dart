@@ -117,69 +117,62 @@ class _CreateEventStep1ScreenState
                 ),
                 const SizedBox(height: AppSpacing.lg),
 
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppSpacing.xl),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // Campo: Nombre del evento
-                          const SizedBox(height: AppSpacing.xs),
-                          TextFormField(
-                            key: const Key('event_name_input'),
-                            controller: _nameController,
-                            textInputAction: TextInputAction.next,
-                            decoration: InputDecoration(
-                              hintText: i18n.eventNameLabel,
-                              prefixIcon: const Icon(
-                                Icons.celebration_outlined,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
-                                return i18n.eventNameRequired;
-                              }
-                              return null;
-                            },
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Campo: Nombre del evento
+                      TextFormField(
+                        key: const Key('event_name_input'),
+                        controller: _nameController,
+                        textInputAction: TextInputAction.next,
+                        decoration: InputDecoration(
+                          hintText: i18n.eventNameLabel,
+                          prefixIcon: const Icon(
+                            Icons.celebration_outlined,
+                            color: AppColors.primary,
                           ),
-                          const SizedBox(height: AppSpacing.lg),
-
-                          // Campo: Lugar del evento (lugarTexto)
-                          const SizedBox(height: AppSpacing.xs),
-                          TextFormField(
-                            key: const Key('event_location_input'),
-                            controller: _locationController,
-                            textInputAction: TextInputAction.done,
-                            onFieldSubmitted: (_) => _onContinue(),
-                            decoration: InputDecoration(
-                              hintText: i18n.eventLocationLabel,
-                              prefixIcon: const Icon(
-                                Icons.location_on_outlined,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
-                                return i18n.eventLocationRequired;
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: AppSpacing.xl),
-
-                          // Botón Continuar al siguiente paso
-                          ElevatedButton.icon(
-                            key: const Key('wizard_continue_button'),
-                            onPressed: _onContinue,
-                            icon: const Icon(Icons.arrow_forward_rounded),
-                            label: Text(i18n.continueButton),
-                          ),
-                        ],
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return i18n.eventNameRequired;
+                          }
+                          return null;
+                        },
                       ),
-                    ),
+                      const SizedBox(height: AppSpacing.lg),
+
+                      // Campo: Lugar del evento (lugarTexto)
+                      TextFormField(
+                        key: const Key('event_location_input'),
+                        controller: _locationController,
+                        textInputAction: TextInputAction.done,
+                        onFieldSubmitted: (_) => _onContinue(),
+                        decoration: InputDecoration(
+                          hintText: i18n.eventLocationLabel,
+                          prefixIcon: const Icon(
+                            Icons.location_on_outlined,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return i18n.eventLocationRequired;
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: AppSpacing.xl),
+
+                      // Botón Continuar al siguiente paso
+                      ElevatedButton.icon(
+                        key: const Key('wizard_continue_button'),
+                        onPressed: _onContinue,
+                        icon: const Icon(Icons.arrow_forward_rounded),
+                        label: Text(i18n.continueButton),
+                      ),
+                    ],
                   ),
                 ),
               ],
