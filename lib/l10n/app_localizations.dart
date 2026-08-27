@@ -446,11 +446,23 @@ abstract class AppLocalizations {
   /// **'Grupo existente'**
   String get existingGroupOption;
 
+  /// No description provided for @existingGroupSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccioná un grupo que ya tengas creado'**
+  String get existingGroupSubtitle;
+
   /// No description provided for @newGroupOption.
   ///
   /// In es, this message translates to:
   /// **'Crear grupo nuevo'**
   String get newGroupOption;
+
+  /// No description provided for @newGroupSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Armá un grupo nuevo e invitá participantes'**
+  String get newGroupSubtitle;
 
   /// No description provided for @selectGroupLabel.
   ///

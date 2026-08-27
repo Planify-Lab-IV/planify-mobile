@@ -192,7 +192,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get existingGroupOption => 'Grupo existente';
 
   @override
+  String get existingGroupSubtitle =>
+      'Seleccioná un grupo que ya tengas creado';
+
+  @override
   String get newGroupOption => 'Crear grupo nuevo';
+
+  @override
+  String get newGroupSubtitle => 'Armá un grupo nuevo e invitá participantes';
 
   @override
   String get selectGroupLabel => 'Seleccionar grupo';

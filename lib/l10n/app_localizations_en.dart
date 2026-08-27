@@ -190,7 +190,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get existingGroupOption => 'Existing group';
 
   @override
+  String get existingGroupSubtitle => 'Select a group you already created';
+
+  @override
   String get newGroupOption => 'Create new group';
+
+  @override
+  String get newGroupSubtitle => 'Create a new group and invite participants';
 
   @override
   String get selectGroupLabel => 'Select group';

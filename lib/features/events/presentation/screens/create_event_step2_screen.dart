@@ -174,37 +174,46 @@ class _CreateEventStep2ScreenState
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Selector de modo: Grupo existente vs Crear grupo nuevo
-                      SegmentedButton<bool>(
+                      // Selector de modo expandible (Acordeón de selección)
+                      Column(
                         key: const Key('group_mode_selector'),
-                        segments: [
-                          ButtonSegment<bool>(
-                            value: false,
-                            label: Text(i18n.existingGroupOption),
-                            icon: const Icon(Icons.groups_outlined),
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // Opción 1: Grupo existente
+                          _buildOptionAccordionTile(
+                            context,
+                            isSelected: !draft.isNewGroup,
+                            title: i18n.existingGroupOption,
+                            subtitle: i18n.existingGroupSubtitle,
+                            icon: Icons.groups_outlined,
+                            onTap: isLoading
+                                ? () {}
+                                : () => ref
+                                      .read(eventDraftProvider.notifier)
+                                      .setIsNewGroup(false),
+                            child: _buildExistingGroupSection(
+                              context,
+                              myGroupsAsync,
+                            ),
                           ),
-                          ButtonSegment<bool>(
-                            value: true,
-                            label: Text(i18n.newGroupOption),
-                            icon: const Icon(Icons.group_add_outlined),
+                          const SizedBox(height: AppSpacing.md),
+
+                          // Opción 2: Crear grupo nuevo
+                          _buildOptionAccordionTile(
+                            context,
+                            isSelected: draft.isNewGroup,
+                            title: i18n.newGroupOption,
+                            subtitle: i18n.newGroupSubtitle,
+                            icon: Icons.group_add_outlined,
+                            onTap: isLoading
+                                ? () {}
+                                : () => ref
+                                      .read(eventDraftProvider.notifier)
+                                      .setIsNewGroup(true),
+                            child: _buildNewGroupSection(context, draft),
                           ),
                         ],
-                        selected: {draft.isNewGroup},
-                        onSelectionChanged: isLoading
-                            ? null
-                            : (newSelection) {
-                                ref
-                                    .read(eventDraftProvider.notifier)
-                                    .setIsNewGroup(newSelection.first);
-                              },
                       ),
-                      const SizedBox(height: AppSpacing.lg),
-
-                      // Contenido según el modo seleccionado
-                      if (!draft.isNewGroup)
-                        _buildExistingGroupSection(context, myGroupsAsync)
-                      else
-                        _buildNewGroupSection(context, draft),
 
                       const SizedBox(height: AppSpacing.xl),
 
@@ -260,6 +269,101 @@ class _CreateEventStep2ScreenState
     );
   }
 
+  Widget _buildOptionAccordionTile(
+    BuildContext context, {
+    required bool isSelected,
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required VoidCallback onTap,
+    required Widget child,
+  }) {
+    final theme = Theme.of(context);
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.card),
+        border: Border.all(
+          color: isSelected ? AppColors.primary : AppColors.outline,
+          width: isSelected ? 1.5 : 1,
+        ),
+        boxShadow: isSelected
+            ? [
+                BoxShadow(
+                  color: AppColors.primary.withValues(alpha: 0.08),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ]
+            : null,
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadius.card),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    isSelected
+                        ? Icons.radio_button_checked_rounded
+                        : Icons.radio_button_unchecked_rounded,
+                    color: isSelected
+                        ? AppColors.primary
+                        : AppColors.onSurfaceVariant,
+                    size: 22,
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Icon(
+                    icon,
+                    color: isSelected
+                        ? AppColors.primary
+                        : AppColors.onSurfaceVariant,
+                    size: 24,
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: isSelected
+                                ? AppColors.primary
+                                : AppColors.onSurface,
+                          ),
+                        ),
+                        Text(
+                          subtitle,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: AppColors.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              if (isSelected) ...[
+                const SizedBox(height: AppSpacing.md),
+                const Divider(color: AppColors.outline, height: 1),
+                const SizedBox(height: AppSpacing.md),
+                child,
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildExistingGroupSection(
     BuildContext context,
     AsyncValue<List<dynamic>> myGroupsAsync,
@@ -309,6 +413,8 @@ class _CreateEventStep2ScreenState
               initialValue: validSelectedGroupId,
               isExpanded: true,
               decoration: InputDecoration(
+                filled: true,
+                fillColor: AppColors.background,
                 hintText: i18n.selectGroupHint,
                 prefixIcon: const Icon(
                   Icons.group_outlined,
@@ -418,6 +524,8 @@ class _CreateEventStep2ScreenState
           controller: _newGroupNameController,
           textInputAction: TextInputAction.next,
           decoration: InputDecoration(
+            filled: true,
+            fillColor: AppColors.background,
             hintText: i18n.newGroupNameHint,
             prefixIcon: const Icon(
               Icons.group_outlined,
@@ -451,6 +559,8 @@ class _CreateEventStep2ScreenState
                 textInputAction: TextInputAction.done,
                 onFieldSubmitted: (_) => _addMember(),
                 decoration: InputDecoration(
+                  filled: true,
+                  fillColor: AppColors.background,
                   hintText: i18n.memberIdentifierHint,
                   prefixIcon: const Icon(
                     Icons.person_add_alt_1_outlined,
