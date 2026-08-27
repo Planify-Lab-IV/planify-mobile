@@ -31,7 +31,7 @@ void main() {
       expect(notifier.state, isA<EventCreationSuccess>());
       final successState = notifier.state as EventCreationSuccess;
       expect(successState.event.name, equals('Cumpleaños'));
-      expect(successState.event.groupName, equals('Amigos'));
+      expect(successState.event.groupId, equals('grp-1'));
     });
 
     test('createEvent fallido pasa a EventCreationError', () async {

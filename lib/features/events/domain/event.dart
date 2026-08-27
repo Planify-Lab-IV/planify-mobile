@@ -3,8 +3,6 @@ class Event {
   final String name;
   final String location;
   final String groupId;
-  final String groupName;
-  final List<String> memberIdentifiers;
   final DateTime createdAt;
 
   const Event({
@@ -12,8 +10,6 @@ class Event {
     required this.name,
     required this.location,
     required this.groupId,
-    required this.groupName,
-    this.memberIdentifiers = const [],
     required this.createdAt,
   });
 
@@ -26,7 +22,6 @@ class Event {
           name == other.name &&
           location == other.location &&
           groupId == other.groupId &&
-          groupName == other.groupName &&
           createdAt == other.createdAt;
 
   @override
@@ -35,11 +30,10 @@ class Event {
       name.hashCode ^
       location.hashCode ^
       groupId.hashCode ^
-      groupName.hashCode ^
       createdAt.hashCode;
 
   @override
   String toString() {
-    return 'Event(id: $id, name: $name, location: $location, groupName: $groupName)';
+    return 'Event(id: $id, name: $name, location: $location, groupId: $groupId)';
   }
 }

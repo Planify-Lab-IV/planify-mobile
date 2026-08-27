@@ -532,6 +532,15 @@ class _CreateEventStep2ScreenState
   Widget _buildSuccessView(BuildContext context, dynamic event) {
     final i18n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final draft = ref.watch(eventDraftProvider);
+    final groupDisplayName = draft.isNewGroup
+        ? (draft.newGroupName != null && draft.newGroupName!.isNotEmpty
+              ? draft.newGroupName!
+              : '-')
+        : (draft.selectedGroupName != null &&
+                  draft.selectedGroupName!.isNotEmpty
+              ? draft.selectedGroupName!
+              : (event.groupId as String));
 
     return Scaffold(
       appBar: AppBar(
@@ -620,7 +629,7 @@ class _CreateEventStep2ScreenState
                     _buildSummaryTile(
                       context,
                       label: i18n.assignedGroupLabel,
-                      value: event.groupName as String,
+                      value: groupDisplayName,
                       valueKey: const Key('created_event_group'),
                       icon: Icons.groups_outlined,
                     ),

@@ -26,17 +26,12 @@ class FakeEventsRepository implements EventsRepository {
     final groupId = draft.isNewGroup
         ? 'grp-${DateTime.now().millisecondsSinceEpoch}'
         : (draft.selectedGroupId ?? 'grp-default');
-    final groupName = draft.isNewGroup
-        ? (draft.newGroupName ?? 'Nuevo Grupo')
-        : (draft.selectedGroupName ?? 'Grupo Seleccionado');
 
     return Event(
       id: eventId,
       name: draft.name,
       location: draft.location,
       groupId: groupId,
-      groupName: groupName,
-      memberIdentifiers: List.unmodifiable(draft.newGroupMembers),
       createdAt: DateTime.now(),
     );
   }

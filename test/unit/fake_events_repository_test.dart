@@ -27,13 +27,11 @@ void main() {
         expect(event.name, equals('Cumpleaños de Lucas'));
         expect(event.location, equals('Av. Corrientes 1234'));
         expect(event.groupId, equals('grp-1'));
-        expect(event.groupName, equals('Amigos del Fútbol'));
-        expect(event.memberIdentifiers, isEmpty);
       },
     );
 
     test(
-      'createEvent con grupo nuevo crea el evento con identificadores de miembros',
+      'createEvent con grupo nuevo crea el evento asignando el grupo',
       () async {
         const draft = EventDraft(
           name: 'Asado de Fin de Año',
@@ -49,11 +47,6 @@ void main() {
         expect(event.name, equals('Asado de Fin de Año'));
         expect(event.location, equals('Club Social'));
         expect(event.groupId, startsWith('grp-'));
-        expect(event.groupName, equals('Amigos de la Primaria'));
-        expect(
-          event.memberIdentifiers,
-          containsAll(['juan@gmail.com', '@pedro123']),
-        );
       },
     );
 

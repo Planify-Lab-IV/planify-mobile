@@ -34,12 +34,16 @@ void main() {
       const newGroup = Group(
         id: 'grp-custom',
         name: 'Nuevo Grupo Test',
-        memberCount: 2,
+        memberIdentifiers: ['usr-1', 'usr-2'],
       );
       repository.addGroup(newGroup);
 
       final groups = await repository.getMyGroups();
       expect(groups.any((g) => g.id == 'grp-custom'), isTrue);
+      expect(
+        groups.firstWhere((g) => g.id == 'grp-custom').memberCount,
+        equals(2),
+      );
     });
   });
 }
