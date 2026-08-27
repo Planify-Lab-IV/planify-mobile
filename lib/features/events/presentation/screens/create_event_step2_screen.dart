@@ -185,7 +185,6 @@ class _CreateEventStep2ScreenState
                             isSelected: !draft.isNewGroup,
                             title: i18n.existingGroupOption,
                             subtitle: i18n.existingGroupSubtitle,
-                            icon: Icons.groups_outlined,
                             onTap: isLoading
                                 ? () {}
                                 : () => ref
@@ -204,7 +203,6 @@ class _CreateEventStep2ScreenState
                             isSelected: draft.isNewGroup,
                             title: i18n.newGroupOption,
                             subtitle: i18n.newGroupSubtitle,
-                            icon: Icons.group_add_outlined,
                             onTap: isLoading
                                 ? () {}
                                 : () => ref
@@ -274,7 +272,6 @@ class _CreateEventStep2ScreenState
     required bool isSelected,
     required String title,
     required String subtitle,
-    required IconData icon,
     required VoidCallback onTap,
     required Widget child,
   }) {
@@ -318,15 +315,7 @@ class _CreateEventStep2ScreenState
                         : AppColors.onSurfaceVariant,
                     size: 22,
                   ),
-                  const SizedBox(width: AppSpacing.sm),
-                  Icon(
-                    icon,
-                    color: isSelected
-                        ? AppColors.primary
-                        : AppColors.onSurfaceVariant,
-                    size: 24,
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
+                  const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -372,133 +361,219 @@ class _CreateEventStep2ScreenState
     final theme = Theme.of(context);
     final draft = ref.watch(eventDraftProvider);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          i18n.selectGroupLabel,
-          style: theme.textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w600,
-            color: AppColors.onSurface,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        myGroupsAsync.when(
-          data: (groups) {
-            if (groups.isEmpty) {
-              return Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                decoration: BoxDecoration(
-                  color: AppColors.background,
-                  borderRadius: BorderRadius.circular(AppRadius.sm),
-                  border: Border.all(color: AppColors.outline),
-                ),
-                child: Text(
-                  i18n.noGroupsAvailable,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.onSurfaceVariant,
-                  ),
-                ),
-              );
-            }
-
-            final groupIds = groups.map((g) => g.id as String).toSet();
-            final validSelectedGroupId =
-                groupIds.contains(draft.selectedGroupId)
-                ? draft.selectedGroupId
-                : null;
-
-            return DropdownButtonFormField<String>(
-              key: const Key('select_group_dropdown'),
-              initialValue: validSelectedGroupId,
-              isExpanded: true,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: AppColors.background,
-                hintText: i18n.selectGroupHint,
-                prefixIcon: const Icon(
-                  Icons.group_outlined,
-                  color: AppColors.primary,
-                ),
-              ),
-              items: groups.map((group) {
-                return DropdownMenuItem<String>(
-                  value: group.id as String,
-                  child: Text(
-                    '${group.name} (${group.memberCount})',
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                );
-              }).toList(),
-              onChanged: (selectedId) {
-                if (selectedId != null) {
-                  final group = groups.firstWhere((g) => g.id == selectedId);
-                  ref
-                      .read(eventDraftProvider.notifier)
-                      .setSelectedGroup(
-                        groupId: group.id as String,
-                        groupName: group.name as String,
-                      );
-                }
-              },
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return i18n.selectGroupRequired;
-                }
-                return null;
-              },
-            );
-          },
-          loading: () => Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Row(
-              children: [
-                const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Text(
-                  i18n.loadingGroups,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          error: (err, _) => Container(
+    return myGroupsAsync.when(
+      data: (groups) {
+        if (groups.isEmpty) {
+          return Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: theme.colorScheme.errorContainer,
+              color: AppColors.background,
               borderRadius: BorderRadius.circular(AppRadius.sm),
+              border: Border.all(color: AppColors.outline),
             ),
-            child: Row(
+            child: Text(
+              i18n.noGroupsAvailable,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: AppColors.onSurfaceVariant,
+              ),
+            ),
+          );
+        }
+
+        final groupIds = groups.map((g) => g.id as String).toSet();
+        final validSelectedGroupId = groupIds.contains(draft.selectedGroupId)
+            ? draft.selectedGroupId
+            : null;
+
+        return FormField<String>(
+          key: const Key('select_group_dropdown'),
+          initialValue: validSelectedGroupId,
+          validator: (_) {
+            if (draft.selectedGroupId == null ||
+                draft.selectedGroupId!.trim().isEmpty) {
+              return i18n.selectGroupRequired;
+            }
+            return null;
+          },
+          builder: (fieldState) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Icon(
-                  Icons.error_outline_rounded,
-                  color: theme.colorScheme.error,
-                  size: 20,
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Text(
-                    i18n.errorLoadingGroups,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onErrorContainer,
+                DropdownMenu<String>(
+                  initialSelection: validSelectedGroupId,
+                  expandedInsets: EdgeInsets.zero,
+                  requestFocusOnTap: false,
+                  enableSearch: false,
+                  hintText: i18n.selectGroupLabel,
+                  trailingIcon: const Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color: AppColors.primary,
+                  ),
+                  selectedTrailingIcon: const Icon(
+                    Icons.keyboard_arrow_up_rounded,
+                    color: AppColors.primary,
+                  ),
+                  textStyle: theme.textTheme.bodyMedium?.copyWith(
+                    color: AppColors.onSurface,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  inputDecorationTheme: InputDecorationTheme(
+                    filled: true,
+                    fillColor: AppColors.background,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.md,
+                    ),
+                    hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                      color: AppColors.onSurfaceVariant,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppRadius.card),
+                      borderSide: BorderSide(
+                        color: fieldState.hasError
+                            ? AppColors.error
+                            : AppColors.outline,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppRadius.card),
+                      borderSide: BorderSide(
+                        color: fieldState.hasError
+                            ? AppColors.error
+                            : AppColors.outline,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppRadius.card),
+                      borderSide: BorderSide(
+                        color: fieldState.hasError
+                            ? AppColors.error
+                            : AppColors.outline,
+                      ),
                     ),
                   ),
+                  menuStyle: MenuStyle(
+                    backgroundColor: const WidgetStatePropertyAll(
+                      AppColors.surface,
+                    ),
+                    surfaceTintColor: const WidgetStatePropertyAll(
+                      Colors.transparent,
+                    ),
+                    shape: WidgetStatePropertyAll(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppRadius.card),
+                        side: const BorderSide(color: AppColors.outline),
+                      ),
+                    ),
+                    elevation: const WidgetStatePropertyAll(4),
+                    maximumSize: const WidgetStatePropertyAll(
+                      Size.fromHeight(280),
+                    ),
+                  ),
+                  dropdownMenuEntries: groups.map((group) {
+                    return DropdownMenuEntry<String>(
+                      value: group.id as String,
+                      label: group.name as String,
+                      trailingIcon: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.xs + 2,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.lightBlue,
+                          borderRadius: BorderRadius.circular(AppRadius.pill),
+                        ),
+                        child: Text(
+                          '${group.memberCount} ${group.memberCount == 1 ? "miembro" : "miembros"}',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: AppColors.darkBlue,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  onSelected: (selectedId) {
+                    fieldState.didChange(selectedId);
+                    if (selectedId != null) {
+                      final group = groups.firstWhere(
+                        (g) => g.id == selectedId,
+                      );
+                      ref
+                          .read(eventDraftProvider.notifier)
+                          .setSelectedGroup(
+                            groupId: group.id as String,
+                            groupName: group.name as String,
+                          );
+                    }
+                  },
                 ),
-                TextButton(
-                  onPressed: () => ref.refresh(myGroupsProvider),
-                  child: Text(i18n.retryButton),
-                ),
+                if (fieldState.hasError) ...[
+                  const SizedBox(height: AppSpacing.xs),
+                  Padding(
+                    padding: const EdgeInsets.only(left: AppSpacing.sm),
+                    child: Text(
+                      fieldState.errorText!,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: AppColors.error,
+                      ),
+                    ),
+                  ),
+                ],
               ],
+            );
+          },
+        );
+      },
+      loading: () => Container(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Row(
+          children: [
+            const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
             ),
-          ),
+            const SizedBox(width: AppSpacing.sm),
+            Text(
+              i18n.loadingGroups,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: AppColors.onSurfaceVariant,
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
+      error: (err, _) => Container(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.errorContainer,
+          borderRadius: BorderRadius.circular(AppRadius.sm),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.error_outline_rounded,
+              color: theme.colorScheme.error,
+              size: 20,
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Text(
+                i18n.errorLoadingGroups,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onErrorContainer,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () => ref.refresh(myGroupsProvider),
+              child: Text(i18n.retryButton),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

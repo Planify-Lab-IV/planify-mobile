@@ -132,7 +132,7 @@ void main() {
         await tester.tap(find.byKey(const Key('select_group_dropdown')));
         await tester.pumpAndSettle();
 
-        await tester.tap(find.text('Amigos del Fútbol (10)').last);
+        await tester.tap(find.text('Amigos del Fútbol').last);
         await tester.pumpAndSettle();
 
         // Envia el formulario
@@ -162,6 +162,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // Cambia al modo Crear grupo nuevo
+        await tester.ensureVisible(find.text('Crear grupo nuevo'));
         await tester.tap(find.text('Crear grupo nuevo'));
         await tester.pumpAndSettle();
 
