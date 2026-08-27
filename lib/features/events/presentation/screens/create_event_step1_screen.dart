@@ -78,7 +78,8 @@ class _CreateEventStep1ScreenState
           onPressed: () => Navigator.of(context).maybePop(),
         ),
       ),
-      body: Center(
+      body: Align(
+        alignment: Alignment.topCenter,
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: ConstrainedBox(

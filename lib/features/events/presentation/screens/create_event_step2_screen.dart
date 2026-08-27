@@ -118,7 +118,8 @@ class _CreateEventStep2ScreenState
           onPressed: isLoading ? null : () => Navigator.of(context).maybePop(),
         ),
       ),
-      body: Center(
+      body: Align(
+        alignment: Alignment.topCenter,
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: ConstrainedBox(
@@ -554,7 +555,8 @@ class _CreateEventStep2ScreenState
         elevation: 0,
         automaticallyImplyLeading: false,
       ),
-      body: Center(
+      body: Align(
+        alignment: Alignment.topCenter,
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: ConstrainedBox(
