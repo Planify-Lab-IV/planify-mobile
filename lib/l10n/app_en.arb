@@ -69,5 +69,12 @@
   "draftEventName": "Name",
   "draftEventLocation": "Location",
   "generateWithAi": "Generate with AI",
-  "generateWithAiComingSoon": "AI event generation coming soon"
+  "generateWithAiComingSoon": "AI event generation coming soon",
+  "invitationErrorInvalid": "The invitation link is invalid.",
+  "invitationErrorNotFound": "The event for this invitation was not found.",
+  "invitationErrorExpired": "The invitation has expired or is no longer available.",
+  "invitationErrorNetwork": "Network error while validating invitation. Please check your connection.",
+  "invitationErrorGeneric": "Could not process invitation. Please try again.",
+  "invitationBannerEvent": "You have an event invitation!",
+  "resolvingInvitation": "Loading invitation..."
 }

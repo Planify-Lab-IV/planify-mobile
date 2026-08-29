@@ -17,15 +17,6 @@ class DeepLinkService {
   // el parametro de la funcion es un callback que recibe una uri, devuelve void y
   // se invoca haciendo onUriReceived(uri)
   Future<void> listen(void Function(Uri uri) onUriReceived) async {
-    try {
-      final initialUri = await _appLinks.getInitialLink();
-      if (initialUri != null) {
-        onUriReceived(initialUri);
-      }
-    } catch (_) {
-      // Ignora errores en la lectura inicial para proteger el arranque de la app
-    }
-
     _subscription?.cancel();
     _subscription = _appLinks.uriLinkStream.listen(
       (uri) {
@@ -35,6 +26,15 @@ class DeepLinkService {
         // Manejo controlado de errores en el stream
       },
     );
+
+    try {
+      final initialUri = await _appLinks.getInitialLink();
+      if (initialUri != null) {
+        onUriReceived(initialUri);
+      }
+    } catch (_) {
+      // Ignora errores en la lectura inicial para proteger el arranque de la app
+    }
   }
 
   /// Cancela la suscripción activa.

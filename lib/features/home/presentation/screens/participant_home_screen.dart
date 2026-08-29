@@ -8,9 +8,26 @@ import '../../../auth/domain/user_session.dart';
 import '../../../auth/presentation/controllers/auth_providers.dart';
 import '../../../auth/presentation/controllers/auth_state.dart';
 
-// Punto de extensión: en PLANIFY-30 esto consultará la API real.
+// Punto de extensión: en PLANIFY-30 esto consultará la API real (EventsRepository).
 final eventNameProvider = Provider.family<String, String>((ref, eventId) {
-  return 'Evento Planify';
+  switch (eventId) {
+    case 'evt-123':
+    case 'evt-cumple-lucas':
+      return 'Cumpleaños de Lucas';
+    case 'evt-asado-amigos':
+      return 'Asado con Amigos';
+    case 'evt-fake-id':
+    case 'evt-fake-demo':
+      return 'Evento Demo';
+    default:
+      if (eventId.startsWith('evt-')) {
+        final clean = eventId.replaceFirst('evt-', '').replaceAll('-', ' ');
+        return clean.isEmpty
+            ? 'Evento Planify'
+            : clean[0].toUpperCase() + clean.substring(1);
+      }
+      return 'Evento Planify';
+  }
 });
 
 class ParticipantHomeScreen extends ConsumerWidget {

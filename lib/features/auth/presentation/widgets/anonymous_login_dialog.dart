@@ -4,6 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../home/presentation/screens/participant_home_screen.dart';
 import '../controllers/auth_providers.dart';
 import '../controllers/auth_state.dart';
 
@@ -132,11 +133,14 @@ class _AnonymousLoginDialogState extends ConsumerState<AnonymousLoginDialog> {
                             color: theme.colorScheme.primary,
                           ),
                           const SizedBox(width: AppSpacing.xs),
-                          Text(
-                            '${i18n.eventIdLabel}: ${widget.eventId}',
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.darkBlue,
+                          Flexible(
+                            child: Text(
+                              '${i18n.eventLabel}: ${ref.watch(eventNameProvider(widget.eventId!))}',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.darkBlue,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],

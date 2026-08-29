@@ -469,6 +469,48 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Generación de eventos con IA disponible próximamente'**
   String get generateWithAiComingSoon;
+
+  /// No description provided for @invitationErrorInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'El enlace de invitación no es válido.'**
+  String get invitationErrorInvalid;
+
+  /// No description provided for @invitationErrorNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontró el evento correspondiente a la invitación.'**
+  String get invitationErrorNotFound;
+
+  /// No description provided for @invitationErrorExpired.
+  ///
+  /// In es, this message translates to:
+  /// **'La invitación ha expirado o ya no está disponible.'**
+  String get invitationErrorExpired;
+
+  /// No description provided for @invitationErrorNetwork.
+  ///
+  /// In es, this message translates to:
+  /// **'Error de conexión al validar la invitación. Verifica tu red.'**
+  String get invitationErrorNetwork;
+
+  /// No description provided for @invitationErrorGeneric.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo procesar la invitación. Intenta nuevamente.'**
+  String get invitationErrorGeneric;
+
+  /// No description provided for @invitationBannerEvent.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Tenés una invitación a un evento!'**
+  String get invitationBannerEvent;
+
+  /// No description provided for @resolvingInvitation.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando invitación...'**
+  String get resolvingInvitation;
 }
 
 class _AppLocalizationsDelegate
