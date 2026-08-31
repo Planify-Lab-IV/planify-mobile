@@ -227,5 +227,80 @@ void main() {
         expect(find.byType(CreateEventStep2Screen), findsOneWidget);
       },
     );
+
+    testWidgets(
+      'persistencia de grupo: al completar nombre de nuevo grupo y miembros en paso 2, volver a paso 1 y reingresar, se conservan nombre y miembros',
+      (tester) async {
+        await tester.pumpWidget(_buildTestApp());
+        await tester.pumpAndSettle();
+
+        // 1. Completar Paso 1 y avanzar
+        await tester.enterText(
+          find.byKey(const Key('event_name_input')),
+          'Cumpleaños de Lucas',
+        );
+        await tester.enterText(
+          find.byKey(const Key('event_location_input')),
+          'Av. Corrientes 1234',
+        );
+        await tester.ensureVisible(
+          find.byKey(const Key('wizard_continue_button')),
+        );
+        await tester.tap(find.byKey(const Key('wizard_continue_button')));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(CreateEventStep2Screen), findsOneWidget);
+
+        // 2. Cambiar a "Crear grupo nuevo", ingresar nombre de grupo y agregar miembros
+        await tester.ensureVisible(find.text('Crear grupo nuevo'));
+        await tester.tap(find.text('Crear grupo nuevo'));
+        await tester.pumpAndSettle();
+
+        await tester.enterText(
+          find.byKey(const Key('new_group_name_input')),
+          'Amigos de la Primaria',
+        );
+        await tester.enterText(
+          find.byKey(const Key('member_identifier_input')),
+          'juan@gmail.com',
+        );
+        await tester.ensureVisible(find.byKey(const Key('add_member_button')));
+        await tester.tap(find.byKey(const Key('add_member_button')));
+        await tester.pumpAndSettle();
+
+        expect(
+          find.byKey(const Key('member_chip_juan@gmail.com')),
+          findsOneWidget,
+        );
+
+        // 3. Volver al Paso 1 con el botón atrás
+        await tester.ensureVisible(
+          find.byKey(const Key('wizard_step2_back_button')),
+        );
+        await tester.tap(find.byKey(const Key('wizard_step2_back_button')));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(CreateEventStep1Screen), findsOneWidget);
+
+        // 4. Avanzar nuevamente al Paso 2
+        await tester.ensureVisible(
+          find.byKey(const Key('wizard_continue_button')),
+        );
+        await tester.tap(find.byKey(const Key('wizard_continue_button')));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(CreateEventStep2Screen), findsOneWidget);
+
+        // 5. Verificar que se conservan tanto el nombre del nuevo grupo como los miembros
+        expect(
+          find.widgetWithText(TextFormField, 'Amigos de la Primaria'),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(const Key('member_chip_juan@gmail.com')),
+          findsOneWidget,
+        );
+      },
+    );
   });
 }

@@ -127,6 +127,11 @@ class _CreateEventStep1ScreenState
                         key: const Key('event_name_input'),
                         controller: _nameController,
                         textInputAction: TextInputAction.next,
+                        onChanged: (value) {
+                          ref
+                              .read(eventDraftProvider.notifier)
+                              .updateName(value);
+                        },
                         decoration: InputDecoration(
                           hintText: i18n.eventNameLabel,
                           prefixIcon: const Icon(
@@ -148,6 +153,11 @@ class _CreateEventStep1ScreenState
                         key: const Key('event_location_input'),
                         controller: _locationController,
                         textInputAction: TextInputAction.done,
+                        onChanged: (value) {
+                          ref
+                              .read(eventDraftProvider.notifier)
+                              .updateLocation(value);
+                        },
                         onFieldSubmitted: (_) => _onContinue(),
                         decoration: InputDecoration(
                           hintText: i18n.eventLocationLabel,

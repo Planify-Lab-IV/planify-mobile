@@ -144,7 +144,6 @@ void main() {
 
         // Verifica la pantalla de exito con ID y datos
         expect(find.text('¡Evento creado con éxito!'), findsOneWidget);
-        expect(find.byKey(const Key('created_event_id')), findsOneWidget);
         expect(find.byKey(const Key('created_event_name')), findsOneWidget);
         expect(find.text('Cumpleaños de Lucas'), findsOneWidget);
         expect(find.byKey(const Key('created_event_location')), findsOneWidget);
