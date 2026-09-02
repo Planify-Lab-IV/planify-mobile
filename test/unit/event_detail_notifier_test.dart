@@ -3,8 +3,8 @@ import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
 import 'package:planify/features/events/domain/event.dart';
 import 'package:planify/features/events/domain/event_status.dart';
-import 'package:planify/features/events/presentation/controllers/event_detail_notifier.dart';
-import 'package:planify/features/events/presentation/controllers/event_detail_state.dart';
+import 'package:planify/features/events/detail/controllers/event_detail_notifier.dart';
+import 'package:planify/features/events/detail/controllers/event_detail_state.dart';
 
 void main() {
   group('EventDetailNotifier Unit Tests', () {

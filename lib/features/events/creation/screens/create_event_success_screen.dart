@@ -6,7 +6,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/event.dart';
 import '../controllers/event_draft_providers.dart';
-import 'event_detail_screen.dart';
+import '../../detail/screens/event_detail_screen.dart';
 
 class CreateEventSuccessScreen extends ConsumerWidget {
   final Event event;

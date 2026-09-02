@@ -5,9 +5,10 @@ import '../../domain/event_draft.dart';
 import 'create_event_notifier.dart';
 import 'event_creation_state.dart';
 import 'event_draft_notifier.dart';
-import 'events_providers.dart';
+import '../../detail/controllers/events_providers.dart';
 
-export 'events_providers.dart' show eventsRepositoryProvider;
+export '../../detail/controllers/events_providers.dart'
+    show eventsRepositoryProvider;
 
 final eventDraftProvider =
     StateNotifierProvider<EventDraftNotifier, EventDraft>((ref) {

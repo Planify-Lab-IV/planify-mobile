@@ -8,10 +8,10 @@ import 'package:planify/features/auth/presentation/controllers/auth_providers.da
 import 'package:planify/features/events/data/fake_events_repository.dart';
 import 'package:planify/features/events/domain/event.dart';
 import 'package:planify/features/events/domain/event_status.dart';
-import 'package:planify/features/events/presentation/controllers/event_detail_notifier.dart';
-import 'package:planify/features/events/presentation/controllers/events_providers.dart';
-import 'package:planify/features/events/presentation/screens/event_detail_screen.dart';
-import 'package:planify/features/events/presentation/widgets/cancel_event_dialog.dart';
+import 'package:planify/features/events/detail/controllers/event_detail_notifier.dart';
+import 'package:planify/features/events/detail/controllers/events_providers.dart';
+import 'package:planify/features/events/detail/screens/event_detail_screen.dart';
+import 'package:planify/features/events/detail/widgets/cancel_event_dialog.dart';
 import 'package:planify/l10n/app_localizations.dart';
 
 void main() {
