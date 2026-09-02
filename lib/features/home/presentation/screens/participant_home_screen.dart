@@ -7,6 +7,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../auth/domain/user_session.dart';
 import '../../../auth/presentation/controllers/auth_providers.dart';
 import '../../../auth/presentation/controllers/auth_state.dart';
+import '../../../events/detail/screens/event_detail_screen.dart';
 
 // Punto de extensión: en PLANIFY-30 esto consultará la API real (EventsRepository).
 final eventNameProvider = Provider.family<String, String>((ref, eventId) {
@@ -130,6 +131,28 @@ class ParticipantHomeScreen extends ConsumerWidget {
                       icon: Icons.badge_outlined,
                     ),
                     const SizedBox(height: AppSpacing.xl),
+
+                    // Botón para ir al detalle del evento
+                    ElevatedButton.icon(
+                      key: const Key('view_event_detail_button'),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(AppRadius.card),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                EventDetailScreen(eventId: session.eventId),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.arrow_forward_rounded),
+                      label: Text(i18n.viewEventDetailButton),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
 
                     // Botón de Cerrar Sesión
                     OutlinedButton.icon(

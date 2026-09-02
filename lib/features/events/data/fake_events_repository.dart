@@ -17,10 +17,48 @@ class FakeEventsRepository implements EventsRepository {
     this.shouldFailCancellation = false,
     List<Event>? initialEvents,
   }) {
-    if (initialEvents != null) {
-      for (final event in initialEvents) {
-        _events[event.id] = event;
-      }
+    final defaults = [
+      Event(
+        id: 'evt-123',
+        name: 'Cumpleaños de Lucas',
+        location: 'Casa de Lucas',
+        organizerId: 'org-123',
+        groupId: 'grp-amigos',
+        status: EventStatus.active,
+        createdAt: DateTime(2026, 1, 1),
+      ),
+      Event(
+        id: 'evt-cumple-lucas',
+        name: 'Cumpleaños de Lucas',
+        location: 'Casa de Lucas',
+        organizerId: 'org-123',
+        groupId: 'grp-amigos',
+        status: EventStatus.active,
+        createdAt: DateTime(2026, 1, 1),
+      ),
+      Event(
+        id: 'evt-asado-amigos',
+        name: 'Asado con Amigos',
+        location: 'Club de Campo',
+        organizerId: 'org-123',
+        groupId: 'grp-amigos',
+        status: EventStatus.active,
+        createdAt: DateTime(2026, 1, 1),
+      ),
+      Event(
+        id: 'evt-fake-demo',
+        name: 'Evento Demo',
+        location: 'Av. Corrientes 1234',
+        organizerId: 'org-123',
+        groupId: 'grp-amigos',
+        status: EventStatus.active,
+        createdAt: DateTime(2026, 1, 1),
+      ),
+    ];
+
+    final eventsToLoad = initialEvents ?? defaults;
+    for (final event in eventsToLoad) {
+      _events[event.id] = event;
     }
   }
 

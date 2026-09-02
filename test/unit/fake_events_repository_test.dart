@@ -147,5 +147,23 @@ void main() {
       final fetched = await customRepo.getEvent('custom-1');
       expect(fetched, equals(customEvent));
     });
+
+    test(
+      'carga eventos semilla por defecto cuando no se pasan initialEvents',
+      () async {
+        final defaultRepo = FakeEventsRepository(delay: Duration.zero);
+
+        final evt123 = await defaultRepo.getEvent('evt-123');
+        expect(evt123, isNotNull);
+        expect(evt123?.name, equals('Cumpleaños de Lucas'));
+        expect(evt123?.status, equals(EventStatus.active));
+
+        final evtCumple = await defaultRepo.getEvent('evt-cumple-lucas');
+        expect(evtCumple, isNotNull);
+
+        final evtAsado = await defaultRepo.getEvent('evt-asado-amigos');
+        expect(evtAsado, isNotNull);
+      },
+    );
   });
 }
