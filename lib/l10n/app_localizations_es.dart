@@ -293,4 +293,29 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get generateWithAiComingSoon =>
       'Generación de eventos con IA disponible próximamente';
+
+  @override
+  String get invitationErrorInvalid => 'El enlace de invitación no es válido.';
+
+  @override
+  String get invitationErrorNotFound =>
+      'No se encontró el evento correspondiente a la invitación.';
+
+  @override
+  String get invitationErrorExpired =>
+      'La invitación ha expirado o ya no está disponible.';
+
+  @override
+  String get invitationErrorNetwork =>
+      'Error de conexión al validar la invitación. Verifica tu red.';
+
+  @override
+  String get invitationErrorGeneric =>
+      'No se pudo procesar la invitación. Intenta nuevamente.';
+
+  @override
+  String get invitationBannerEvent => '¡Tenés una invitación a un evento!';
+
+  @override
+  String get resolvingInvitation => 'Cargando invitación...';
 }
