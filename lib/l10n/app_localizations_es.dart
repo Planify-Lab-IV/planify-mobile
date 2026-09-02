@@ -203,4 +203,90 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get generateWithAiComingSoon =>
       'Generación de eventos con IA disponible próximamente';
+
+  @override
+  String get eventDetailTitle => 'Detalle del evento';
+
+  @override
+  String get eventStatusLabel => 'Estado';
+
+  @override
+  String get eventStatusActive => 'Activo';
+
+  @override
+  String get eventStatusCancelled => 'Cancelado';
+
+  @override
+  String get eventDateFallback => 'Fecha a definir';
+
+  @override
+  String get quickActionsTitle => 'Acciones rápidas';
+
+  @override
+  String get quickActionInvite => 'Invitar';
+
+  @override
+  String get quickActionAddExpense => 'Agregar gasto';
+
+  @override
+  String get quickActionAddTask => 'Agregar tarea';
+
+  @override
+  String get quickActionSettle => 'Saldar';
+
+  @override
+  String get tasksSectionTitle => 'Tareas';
+
+  @override
+  String get noTasksPlaceholder => 'No hay tareas asignadas todavía.';
+
+  @override
+  String get activityLogSectionTitle => 'Actividad reciente';
+
+  @override
+  String get noActivityPlaceholder =>
+      'Sin actividad registrada en este evento.';
+
+  @override
+  String get featureUnderDevelopment =>
+      'Esta funcionalidad estará disponible próximamente.';
+
+  @override
+  String get cancelEventAction => 'Cancelar evento';
+
+  @override
+  String get cancelEventDialogTitle => '¿Cancelar evento?';
+
+  @override
+  String get cancelEventDialogMessage =>
+      '¿Estás seguro de que querés cancelar este evento? Esta acción no se puede deshacer.';
+
+  @override
+  String get cancelEventConfirm => 'Sí, cancelar evento';
+
+  @override
+  String get cancelEventDismiss => 'Volver';
+
+  @override
+  String get cancelEventSuccess => 'El evento fue cancelado correctamente.';
+
+  @override
+  String get cancelEventError =>
+      'No se pudo cancelar el evento. Intenta nuevamente.';
+
+  @override
+  String get retryButton => 'Reintentar';
+
+  @override
+  String get eventNotFound => 'Evento no encontrado';
+
+  @override
+  String get eventCancelledNotice =>
+      'Este evento ha sido cancelado y ya no acepta nuevas acciones.';
+
+  @override
+  String get eventActionsTooltip => 'Opciones del evento';
+
+  @override
+  String get cancellingEvent => 'Cancelando evento...';
 }

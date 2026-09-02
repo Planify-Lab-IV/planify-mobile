@@ -6,6 +6,7 @@ class Event {
   final String location;
   final String organizerId;
   final EventStatus status;
+  final String? date;
 
   const Event({
     required this.id,
@@ -13,6 +14,7 @@ class Event {
     required this.location,
     required this.organizerId,
     this.status = EventStatus.active,
+    this.date,
   });
 
   bool get isCancelled => status.isCancelled;
@@ -24,6 +26,7 @@ class Event {
     String? location,
     String? organizerId,
     EventStatus? status,
+    String? date,
   }) {
     return Event(
       id: id ?? this.id,
@@ -31,6 +34,7 @@ class Event {
       location: location ?? this.location,
       organizerId: organizerId ?? this.organizerId,
       status: status ?? this.status,
+      date: date ?? this.date,
     );
   }
 
@@ -43,7 +47,8 @@ class Event {
           name == other.name &&
           location == other.location &&
           organizerId == other.organizerId &&
-          status == other.status;
+          status == other.status &&
+          date == other.date;
 
   @override
   int get hashCode =>
@@ -51,10 +56,11 @@ class Event {
       name.hashCode ^
       location.hashCode ^
       organizerId.hashCode ^
-      status.hashCode;
+      status.hashCode ^
+      date.hashCode;
 
   @override
   String toString() {
-    return 'Event(id: $id, name: $name, location: $location, organizerId: $organizerId, status: $status)';
+    return 'Event(id: $id, name: $name, location: $location, organizerId: $organizerId, status: $status, date: $date)';
   }
 }

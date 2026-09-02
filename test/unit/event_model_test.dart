@@ -10,6 +10,7 @@ void main() {
       location: 'Parque Sarmiento',
       organizerId: 'usr-org-1',
       status: EventStatus.active,
+      date: 'Sábado 15 de Noviembre, 21:00 hs',
     );
 
     test('inicializa con valores correctos y estado active por defecto', () {
@@ -27,6 +28,7 @@ void main() {
       expect(defaultEvent.status, EventStatus.active);
       expect(defaultEvent.isActive, isTrue);
       expect(defaultEvent.isCancelled, isFalse);
+      expect(defaultEvent.date, isNull);
     });
 
     test('isCancelled e isActive reflejan el estado correctamente', () {
@@ -46,6 +48,7 @@ void main() {
       expect(updated.location, testEvent.location);
       expect(updated.organizerId, testEvent.organizerId);
       expect(updated.status, testEvent.status);
+      expect(updated.date, testEvent.date);
     });
 
     test('copyWith sobreescribe todos los campos cuando se proveen', () {
@@ -55,6 +58,7 @@ void main() {
         location: 'Nueva Ubicación',
         organizerId: 'usr-999',
         status: EventStatus.cancelled,
+        date: 'Domingo 20 de Diciembre',
       );
 
       expect(updated.id, 'evt-999');
@@ -62,6 +66,7 @@ void main() {
       expect(updated.location, 'Nueva Ubicación');
       expect(updated.organizerId, 'usr-999');
       expect(updated.status, EventStatus.cancelled);
+      expect(updated.date, 'Domingo 20 de Diciembre');
     });
 
     test('igualdad estructural por valor (==) y hashCode', () {
@@ -71,6 +76,7 @@ void main() {
         location: 'Parque Sarmiento',
         organizerId: 'usr-org-1',
         status: EventStatus.active,
+        date: 'Sábado 15 de Noviembre, 21:00 hs',
       );
 
       const event2 = Event(
@@ -79,14 +85,16 @@ void main() {
         location: 'Parque Sarmiento',
         organizerId: 'usr-org-1',
         status: EventStatus.active,
+        date: 'Sábado 15 de Noviembre, 21:00 hs',
       );
 
       const differentEvent = Event(
-        id: 'evt-002',
+        id: 'evt-001',
         name: 'Asado Fin de Año',
         location: 'Parque Sarmiento',
         organizerId: 'usr-org-1',
         status: EventStatus.active,
+        date: 'Fecha Distinta',
       );
 
       expect(event1, equals(event2));
@@ -101,6 +109,7 @@ void main() {
       expect(str, contains('Parque Sarmiento'));
       expect(str, contains('usr-org-1'));
       expect(str, contains('EventStatus.active'));
+      expect(str, contains('Sábado 15 de Noviembre, 21:00 hs'));
     });
   });
 }

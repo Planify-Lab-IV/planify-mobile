@@ -200,4 +200,89 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get generateWithAiComingSoon => 'AI event generation coming soon';
+
+  @override
+  String get eventDetailTitle => 'Event Details';
+
+  @override
+  String get eventStatusLabel => 'Status';
+
+  @override
+  String get eventStatusActive => 'Active';
+
+  @override
+  String get eventStatusCancelled => 'Cancelled';
+
+  @override
+  String get eventDateFallback => 'Date TBD';
+
+  @override
+  String get quickActionsTitle => 'Quick actions';
+
+  @override
+  String get quickActionInvite => 'Invite';
+
+  @override
+  String get quickActionAddExpense => 'Add expense';
+
+  @override
+  String get quickActionAddTask => 'Add task';
+
+  @override
+  String get quickActionSettle => 'Settle up';
+
+  @override
+  String get tasksSectionTitle => 'Tasks';
+
+  @override
+  String get noTasksPlaceholder => 'No tasks assigned yet.';
+
+  @override
+  String get activityLogSectionTitle => 'Recent activity';
+
+  @override
+  String get noActivityPlaceholder =>
+      'No activity recorded for this event yet.';
+
+  @override
+  String get featureUnderDevelopment => 'This feature will be available soon.';
+
+  @override
+  String get cancelEventAction => 'Cancel event';
+
+  @override
+  String get cancelEventDialogTitle => 'Cancel event?';
+
+  @override
+  String get cancelEventDialogMessage =>
+      'Are you sure you want to cancel this event? This action cannot be undone.';
+
+  @override
+  String get cancelEventConfirm => 'Yes, cancel event';
+
+  @override
+  String get cancelEventDismiss => 'Back';
+
+  @override
+  String get cancelEventSuccess => 'The event was successfully cancelled.';
+
+  @override
+  String get cancelEventError =>
+      'Could not cancel the event. Please try again.';
+
+  @override
+  String get retryButton => 'Retry';
+
+  @override
+  String get eventNotFound => 'Event not found';
+
+  @override
+  String get eventCancelledNotice =>
+      'This event has been cancelled and no longer accepts new actions.';
+
+  @override
+  String get eventActionsTooltip => 'Event options';
+
+  @override
+  String get cancellingEvent => 'Cancelling event...';
 }

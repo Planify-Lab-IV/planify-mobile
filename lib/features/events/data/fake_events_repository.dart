@@ -28,6 +28,7 @@ class FakeEventsRepository implements EventsRepository {
         location: 'Av. Corrientes 1234',
         organizerId: defaultOrganizerId,
         status: EventStatus.active,
+        date: 'Sábado 15 de Noviembre, 21:00 hs',
       );
       _events[errorEventId] = const Event(
         id: errorEventId,
@@ -35,6 +36,7 @@ class FakeEventsRepository implements EventsRepository {
         location: 'Calle Falsa 123',
         organizerId: defaultOrganizerId,
         status: EventStatus.active,
+        date: 'Viernes 20 de Noviembre, 19:00 hs',
       );
     }
   }
