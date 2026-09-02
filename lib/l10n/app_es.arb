@@ -50,6 +50,7 @@
   "organizerRole": "Organizador",
   "eventLabel": "Evento",
   "createEventTitle": "Crear Evento",
+<<<<<<< HEAD
     "createEventButton": "Crear nuevo evento",
     "step1Badge": "Paso 1 de 2",
     "step1Title": "Información básica",
@@ -77,4 +78,62 @@
     "invitationErrorGeneric": "No se pudo procesar la invitación. Intenta nuevamente.",
     "invitationBannerEvent": "¡Tenés una invitación a un evento!",
     "resolvingInvitation": "Cargando invitación..."
+=======
+  "createEventButton": "Crear nuevo evento",
+  "step1Badge": "Paso 1 de 2",
+  "step1Title": "Información básica",
+  "step1Subtitle": "Ingresá el nombre y el lugar de tu evento.",
+  "eventNameLabel": "Nombre del evento",
+  "eventNameHint": "Ej. Cumpleaños de Lucas",
+  "eventNameRequired": "Por favor ingresa el nombre del evento",
+  "eventLocationLabel": "Lugar o dirección",
+  "eventLocationHint": "Ej. Casa de Lucas o Av. Corrientes 1234",
+  "eventLocationRequired": "Por favor ingresa el lugar del evento",
+  "continueButton": "Continuar",
+  "backButton": "Atrás",
+  "step2Badge": "Paso 2 de 2",
+  "step2Title": "Grupo y participantes",
+  "step2Subtitle": "Elegí un grupo existente o creá uno nuevo con sus miembros.",
+  "existingGroupOption": "Grupo existente",
+  "existingGroupSubtitle": "Seleccioná un grupo que ya tengas creado",
+  "newGroupOption": "Crear grupo nuevo",
+  "newGroupSubtitle": "Armá un grupo nuevo e invitá participantes",
+  "selectGroupLabel": "Seleccionar grupo",
+  "selectGroupHint": "Elegí un grupo...",
+  "selectGroupRequired": "Por favor seleccioná un grupo",
+  "loadingGroups": "Cargando grupos...",
+  "errorLoadingGroups": "No se pudieron cargar los grupos",
+  "retryButton": "Reintentar",
+  "noGroupsAvailable": "No tenés grupos creados. Podés crear uno nuevo.",
+  "newGroupNameLabel": "Nombre del nuevo grupo",
+  "newGroupNameHint": "Ej. Amigos del Fútbol",
+  "newGroupNameRequired": "Por favor ingresá el nombre del grupo",
+  "memberIdentifierLabel": "Miembro (email o usuario)",
+  "memberIdentifierHint": "ejemplo@correo.com o @usuario",
+  "addMemberButton": "Agregar",
+  "memberAlreadyAdded": "Este miembro ya fue agregado",
+  "memberIdentifierEmpty": "Ingresá un email o usuario válido",
+  "membersListTitle": "Miembros ({count})",
+  "@membersListTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "createEventSubmitButton": "Crear Evento",
+  "creatingEventLoading": "Creando evento...",
+  "createEventErrorGeneric": "No se pudo crear el evento. Intenta nuevamente.",
+  "createEventSuccessTitle": "¡Evento creado con éxito!",
+  "createEventSuccessSubtitle": "Tu evento ya está listo y asignado a su grupo.",
+  "createdEventIdLabel": "ID del Evento",
+  "assignedGroupLabel": "Grupo asignado",
+  "backToHomeButton": "Volver al inicio",
+  "draftSummaryTitle": "Resumen del borrador",
+  "draftEventName": "Nombre",
+  "draftEventLocation": "Lugar",
+  "generateWithAi": "Generar con IA",
+  "generateWithAiComingSoon": "Generación de eventos con IA disponible próximamente"
+>>>>>>> develop
 }

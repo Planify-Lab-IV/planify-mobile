@@ -120,14 +120,110 @@ void main() {
       expect(notifier.state.location, equals('Lugar Modificado'));
     });
 
+    test('isStep2Valid valida correctamente segun modo nuevo o existente', () {
+      // Modo grupo existente
+      expect(
+        const EventDraft(isNewGroup: false, selectedGroupId: null).isStep2Valid,
+        isFalse,
+      );
+      expect(
+        const EventDraft(
+          isNewGroup: false,
+          selectedGroupId: 'grp-1',
+        ).isStep2Valid,
+        isTrue,
+      );
+
+      // Modo grupo nuevo
+      expect(
+        const EventDraft(isNewGroup: true, newGroupName: null).isStep2Valid,
+        isFalse,
+      );
+      expect(
+        const EventDraft(isNewGroup: true, newGroupName: '   ').isStep2Valid,
+        isFalse,
+      );
+      expect(
+        const EventDraft(isNewGroup: true, newGroupName: 'Amigos').isStep2Valid,
+        isTrue,
+      );
+    });
+
+    test('isValid requiere paso 1 y paso 2 validos', () {
+      expect(
+        const EventDraft(
+          name: 'Asado',
+          location: 'Club',
+          isNewGroup: false,
+          selectedGroupId: 'grp-1',
+        ).isValid,
+        isTrue,
+      );
+
+      expect(
+        const EventDraft(
+          name: 'Asado',
+          location: 'Club',
+          isNewGroup: false,
+          selectedGroupId: null,
+        ).isValid,
+        isFalse,
+      );
+    });
+
     test('reset restablece el borrador al estado vacío', () {
       notifier.updateBasicInfo(name: 'Evento a borrar', location: 'Ubicacion');
+      notifier.setSelectedGroup(groupId: 'grp-1', groupName: 'Amigos');
+      notifier.addMember('test@email.com');
       expect(notifier.state.isEmpty, isFalse);
 
       notifier.reset();
       expect(notifier.state.isEmpty, isTrue);
       expect(notifier.state.name, isEmpty);
       expect(notifier.state.location, isEmpty);
+      expect(notifier.state.selectedGroupId, isNull);
+      expect(notifier.state.newGroupMembers, isEmpty);
     });
+
+    test('setIsNewGroup cambia el modo', () {
+      notifier.setIsNewGroup(true);
+      expect(notifier.state.isNewGroup, isTrue);
+
+      notifier.setIsNewGroup(false);
+      expect(notifier.state.isNewGroup, isFalse);
+    });
+
+    test('setSelectedGroup asigna id y nombre y desactiva isNewGroup', () {
+      notifier.setIsNewGroup(true);
+      notifier.setSelectedGroup(groupId: 'grp-10', groupName: 'Familia');
+
+      expect(notifier.state.selectedGroupId, equals('grp-10'));
+      expect(notifier.state.selectedGroupName, equals('Familia'));
+      expect(notifier.state.isNewGroup, isFalse);
+    });
+
+    test('setNewGroupName asigna nombre de nuevo grupo con trim', () {
+      notifier.setNewGroupName('  Compañeros de la Facultad  ');
+      expect(notifier.state.newGroupName, equals('Compañeros de la Facultad'));
+    });
+
+    test(
+      'addMember y removeMember gestionan identificadores sin duplicados',
+      () {
+        notifier.addMember('  lucas@planify.com  ');
+        notifier.addMember('lucas@planify.com'); // Duplicado no debe agregarse
+        notifier.addMember('@juanperez');
+
+        expect(notifier.state.newGroupMembers.length, equals(2));
+        expect(
+          notifier.state.newGroupMembers,
+          containsAll(['lucas@planify.com', '@juanperez']),
+        );
+
+        notifier.removeMember('lucas@planify.com');
+        expect(notifier.state.newGroupMembers.length, equals(1));
+        expect(notifier.state.newGroupMembers, contains('@juanperez'));
+      },
+    );
   });
 }

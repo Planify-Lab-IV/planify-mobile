@@ -431,14 +431,182 @@ abstract class AppLocalizations {
   /// No description provided for @step2Title.
   ///
   /// In es, this message translates to:
-  /// **'Paso 2: Próximamente'**
+  /// **'Grupo y participantes'**
   String get step2Title;
 
   /// No description provided for @step2Subtitle.
   ///
   /// In es, this message translates to:
-  /// **'En los próximos pasos podrás configurar fecha, hora, gastos y participantes.'**
+  /// **'Elegí un grupo existente o creá uno nuevo con sus miembros.'**
   String get step2Subtitle;
+
+  /// No description provided for @existingGroupOption.
+  ///
+  /// In es, this message translates to:
+  /// **'Grupo existente'**
+  String get existingGroupOption;
+
+  /// No description provided for @existingGroupSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccioná un grupo que ya tengas creado'**
+  String get existingGroupSubtitle;
+
+  /// No description provided for @newGroupOption.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear grupo nuevo'**
+  String get newGroupOption;
+
+  /// No description provided for @newGroupSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Armá un grupo nuevo e invitá participantes'**
+  String get newGroupSubtitle;
+
+  /// No description provided for @selectGroupLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar grupo'**
+  String get selectGroupLabel;
+
+  /// No description provided for @selectGroupHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegí un grupo...'**
+  String get selectGroupHint;
+
+  /// No description provided for @selectGroupRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor seleccioná un grupo'**
+  String get selectGroupRequired;
+
+  /// No description provided for @loadingGroups.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando grupos...'**
+  String get loadingGroups;
+
+  /// No description provided for @errorLoadingGroups.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron cargar los grupos'**
+  String get errorLoadingGroups;
+
+  /// No description provided for @retryButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get retryButton;
+
+  /// No description provided for @noGroupsAvailable.
+  ///
+  /// In es, this message translates to:
+  /// **'No tenés grupos creados. Podés crear uno nuevo.'**
+  String get noGroupsAvailable;
+
+  /// No description provided for @newGroupNameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre del nuevo grupo'**
+  String get newGroupNameLabel;
+
+  /// No description provided for @newGroupNameHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Amigos del Fútbol'**
+  String get newGroupNameHint;
+
+  /// No description provided for @newGroupNameRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor ingresá el nombre del grupo'**
+  String get newGroupNameRequired;
+
+  /// No description provided for @memberIdentifierLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Miembro (email o usuario)'**
+  String get memberIdentifierLabel;
+
+  /// No description provided for @memberIdentifierHint.
+  ///
+  /// In es, this message translates to:
+  /// **'ejemplo@correo.com o @usuario'**
+  String get memberIdentifierHint;
+
+  /// No description provided for @addMemberButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar'**
+  String get addMemberButton;
+
+  /// No description provided for @memberAlreadyAdded.
+  ///
+  /// In es, this message translates to:
+  /// **'Este miembro ya fue agregado'**
+  String get memberAlreadyAdded;
+
+  /// No description provided for @memberIdentifierEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá un email o usuario válido'**
+  String get memberIdentifierEmpty;
+
+  /// No description provided for @membersListTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Miembros ({count})'**
+  String membersListTitle(int count);
+
+  /// No description provided for @createEventSubmitButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear Evento'**
+  String get createEventSubmitButton;
+
+  /// No description provided for @creatingEventLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Creando evento...'**
+  String get creatingEventLoading;
+
+  /// No description provided for @createEventErrorGeneric.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo crear el evento. Intenta nuevamente.'**
+  String get createEventErrorGeneric;
+
+  /// No description provided for @createEventSuccessTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Evento creado con éxito!'**
+  String get createEventSuccessTitle;
+
+  /// No description provided for @createEventSuccessSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu evento ya está listo y asignado a su grupo.'**
+  String get createEventSuccessSubtitle;
+
+  /// No description provided for @createdEventIdLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'ID del Evento'**
+  String get createdEventIdLabel;
+
+  /// No description provided for @assignedGroupLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Grupo asignado'**
+  String get assignedGroupLabel;
+
+  /// No description provided for @backToHomeButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver al inicio'**
+  String get backToHomeButton;
 
   /// No description provided for @draftSummaryTitle.
   ///
