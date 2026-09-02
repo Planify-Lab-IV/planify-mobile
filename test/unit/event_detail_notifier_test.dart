@@ -181,9 +181,10 @@ void main() {
 
         await Future<void>.delayed(Duration.zero);
 
-        expect(notifier.state.status, EventDetailStatus.success);
+        expect(notifier.state.loadStatus, EventDetailLoadStatus.success);
+        expect(notifier.state.isSuccess, isTrue);
         expect(notifier.state.event, equals(testEvent));
-        expect(notifier.state.errorMessage, isNull);
+        expect(notifier.state.hasLoadError, isFalse);
       });
 
       test('marca error si el evento no existe en el repositorio', () async {
@@ -199,9 +200,9 @@ void main() {
 
         await Future<void>.delayed(Duration.zero);
 
-        expect(notifier.state.status, EventDetailStatus.error);
+        expect(notifier.state.loadStatus, EventDetailLoadStatus.error);
+        expect(notifier.state.hasLoadError, isTrue);
         expect(notifier.state.event, isNull);
-        expect(notifier.state.errorMessage, isNotNull);
       });
     });
 
@@ -223,7 +224,7 @@ void main() {
         expect(success, isTrue);
         expect(notifier.state.event?.status, EventStatus.cancelled);
         expect(notifier.state.event?.isCancelled, isTrue);
-        expect(notifier.state.cancellationSuccess, isTrue);
+        expect(notifier.state.cancellationSucceeded, isTrue);
         expect(notifier.state.isCancelling, isFalse);
         expect(notifier.canCancelEvent, isFalse);
       });
@@ -246,7 +247,7 @@ void main() {
 
           expect(success, isFalse);
           expect(notifier.state.event?.status, EventStatus.active);
-          expect(notifier.state.errorMessage, contains('No tienes permisos'));
+          expect(notifier.state.cancellationFailed, isTrue);
         },
       );
 
@@ -270,12 +271,12 @@ void main() {
           expect(success, isFalse);
           expect(notifier.state.event?.status, EventStatus.active);
           expect(notifier.state.isCancelling, isFalse);
-          expect(notifier.state.cancellationSuccess, isFalse);
-          expect(notifier.state.errorMessage, isNotNull);
+          expect(notifier.state.cancellationFailed, isTrue);
+          expect(notifier.state.cancellationSucceeded, isFalse);
         },
       );
 
-      test('clearError limpia el mensaje de error', () {
+      test('resetCancellationStatus limpia el estado de cancelación', () {
         final repo = FakeEventsRepository(delay: Duration.zero);
         final notifier = EventDetailNotifier(
           repository: repo,
@@ -284,11 +285,16 @@ void main() {
           initialEvent: testEvent,
         );
 
-        notifier.state = notifier.state.copyWith(errorMessage: 'Hubo un error');
-        expect(notifier.state.errorMessage, 'Hubo un error');
+        notifier.state = notifier.state.copyWith(
+          cancellationStatus: EventCancellationStatus.failure,
+        );
+        expect(notifier.state.cancellationFailed, isTrue);
 
-        notifier.clearError();
-        expect(notifier.state.errorMessage, isNull);
+        notifier.resetCancellationStatus();
+        expect(
+          notifier.state.cancellationStatus,
+          EventCancellationStatus.idle,
+        );
       });
     });
   });

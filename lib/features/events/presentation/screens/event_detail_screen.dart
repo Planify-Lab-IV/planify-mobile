@@ -37,11 +37,10 @@ class EventDetailScreen extends ConsumerWidget {
         ),
       );
     } else {
-      final state = ref.read(eventDetailNotifierProvider(eventId));
       messenger.showSnackBar(
         SnackBar(
           key: const Key('cancel_event_error_snackbar'),
-          content: Text(state.errorMessage ?? i18n.cancelEventError),
+          content: Text(i18n.cancelEventError),
           behavior: SnackBarBehavior.floating,
           backgroundColor: AppColors.error,
           action: SnackBarAction(
@@ -121,7 +120,7 @@ class EventDetailScreen extends ConsumerWidget {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (state.hasError && event == null) {
+          if (state.hasLoadError && event == null) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.lg),
@@ -135,7 +134,7 @@ class EventDetailScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppSpacing.md),
                     Text(
-                      state.errorMessage ?? i18n.eventNotFound,
+                      i18n.eventNotFound,
                       style: theme.textTheme.bodyLarge,
                       textAlign: TextAlign.center,
                     ),

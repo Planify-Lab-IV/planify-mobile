@@ -1,44 +1,46 @@
 import '../../domain/event.dart';
 
-enum EventDetailStatus { initial, loading, success, error }
+enum EventDetailLoadStatus { initial, loading, success, error }
+
+enum EventCancellationStatus { idle, inProgress, success, failure }
 
 class EventDetailState {
   final Event? event;
-  final EventDetailStatus status;
-  final bool isCancelling;
-  final String? errorMessage;
-  final bool cancellationSuccess;
+  final EventDetailLoadStatus loadStatus;
+  final EventCancellationStatus cancellationStatus;
 
   const EventDetailState({
     this.event,
-    this.status = EventDetailStatus.initial,
-    this.isCancelling = false,
-    this.errorMessage,
-    this.cancellationSuccess = false,
+    this.loadStatus = EventDetailLoadStatus.initial,
+    this.cancellationStatus = EventCancellationStatus.idle,
   });
 
-  const EventDetailState.initial() : this(status: EventDetailStatus.initial);
+  const EventDetailState.initial()
+      : this(
+          loadStatus: EventDetailLoadStatus.initial,
+          cancellationStatus: EventCancellationStatus.idle,
+        );
 
-  bool get isLoading => status == EventDetailStatus.loading;
-  bool get isSuccess => status == EventDetailStatus.success;
-  bool get hasError => status == EventDetailStatus.error;
+  bool get isLoading => loadStatus == EventDetailLoadStatus.loading;
+  bool get isSuccess => loadStatus == EventDetailLoadStatus.success;
+  bool get hasLoadError => loadStatus == EventDetailLoadStatus.error;
+
+  bool get isCancelling =>
+      cancellationStatus == EventCancellationStatus.inProgress;
+  bool get cancellationSucceeded =>
+      cancellationStatus == EventCancellationStatus.success;
+  bool get cancellationFailed =>
+      cancellationStatus == EventCancellationStatus.failure;
 
   EventDetailState copyWith({
     Event? event,
-    EventDetailStatus? status,
-    bool? isCancelling,
-    String? errorMessage,
-    bool clearErrorMessage = false,
-    bool? cancellationSuccess,
+    EventDetailLoadStatus? loadStatus,
+    EventCancellationStatus? cancellationStatus,
   }) {
     return EventDetailState(
       event: event ?? this.event,
-      status: status ?? this.status,
-      isCancelling: isCancelling ?? this.isCancelling,
-      errorMessage: clearErrorMessage
-          ? null
-          : (errorMessage ?? this.errorMessage),
-      cancellationSuccess: cancellationSuccess ?? this.cancellationSuccess,
+      loadStatus: loadStatus ?? this.loadStatus,
+      cancellationStatus: cancellationStatus ?? this.cancellationStatus,
     );
   }
 
@@ -48,21 +50,15 @@ class EventDetailState {
       other is EventDetailState &&
           runtimeType == other.runtimeType &&
           event == other.event &&
-          status == other.status &&
-          isCancelling == other.isCancelling &&
-          errorMessage == other.errorMessage &&
-          cancellationSuccess == other.cancellationSuccess;
+          loadStatus == other.loadStatus &&
+          cancellationStatus == other.cancellationStatus;
 
   @override
   int get hashCode =>
-      event.hashCode ^
-      status.hashCode ^
-      isCancelling.hashCode ^
-      errorMessage.hashCode ^
-      cancellationSuccess.hashCode;
+      event.hashCode ^ loadStatus.hashCode ^ cancellationStatus.hashCode;
 
   @override
   String toString() {
-    return 'EventDetailState(event: $event, status: $status, isCancelling: $isCancelling, errorMessage: $errorMessage, cancellationSuccess: $cancellationSuccess)';
+    return 'EventDetailState(event: $event, loadStatus: $loadStatus, cancellationStatus: $cancellationStatus)';
   }
 }

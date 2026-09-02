@@ -24,21 +24,18 @@ class EventDetailNotifier extends StateNotifier<EventDetailState> {
     this._eventId,
     Event? initialEvent,
   ) : super(
-        initialEvent != null
-            ? EventDetailState(
-                event: initialEvent,
-                status: EventDetailStatus.success,
-              )
-            : const EventDetailState.initial(),
-      ) {
+          initialEvent != null
+              ? EventDetailState(
+                  event: initialEvent,
+                  loadStatus: EventDetailLoadStatus.success,
+                )
+              : const EventDetailState.initial(),
+        ) {
     if (initialEvent == null) {
       loadEvent();
     }
   }
 
-  /// Determina si la sesión actual corresponde al organizador puntual del evento.
-  /// Compara el userId de la sesión contra el organizerId del evento puntual.
-  /// Nunca se basa únicamente en el rol de la sesión ni en la sola existencia de un organizador.
   static bool isUserOrganizerOfEvent({
     required UserSession? session,
     required Event? event,
@@ -60,35 +57,26 @@ class EventDetailNotifier extends StateNotifier<EventDetailState> {
   }
 
   Future<void> loadEvent() async {
-    state = state.copyWith(
-      status: EventDetailStatus.loading,
-      clearErrorMessage: true,
-    );
+    state = state.copyWith(loadStatus: EventDetailLoadStatus.loading);
 
     try {
       final event = await _repository.getEvent(_eventId);
       if (!mounted) return;
 
       if (event == null) {
-        state = state.copyWith(
-          status: EventDetailStatus.error,
-          errorMessage: 'Evento no encontrado',
-        );
+        state = state.copyWith(loadStatus: EventDetailLoadStatus.error);
       } else {
-        state = state.copyWith(event: event, status: EventDetailStatus.success);
+        state = state.copyWith(
+          event: event,
+          loadStatus: EventDetailLoadStatus.success,
+        );
       }
     } on EventsException {
       if (!mounted) return;
-      state = state.copyWith(
-        status: EventDetailStatus.error,
-        errorMessage: 'Error al cargar el evento',
-      );
+      state = state.copyWith(loadStatus: EventDetailLoadStatus.error);
     } catch (_) {
       if (!mounted) return;
-      state = state.copyWith(
-        status: EventDetailStatus.error,
-        errorMessage: 'Error inesperado al cargar el evento',
-      );
+      state = state.copyWith(loadStatus: EventDetailLoadStatus.error);
     }
   }
 
@@ -98,15 +86,13 @@ class EventDetailNotifier extends StateNotifier<EventDetailState> {
 
     if (!isOrganizer) {
       state = state.copyWith(
-        errorMessage: 'No tienes permisos para cancelar este evento',
+        cancellationStatus: EventCancellationStatus.failure,
       );
       return false;
     }
 
     state = state.copyWith(
-      isCancelling: true,
-      clearErrorMessage: true,
-      cancellationSuccess: false,
+      cancellationStatus: EventCancellationStatus.inProgress,
     );
 
     try {
@@ -117,30 +103,25 @@ class EventDetailNotifier extends StateNotifier<EventDetailState> {
 
       state = state.copyWith(
         event: updatedEvent,
-        isCancelling: false,
-        cancellationSuccess: true,
+        cancellationStatus: EventCancellationStatus.success,
       );
       return true;
     } on EventsException {
       if (!mounted) return false;
       state = state.copyWith(
-        isCancelling: false,
-        errorMessage: 'No se pudo cancelar el evento. Intenta nuevamente.',
-        cancellationSuccess: false,
+        cancellationStatus: EventCancellationStatus.failure,
       );
       return false;
     } catch (_) {
       if (!mounted) return false;
       state = state.copyWith(
-        isCancelling: false,
-        errorMessage: 'No se pudo cancelar el evento. Intenta nuevamente.',
-        cancellationSuccess: false,
+        cancellationStatus: EventCancellationStatus.failure,
       );
       return false;
     }
   }
 
-  void clearError() {
-    state = state.copyWith(clearErrorMessage: true);
+  void resetCancellationStatus() {
+    state = state.copyWith(cancellationStatus: EventCancellationStatus.idle);
   }
 }
