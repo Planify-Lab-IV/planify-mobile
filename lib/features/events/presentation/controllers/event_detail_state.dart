@@ -16,10 +16,10 @@ class EventDetailState {
   });
 
   const EventDetailState.initial()
-      : this(
-          loadStatus: EventDetailLoadStatus.initial,
-          cancellationStatus: EventCancellationStatus.idle,
-        );
+    : this(
+        loadStatus: EventDetailLoadStatus.initial,
+        cancellationStatus: EventCancellationStatus.idle,
+      );
 
   bool get isLoading => loadStatus == EventDetailLoadStatus.loading;
   bool get isSuccess => loadStatus == EventDetailLoadStatus.success;

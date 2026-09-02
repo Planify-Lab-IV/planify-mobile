@@ -210,38 +210,6 @@ class EventDetailScreen extends ConsumerWidget {
                       placeholderText: i18n.noActivityPlaceholder,
                       icon: Icons.history_rounded,
                     ),
-                    if (canCancel) ...[
-                      const SizedBox(height: AppSpacing.xl),
-                      OutlinedButton.icon(
-                        key: const Key('cancel_event_button'),
-                        style: OutlinedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(AppRadius.card),
-                          ),
-                          side: const BorderSide(color: AppColors.error),
-                          foregroundColor: AppColors.error,
-                        ),
-                        onPressed: state.isCancelling
-                            ? null
-                            : () => _confirmAndCancel(context, ref),
-                        icon: state.isCancelling
-                            ? const SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: AppColors.error,
-                                ),
-                              )
-                            : const Icon(Icons.cancel_outlined),
-                        label: Text(
-                          state.isCancelling
-                              ? i18n.cancellingEvent
-                              : i18n.cancelEventAction,
-                        ),
-                      ),
-                    ],
                   ],
                 ),
               ),

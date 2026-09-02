@@ -24,13 +24,13 @@ class EventDetailNotifier extends StateNotifier<EventDetailState> {
     this._eventId,
     Event? initialEvent,
   ) : super(
-          initialEvent != null
-              ? EventDetailState(
-                  event: initialEvent,
-                  loadStatus: EventDetailLoadStatus.success,
-                )
-              : const EventDetailState.initial(),
-        ) {
+        initialEvent != null
+            ? EventDetailState(
+                event: initialEvent,
+                loadStatus: EventDetailLoadStatus.success,
+              )
+            : const EventDetailState.initial(),
+      ) {
     if (initialEvent == null) {
       loadEvent();
     }

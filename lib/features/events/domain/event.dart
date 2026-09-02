@@ -4,20 +4,20 @@ class Event {
   final String id;
   final String name;
   final String location;
-  final String groupId;
-  final DateTime createdAt;
   final String organizerId;
+  final String groupId;
   final EventStatus status;
-  final String? date;
+  final DateTime createdAt;
+  final DateTime? date;
 
   const Event({
     required this.id,
     required this.name,
     required this.location,
-    required this.groupId,
-    required this.createdAt,
     required this.organizerId,
+    required this.groupId,
     this.status = EventStatus.active,
+    required this.createdAt,
     this.date,
   });
 
@@ -29,15 +29,19 @@ class Event {
     String? name,
     String? location,
     String? organizerId,
+    String? groupId,
     EventStatus? status,
-    String? date,
+    DateTime? createdAt,
+    DateTime? date,
   }) {
     return Event(
       id: id ?? this.id,
       name: name ?? this.name,
       location: location ?? this.location,
       organizerId: organizerId ?? this.organizerId,
+      groupId: groupId ?? this.groupId,
       status: status ?? this.status,
+      createdAt: createdAt ?? this.createdAt,
       date: date ?? this.date,
     );
   }
@@ -50,10 +54,10 @@ class Event {
           id == other.id &&
           name == other.name &&
           location == other.location &&
-          groupId == other.groupId &&
-          createdAt == other.createdAt &&
           organizerId == other.organizerId &&
+          groupId == other.groupId &&
           status == other.status &&
+          createdAt == other.createdAt &&
           date == other.date;
 
   @override
@@ -61,14 +65,14 @@ class Event {
       id.hashCode ^
       name.hashCode ^
       location.hashCode ^
-      groupId.hashCode ^
-      createdAt.hashCode ^
       organizerId.hashCode ^
+      groupId.hashCode ^
       status.hashCode ^
+      createdAt.hashCode ^
       date.hashCode;
 
   @override
   String toString() {
-    return 'Event(id: $id, name: $name, location: $location, groupId: $groupId, organizerId: $organizerId, status: $status, date: $date)';
+    return 'Event(id: $id, name: $name, location: $location, organizerId: $organizerId, groupId: $groupId, status: $status, createdAt: $createdAt, date: $date)';
   }
 }

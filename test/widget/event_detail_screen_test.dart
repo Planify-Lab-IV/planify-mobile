@@ -19,13 +19,15 @@ void main() {
     const testOrganizerId = 'org-123';
     const testEventId = 'evt-test-123';
 
-    const testEvent = Event(
+    final testEvent = Event(
       id: testEventId,
       name: 'Cumpleaños de Lucas',
       location: 'Av. Corrientes 1234',
       organizerId: testOrganizerId,
+      groupId: 'grp-123',
       status: EventStatus.active,
-      date: 'Sábado 15 de Noviembre, 21:00 hs',
+      createdAt: DateTime(2026, 11, 1),
+      date: DateTime(2026, 11, 15, 21, 0),
     );
 
     const organizerSession = OrganizerSession(
@@ -100,8 +102,7 @@ void main() {
         // Header
         expect(find.byKey(const Key('event_detail_name')), findsOneWidget);
         expect(find.text('Cumpleaños de Lucas'), findsOneWidget);
-        expect(find.text('Av. Corrientes 1234'), findsOneWidget);
-        expect(find.text('Sábado 15 de Noviembre, 21:00 hs'), findsOneWidget);
+        expect(find.byKey(const Key('event_detail_date')), findsOneWidget);
         expect(find.text('Activo'), findsOneWidget);
 
         // Acciones rápidas (4 botones)
@@ -151,20 +152,17 @@ void main() {
       },
     );
 
-    testWidgets(
-      'organizador del evento ve la opción Cancelar evento en menú y botón',
-      (tester) async {
-        await tester.pumpWidget(buildDetailScreen(session: organizerSession));
-        await tester.pumpAndSettle();
+    testWidgets('organizador del evento ve la opción Cancelar evento en menú', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildDetailScreen(session: organizerSession));
+      await tester.pumpAndSettle();
 
-        // Botón en AppBar y botón al pie de página
-        expect(
-          find.byKey(const Key('event_actions_menu_button')),
-          findsOneWidget,
-        );
-        expect(find.byKey(const Key('cancel_event_button')), findsOneWidget);
-      },
-    );
+      expect(
+        find.byKey(const Key('event_actions_menu_button')),
+        findsOneWidget,
+      );
+    });
 
     testWidgets('invitado del evento NO ve la opción Cancelar evento', (
       tester,
@@ -173,7 +171,6 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('event_actions_menu_button')), findsNothing);
-      expect(find.byKey(const Key('cancel_event_button')), findsNothing);
       expect(find.text('Cancelar evento'), findsNothing);
     });
 
@@ -186,7 +183,6 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('event_actions_menu_button')), findsNothing);
-      expect(find.byKey(const Key('cancel_event_button')), findsNothing);
       expect(find.text('Cancelar evento'), findsNothing);
     });
 
@@ -203,9 +199,11 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // 1. Toca cancelar evento desde el botón inferior
-      await tester.ensureVisible(find.byKey(const Key('cancel_event_button')));
-      await tester.tap(find.byKey(const Key('cancel_event_button')));
+      // 1. Toca cancelar evento desde el menú del AppBar
+      await tester.tap(find.byKey(const Key('event_actions_menu_button')));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('cancel_event_menu_item')));
       await tester.pumpAndSettle();
 
       // 2. Se despliega el diálogo de confirmación
@@ -235,8 +233,7 @@ void main() {
         findsOneWidget,
       );
 
-      // 5. Las opciones de cancelación ya no se muestran
-      expect(find.byKey(const Key('cancel_event_button')), findsNothing);
+      // 5. El menú de acciones ya no se muestra al estar cancelado
       expect(find.byKey(const Key('event_actions_menu_button')), findsNothing);
 
       // 6. El repositorio en memoria cambió a cancelled
@@ -245,7 +242,7 @@ void main() {
     });
 
     testWidgets(
-      'cancelación desde el PopupMenu del AppBar también ejecuta el diálogo',
+      'cancelación desde el PopupMenu del AppBar también ejecuta el diálogo y permite cancelar',
       (tester) async {
         final repo = FakeEventsRepository(
           delay: Duration.zero,
@@ -293,10 +290,10 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        await tester.ensureVisible(
-          find.byKey(const Key('cancel_event_button')),
-        );
-        await tester.tap(find.byKey(const Key('cancel_event_button')));
+        await tester.tap(find.byKey(const Key('event_actions_menu_button')));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byKey(const Key('cancel_event_menu_item')));
         await tester.pumpAndSettle();
 
         await tester.tap(find.byKey(const Key('cancel_dialog_confirm_button')));

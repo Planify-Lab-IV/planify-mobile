@@ -276,6 +276,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backToHomeButton => 'Back to home';
 
   @override
+  String get viewEventDetailButton => 'View event details';
+
+  @override
   String get draftSummaryTitle => 'Draft summary';
 
   @override
@@ -358,9 +361,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get cancelEventError =>
       'Could not cancel the event. Please try again.';
-
-  @override
-  String get retryButton => 'Retry';
 
   @override
   String get eventNotFound => 'Event not found';

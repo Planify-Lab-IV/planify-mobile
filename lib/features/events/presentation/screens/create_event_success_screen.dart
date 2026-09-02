@@ -6,6 +6,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/event.dart';
 import '../controllers/event_draft_providers.dart';
+import 'event_detail_screen.dart';
 
 class CreateEventSuccessScreen extends ConsumerWidget {
   final Event event;
@@ -112,8 +113,27 @@ class CreateEventSuccessScreen extends ConsumerWidget {
 
                 const SizedBox(height: AppSpacing.xl),
 
-                // Botón para volver al inicio
+                // Botón principal: Ver detalle del evento
                 ElevatedButton.icon(
+                  key: const Key('view_event_detail_button'),
+                  onPressed: () {
+                    ref.read(eventDraftProvider.notifier).reset();
+                    ref.read(createEventNotifierProvider.notifier).resetState();
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute<void>(
+                        builder: (context) =>
+                            EventDetailScreen(eventId: event.id),
+                      ),
+                      (route) => route.isFirst,
+                    );
+                  },
+                  icon: const Icon(Icons.arrow_forward_rounded),
+                  label: Text(i18n.viewEventDetailButton),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+
+                // Botón secundario: Volver al inicio
+                OutlinedButton.icon(
                   key: const Key('back_to_home_button'),
                   onPressed: () {
                     ref.read(eventDraftProvider.notifier).reset();

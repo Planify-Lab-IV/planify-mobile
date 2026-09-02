@@ -167,6 +167,8 @@ void main() {
       expect(find.byType(CreateEventStep2Screen), findsOneWidget);
       expect(find.text('Paso 2 de 2'), findsOneWidget);
       expect(find.text('Grupo y participantes'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('group_mode_selector')));
+      await tester.pumpAndSettle();
     });
 
     testWidgets(

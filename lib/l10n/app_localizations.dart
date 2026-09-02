@@ -608,6 +608,12 @@ abstract class AppLocalizations {
   /// **'Volver al inicio'**
   String get backToHomeButton;
 
+  /// No description provided for @viewEventDetailButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver detalle del evento'**
+  String get viewEventDetailButton;
+
   /// No description provided for @draftSummaryTitle.
   ///
   /// In es, this message translates to:
@@ -769,12 +775,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No se pudo cancelar el evento. Intenta nuevamente.'**
   String get cancelEventError;
-
-  /// No description provided for @retryButton.
-  ///
-  /// In es, this message translates to:
-  /// **'Reintentar'**
-  String get retryButton;
 
   /// No description provided for @eventNotFound.
   ///

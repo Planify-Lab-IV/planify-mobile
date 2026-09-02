@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -12,7 +13,6 @@ class EventHeaderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
     return Column(
@@ -66,7 +66,7 @@ class EventHeaderCard extends StatelessWidget {
             const SizedBox(width: AppSpacing.xs),
             Expanded(
               child: Text(
-                event.date ?? i18n.eventDateFallback,
+                _formatDate(context, event.date),
                 key: const Key('event_detail_date'),
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: AppColors.onSurfaceVariant,
@@ -77,6 +77,14 @@ class EventHeaderCard extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  String _formatDate(BuildContext context, DateTime? date) {
+    if (date == null) {
+      return AppLocalizations.of(context)!.eventDateFallback;
+    }
+    final locale = Localizations.localeOf(context);
+    return DateFormat.yMMMMd(locale.languageCode).format(date);
   }
 
   Widget _buildStatusChip(BuildContext context) {

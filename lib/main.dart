@@ -5,14 +5,12 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:planify/l10n/app_localizations.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/core/providers/core_providers.dart';
-// import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
-// import 'package:planify/features/auth/presentation/controllers/auth_state.dart';
-// import 'package:planify/features/auth/domain/user_session.dart';
-// import 'package:planify/features/auth/presentation/screens/login_screen.dart';
-// import 'package:planify/features/home/presentation/screens/organizer_home_screen.dart';
-// import 'package:planify/features/home/presentation/screens/participant_home_screen.dart';
-import 'package:planify/features/events/data/fake_events_repository.dart';
-import 'package:planify/features/events/presentation/screens/event_detail_screen.dart';
+import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
+import 'package:planify/features/auth/presentation/controllers/auth_state.dart';
+import 'package:planify/features/auth/domain/user_session.dart';
+import 'package:planify/features/auth/presentation/screens/login_screen.dart';
+import 'package:planify/features/home/presentation/screens/organizer_home_screen.dart';
+import 'package:planify/features/home/presentation/screens/participant_home_screen.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -24,7 +22,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentLocale = ref.watch(localeNotifierProvider);
-    // final authState = ref.watch(authNotifierProvider);
+    final authState = ref.watch(authNotifierProvider);
 
     return MaterialApp(
       title: 'Planify',
@@ -44,22 +42,17 @@ class MyApp extends ConsumerWidget {
       // Si currentLocale es null, toma automáticamente el idioma del celular
       locale: currentLocale,
 
-      // Modo 1: Ver directamente el detalle del evento en el emulador
-      home: const EventDetailScreen(
-        eventId: FakeEventsRepository.defaultEventId,
-      ),
-
-      // Modo 2: Flujo normal de autenticación (descomentar authState arriba y este bloque):
-      // home: switch (authState) {
-      //   AuthAuthenticated(session: final OrganizerSession session) =>
-      //     OrganizerHomeScreen(session: session),
-      //   AuthAuthenticated(session: final AnonymousSession session) =>
-      //     ParticipantHomeScreen(session: session),
-      //   AuthLoading() => const Scaffold(
-      //     body: Center(child: CircularProgressIndicator()),
-      //   ),
-      //   _ => const LoginScreen(),
-      // },
+      // Enrutamiento reactivo según el estado de autenticación
+      home: switch (authState) {
+        AuthAuthenticated(session: final OrganizerSession session) =>
+          OrganizerHomeScreen(session: session),
+        AuthAuthenticated(session: final AnonymousSession session) =>
+          ParticipantHomeScreen(session: session),
+        AuthLoading() => const Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        ),
+        _ => const LoginScreen(),
+      },
     );
   }
 }

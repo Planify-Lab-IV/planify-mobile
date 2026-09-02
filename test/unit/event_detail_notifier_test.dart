@@ -11,14 +11,18 @@ void main() {
     const testOrganizerId = 'org-123';
     const otherUserId = 'usr-999';
     const testEventId = 'evt-test-123';
+    final fixedCreatedAt = DateTime(2026, 11, 1);
+    final testDate = DateTime(2026, 11, 15, 21, 0);
 
-    const testEvent = Event(
+    final testEvent = Event(
       id: testEventId,
       name: 'Cumpleaños de Lucas',
       location: 'Av. Corrientes 1234',
       organizerId: testOrganizerId,
+      groupId: 'grp-amigos',
       status: EventStatus.active,
-      date: 'Sábado 15 de Noviembre, 21:00 hs',
+      createdAt: fixedCreatedAt,
+      date: testDate,
     );
 
     const organizerSession = OrganizerSession(
@@ -98,11 +102,13 @@ void main() {
             name: '',
             token: '',
           );
-          const emptyOrganizerEvent = Event(
+          final emptyOrganizerEvent = Event(
             id: 'evt-1',
             name: '',
             location: '',
             organizerId: '  ',
+            groupId: 'grp-1',
+            createdAt: fixedCreatedAt,
           );
 
           expect(
@@ -291,10 +297,7 @@ void main() {
         expect(notifier.state.cancellationFailed, isTrue);
 
         notifier.resetCancellationStatus();
-        expect(
-          notifier.state.cancellationStatus,
-          EventCancellationStatus.idle,
-        );
+        expect(notifier.state.cancellationStatus, EventCancellationStatus.idle);
       });
     });
   });

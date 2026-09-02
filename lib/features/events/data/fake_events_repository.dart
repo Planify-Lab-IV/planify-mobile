@@ -1,23 +1,31 @@
 import '../domain/event.dart';
 import '../domain/event_draft.dart';
+import '../domain/event_status.dart';
 import '../domain/events_repository.dart';
 import 'event_exceptions.dart';
-import '../domain/event_status.dart';
 
 class FakeEventsRepository implements EventsRepository {
   final Duration delay;
   final bool shouldThrowError;
-  int _eventSequence = 1000;
   bool shouldFailCancellation;
+  int _eventSequence = 1000;
+  final Map<String, Event> _events = {};
 
   FakeEventsRepository({
     this.delay = const Duration(milliseconds: 300),
     this.shouldThrowError = false,
     this.shouldFailCancellation = false,
-  });
+    List<Event>? initialEvents,
+  }) {
+    if (initialEvents != null) {
+      for (final event in initialEvents) {
+        _events[event.id] = event;
+      }
+    }
+  }
 
   @override
-  Future<Event> createEvent(EventDraft draft) async {
+  Future<Event> createEvent(EventDraft draft, String organizerId) async {
     if (delay > Duration.zero) {
       await Future.delayed(delay);
     }
@@ -31,14 +39,20 @@ class FakeEventsRepository implements EventsRepository {
         ? 'grp-${DateTime.now().millisecondsSinceEpoch}'
         : (draft.selectedGroupId ?? 'grp-default');
 
-    return Event(
+    final event = Event(
       id: eventId,
       name: draft.name,
       location: draft.location,
+      organizerId: organizerId,
       groupId: groupId,
+      status: EventStatus.active,
       createdAt: DateTime.now(),
     );
+
+    _events[eventId] = event;
+    return event;
   }
+
   @override
   Future<Event?> getEvent(String eventId) async {
     if (delay > Duration.zero) {
@@ -53,7 +67,7 @@ class FakeEventsRepository implements EventsRepository {
       await Future.delayed(delay);
     }
 
-    if (shouldFailCancellation || eventId == errorEventId) {
+    if (shouldFailCancellation) {
       throw const EventCancellationException();
     }
 
