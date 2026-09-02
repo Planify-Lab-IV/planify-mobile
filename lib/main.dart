@@ -11,18 +11,47 @@ import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/auth/presentation/screens/login_screen.dart';
 import 'package:planify/features/home/presentation/screens/organizer_home_screen.dart';
 import 'package:planify/features/home/presentation/screens/participant_home_screen.dart';
+import 'package:planify/features/invitations/presentation/controllers/invitation_providers.dart';
+import 'package:planify/features/invitations/presentation/controllers/invitation_state.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends ConsumerWidget {
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends ConsumerState<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    // Inicia la escucha centralizada de deep links al arrancar la app
+    ref.read(deepLinkServiceProvider).listen((uri) {
+      ref.read(invitationNotifierProvider.notifier).handleDeepLink(uri);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Al autenticarse, limpia cualquier invitación pendiente para que no quede en memoria
+    ref.listen<AuthState>(authNotifierProvider, (previous, next) {
+      if (next is AuthAuthenticated) {
+        ref.read(invitationNotifierProvider.notifier).clearInvitation();
+      }
+    });
+
     final currentLocale = ref.watch(localeNotifierProvider);
     final authState = ref.watch(authNotifierProvider);
+    final invitationState = ref.watch(invitationNotifierProvider);
+
+    final resolvedEventId = switch (invitationState) {
+      InvitationResolved(:final eventId) => eventId,
+      _ => null,
+    };
 
     return MaterialApp(
       title: 'Planify',
@@ -51,7 +80,7 @@ class MyApp extends ConsumerWidget {
         AuthLoading() => const Scaffold(
           body: Center(child: CircularProgressIndicator()),
         ),
-        _ => const LoginScreen(),
+        _ => LoginScreen(eventId: resolvedEventId),
       },
     );
   }

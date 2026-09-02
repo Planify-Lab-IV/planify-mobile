@@ -132,5 +132,12 @@
     "eventNotFound": "Evento no encontrado",
     "eventCancelledNotice": "Este evento ha sido cancelado y ya no acepta nuevas acciones.",
     "eventActionsTooltip": "Opciones del evento",
-    "cancellingEvent": "Cancelando evento..."
+    "cancellingEvent": "Cancelando evento...",
+    "invitationErrorInvalid": "El enlace de invitación no es válido.",
+      "invitationErrorNotFound": "No se encontró el evento correspondiente a la invitación.",
+      "invitationErrorExpired": "La invitación ha expirado o ya no está disponible.",
+      "invitationErrorNetwork": "Error de conexión al validar la invitación. Verifica tu red.",
+      "invitationErrorGeneric": "No se pudo procesar la invitación. Intenta nuevamente.",
+      "invitationBannerEvent": "¡Tenés una invitación a un evento!",
+      "resolvingInvitation": "Cargando invitación..."
 }

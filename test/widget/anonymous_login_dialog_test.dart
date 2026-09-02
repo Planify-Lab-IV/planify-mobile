@@ -72,13 +72,13 @@ void main() {
     testWidgets('muestra badge de evento cuando eventId está presente', (
       tester,
     ) async {
-      await tester.pumpWidget(_buildDialogTestApp(eventId: 'EVT-9876'));
+      await tester.pumpWidget(_buildDialogTestApp(eventId: 'evt-cumple-lucas'));
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key('open_dialog_button')));
       await tester.pumpAndSettle();
 
-      expect(find.text('ID del Evento: EVT-9876'), findsOneWidget);
+      expect(find.text('Evento: Cumpleaños de Lucas'), findsOneWidget);
       expect(find.byIcon(Icons.event_available_rounded), findsOneWidget);
     });
 
