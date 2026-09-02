@@ -15,79 +15,67 @@ class EventHeaderCard extends StatelessWidget {
     final i18n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Chip de estado debajo del título
+        _buildStatusChip(context),
+        const SizedBox(height: AppSpacing.sm),
+
+        // Nombre del evento
+        Text(
+          event.name,
+          key: const Key('event_detail_name'),
+          style: theme.textTheme.headlineMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: AppColors.onSurface,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+
+        // Ubicación
+        Row(
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    event.name,
-                    key: const Key('event_detail_name'),
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.onSurface,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                _buildStatusChip(context),
-              ],
+            const Icon(
+              Icons.location_on_outlined,
+              size: 18,
+              color: AppColors.onSurfaceVariant,
             ),
-            const SizedBox(height: AppSpacing.md),
-            const Divider(color: AppColors.outline),
-            const SizedBox(height: AppSpacing.md),
-
-            // Ubicación
-            Row(
-              children: [
-                Icon(
-                  Icons.location_on_outlined,
-                  size: 20,
-                  color: theme.colorScheme.primary,
+            const SizedBox(width: AppSpacing.xs),
+            Expanded(
+              child: Text(
+                event.location,
+                key: const Key('event_detail_location'),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: AppColors.onSurfaceVariant,
                 ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Text(
-                    event.location,
-                    key: const Key('event_detail_location'),
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: AppColors.onSurfaceVariant,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.sm),
-
-            // Fecha
-            Row(
-              children: [
-                Icon(
-                  Icons.calendar_today_outlined,
-                  size: 20,
-                  color: theme.colorScheme.primary,
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Text(
-                    event.date ?? i18n.eventDateFallback,
-                    key: const Key('event_detail_date'),
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: AppColors.onSurfaceVariant,
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ],
         ),
-      ),
+        const SizedBox(height: AppSpacing.xs),
+
+        // Fecha
+        Row(
+          children: [
+            const Icon(
+              Icons.calendar_today_outlined,
+              size: 18,
+              color: AppColors.onSurfaceVariant,
+            ),
+            const SizedBox(width: AppSpacing.xs),
+            Expanded(
+              child: Text(
+                event.date ?? i18n.eventDateFallback,
+                key: const Key('event_detail_date'),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: AppColors.onSurfaceVariant,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 

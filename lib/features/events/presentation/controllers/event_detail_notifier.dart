@@ -67,6 +67,8 @@ class EventDetailNotifier extends StateNotifier<EventDetailState> {
 
     try {
       final event = await _repository.getEvent(_eventId);
+      if (!mounted) return;
+
       if (event == null) {
         state = state.copyWith(
           status: EventDetailStatus.error,
@@ -76,8 +78,13 @@ class EventDetailNotifier extends StateNotifier<EventDetailState> {
         state = state.copyWith(event: event, status: EventDetailStatus.success);
       }
     } on EventsException {
-      state = state.copyWith(status: EventDetailStatus.error);
+      if (!mounted) return;
+      state = state.copyWith(
+        status: EventDetailStatus.error,
+        errorMessage: 'Error al cargar el evento',
+      );
     } catch (_) {
+      if (!mounted) return;
       state = state.copyWith(
         status: EventDetailStatus.error,
         errorMessage: 'Error inesperado al cargar el evento',
@@ -104,6 +111,7 @@ class EventDetailNotifier extends StateNotifier<EventDetailState> {
 
     try {
       await _repository.cancel(currentEvent.id);
+      if (!mounted) return false;
 
       final updatedEvent = currentEvent.copyWith(status: EventStatus.cancelled);
 
@@ -114,9 +122,15 @@ class EventDetailNotifier extends StateNotifier<EventDetailState> {
       );
       return true;
     } on EventsException {
-      state = state.copyWith(isCancelling: false, cancellationSuccess: false);
+      if (!mounted) return false;
+      state = state.copyWith(
+        isCancelling: false,
+        errorMessage: 'No se pudo cancelar el evento. Intenta nuevamente.',
+        cancellationSuccess: false,
+      );
       return false;
     } catch (_) {
+      if (!mounted) return false;
       state = state.copyWith(
         isCancelling: false,
         errorMessage: 'No se pudo cancelar el evento. Intenta nuevamente.',

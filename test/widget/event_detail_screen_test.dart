@@ -304,7 +304,10 @@ void main() {
 
         // El diálogo se cierra y se muestra SnackBar de error con Reintentar
         expect(find.byType(CancelEventDialog), findsNothing);
-        expect(find.text('No se pudo cancelar el evento'), findsOneWidget);
+        expect(
+          find.textContaining('No se pudo cancelar el evento'),
+          findsOneWidget,
+        );
         expect(find.text('Reintentar'), findsOneWidget);
         expect(find.text('Activo'), findsOneWidget);
       },
