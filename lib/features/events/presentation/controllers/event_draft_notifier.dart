@@ -13,14 +13,41 @@ class EventDraftNotifier extends StateNotifier<EventDraft> {
     state = state.copyWith(name: name.trim(), location: location.trim());
   }
 
-  // actualiza el nombre del evento
   void updateName(String name) {
     state = state.copyWith(name: name.trim());
   }
 
-  // actualiza el lugar del evento
   void updateLocation(String location) {
     state = state.copyWith(location: location.trim());
+  }
+
+  void setIsNewGroup(bool isNew) {
+    state = state.copyWith(isNewGroup: isNew);
+  }
+
+  void setSelectedGroup({required String groupId, String? groupName}) {
+    state = state.copyWith(
+      selectedGroupId: groupId,
+      selectedGroupName: groupName,
+      isNewGroup: false,
+    );
+  }
+
+  void setNewGroupName(String name) {
+    state = state.copyWith(newGroupName: name.trim());
+  }
+
+  void addMember(String identifier) {
+    final clean = identifier.trim();
+    if (clean.isEmpty || state.newGroupMembers.contains(clean)) return;
+    state = state.copyWith(newGroupMembers: [...state.newGroupMembers, clean]);
+  }
+
+  void removeMember(String identifier) {
+    final clean = identifier.trim();
+    state = state.copyWith(
+      newGroupMembers: state.newGroupMembers.where((m) => m != clean).toList(),
+    );
   }
 
   void reset() {

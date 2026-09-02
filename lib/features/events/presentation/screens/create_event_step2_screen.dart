@@ -4,17 +4,106 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../controllers/event_creation_state.dart';
 import '../controllers/event_draft_providers.dart';
 import '../widgets/event_wizard_step_header.dart';
+import '../widgets/existing_group_section.dart';
+import '../widgets/group_mode_accordion_tile.dart';
+import '../widgets/new_group_section.dart';
+import 'create_event_success_screen.dart';
 
-class CreateEventStep2Screen extends ConsumerWidget {
+class CreateEventStep2Screen extends ConsumerStatefulWidget {
   const CreateEventStep2Screen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CreateEventStep2Screen> createState() =>
+      _CreateEventStep2ScreenState();
+}
+
+class _CreateEventStep2ScreenState
+    extends ConsumerState<CreateEventStep2Screen> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _newGroupNameController;
+  late final TextEditingController _memberIdentifierController;
+
+  @override
+  void initState() {
+    super.initState();
+    final draft = ref.read(eventDraftProvider);
+    _newGroupNameController = TextEditingController(
+      text: draft.newGroupName ?? '',
+    );
+    _memberIdentifierController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _newGroupNameController.dispose();
+    _memberIdentifierController.dispose();
+    super.dispose();
+  }
+
+  void _addMember() {
+    final text = _memberIdentifierController.text.trim();
+    if (text.isEmpty) return;
+
+    final draft = ref.read(eventDraftProvider);
+    if (draft.newGroupMembers.contains(text)) {
+      final i18n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(i18n.memberAlreadyAdded),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    ref.read(eventDraftProvider.notifier).addMember(text);
+    _memberIdentifierController.clear();
+  }
+
+  void _onSubmit() {
+    final draft = ref.read(eventDraftProvider);
+
+    if (draft.isNewGroup) {
+      if (!(_formKey.currentState?.validate() ?? false)) {
+        return;
+      }
+      ref
+          .read(eventDraftProvider.notifier)
+          .setNewGroupName(_newGroupNameController.text);
+    } else {
+      if (draft.selectedGroupId == null ||
+          draft.selectedGroupId!.trim().isEmpty) {
+        final i18n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(i18n.selectGroupRequired),
+            backgroundColor: AppColors.error,
+          ),
+        );
+        return;
+      }
+    }
+
+    FocusScope.of(context).unfocus();
+    final updatedDraft = ref.read(eventDraftProvider);
+    ref.read(createEventNotifierProvider.notifier).createEvent(updatedDraft);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final creationState = ref.watch(createEventNotifierProvider);
     final draft = ref.watch(eventDraftProvider);
+    final isLoading = creationState is EventCreationLoading;
+
+    // Vista de éxito / resumen del evento creado
+    if (creationState is EventCreationSuccess) {
+      return CreateEventSuccessScreen(event: creationState.event);
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -28,10 +117,11 @@ class CreateEventStep2Screen extends ConsumerWidget {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => Navigator.of(context).maybePop(),
+          onPressed: isLoading ? null : () => Navigator.of(context).maybePop(),
         ),
       ),
-      body: Center(
+      body: Align(
+        alignment: Alignment.topCenter,
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: ConstrainedBox(
@@ -46,151 +136,135 @@ class CreateEventStep2Screen extends ConsumerWidget {
                   subtitle: i18n.step2Subtitle,
                 ),
                 const SizedBox(height: AppSpacing.lg),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppSpacing.xl),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+
+                // Banner de error si falló la creación
+                if (creationState is EventCreationError) ...[
+                  Container(
+                    padding: const EdgeInsets.all(AppSpacing.sm),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.errorContainer,
+                      borderRadius: BorderRadius.circular(AppRadius.sm),
+                      border: Border.all(
+                        color: theme.colorScheme.error.withValues(alpha: 0.5),
+                      ),
+                    ),
+                    child: Row(
                       children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.fact_check_outlined,
-                              color: theme.colorScheme.primary,
+                        Icon(
+                          Icons.error_outline_rounded,
+                          color: theme.colorScheme.error,
+                          size: 20,
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: Text(
+                            i18n.createEventErrorGeneric,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onErrorContainer,
+                              fontWeight: FontWeight.w500,
                             ),
-                            const SizedBox(width: AppSpacing.sm),
-                            Text(
-                              i18n.draftSummaryTitle,
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.onSurface,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        const Divider(color: AppColors.outline),
-                        const SizedBox(height: AppSpacing.md),
-
-                        // Resumen: Nombre guardado en el borrador
-                        _buildDraftInfoTile(
-                          context,
-                          label: i18n.draftEventName,
-                          value: draft.name.isEmpty ? '-' : draft.name,
-                          valueKey: const Key('step2_draft_name'),
-                          icon: Icons.celebration_outlined,
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-
-                        // Resumen: Lugar guardado en el borrador
-                        _buildDraftInfoTile(
-                          context,
-                          label: i18n.draftEventLocation,
-                          value: draft.location.isEmpty ? '-' : draft.location,
-                          valueKey: const Key('step2_draft_location'),
-                          icon: Icons.location_on_outlined,
-                        ),
-                        const SizedBox(height: AppSpacing.lg),
-
-                        // Nota informativa sobre los próximos pasos
-                        Container(
-                          padding: const EdgeInsets.all(AppSpacing.md),
-                          decoration: BoxDecoration(
-                            color: AppColors.lightBlue.withValues(alpha: 0.5),
-                            borderRadius: BorderRadius.circular(AppRadius.sm),
-                            border: Border.all(color: AppColors.outline),
                           ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Icon(
-                                Icons.info_outline_rounded,
-                                color: AppColors.darkBlue,
-                                size: 20,
-                              ),
-                              const SizedBox(width: AppSpacing.sm),
-                              Expanded(
-                                child: Text(
-                                  i18n.step2Subtitle,
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    color: AppColors.darkBlue,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.xl),
-
-                        // Botón para volver al Paso 1
-                        OutlinedButton.icon(
-                          key: const Key('step2_back_button'),
-                          style: OutlinedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(50),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                AppRadius.card,
-                              ),
-                            ),
-                            side: const BorderSide(color: AppColors.primary),
-                          ),
-                          onPressed: () => Navigator.of(context).pop(),
-                          icon: const Icon(Icons.arrow_back_rounded),
-                          label: Text(i18n.backButton),
                         ),
                       ],
                     ),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                ],
+
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Selector de modo expandible (Acordeón de selección)
+                      Column(
+                        key: const Key('group_mode_selector'),
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // Opción 1: Grupo existente
+                          GroupModeAccordionTile(
+                            isSelected: !draft.isNewGroup,
+                            title: i18n.existingGroupOption,
+                            subtitle: i18n.existingGroupSubtitle,
+                            onTap: isLoading
+                                ? () {}
+                                : () => ref
+                                      .read(eventDraftProvider.notifier)
+                                      .setIsNewGroup(false),
+                            child: const ExistingGroupSection(),
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+
+                          // Opción 2: Crear grupo nuevo
+                          GroupModeAccordionTile(
+                            isSelected: draft.isNewGroup,
+                            title: i18n.newGroupOption,
+                            subtitle: i18n.newGroupSubtitle,
+                            onTap: isLoading
+                                ? () {}
+                                : () => ref
+                                      .read(eventDraftProvider.notifier)
+                                      .setIsNewGroup(true),
+                            child: NewGroupSection(
+                              groupNameController: _newGroupNameController,
+                              memberIdentifierController:
+                                  _memberIdentifierController,
+                              onAddMember: _addMember,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: AppSpacing.xl),
+
+                      // Botones de acción (Atrás y Crear Evento)
+                      Row(
+                        children: [
+                          OutlinedButton.icon(
+                            key: const Key('wizard_step2_back_button'),
+                            style: OutlinedButton.styleFrom(
+                              minimumSize: const Size(100, 52),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  AppRadius.card,
+                                ),
+                              ),
+                            ),
+                            onPressed: isLoading
+                                ? null
+                                : () => Navigator.of(context).pop(),
+                            icon: const Icon(Icons.arrow_back_rounded),
+                            label: Text(i18n.backButton),
+                          ),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              key: const Key('create_event_submit_button'),
+                              onPressed: isLoading ? null : _onSubmit,
+                              icon: isLoading
+                                  ? null
+                                  : const Icon(Icons.check_rounded),
+                              label: isLoading
+                                  ? const SizedBox(
+                                      width: 22,
+                                      height: 22,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2.5,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : Text(i18n.createEventSubmitButton),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildDraftInfoTile(
-    BuildContext context, {
-    required String label,
-    required String value,
-    required Key valueKey,
-    required IconData icon,
-  }) {
-    final theme = Theme.of(context);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.sm,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.circular(AppRadius.sm),
-        border: Border.all(color: AppColors.outline),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: 20, color: theme.colorScheme.primary),
-          const SizedBox(width: AppSpacing.sm),
-          Text(
-            '$label: ',
-            style: theme.textTheme.bodySmall?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              key: valueKey,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: AppColors.onSurface,
-                fontWeight: FontWeight.w500,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
       ),
     );
   }

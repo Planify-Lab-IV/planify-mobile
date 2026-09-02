@@ -1,46 +1,44 @@
 import '../domain/event.dart';
-import '../domain/event_status.dart';
+import '../domain/event_draft.dart';
 import '../domain/events_repository.dart';
 import 'event_exceptions.dart';
+import '../domain/event_status.dart';
 
 class FakeEventsRepository implements EventsRepository {
   final Duration delay;
-  final Map<String, Event> _events = {};
+  final bool shouldThrowError;
+  int _eventSequence = 1000;
   bool shouldFailCancellation;
 
-  static const String defaultEventId = 'evt-test-123';
-  static const String defaultOrganizerId = 'org-123';
-  static const String errorEventId = 'evt-error-123';
-
   FakeEventsRepository({
-    this.delay = const Duration(milliseconds: 500),
+    this.delay = const Duration(milliseconds: 300),
+    this.shouldThrowError = false,
     this.shouldFailCancellation = false,
-    List<Event>? initialEvents,
-  }) {
-    if (initialEvents != null) {
-      for (final event in initialEvents) {
-        _events[event.id] = event;
-      }
-    } else {
-      _events[defaultEventId] = const Event(
-        id: defaultEventId,
-        name: 'Cumpleaños de Lucas',
-        location: 'Av. Corrientes 1234',
-        organizerId: defaultOrganizerId,
-        status: EventStatus.active,
-        date: 'Sábado 15 de Noviembre, 21:00 hs',
-      );
-      _events[errorEventId] = const Event(
-        id: errorEventId,
-        name: 'Evento con Error',
-        location: 'Calle Falsa 123',
-        organizerId: defaultOrganizerId,
-        status: EventStatus.active,
-        date: 'Viernes 20 de Noviembre, 19:00 hs',
-      );
-    }
-  }
+  });
 
+  @override
+  Future<Event> createEvent(EventDraft draft) async {
+    if (delay > Duration.zero) {
+      await Future.delayed(delay);
+    }
+    if (shouldThrowError) {
+      throw Exception('Error al crear el evento');
+    }
+
+    _eventSequence++;
+    final eventId = 'evt-$_eventSequence';
+    final groupId = draft.isNewGroup
+        ? 'grp-${DateTime.now().millisecondsSinceEpoch}'
+        : (draft.selectedGroupId ?? 'grp-default');
+
+    return Event(
+      id: eventId,
+      name: draft.name,
+      location: draft.location,
+      groupId: groupId,
+      createdAt: DateTime.now(),
+    );
+  }
   @override
   Future<Event?> getEvent(String eventId) async {
     if (delay > Duration.zero) {

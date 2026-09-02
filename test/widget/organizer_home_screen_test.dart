@@ -8,7 +8,11 @@ import 'package:planify/data/secure_storage.dart';
 import 'package:planify/features/auth/data/fake_auth_repository.dart';
 import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
+import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/events/presentation/controllers/event_draft_providers.dart';
 import 'package:planify/features/events/presentation/screens/create_event_step1_screen.dart';
+import 'package:planify/features/groups/data/fake_groups_repository.dart';
+import 'package:planify/features/groups/presentation/controllers/groups_providers.dart';
 import 'package:planify/features/home/presentation/screens/organizer_home_screen.dart';
 import 'package:planify/l10n/app_localizations.dart';
 
@@ -32,6 +36,12 @@ void main() {
           ),
           secureStorageProvider.overrideWithValue(
             fakeStorage ?? FakeSecureStorage(),
+          ),
+          groupsRepositoryProvider.overrideWithValue(
+            FakeGroupsRepository(delay: Duration.zero),
+          ),
+          eventsRepositoryProvider.overrideWithValue(
+            FakeEventsRepository(delay: Duration.zero),
           ),
         ],
         child: MaterialApp(

@@ -4,6 +4,8 @@ class Event {
   final String id;
   final String name;
   final String location;
+  final String groupId;
+  final DateTime createdAt;
   final String organizerId;
   final EventStatus status;
   final String? date;
@@ -12,6 +14,8 @@ class Event {
     required this.id,
     required this.name,
     required this.location,
+    required this.groupId,
+    required this.createdAt,
     required this.organizerId,
     this.status = EventStatus.active,
     this.date,
@@ -46,6 +50,8 @@ class Event {
           id == other.id &&
           name == other.name &&
           location == other.location &&
+          groupId == other.groupId &&
+          createdAt == other.createdAt &&
           organizerId == other.organizerId &&
           status == other.status &&
           date == other.date;
@@ -55,12 +61,14 @@ class Event {
       id.hashCode ^
       name.hashCode ^
       location.hashCode ^
+      groupId.hashCode ^
+      createdAt.hashCode ^
       organizerId.hashCode ^
       status.hashCode ^
       date.hashCode;
 
   @override
   String toString() {
-    return 'Event(id: $id, name: $name, location: $location, organizerId: $organizerId, status: $status, date: $date)';
+    return 'Event(id: $id, name: $name, location: $location, groupId: $groupId, organizerId: $organizerId, status: $status, date: $date)';
   }
 }

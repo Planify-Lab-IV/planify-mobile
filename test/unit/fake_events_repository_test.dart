@@ -1,101 +1,71 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:planify/features/events/data/event_exceptions.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
-import 'package:planify/features/events/domain/event.dart';
-import 'package:planify/features/events/domain/event_status.dart';
+import 'package:planify/features/events/domain/event_draft.dart';
 
 void main() {
-  group('FakeEventsRepository Unit Tests', () {
+  group('FakeEventsRepository', () {
     late FakeEventsRepository repository;
 
     setUp(() {
       repository = FakeEventsRepository(delay: Duration.zero);
     });
 
-    test('getEvent retorna el evento por defecto', () async {
-      final event = await repository.getEvent(
-        FakeEventsRepository.defaultEventId,
-      );
-
-      expect(event, isNotNull);
-      expect(event!.id, FakeEventsRepository.defaultEventId);
-      expect(event.name, 'Cumpleaños de Lucas');
-      expect(event.location, 'Av. Corrientes 1234');
-      expect(event.organizerId, FakeEventsRepository.defaultOrganizerId);
-      expect(event.status, EventStatus.active);
-      expect(event.isActive, isTrue);
-    });
-
-    test('getEvent retorna null para ID inexistente', () async {
-      final event = await repository.getEvent('id-inexistente');
-      expect(event, isNull);
-    });
-
-    test('cancelar muta el estado del evento a cancelled en memoria', () async {
-      final initialEvent = await repository.getEvent(
-        FakeEventsRepository.defaultEventId,
-      );
-      expect(initialEvent?.status, EventStatus.active);
-
-      await repository.cancel(FakeEventsRepository.defaultEventId);
-
-      final updatedEvent = await repository.getEvent(
-        FakeEventsRepository.defaultEventId,
-      );
-      expect(updatedEvent?.status, EventStatus.cancelled);
-      expect(updatedEvent?.isCancelled, isTrue);
-      expect(updatedEvent?.isActive, isFalse);
-    });
-
-    test('cancelar arroja EventNotFoundException si el evento no existe', () {
-      expect(
-        () => repository.cancel('evento-desconocido'),
-        throwsA(isA<EventNotFoundException>()),
-      );
-    });
-
     test(
-      'cancelar arroja EventCancellationException si el evento es errorEventId',
-      () {
-        expect(
-          () => repository.cancel(FakeEventsRepository.errorEventId),
-          throwsA(isA<EventCancellationException>()),
+      'createEvent con grupo existente crea el evento con datos del grupo',
+      () async {
+        const draft = EventDraft(
+          name: 'Cumpleaños de Lucas',
+          location: 'Av. Corrientes 1234',
+          isNewGroup: false,
+          selectedGroupId: 'grp-1',
+          selectedGroupName: 'Amigos del Fútbol',
         );
+
+        final event = await repository.createEvent(draft);
+
+        expect(event.id, startsWith('evt-'));
+        expect(event.name, equals('Cumpleaños de Lucas'));
+        expect(event.location, equals('Av. Corrientes 1234'));
+        expect(event.groupId, equals('grp-1'));
       },
     );
 
     test(
-      'cancelar arroja EventCancellationException cuando shouldFailCancellation es true',
-      () {
-        repository.shouldFailCancellation = true;
-
-        expect(
-          () => repository.cancel(FakeEventsRepository.defaultEventId),
-          throwsA(isA<EventCancellationException>()),
+      'createEvent con grupo nuevo crea el evento asignando el grupo',
+      () async {
+        const draft = EventDraft(
+          name: 'Asado de Fin de Año',
+          location: 'Club Social',
+          isNewGroup: true,
+          newGroupName: 'Amigos de la Primaria',
+          newGroupMembers: ['juan@gmail.com', '@pedro123'],
         );
+
+        final event = await repository.createEvent(draft);
+
+        expect(event.id, startsWith('evt-'));
+        expect(event.name, equals('Asado de Fin de Año'));
+        expect(event.location, equals('Club Social'));
+        expect(event.groupId, startsWith('grp-'));
       },
     );
 
-    test('permite inicializar con lista personalizada de eventos', () async {
-      const customEvent = Event(
-        id: 'custom-123',
-        name: 'Hackathon',
-        location: 'Campus UTN',
-        organizerId: 'org-custom',
-        status: EventStatus.active,
-      );
+    test(
+      'createEvent arroja excepción cuando shouldThrowError es true',
+      () async {
+        final errorRepo = FakeEventsRepository(
+          delay: Duration.zero,
+          shouldThrowError: true,
+        );
 
-      final customRepo = FakeEventsRepository(
-        delay: Duration.zero,
-        initialEvents: [customEvent],
-      );
+        const draft = EventDraft(
+          name: 'Evento',
+          location: 'Lugar',
+          selectedGroupId: 'grp-1',
+        );
 
-      final fetched = await customRepo.getEvent('custom-123');
-      expect(fetched, equals(customEvent));
-
-      await customRepo.cancel('custom-123');
-      final afterCancel = await customRepo.getEvent('custom-123');
-      expect(afterCancel?.isCancelled, isTrue);
-    });
+        expect(() => errorRepo.createEvent(draft), throwsException);
+      },
+    );
   });
 }
