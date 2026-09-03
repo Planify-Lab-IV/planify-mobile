@@ -2,19 +2,24 @@ import '../domain/event.dart';
 import '../domain/event_draft.dart';
 import '../domain/event_status.dart';
 import '../domain/events_repository.dart';
+import '../domain/attendance_status.dart';
 import 'event_exceptions.dart';
 
 class FakeEventsRepository implements EventsRepository {
   final Duration delay;
   final bool shouldThrowError;
   bool shouldFailCancellation;
+  bool shouldFailAttendanceResponse;
   int _eventSequence = 1000;
   final Map<String, Event> _events = {};
+  final Map<({String eventId, String participantId}), AttendanceStatus>
+  _attendance = {};
 
   FakeEventsRepository({
     this.delay = const Duration(milliseconds: 300),
     this.shouldThrowError = false,
     this.shouldFailCancellation = false,
+    this.shouldFailAttendanceResponse = false,
     List<Event>? initialEvents,
   }) {
     final defaults = [
@@ -115,5 +120,46 @@ class FakeEventsRepository implements EventsRepository {
     }
 
     _events[eventId] = event.copyWith(status: EventStatus.cancelled);
+  }
+
+  @override
+  Future<AttendanceStatus?> getAttendance(
+    String eventId,
+    String participantId,
+  ) async {
+    if (delay > Duration.zero) {
+      await Future.delayed(delay);
+    }
+    if (!_events.containsKey(eventId)) {
+      throw const EventNotFoundException();
+    }
+    return _attendance[(eventId: eventId, participantId: participantId)];
+  }
+
+  @override
+  Future<void> confirmAssistance(
+    String eventId,
+    String participantId,
+    String state,
+  ) async {
+    if (delay > Duration.zero) {
+      await Future.delayed(delay);
+    }
+    if (shouldFailAttendanceResponse) {
+      throw const AttendanceResponseException();
+    }
+    if (!_events.containsKey(eventId)) {
+      throw const EventNotFoundException();
+    }
+
+    AttendanceStatus attendanceStatus;
+    try {
+      attendanceStatus = AttendanceStatus.values.byName(state);
+    } on ArgumentError {
+      throw const AttendanceResponseException();
+    }
+
+    _attendance[(eventId: eventId, participantId: participantId)] =
+        attendanceStatus;
   }
 }
