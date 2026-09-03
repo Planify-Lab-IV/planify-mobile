@@ -5,9 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
 import 'package:planify/features/events/domain/event_draft.dart';
-import 'package:planify/features/events/presentation/controllers/event_draft_notifier.dart';
-import 'package:planify/features/events/presentation/controllers/event_draft_providers.dart';
-import 'package:planify/features/events/presentation/screens/create_event_step2_screen.dart';
+import 'package:planify/features/events/creation/controllers/event_draft_notifier.dart';
+import 'package:planify/features/events/creation/controllers/event_draft_providers.dart';
+import 'package:planify/features/events/creation/screens/create_event_step2_screen.dart';
 import 'package:planify/features/groups/data/fake_groups_repository.dart';
 import 'package:planify/features/groups/domain/group.dart';
 import 'package:planify/features/groups/presentation/controllers/groups_providers.dart';
@@ -74,6 +74,8 @@ void main() {
         find.widgetWithText(ElevatedButton, 'Crear Evento'),
         findsOneWidget,
       );
+      await tester.tap(find.byKey(const Key('group_mode_selector')));
+      await tester.pumpAndSettle();
     });
 
     testWidgets('grupo existente: valida seleccion obligatoria de grupo', (
@@ -149,8 +151,18 @@ void main() {
         expect(find.byKey(const Key('created_event_location')), findsOneWidget);
         expect(find.text('Av. Corrientes 1234'), findsOneWidget);
         expect(find.byKey(const Key('created_event_group')), findsOneWidget);
-        expect(find.text('Amigos del Fútbol'), findsOneWidget);
+        expect(
+          find.byKey(const Key('view_event_detail_button')),
+          findsOneWidget,
+        );
+        expect(find.text('Ver detalle del evento'), findsOneWidget);
         expect(find.byKey(const Key('back_to_home_button')), findsOneWidget);
+
+        // Pulsa "Ver detalle del evento" y navega a EventDetailScreen
+        await tester.tap(find.byKey(const Key('view_event_detail_button')));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Detalle del evento'), findsOneWidget);
       },
     );
 

@@ -4,11 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/events/domain/event_draft.dart';
-import 'package:planify/features/events/presentation/controllers/event_draft_notifier.dart';
-import 'package:planify/features/events/presentation/controllers/event_draft_providers.dart';
-import 'package:planify/features/events/presentation/screens/create_event_step1_screen.dart';
+import 'package:planify/features/events/creation/controllers/event_draft_notifier.dart';
+import 'package:planify/features/events/creation/controllers/event_draft_providers.dart';
+import 'package:planify/features/events/creation/screens/create_event_step1_screen.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
-import 'package:planify/features/events/presentation/screens/create_event_step2_screen.dart';
+import 'package:planify/features/events/creation/screens/create_event_step2_screen.dart';
 import 'package:planify/features/groups/data/fake_groups_repository.dart';
 import 'package:planify/features/groups/presentation/controllers/groups_providers.dart';
 import 'package:planify/l10n/app_localizations.dart';
@@ -167,6 +167,8 @@ void main() {
       expect(find.byType(CreateEventStep2Screen), findsOneWidget);
       expect(find.text('Paso 2 de 2'), findsOneWidget);
       expect(find.text('Grupo y participantes'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('group_mode_selector')));
+      await tester.pumpAndSettle();
     });
 
     testWidgets(

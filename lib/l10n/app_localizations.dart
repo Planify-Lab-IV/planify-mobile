@@ -608,6 +608,12 @@ abstract class AppLocalizations {
   /// **'Volver al inicio'**
   String get backToHomeButton;
 
+  /// No description provided for @viewEventDetailButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver detalle del evento'**
+  String get viewEventDetailButton;
+
   /// No description provided for @draftSummaryTitle.
   ///
   /// In es, this message translates to:
@@ -637,6 +643,162 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Generación de eventos con IA disponible próximamente'**
   String get generateWithAiComingSoon;
+
+  /// No description provided for @eventDetailTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Detalle del evento'**
+  String get eventDetailTitle;
+
+  /// No description provided for @eventStatusLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado'**
+  String get eventStatusLabel;
+
+  /// No description provided for @eventStatusActive.
+  ///
+  /// In es, this message translates to:
+  /// **'Activo'**
+  String get eventStatusActive;
+
+  /// No description provided for @eventStatusCancelled.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelado'**
+  String get eventStatusCancelled;
+
+  /// No description provided for @eventDateFallback.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha a definir'**
+  String get eventDateFallback;
+
+  /// No description provided for @quickActionsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Acciones rápidas'**
+  String get quickActionsTitle;
+
+  /// No description provided for @quickActionInvite.
+  ///
+  /// In es, this message translates to:
+  /// **'Invitar'**
+  String get quickActionInvite;
+
+  /// No description provided for @quickActionAddExpense.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar gasto'**
+  String get quickActionAddExpense;
+
+  /// No description provided for @quickActionAddTask.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar tarea'**
+  String get quickActionAddTask;
+
+  /// No description provided for @quickActionSettle.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldar'**
+  String get quickActionSettle;
+
+  /// No description provided for @tasksSectionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tareas'**
+  String get tasksSectionTitle;
+
+  /// No description provided for @noTasksPlaceholder.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay tareas asignadas todavía.'**
+  String get noTasksPlaceholder;
+
+  /// No description provided for @activityLogSectionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Actividad reciente'**
+  String get activityLogSectionTitle;
+
+  /// No description provided for @noActivityPlaceholder.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin actividad registrada en este evento.'**
+  String get noActivityPlaceholder;
+
+  /// No description provided for @featureUnderDevelopment.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta funcionalidad estará disponible próximamente.'**
+  String get featureUnderDevelopment;
+
+  /// No description provided for @cancelEventAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar evento'**
+  String get cancelEventAction;
+
+  /// No description provided for @cancelEventDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cancelar evento?'**
+  String get cancelEventDialogTitle;
+
+  /// No description provided for @cancelEventDialogMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que querés cancelar este evento? Esta acción no se puede deshacer.'**
+  String get cancelEventDialogMessage;
+
+  /// No description provided for @cancelEventConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Sí, cancelar evento'**
+  String get cancelEventConfirm;
+
+  /// No description provided for @cancelEventDismiss.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver'**
+  String get cancelEventDismiss;
+
+  /// No description provided for @cancelEventSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'El evento fue cancelado correctamente.'**
+  String get cancelEventSuccess;
+
+  /// No description provided for @cancelEventError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cancelar el evento. Intenta nuevamente.'**
+  String get cancelEventError;
+
+  /// No description provided for @eventNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'Evento no encontrado'**
+  String get eventNotFound;
+
+  /// No description provided for @eventCancelledNotice.
+  ///
+  /// In es, this message translates to:
+  /// **'Este evento ha sido cancelado y ya no acepta nuevas acciones.'**
+  String get eventCancelledNotice;
+
+  /// No description provided for @eventActionsTooltip.
+  ///
+  /// In es, this message translates to:
+  /// **'Opciones del evento'**
+  String get eventActionsTooltip;
+
+  /// No description provided for @cancellingEvent.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelando evento...'**
+  String get cancellingEvent;
 
   /// No description provided for @invitationErrorInvalid.
   ///

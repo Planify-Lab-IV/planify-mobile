@@ -7,8 +7,8 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../auth/domain/user_session.dart';
 import '../../../auth/presentation/controllers/auth_providers.dart';
 import '../../../auth/presentation/controllers/auth_state.dart';
-import '../../../events/presentation/controllers/event_draft_providers.dart';
-import '../../../events/presentation/screens/create_event_step1_screen.dart';
+import '../../../events/creation/controllers/event_draft_providers.dart';
+import '../../../events/creation/screens/create_event_step1_screen.dart';
 
 class OrganizerHomeScreen extends ConsumerWidget {
   final OrganizerSession session;

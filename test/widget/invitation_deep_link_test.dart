@@ -5,6 +5,7 @@ import 'package:planify/core/providers/core_providers.dart';
 import 'package:planify/data/secure_storage.dart';
 import 'package:planify/features/auth/data/fake_auth_repository.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
+import 'package:planify/features/events/detail/screens/event_detail_screen.dart';
 import 'package:planify/features/home/presentation/screens/participant_home_screen.dart';
 import 'package:planify/features/invitations/data/fake_invitations_repository.dart';
 import 'package:planify/features/invitations/presentation/controllers/invitation_providers.dart';
@@ -92,6 +93,16 @@ void main() {
         // Debe navegar a ParticipantHomeScreen con la información del evento resuelto
         expect(find.byType(ParticipantHomeScreen), findsOneWidget);
         expect(find.text('¡Bienvenido, Lucas Invitado!'), findsOneWidget);
+        expect(find.text('Cumpleaños de Lucas'), findsOneWidget);
+
+        // Verifica y toca el botón para ver el detalle del evento
+        final detailButton = find.byKey(const Key('view_event_detail_button'));
+        expect(detailButton, findsOneWidget);
+        await tester.tap(detailButton);
+        await tester.pumpAndSettle();
+
+        // Debe navegar a EventDetailScreen
+        expect(find.byType(EventDetailScreen), findsOneWidget);
         expect(find.text('Cumpleaños de Lucas'), findsOneWidget);
       },
     );

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/events/domain/event_draft.dart';
-import 'package:planify/features/events/presentation/controllers/event_draft_notifier.dart';
+import 'package:planify/features/events/creation/controllers/event_draft_notifier.dart';
 
 void main() {
   group('EventDraft Domain Model', () {

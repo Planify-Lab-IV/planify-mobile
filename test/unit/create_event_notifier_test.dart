@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
 import 'package:planify/features/events/domain/event_draft.dart';
-import 'package:planify/features/events/presentation/controllers/create_event_notifier.dart';
-import 'package:planify/features/events/presentation/controllers/event_creation_state.dart';
+import 'package:planify/features/events/creation/controllers/create_event_notifier.dart';
+import 'package:planify/features/events/creation/controllers/event_creation_state.dart';
 
 void main() {
   group('CreateEventNotifier', () {
@@ -11,7 +11,7 @@ void main() {
 
     setUp(() {
       repository = FakeEventsRepository(delay: Duration.zero);
-      notifier = CreateEventNotifier(repository);
+      notifier = CreateEventNotifier(repository, 'org-123');
     });
 
     test('estado inicial es EventCreationInitial', () {
@@ -39,7 +39,7 @@ void main() {
         delay: Duration.zero,
         shouldThrowError: true,
       );
-      final errorNotifier = CreateEventNotifier(errorRepo);
+      final errorNotifier = CreateEventNotifier(errorRepo, 'org-123');
 
       const draft = EventDraft(
         name: 'Cumpleaños',
