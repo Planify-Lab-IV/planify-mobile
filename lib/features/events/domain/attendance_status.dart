@@ -1,0 +1,1 @@
+enum AttendanceStatus { confirmed, rejected }
