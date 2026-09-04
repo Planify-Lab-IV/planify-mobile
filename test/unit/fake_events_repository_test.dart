@@ -153,12 +153,12 @@ void main() {
       await repository.confirmAssistance(
         'evt-123',
         'participant-1',
-        AttendanceStatus.confirmed.name,
+        AttendanceResponse.confirmed,
       );
       await repository.confirmAssistance(
         'evt-123',
         'participant-2',
-        AttendanceStatus.rejected.name,
+        AttendanceResponse.rejected,
       );
 
       expect(
@@ -171,13 +171,6 @@ void main() {
       );
     });
 
-    test('rechaza estados de asistencia no soportados', () async {
-      expect(
-        () => repository.confirmAssistance('evt-123', 'participant-1', 'yes'),
-        throwsA(isA<AttendanceResponseException>()),
-      );
-    });
-
     test(
       'simula un error al responder asistencia sin guardar cambios',
       () async {
@@ -186,17 +179,17 @@ void main() {
           shouldFailAttendanceResponse: true,
         );
 
-        expect(
-          () => failingRepository.confirmAssistance(
+        await expectLater(
+          failingRepository.confirmAssistance(
             'evt-123',
             'participant-1',
-            AttendanceStatus.confirmed.name,
+            AttendanceResponse.confirmed,
           ),
           throwsA(isA<AttendanceResponseException>()),
         );
         expect(
           await failingRepository.getAttendance('evt-123', 'participant-1'),
-          isNull,
+          AttendanceStatus.noResponse,
         );
       },
     );

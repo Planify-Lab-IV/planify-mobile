@@ -67,7 +67,7 @@ void main() {
       await repository.confirmAssistance(
         eventId,
         participantId,
-        AttendanceStatus.confirmed.name,
+        AttendanceResponse.confirmed,
       );
 
       await tester.pumpWidget(buildSelector(repository));
@@ -94,7 +94,7 @@ void main() {
       await repository.confirmAssistance(
         eventId,
         participantId,
-        AttendanceStatus.confirmed.name,
+        AttendanceResponse.confirmed,
       );
       repository.shouldFailAttendanceResponse = true;
 

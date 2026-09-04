@@ -30,17 +30,17 @@ class AttendanceNotifier extends StateNotifier<AttendanceState> {
     }
   }
 
-  Future<void> respond(AttendanceStatus status) async {
+  Future<void> respond(AttendanceResponse response) async {
     if (state.isSaving) return;
 
     final previousStatus = state.status;
     state = state.copyWith(
-      status: status,
+      status: response.status,
       saveStatus: AttendanceSaveStatus.saving,
     );
 
     try {
-      await repository.confirmAssistance(eventId, participantId, status.name);
+      await repository.confirmAssistance(eventId, participantId, response);
       if (!mounted) return;
       state = state.copyWith(saveStatus: AttendanceSaveStatus.success);
     } catch (_) {

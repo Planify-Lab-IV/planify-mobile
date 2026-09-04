@@ -5,12 +5,12 @@ enum AttendanceLoadStatus { loading, success, error }
 enum AttendanceSaveStatus { idle, saving, success, error }
 
 class AttendanceState {
-  final AttendanceStatus? status;
+  final AttendanceStatus status;
   final AttendanceLoadStatus loadStatus;
   final AttendanceSaveStatus saveStatus;
 
   const AttendanceState({
-    this.status,
+    this.status = AttendanceStatus.noResponse,
     this.loadStatus = AttendanceLoadStatus.loading,
     this.saveStatus = AttendanceSaveStatus.idle,
   });

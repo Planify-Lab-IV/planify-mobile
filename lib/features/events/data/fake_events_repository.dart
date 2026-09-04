@@ -123,7 +123,7 @@ class FakeEventsRepository implements EventsRepository {
   }
 
   @override
-  Future<AttendanceStatus?> getAttendance(
+  Future<AttendanceStatus> getAttendance(
     String eventId,
     String participantId,
   ) async {
@@ -133,14 +133,15 @@ class FakeEventsRepository implements EventsRepository {
     if (!_events.containsKey(eventId)) {
       throw const EventNotFoundException();
     }
-    return _attendance[(eventId: eventId, participantId: participantId)];
+    return _attendance[(eventId: eventId, participantId: participantId)] ??
+        AttendanceStatus.noResponse;
   }
 
   @override
   Future<void> confirmAssistance(
     String eventId,
     String participantId,
-    String state,
+    AttendanceResponse response,
   ) async {
     if (delay > Duration.zero) {
       await Future.delayed(delay);
@@ -152,14 +153,7 @@ class FakeEventsRepository implements EventsRepository {
       throw const EventNotFoundException();
     }
 
-    AttendanceStatus attendanceStatus;
-    try {
-      attendanceStatus = AttendanceStatus.values.byName(state);
-    } on ArgumentError {
-      throw const AttendanceResponseException();
-    }
-
     _attendance[(eventId: eventId, participantId: participantId)] =
-        attendanceStatus;
+        response.status;
   }
 }

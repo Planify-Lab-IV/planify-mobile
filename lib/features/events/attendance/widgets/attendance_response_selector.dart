@@ -55,7 +55,7 @@ class AttendanceResponseSelector extends ConsumerWidget {
                       isSelected: state.status == AttendanceStatus.confirmed,
                       isSaving: state.isSaving,
                       onPressed: () =>
-                          notifier.respond(AttendanceStatus.confirmed),
+                          notifier.respond(AttendanceResponse.confirmed),
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
@@ -68,7 +68,7 @@ class AttendanceResponseSelector extends ConsumerWidget {
                       isSelected: state.status == AttendanceStatus.rejected,
                       isSaving: state.isSaving,
                       onPressed: () =>
-                          notifier.respond(AttendanceStatus.rejected),
+                          notifier.respond(AttendanceResponse.rejected),
                     ),
                   ),
                 ],
