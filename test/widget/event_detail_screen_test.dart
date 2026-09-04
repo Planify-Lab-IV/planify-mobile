@@ -174,6 +174,41 @@ void main() {
       expect(find.text('Cancelar evento'), findsNothing);
     });
 
+    testWidgets(
+      'el participante responde asistencia sin perder la posición del detalle',
+      (tester) async {
+        final repository = FakeEventsRepository(
+          delay: Duration.zero,
+          initialEvents: [testEvent],
+        );
+
+        await tester.pumpWidget(
+          buildDetailScreen(session: guestSession, customRepo: repository),
+        );
+        await tester.pump();
+        await tester.pump();
+
+        expect(
+          find.byKey(const Key('attendance_response_selector')),
+          findsOneWidget,
+        );
+
+        final scrollable = tester.state<ScrollableState>(
+          find.byType(Scrollable).first,
+        );
+        scrollable.position.jumpTo(20);
+        await tester.pump();
+        final positionBeforeResponse = scrollable.position.pixels;
+
+        await tester.tap(find.byKey(const Key('attendance_confirm_button')));
+        await tester.pump();
+        await tester.pump();
+
+        expect(find.widgetWithText(FilledButton, 'Voy'), findsOneWidget);
+        expect(scrollable.position.pixels, positionBeforeResponse);
+      },
+    );
+
     testWidgets('organizador de OTRO evento NO ve la opción Cancelar evento', (
       tester,
     ) async {

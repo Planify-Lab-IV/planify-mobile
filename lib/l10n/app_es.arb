@@ -139,5 +139,12 @@
       "invitationErrorNetwork": "Error de conexión al validar la invitación. Verifica tu red.",
       "invitationErrorGeneric": "No se pudo procesar la invitación. Intenta nuevamente.",
       "invitationBannerEvent": "¡Tenés una invitación a un evento!",
-      "resolvingInvitation": "Cargando invitación..."
+      "resolvingInvitation": "Cargando invitación...",
+      "attendanceTitle": "¿Vas a asistir?",
+      "attendanceGoing": "Voy",
+      "attendanceNotGoing": "No voy",
+      "attendanceConfirmed": "Confirmado",
+      "attendanceRejected": "Rechazado",
+      "attendancePending": "Sin respuesta",
+      "attendanceUpdateError": "No se pudo actualizar tu asistencia. Intenta nuevamente."
 }

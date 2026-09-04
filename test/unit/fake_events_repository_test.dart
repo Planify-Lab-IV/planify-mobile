@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/events/data/event_exceptions.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/events/domain/attendance_status.dart';
 import 'package:planify/features/events/domain/event.dart';
 import 'package:planify/features/events/domain/event_draft.dart';
 import 'package:planify/features/events/domain/event_status.dart';
@@ -147,6 +148,51 @@ void main() {
       final fetched = await customRepo.getEvent('custom-1');
       expect(fetched, equals(customEvent));
     });
+
+    test('guarda y recupera asistencia por evento y participante', () async {
+      await repository.confirmAssistance(
+        'evt-123',
+        'participant-1',
+        AttendanceResponse.confirmed,
+      );
+      await repository.confirmAssistance(
+        'evt-123',
+        'participant-2',
+        AttendanceResponse.rejected,
+      );
+
+      expect(
+        await repository.getAttendance('evt-123', 'participant-1'),
+        AttendanceStatus.confirmed,
+      );
+      expect(
+        await repository.getAttendance('evt-123', 'participant-2'),
+        AttendanceStatus.rejected,
+      );
+    });
+
+    test(
+      'simula un error al responder asistencia sin guardar cambios',
+      () async {
+        final failingRepository = FakeEventsRepository(
+          delay: Duration.zero,
+          shouldFailAttendanceResponse: true,
+        );
+
+        await expectLater(
+          failingRepository.confirmAssistance(
+            'evt-123',
+            'participant-1',
+            AttendanceResponse.confirmed,
+          ),
+          throwsA(isA<AttendanceResponseException>()),
+        );
+        expect(
+          await failingRepository.getAttendance('evt-123', 'participant-1'),
+          AttendanceStatus.noResponse,
+        );
+      },
+    );
 
     test(
       'carga eventos semilla por defecto cuando no se pasan initialEvents',
