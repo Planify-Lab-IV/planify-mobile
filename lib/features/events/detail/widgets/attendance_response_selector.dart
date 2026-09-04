@@ -34,14 +34,14 @@ class AttendanceResponseSelector extends ConsumerWidget {
           children: [
             Text(i18n.attendanceTitle, style: theme.textTheme.titleMedium),
             const SizedBox(height: AppSpacing.xs),
-            Text(
-              _statusLabel(i18n, state.status),
-              key: const Key('attendance_status_label'),
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: _statusColor(state.status),
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+            // Text(
+            //   _statusLabel(i18n, state.status),
+            //   key: const Key('attendance_status_label'),
+            //   style: theme.textTheme.bodyMedium?.copyWith(
+            //     color: _statusColor(state.status),
+            //     fontWeight: FontWeight.w600,
+            //   ),
+            // ),
             const SizedBox(height: AppSpacing.md),
             if (state.isLoading)
               const Center(
