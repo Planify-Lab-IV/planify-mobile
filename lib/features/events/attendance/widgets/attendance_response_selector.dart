@@ -88,22 +88,6 @@ class AttendanceResponseSelector extends ConsumerWidget {
       ),
     );
   }
-
-  String _statusLabel(AppLocalizations i18n, AttendanceStatus? status) {
-    return switch (status) {
-      AttendanceStatus.confirmed => i18n.attendanceConfirmed,
-      AttendanceStatus.rejected => i18n.attendanceRejected,
-      null => i18n.attendancePending,
-    };
-  }
-
-  Color _statusColor(AttendanceStatus? status) {
-    return switch (status) {
-      AttendanceStatus.confirmed => AppColors.success,
-      AttendanceStatus.rejected => AppColors.danger,
-      null => AppColors.onSurfaceVariant,
-    };
-  }
 }
 
 class _AttendanceButton extends StatelessWidget {

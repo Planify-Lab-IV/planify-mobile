@@ -37,7 +37,7 @@ void main() {
   }
 
   group('AttendanceResponseSelector', () {
-    testWidgets('confirma asistencia y muestra el estado confirmado', (
+    testWidgets('confirma asistencia y selecciona la acciÃ³n Voy', (
       tester,
     ) async {
       final repository = FakeEventsRepository(delay: Duration.zero);
@@ -46,13 +46,14 @@ void main() {
       await tester.pump();
       await tester.pump();
 
-      expect(find.text('Sin respuesta'), findsOneWidget);
+      expect(find.widgetWithText(OutlinedButton, 'Voy'), findsOneWidget);
+      expect(find.widgetWithText(OutlinedButton, 'No voy'), findsOneWidget);
       await tester.tap(find.byKey(const Key('attendance_confirm_button')));
       await tester.pump();
       await tester.pump();
 
-      expect(find.text('Confirmado'), findsOneWidget);
-      expect(find.byKey(const Key('attendance_reject_button')), findsOneWidget);
+      expect(find.widgetWithText(FilledButton, 'Voy'), findsOneWidget);
+      expect(find.widgetWithText(OutlinedButton, 'No voy'), findsOneWidget);
       expect(
         await repository.getAttendance(eventId, participantId),
         AttendanceStatus.confirmed,
@@ -73,12 +74,13 @@ void main() {
       await tester.pump();
       await tester.pump();
 
-      expect(find.text('Confirmado'), findsOneWidget);
+      expect(find.widgetWithText(FilledButton, 'Voy'), findsOneWidget);
       await tester.tap(find.byKey(const Key('attendance_reject_button')));
       await tester.pump();
       await tester.pump();
 
-      expect(find.text('Rechazado'), findsOneWidget);
+      expect(find.widgetWithText(OutlinedButton, 'Voy'), findsOneWidget);
+      expect(find.widgetWithText(FilledButton, 'No voy'), findsOneWidget);
       expect(
         await repository.getAttendance(eventId, participantId),
         AttendanceStatus.rejected,
@@ -104,7 +106,8 @@ void main() {
       await tester.pump();
       await tester.pump();
 
-      expect(find.text('Confirmado'), findsOneWidget);
+      expect(find.widgetWithText(FilledButton, 'Voy'), findsOneWidget);
+      expect(find.widgetWithText(OutlinedButton, 'No voy'), findsOneWidget);
       expect(find.byKey(const Key('attendance_error_message')), findsOneWidget);
       expect(
         await repository.getAttendance(eventId, participantId),

@@ -204,7 +204,7 @@ void main() {
         await tester.pump();
         await tester.pump();
 
-        expect(find.text('Confirmado'), findsOneWidget);
+        expect(find.widgetWithText(FilledButton, 'Voy'), findsOneWidget);
         expect(scrollable.position.pixels, positionBeforeResponse);
       },
     );
