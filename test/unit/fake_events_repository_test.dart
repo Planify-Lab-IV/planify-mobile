@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/events/data/event_exceptions.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/events/domain/attendance_status.dart';
 import 'package:planify/features/events/domain/event.dart';
 import 'package:planify/features/events/domain/event_draft.dart';
 import 'package:planify/features/events/domain/event_status.dart';
@@ -147,6 +148,58 @@ void main() {
       final fetched = await customRepo.getEvent('custom-1');
       expect(fetched, equals(customEvent));
     });
+
+    test('guarda y recupera asistencia por evento y participante', () async {
+      await repository.confirmAssistance(
+        'evt-123',
+        'participant-1',
+        AttendanceStatus.confirmed.name,
+      );
+      await repository.confirmAssistance(
+        'evt-123',
+        'participant-2',
+        AttendanceStatus.rejected.name,
+      );
+
+      expect(
+        await repository.getAttendance('evt-123', 'participant-1'),
+        AttendanceStatus.confirmed,
+      );
+      expect(
+        await repository.getAttendance('evt-123', 'participant-2'),
+        AttendanceStatus.rejected,
+      );
+    });
+
+    test('rechaza estados de asistencia no soportados', () async {
+      expect(
+        () => repository.confirmAssistance('evt-123', 'participant-1', 'yes'),
+        throwsA(isA<AttendanceResponseException>()),
+      );
+    });
+
+    test(
+      'simula un error al responder asistencia sin guardar cambios',
+      () async {
+        final failingRepository = FakeEventsRepository(
+          delay: Duration.zero,
+          shouldFailAttendanceResponse: true,
+        );
+
+        expect(
+          () => failingRepository.confirmAssistance(
+            'evt-123',
+            'participant-1',
+            AttendanceStatus.confirmed.name,
+          ),
+          throwsA(isA<AttendanceResponseException>()),
+        );
+        expect(
+          await failingRepository.getAttendance('evt-123', 'participant-1'),
+          isNull,
+        );
+      },
+    );
 
     test(
       'carga eventos semilla por defecto cuando no se pasan initialEvents',
