@@ -9,7 +9,7 @@ import '../widgets/cancel_event_dialog.dart';
 import '../widgets/event_header_card.dart';
 import '../widgets/event_quick_actions_card.dart';
 import '../widgets/event_section_placeholder_card.dart';
-import '../widgets/attendance_response_selector.dart';
+import '../../attendance/widgets/attendance_response_selector.dart';
 
 class EventDetailScreen extends ConsumerWidget {
   final String eventId;

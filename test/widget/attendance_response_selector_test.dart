@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
 import 'package:planify/features/events/detail/controllers/events_providers.dart';
-import 'package:planify/features/events/detail/widgets/attendance_response_selector.dart';
+import 'package:planify/features/events/attendance/widgets/attendance_response_selector.dart';
 import 'package:planify/features/events/domain/attendance_status.dart';
 import 'package:planify/l10n/app_localizations.dart';
 

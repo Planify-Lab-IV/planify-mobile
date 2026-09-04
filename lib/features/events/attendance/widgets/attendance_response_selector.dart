@@ -5,7 +5,7 @@ import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/attendance_status.dart';
-import '../controllers/events_providers.dart';
+import '../../detail/controllers/events_providers.dart';
 
 class AttendanceResponseSelector extends ConsumerWidget {
   final String eventId;
@@ -34,14 +34,6 @@ class AttendanceResponseSelector extends ConsumerWidget {
           children: [
             Text(i18n.attendanceTitle, style: theme.textTheme.titleMedium),
             const SizedBox(height: AppSpacing.xs),
-            // Text(
-            //   _statusLabel(i18n, state.status),
-            //   key: const Key('attendance_status_label'),
-            //   style: theme.textTheme.bodyMedium?.copyWith(
-            //     color: _statusColor(state.status),
-            //     fontWeight: FontWeight.w600,
-            //   ),
-            // ),
             const SizedBox(height: AppSpacing.md),
             if (state.isLoading)
               const Center(

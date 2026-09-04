@@ -5,8 +5,8 @@ import '../../data/fake_events_repository.dart';
 import '../../domain/events_repository.dart';
 import 'event_detail_notifier.dart';
 import 'event_detail_state.dart';
-import 'attendance_notifier.dart';
-import 'attendance_state.dart';
+import '../../attendance/controllers/attendance_notifier.dart';
+import '../../attendance/controllers/attendance_state.dart';
 
 final eventsRepositoryProvider = Provider<EventsRepository>((ref) {
   // Punto de extensión: en PLANIFY-41 se puede reemplazar por HttpEventsRepository(dio: ref.watch(dioClientProvider))
