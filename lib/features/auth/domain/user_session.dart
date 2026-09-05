@@ -1,4 +1,4 @@
-enum UserRole { organizer, attendee, admin, anonymous }
+enum UserRole { organizer, anonymous }
 
 sealed class UserSession {
   final String userId;
@@ -19,11 +19,13 @@ sealed class UserSession {
 
 class OrganizerSession extends UserSession {
   final String email;
+  final String username;
 
   const OrganizerSession({
     required super.userId,
     required super.name,
     required this.email,
+    required this.username,
     required super.token,
   }) : super(role: UserRole.organizer);
 
@@ -38,6 +40,7 @@ class OrganizerSession extends UserSession {
           runtimeType == other.runtimeType &&
           userId == other.userId &&
           email == other.email &&
+          username == other.username &&
           name == other.name &&
           role == other.role &&
           token == other.token;
@@ -50,13 +53,14 @@ class OrganizerSession extends UserSession {
   int get hashCode =>
       userId.hashCode ^
       email.hashCode ^
+      username.hashCode ^
       name.hashCode ^
       role.hashCode ^
       token.hashCode;
 
   @override
   String toString() {
-    return 'OrganizerSession(userId: $userId, email: $email, name: $name, role: $role)';
+    return 'OrganizerSession(userId: $userId, username: $username, email: $email, name: $name, role: $role)';
   }
 }
 

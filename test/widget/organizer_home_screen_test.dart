@@ -22,6 +22,7 @@ void main() {
       userId: 'usr-123',
       email: 'organizador@planify.com',
       name: 'Lucas',
+      username: 'lucas',
       token: 'fake-jwt-token',
     );
 

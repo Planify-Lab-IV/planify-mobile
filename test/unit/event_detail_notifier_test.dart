@@ -29,6 +29,7 @@ void main() {
       userId: testOrganizerId,
       email: 'lucas@planify.com',
       name: 'Lucas',
+      username: 'lucas',
       token: 'fake-token',
     );
 
@@ -36,6 +37,7 @@ void main() {
       userId: otherUserId,
       email: 'otro@planify.com',
       name: 'Otro Organizador',
+      username: 'otro',
       token: 'fake-token-2',
     );
 
@@ -100,6 +102,7 @@ void main() {
             userId: '  ',
             email: '',
             name: '',
+            username: '',
             token: '',
           );
           final emptyOrganizerEvent = Event(

@@ -123,9 +123,6 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                 validator: (value) {
                   final trimmed = value?.trim() ?? '';
                   if (trimmed.isEmpty) return i18n.identifierRequired;
-                  if (trimmed.contains('@') && !trimmed.contains('.')) {
-                    return i18n.identifierInvalid;
-                  }
                   return null;
                 },
               ),
