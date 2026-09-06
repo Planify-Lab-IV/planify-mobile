@@ -10,7 +10,7 @@ class DioClient {
     // baseUrl es la url del backend
     final baseUrl = const String.fromEnvironment(
       'API_BASE_URL',
-      defaultValue: 'http://localhost:8080',
+      defaultValue: 'http://10.0.2.2:3000',
     );
 
     // aca se especifica cuanto tiempo espera la app antes de cancelar la request
