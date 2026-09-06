@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'secure_storage.dart';
 
 // Dio es una libreria que sirve para hacer peticiones HTTP (como axios)
@@ -49,11 +48,6 @@ class DioClient {
         },
       ),
     );
-
-    // si corres la app en debug logea todo
-    if (kDebugMode) {
-      dio.interceptors.add(LogInterceptor());
-    }
 
     return dio;
   }
