@@ -421,4 +421,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get attendanceUpdateError =>
       'We could not update your attendance. Please try again.';
+
+  @override
+  String get eventConfigTitle => 'Event configuration';
+
+  @override
+  String get eventConfigAction => 'Configure participation';
 }

@@ -146,5 +146,7 @@
     "attendanceConfirmed": "Confirmed",
     "attendanceRejected": "Rejected",
     "attendancePending": "No response",
-    "attendanceUpdateError": "We could not update your attendance. Please try again."
+    "attendanceUpdateError": "We could not update your attendance. Please try again.",
+    "eventConfigTitle": "Event configuration",
+    "eventConfigAction": "Configure participation"
 }

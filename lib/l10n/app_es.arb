@@ -146,5 +146,7 @@
       "attendanceConfirmed": "Confirmado",
       "attendanceRejected": "Rechazado",
       "attendancePending": "Sin respuesta",
-      "attendanceUpdateError": "No se pudo actualizar tu asistencia. Intenta nuevamente."
+      "attendanceUpdateError": "No se pudo actualizar tu asistencia. Intenta nuevamente.",
+      "eventConfigTitle": "Configuración del evento",
+      "eventConfigAction": "Configurar participación"
 }

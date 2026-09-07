@@ -883,6 +883,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No se pudo actualizar tu asistencia. Intenta nuevamente.'**
   String get attendanceUpdateError;
+
+  /// No description provided for @eventConfigTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Configuración del evento'**
+  String get eventConfigTitle;
+
+  /// No description provided for @eventConfigAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Configurar participación'**
+  String get eventConfigAction;
 }
 
 class _AppLocalizationsDelegate
