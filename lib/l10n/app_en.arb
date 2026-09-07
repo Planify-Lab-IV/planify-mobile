@@ -139,5 +139,12 @@
     "invitationErrorNetwork": "Network error while validating invitation. Please check your connection.",
     "invitationErrorGeneric": "Could not process invitation. Please try again.",
     "invitationBannerEvent": "You have an event invitation!",
-    "resolvingInvitation": "Loading invitation..."
+    "resolvingInvitation": "Loading invitation...",
+    "attendanceTitle": "Will you attend?",
+    "attendanceGoing": "Going",
+    "attendanceNotGoing": "Not going",
+    "attendanceConfirmed": "Confirmed",
+    "attendanceRejected": "Rejected",
+    "attendancePending": "No response",
+    "attendanceUpdateError": "We could not update your attendance. Please try again."
 }

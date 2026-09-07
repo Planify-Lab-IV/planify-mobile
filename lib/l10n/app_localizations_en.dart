@@ -399,4 +399,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resolvingInvitation => 'Loading invitation...';
+
+  @override
+  String get attendanceTitle => 'Will you attend?';
+
+  @override
+  String get attendanceGoing => 'Going';
+
+  @override
+  String get attendanceNotGoing => 'Not going';
+
+  @override
+  String get attendanceConfirmed => 'Confirmed';
+
+  @override
+  String get attendanceRejected => 'Rejected';
+
+  @override
+  String get attendancePending => 'No response';
+
+  @override
+  String get attendanceUpdateError =>
+      'We could not update your attendance. Please try again.';
 }

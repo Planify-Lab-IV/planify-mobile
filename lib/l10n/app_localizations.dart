@@ -841,6 +841,48 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Cargando invitación...'**
   String get resolvingInvitation;
+
+  /// No description provided for @attendanceTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Vas a asistir?'**
+  String get attendanceTitle;
+
+  /// No description provided for @attendanceGoing.
+  ///
+  /// In es, this message translates to:
+  /// **'Voy'**
+  String get attendanceGoing;
+
+  /// No description provided for @attendanceNotGoing.
+  ///
+  /// In es, this message translates to:
+  /// **'No voy'**
+  String get attendanceNotGoing;
+
+  /// No description provided for @attendanceConfirmed.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmado'**
+  String get attendanceConfirmed;
+
+  /// No description provided for @attendanceRejected.
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazado'**
+  String get attendanceRejected;
+
+  /// No description provided for @attendancePending.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin respuesta'**
+  String get attendancePending;
+
+  /// No description provided for @attendanceUpdateError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo actualizar tu asistencia. Intenta nuevamente.'**
+  String get attendanceUpdateError;
 }
 
 class _AppLocalizationsDelegate

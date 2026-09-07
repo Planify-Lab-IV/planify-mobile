@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/events/data/event_exceptions.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/events/domain/attendance_status.dart';
 import 'package:planify/features/events/domain/event.dart';
 import 'package:planify/features/events/domain/event_draft.dart';
 import 'package:planify/features/events/domain/event_status.dart';
@@ -147,6 +148,43 @@ void main() {
       final fetched = await customRepo.getEvent('custom-1');
       expect(fetched, equals(customEvent));
     });
+
+    test(
+      'guarda y recupera la asistencia del usuario actual por evento',
+      () async {
+        await repository.updateCurrentUserAttendance(
+          'evt-123',
+          AttendanceResponse.confirmed,
+        );
+
+        expect(
+          await repository.getCurrentUserAttendance('evt-123'),
+          AttendanceStatus.confirmed,
+        );
+      },
+    );
+
+    test(
+      'simula un error al responder asistencia sin guardar cambios',
+      () async {
+        final failingRepository = FakeEventsRepository(
+          delay: Duration.zero,
+          shouldFailAttendanceResponse: true,
+        );
+
+        await expectLater(
+          failingRepository.updateCurrentUserAttendance(
+            'evt-123',
+            AttendanceResponse.confirmed,
+          ),
+          throwsA(isA<AttendanceResponseException>()),
+        );
+        expect(
+          await failingRepository.getCurrentUserAttendance('evt-123'),
+          AttendanceStatus.noResponse,
+        );
+      },
+    );
 
     test(
       'carga eventos semilla por defecto cuando no se pasan initialEvents',
