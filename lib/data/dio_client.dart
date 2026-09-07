@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'secure_storage.dart';
 
 // Dio es una libreria que sirve para hacer peticiones HTTP (como axios)
@@ -10,7 +9,7 @@ class DioClient {
     // baseUrl es la url del backend
     final baseUrl = const String.fromEnvironment(
       'API_BASE_URL',
-      defaultValue: 'http://localhost:8080',
+      defaultValue: 'http://10.0.2.2:3000',
     );
 
     // aca se especifica cuanto tiempo espera la app antes de cancelar la request
@@ -49,11 +48,6 @@ class DioClient {
         },
       ),
     );
-
-    // si corres la app en debug logea todo
-    if (kDebugMode) {
-      dio.interceptors.add(LogInterceptor());
-    }
 
     return dio;
   }

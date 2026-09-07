@@ -34,6 +34,7 @@ void main() {
       userId: testOrganizerId,
       email: 'lucas@planify.com',
       name: 'Lucas',
+      username: 'lucas',
       token: 'fake-token',
     );
 
@@ -41,6 +42,7 @@ void main() {
       userId: 'org-999',
       email: 'otro@planify.com',
       name: 'Otro Organizador',
+      username: 'otro',
       token: 'fake-token-2',
     );
 
