@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/theme/app_spacing.dart';
 import '../../../../../l10n/app_localizations.dart';
+import '../../../attendance/widgets/attendance_response_selector.dart';
 
 class EventConfigScreen extends StatelessWidget {
   final String eventId;
@@ -21,6 +23,15 @@ class EventConfigScreen extends StatelessWidget {
           ),
         ),
         backgroundColor: theme.colorScheme.primaryContainer,
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 600),
+            child: AttendanceResponseSelector(eventId: eventId),
+          ),
+        ),
       ),
     );
   }

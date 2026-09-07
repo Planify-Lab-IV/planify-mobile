@@ -215,6 +215,9 @@ void main() {
         await tester.pump();
         await tester.pump();
 
+        await tester.tap(find.byKey(const Key('event_config_button')));
+        await tester.pumpAndSettle();
+
         expect(
           find.byKey(const Key('attendance_response_selector')),
           findsOneWidget,
