@@ -43,6 +43,9 @@ class FakeAuthRepository implements AuthRepository {
       email: isEmail ? trimmedIdentifier : '$trimmedIdentifier@example.com',
       // lo mismo aca
       name: isEmail ? trimmedIdentifier.split('@').first : trimmedIdentifier,
+      username: isEmail
+          ? trimmedIdentifier.split('@').first
+          : trimmedIdentifier,
       token:
           'fake-org-token:$trimmedIdentifier:${DateTime.now().millisecondsSinceEpoch}',
     );
@@ -127,16 +130,6 @@ class FakeAuthRepository implements AuthRepository {
       return _currentSession;
     }
 
-    final email = parts.length > 1 ? parts[1] : '';
-    final name = email.contains('@') ? email.split('@').first : email;
-
-    _currentSession = OrganizerSession(
-      userId: 'org-${email.hashCode.abs()}',
-      email: email,
-      name: name,
-      token: token,
-    );
-
-    return _currentSession;
+    return null;
   }
 }

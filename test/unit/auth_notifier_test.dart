@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:dio/dio.dart';
 import 'package:planify/data/secure_storage.dart';
 import 'package:planify/features/auth/data/fake_auth_repository.dart';
+import 'package:planify/features/auth/data/http_auth_repository.dart';
 import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_notifier.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_state.dart';
@@ -104,17 +106,26 @@ void main() {
       expect(storedToken, isNull);
     });
 
-    test('checkAuthStatus restaura sesion si hay token guardado', () async {
-      await storage.saveToken('fake-org-token:lucas@gmail.com:123456');
+    test(
+      'checkAuthStatus does not reconstruct an organizer session from a token',
+      () async {
+        await storage.saveToken('fake-org-token:lucas@gmail.com:123456');
 
-      await notifier.checkAuthStatus();
+        notifier = AuthNotifier(
+          HttpAuthRepository(
+            dio: Dio(),
+            anonymousRepository: FakeAuthRepository(
+              storage: storage,
+              delay: Duration.zero,
+            ),
+          ),
+          storage,
+        );
 
-      expect(notifier.state, isA<AuthAuthenticated>());
-      final authState = notifier.state as AuthAuthenticated;
-      expect(authState.session, isA<OrganizerSession>());
-      final orgSession = authState.session as OrganizerSession;
-      expect(orgSession.email, equals('lucas@gmail.com'));
-      expect(orgSession.name, equals('lucas'));
-    });
+        await notifier.checkAuthStatus();
+
+        expect(notifier.state, isA<AuthUnauthenticated>());
+      },
+    );
   });
 }
