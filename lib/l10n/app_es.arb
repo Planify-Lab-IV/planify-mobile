@@ -148,5 +148,18 @@
       "attendancePending": "Sin respuesta",
       "attendanceUpdateError": "No se pudo actualizar tu asistencia. Intenta nuevamente.",
       "eventConfigTitle": "Configuración del evento",
-      "eventConfigAction": "Configurar participación"
+      "eventConfigAction": "Configurar participación",
+      "availabilityTitle": "Disponibilidad semanal",
+      "availabilitySubtitle": "Marcá los horarios en los que estás disponible.",
+      "availabilitySave": "Guardar disponibilidad",
+      "availabilityLoadError": "No se pudo cargar tu disponibilidad.",
+      "availabilitySaveSuccess": "Tu disponibilidad fue guardada.",
+      "availabilitySaveError": "No se pudo guardar tu disponibilidad. Intenta nuevamente.",
+      "availabilityMondayShort": "L",
+      "availabilityTuesdayShort": "M",
+      "availabilityWednesdayShort": "X",
+      "availabilityThursdayShort": "J",
+      "availabilityFridayShort": "V",
+      "availabilitySaturdayShort": "S",
+      "availabilitySundayShort": "D"
 }

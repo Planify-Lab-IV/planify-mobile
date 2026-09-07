@@ -148,5 +148,18 @@
     "attendancePending": "No response",
     "attendanceUpdateError": "We could not update your attendance. Please try again.",
     "eventConfigTitle": "Event configuration",
-    "eventConfigAction": "Configure participation"
+    "eventConfigAction": "Configure participation",
+    "availabilityTitle": "Weekly availability",
+    "availabilitySubtitle": "Select the times when you are available.",
+    "availabilitySave": "Save availability",
+    "availabilityLoadError": "We could not load your availability.",
+    "availabilitySaveSuccess": "Your availability was saved.",
+    "availabilitySaveError": "We could not save your availability. Please try again.",
+    "availabilityMondayShort": "M",
+    "availabilityTuesdayShort": "T",
+    "availabilityWednesdayShort": "W",
+    "availabilityThursdayShort": "T",
+    "availabilityFridayShort": "F",
+    "availabilitySaturdayShort": "S",
+    "availabilitySundayShort": "S"
 }

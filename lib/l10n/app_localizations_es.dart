@@ -432,4 +432,45 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get eventConfigAction => 'Configurar participación';
+
+  @override
+  String get availabilityTitle => 'Disponibilidad semanal';
+
+  @override
+  String get availabilitySubtitle =>
+      'Marcá los horarios en los que estás disponible.';
+
+  @override
+  String get availabilitySave => 'Guardar disponibilidad';
+
+  @override
+  String get availabilityLoadError => 'No se pudo cargar tu disponibilidad.';
+
+  @override
+  String get availabilitySaveSuccess => 'Tu disponibilidad fue guardada.';
+
+  @override
+  String get availabilitySaveError =>
+      'No se pudo guardar tu disponibilidad. Intenta nuevamente.';
+
+  @override
+  String get availabilityMondayShort => 'L';
+
+  @override
+  String get availabilityTuesdayShort => 'M';
+
+  @override
+  String get availabilityWednesdayShort => 'X';
+
+  @override
+  String get availabilityThursdayShort => 'J';
+
+  @override
+  String get availabilityFridayShort => 'V';
+
+  @override
+  String get availabilitySaturdayShort => 'S';
+
+  @override
+  String get availabilitySundayShort => 'D';
 }
