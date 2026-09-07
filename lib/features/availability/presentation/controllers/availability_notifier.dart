@@ -8,10 +8,8 @@ class AvailabilityNotifier extends StateNotifier<AvailabilityState> {
   final AvailabilityRepository repository;
   final String eventId;
 
-  AvailabilityNotifier({
-    required this.repository,
-    required this.eventId,
-  }) : super(AvailabilityState()) {
+  AvailabilityNotifier({required this.repository, required this.eventId})
+    : super(AvailabilityState()) {
     load();
   }
 

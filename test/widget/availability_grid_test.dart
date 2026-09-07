@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:planify/core/theme/app_radius.dart';
+import 'package:planify/core/theme/app_spacing.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/availability/domain/slot.dart';
 import 'package:planify/features/availability/presentation/widgets/availability_grid.dart';
@@ -32,10 +34,7 @@ void main() {
     final toggledSlots = <Slot>[];
 
     await tester.pumpWidget(
-      buildGrid(
-        onToggleSlot: toggledSlots.add,
-        onMarkSlot: (_) {},
-      ),
+      buildGrid(onToggleSlot: toggledSlots.add, onMarkSlot: (_) {}),
     );
 
     await tester.tap(find.byKey(const Key('availability_slot_3_0')));
@@ -43,14 +42,13 @@ void main() {
     expect(toggledSlots, [Slot(dayOfWeek: 3, hour: 0)]);
   });
 
-  testWidgets('drag marks each slot it crosses without toggling', (tester) async {
+  testWidgets('drag marks each slot it crosses without toggling', (
+    tester,
+  ) async {
     final markedSlots = <Slot>{};
 
     await tester.pumpWidget(
-      buildGrid(
-        onToggleSlot: (_) {},
-        onMarkSlot: markedSlots.add,
-      ),
+      buildGrid(onToggleSlot: (_) {}, onMarkSlot: markedSlots.add),
     );
 
     final firstCell = find.byKey(const Key('availability_slot_0_0'));
@@ -92,5 +90,34 @@ void main() {
 
     expect(selectedDecoration.color, colorScheme.primary);
     expect(unselectedDecoration.color, colorScheme.surfaceContainerHighest);
+  });
+
+  testWidgets('groups labels and slots in a rounded card with spaced slots', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildGrid(onToggleSlot: (_) {}, onMarkSlot: (_) {}),
+    );
+
+    final card = tester.widget<Card>(find.byType(Card));
+    final cardShape = card.shape! as RoundedRectangleBorder;
+    final grid = tester.widget<GridView>(
+      find.byKey(const Key('availability_grid')),
+    );
+    final delegate =
+        grid.gridDelegate as SliverGridDelegateWithFixedCrossAxisCount;
+    final decoration =
+        tester
+                .widget<Container>(
+                  find.byKey(const Key('availability_slot_0_0')),
+                )
+                .decoration!
+            as BoxDecoration;
+
+    expect(cardShape.borderRadius, BorderRadius.circular(AppRadius.card));
+    expect(delegate.crossAxisSpacing, AppSpacing.sm);
+    expect(delegate.mainAxisSpacing, AppSpacing.sm);
+    expect(delegate.childAspectRatio, 1.25);
+    expect(decoration.borderRadius, BorderRadius.circular(6));
   });
 }

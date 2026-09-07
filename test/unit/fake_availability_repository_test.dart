@@ -4,11 +4,14 @@ import 'package:planify/features/availability/domain/slot.dart';
 
 void main() {
   group('FakeAvailabilityRepository', () {
-    test('returns an empty availability when an event has no saved slots', () async {
-      final repository = FakeAvailabilityRepository(delay: Duration.zero);
+    test(
+      'returns an empty availability when an event has no saved slots',
+      () async {
+        final repository = FakeAvailabilityRepository(delay: Duration.zero);
 
-      expect(await repository.load('evt-1'), isEmpty);
-    });
+        expect(await repository.load('evt-1'), isEmpty);
+      },
+    );
 
     test('loads the availability supplied for an event', () async {
       final initialSlots = [
@@ -40,18 +43,21 @@ void main() {
       expect(await repository.load('evt-1'), replacementSlots);
     });
 
-    test('does not expose mutable references to its stored availability', () async {
-      final initialSlots = [Slot(dayOfWeek: 1, hour: 9)];
-      final repository = FakeAvailabilityRepository(
-        delay: Duration.zero,
-        initialAvailabilityByEvent: {'evt-1': initialSlots},
-      );
+    test(
+      'does not expose mutable references to its stored availability',
+      () async {
+        final initialSlots = [Slot(dayOfWeek: 1, hour: 9)];
+        final repository = FakeAvailabilityRepository(
+          delay: Duration.zero,
+          initialAvailabilityByEvent: {'evt-1': initialSlots},
+        );
 
-      initialSlots.add(Slot(dayOfWeek: 2, hour: 10));
-      final loadedSlots = await repository.load('evt-1');
-      loadedSlots.add(Slot(dayOfWeek: 3, hour: 11));
+        initialSlots.add(Slot(dayOfWeek: 2, hour: 10));
+        final loadedSlots = await repository.load('evt-1');
+        loadedSlots.add(Slot(dayOfWeek: 3, hour: 11));
 
-      expect(await repository.load('evt-1'), [Slot(dayOfWeek: 1, hour: 9)]);
-    });
+        expect(await repository.load('evt-1'), [Slot(dayOfWeek: 1, hour: 9)]);
+      },
+    );
   });
 }

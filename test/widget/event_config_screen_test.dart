@@ -22,7 +22,8 @@ void main() {
       overrides: [
         eventsRepositoryProvider.overrideWithValue(repository),
         availabilityRepositoryProvider.overrideWithValue(
-          availabilityRepository ?? FakeAvailabilityRepository(delay: Duration.zero),
+          availabilityRepository ??
+              FakeAvailabilityRepository(delay: Duration.zero),
         ),
       ],
       child: MaterialApp(
@@ -50,7 +51,10 @@ void main() {
     await tester.pump();
 
     expect(find.text('Configuración del evento'), findsOneWidget);
-    expect(find.byKey(const Key('attendance_response_selector')), findsOneWidget);
+    expect(
+      find.byKey(const Key('attendance_response_selector')),
+      findsOneWidget,
+    );
 
     await tester.tap(find.byKey(const Key('attendance_confirm_button')));
     await tester.pump();

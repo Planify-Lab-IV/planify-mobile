@@ -26,21 +26,12 @@ void main() {
         () => Slot(dayOfWeek: -1, hour: 12),
         throwsA(isA<ArgumentError>()),
       );
-      expect(
-        () => Slot(dayOfWeek: 7, hour: 12),
-        throwsA(isA<ArgumentError>()),
-      );
+      expect(() => Slot(dayOfWeek: 7, hour: 12), throwsA(isA<ArgumentError>()));
     });
 
     test('rejects an hour outside the daily grid', () {
-      expect(
-        () => Slot(dayOfWeek: 0, hour: -1),
-        throwsA(isA<ArgumentError>()),
-      );
-      expect(
-        () => Slot(dayOfWeek: 0, hour: 24),
-        throwsA(isA<ArgumentError>()),
-      );
+      expect(() => Slot(dayOfWeek: 0, hour: -1), throwsA(isA<ArgumentError>()));
+      expect(() => Slot(dayOfWeek: 0, hour: 24), throwsA(isA<ArgumentError>()));
     });
   });
 }
