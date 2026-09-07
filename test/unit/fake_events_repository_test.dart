@@ -149,17 +149,20 @@ void main() {
       expect(fetched, equals(customEvent));
     });
 
-    test('guarda y recupera la asistencia del usuario actual por evento', () async {
-      await repository.updateCurrentUserAttendance(
-        'evt-123',
-        AttendanceResponse.confirmed,
-      );
+    test(
+      'guarda y recupera la asistencia del usuario actual por evento',
+      () async {
+        await repository.updateCurrentUserAttendance(
+          'evt-123',
+          AttendanceResponse.confirmed,
+        );
 
-      expect(
-        await repository.getCurrentUserAttendance('evt-123'),
-        AttendanceStatus.confirmed,
-      );
-    });
+        expect(
+          await repository.getCurrentUserAttendance('evt-123'),
+          AttendanceStatus.confirmed,
+        );
+      },
+    );
 
     test(
       'simula un error al responder asistencia sin guardar cambios',

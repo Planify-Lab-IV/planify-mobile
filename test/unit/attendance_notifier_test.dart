@@ -11,10 +11,7 @@ void main() {
 
     setUp(() async {
       repository = FakeEventsRepository(delay: Duration.zero);
-      notifier = AttendanceNotifier(
-        repository: repository,
-        eventId: 'evt-123',
-      );
+      notifier = AttendanceNotifier(repository: repository, eventId: 'evt-123');
       await notifier.load();
     });
 

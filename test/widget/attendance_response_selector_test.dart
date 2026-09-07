@@ -25,9 +25,7 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
         locale: const Locale('es'),
         home: const Scaffold(
-          body: AttendanceResponseSelector(
-            eventId: eventId,
-          ),
+          body: AttendanceResponseSelector(eventId: eventId),
         ),
       ),
     );

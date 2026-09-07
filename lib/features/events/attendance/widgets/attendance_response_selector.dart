@@ -10,10 +10,7 @@ import '../../detail/controllers/events_providers.dart';
 class AttendanceResponseSelector extends ConsumerWidget {
   final String eventId;
 
-  const AttendanceResponseSelector({
-    super.key,
-    required this.eventId,
-  });
+  const AttendanceResponseSelector({super.key, required this.eventId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

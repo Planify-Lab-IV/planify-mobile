@@ -7,10 +7,8 @@ class AttendanceNotifier extends StateNotifier<AttendanceState> {
   final EventsRepository repository;
   final String eventId;
 
-  AttendanceNotifier({
-    required this.repository,
-    required this.eventId,
-  }) : super(const AttendanceState()) {
+  AttendanceNotifier({required this.repository, required this.eventId})
+    : super(const AttendanceState()) {
     load();
   }
 
