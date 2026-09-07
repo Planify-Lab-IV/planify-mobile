@@ -9,21 +9,18 @@ import '../../detail/controllers/events_providers.dart';
 
 class AttendanceResponseSelector extends ConsumerWidget {
   final String eventId;
-  final String participantId;
 
   const AttendanceResponseSelector({
     super.key,
     required this.eventId,
-    required this.participantId,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final i18n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final key = (eventId: eventId, participantId: participantId);
-    final state = ref.watch(attendanceNotifierProvider(key));
-    final notifier = ref.read(attendanceNotifierProvider(key).notifier);
+    final state = ref.watch(attendanceNotifierProvider(eventId));
+    final notifier = ref.read(attendanceNotifierProvider(eventId).notifier);
 
     return Card.outlined(
       key: const Key('attendance_response_selector'),

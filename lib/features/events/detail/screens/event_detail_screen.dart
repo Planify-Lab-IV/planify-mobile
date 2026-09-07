@@ -63,7 +63,7 @@ class EventDetailScreen extends ConsumerWidget {
 
     final event = state.event;
     final canCancel = notifier.canCancelEvent;
-    final participantId = notifier.currentParticipantId;
+    final hasCurrentSession = notifier.hasCurrentSession;
 
     return Scaffold(
       appBar: AppBar(
@@ -197,11 +197,8 @@ class EventDetailScreen extends ConsumerWidget {
                     ],
                     EventHeaderCard(event: event),
                     const SizedBox(height: AppSpacing.lg),
-                    if (event.isActive && participantId != null) ...[
-                      AttendanceResponseSelector(
-                        eventId: event.id,
-                        participantId: participantId,
-                      ),
+                    if (event.isActive && hasCurrentSession) ...[
+                      AttendanceResponseSelector(eventId: event.id),
                       const SizedBox(height: AppSpacing.lg),
                     ],
                     EventQuickActionsCard(isCancelled: event.isCancelled),

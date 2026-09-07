@@ -6,19 +6,17 @@ import 'attendance_state.dart';
 class AttendanceNotifier extends StateNotifier<AttendanceState> {
   final EventsRepository repository;
   final String eventId;
-  final String participantId;
 
   AttendanceNotifier({
     required this.repository,
     required this.eventId,
-    required this.participantId,
   }) : super(const AttendanceState()) {
     load();
   }
 
   Future<void> load() async {
     try {
-      final status = await repository.getAttendance(eventId, participantId);
+      final status = await repository.getCurrentUserAttendance(eventId);
       if (!mounted) return;
       state = state.copyWith(
         status: status,
@@ -40,7 +38,7 @@ class AttendanceNotifier extends StateNotifier<AttendanceState> {
     );
 
     try {
-      await repository.confirmAssistance(eventId, participantId, response);
+      await repository.updateCurrentUserAttendance(eventId, response);
       if (!mounted) return;
       state = state.copyWith(saveStatus: AttendanceSaveStatus.success);
     } catch (_) {

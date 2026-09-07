@@ -12,8 +12,8 @@ class FakeEventsRepository implements EventsRepository {
   bool shouldFailAttendanceResponse;
   int _eventSequence = 1000;
   final Map<String, Event> _events = {};
-  final Map<({String eventId, String participantId}), AttendanceStatus>
-  _attendance = {};
+  // cada entry representa el attendance status del current user para un eventid
+  final Map<String, AttendanceStatus> _currentUserAttendance = {};
 
   FakeEventsRepository({
     this.delay = const Duration(milliseconds: 300),
@@ -123,24 +123,19 @@ class FakeEventsRepository implements EventsRepository {
   }
 
   @override
-  Future<AttendanceStatus> getAttendance(
-    String eventId,
-    String participantId,
-  ) async {
+  Future<AttendanceStatus> getCurrentUserAttendance(String eventId) async {
     if (delay > Duration.zero) {
       await Future.delayed(delay);
     }
     if (!_events.containsKey(eventId)) {
       throw const EventNotFoundException();
     }
-    return _attendance[(eventId: eventId, participantId: participantId)] ??
-        AttendanceStatus.noResponse;
+    return _currentUserAttendance[eventId] ?? AttendanceStatus.noResponse;
   }
 
   @override
-  Future<void> confirmAssistance(
+  Future<void> updateCurrentUserAttendance(
     String eventId,
-    String participantId,
     AttendanceResponse response,
   ) async {
     if (delay > Duration.zero) {
@@ -153,7 +148,6 @@ class FakeEventsRepository implements EventsRepository {
       throw const EventNotFoundException();
     }
 
-    _attendance[(eventId: eventId, participantId: participantId)] =
-        response.status;
+    _currentUserAttendance[eventId] = response.status;
   }
 }

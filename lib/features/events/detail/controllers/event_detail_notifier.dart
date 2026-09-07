@@ -50,12 +50,8 @@ class EventDetailNotifier extends StateNotifier<EventDetailState> {
   bool get isOrganizer =>
       isUserOrganizerOfEvent(session: _currentSession, event: state.event);
 
-  String? get currentParticipantId {
-    final participantId = _currentSession?.userId.trim();
-    return participantId == null || participantId.isEmpty
-        ? null
-        : participantId;
-  }
+  bool get hasCurrentSession =>
+      _currentSession != null && _currentSession.userId.trim().isNotEmpty;
 
   bool get canCancelEvent {
     final event = state.event;

@@ -14,7 +14,6 @@ void main() {
       notifier = AttendanceNotifier(
         repository: repository,
         eventId: 'evt-123',
-        participantId: 'participant-1',
       );
       await notifier.load();
     });
@@ -34,7 +33,7 @@ void main() {
       expect(notifier.state.status, AttendanceStatus.noResponse);
       expect(notifier.state.saveStatus, AttendanceSaveStatus.error);
       expect(
-        await repository.getAttendance('evt-123', 'participant-1'),
+        await repository.getCurrentUserAttendance('evt-123'),
         AttendanceStatus.noResponse,
       );
     });
@@ -45,7 +44,7 @@ void main() {
       expect(notifier.state.status, AttendanceStatus.rejected);
       expect(notifier.state.saveStatus, AttendanceSaveStatus.success);
       expect(
-        await repository.getAttendance('evt-123', 'participant-1'),
+        await repository.getCurrentUserAttendance('evt-123'),
         AttendanceStatus.rejected,
       );
     });

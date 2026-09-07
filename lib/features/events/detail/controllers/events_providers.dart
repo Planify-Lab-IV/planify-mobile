@@ -32,16 +32,10 @@ final eventDetailNotifierProvider = StateNotifierProvider.autoDispose
       );
     });
 
-typedef AttendanceProviderKey = ({String eventId, String participantId});
-
 final attendanceNotifierProvider = StateNotifierProvider.autoDispose
-    .family<AttendanceNotifier, AttendanceState, AttendanceProviderKey>((
-      ref,
-      key,
-    ) {
+    .family<AttendanceNotifier, AttendanceState, String>((ref, eventId) {
       return AttendanceNotifier(
         repository: ref.watch(eventsRepositoryProvider),
-        eventId: key.eventId,
-        participantId: key.participantId,
+        eventId: eventId,
       );
     });

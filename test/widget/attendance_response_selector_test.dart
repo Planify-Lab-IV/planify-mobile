@@ -11,8 +11,6 @@ import 'package:planify/l10n/app_localizations.dart';
 
 void main() {
   const eventId = 'evt-123';
-  const participantId = 'anon-456';
-
   Widget buildSelector(FakeEventsRepository repository) {
     return ProviderScope(
       overrides: [eventsRepositoryProvider.overrideWithValue(repository)],
@@ -29,7 +27,6 @@ void main() {
         home: const Scaffold(
           body: AttendanceResponseSelector(
             eventId: eventId,
-            participantId: participantId,
           ),
         ),
       ),
@@ -55,7 +52,7 @@ void main() {
       expect(find.widgetWithText(FilledButton, 'Voy'), findsOneWidget);
       expect(find.widgetWithText(OutlinedButton, 'No voy'), findsOneWidget);
       expect(
-        await repository.getAttendance(eventId, participantId),
+        await repository.getCurrentUserAttendance(eventId),
         AttendanceStatus.confirmed,
       );
     });
@@ -64,9 +61,8 @@ void main() {
       tester,
     ) async {
       final repository = FakeEventsRepository(delay: Duration.zero);
-      await repository.confirmAssistance(
+      await repository.updateCurrentUserAttendance(
         eventId,
-        participantId,
         AttendanceResponse.confirmed,
       );
 
@@ -82,7 +78,7 @@ void main() {
       expect(find.widgetWithText(OutlinedButton, 'Voy'), findsOneWidget);
       expect(find.widgetWithText(FilledButton, 'No voy'), findsOneWidget);
       expect(
-        await repository.getAttendance(eventId, participantId),
+        await repository.getCurrentUserAttendance(eventId),
         AttendanceStatus.rejected,
       );
     });
@@ -91,9 +87,8 @@ void main() {
       tester,
     ) async {
       final repository = FakeEventsRepository(delay: Duration.zero);
-      await repository.confirmAssistance(
+      await repository.updateCurrentUserAttendance(
         eventId,
-        participantId,
         AttendanceResponse.confirmed,
       );
       repository.shouldFailAttendanceResponse = true;
@@ -110,7 +105,7 @@ void main() {
       expect(find.widgetWithText(OutlinedButton, 'No voy'), findsOneWidget);
       expect(find.byKey(const Key('attendance_error_message')), findsOneWidget);
       expect(
-        await repository.getAttendance(eventId, participantId),
+        await repository.getCurrentUserAttendance(eventId),
         AttendanceStatus.confirmed,
       );
     });

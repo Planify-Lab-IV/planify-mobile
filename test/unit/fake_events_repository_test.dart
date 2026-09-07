@@ -149,25 +149,15 @@ void main() {
       expect(fetched, equals(customEvent));
     });
 
-    test('guarda y recupera asistencia por evento y participante', () async {
-      await repository.confirmAssistance(
+    test('guarda y recupera la asistencia del usuario actual por evento', () async {
+      await repository.updateCurrentUserAttendance(
         'evt-123',
-        'participant-1',
         AttendanceResponse.confirmed,
-      );
-      await repository.confirmAssistance(
-        'evt-123',
-        'participant-2',
-        AttendanceResponse.rejected,
       );
 
       expect(
-        await repository.getAttendance('evt-123', 'participant-1'),
+        await repository.getCurrentUserAttendance('evt-123'),
         AttendanceStatus.confirmed,
-      );
-      expect(
-        await repository.getAttendance('evt-123', 'participant-2'),
-        AttendanceStatus.rejected,
       );
     });
 
@@ -180,15 +170,14 @@ void main() {
         );
 
         await expectLater(
-          failingRepository.confirmAssistance(
+          failingRepository.updateCurrentUserAttendance(
             'evt-123',
-            'participant-1',
             AttendanceResponse.confirmed,
           ),
           throwsA(isA<AttendanceResponseException>()),
         );
         expect(
-          await failingRepository.getAttendance('evt-123', 'participant-1'),
+          await failingRepository.getCurrentUserAttendance('evt-123'),
           AttendanceStatus.noResponse,
         );
       },
