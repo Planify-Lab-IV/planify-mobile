@@ -1,3 +1,5 @@
+import 'dart:ui' show PointerDeviceKind;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
@@ -112,9 +114,7 @@ void main() {
     final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
     await gesture.addPointer(location: Offset.zero);
     await gesture.moveTo(
-      tester.getCenter(
-        find.byKey(const Key('availability_heatmap_slot_1_0')),
-      ),
+      tester.getCenter(find.byKey(const Key('availability_heatmap_slot_1_0'))),
     );
     await tester.pump(const Duration(milliseconds: 200));
 

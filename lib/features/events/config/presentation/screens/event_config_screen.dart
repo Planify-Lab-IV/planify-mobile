@@ -22,7 +22,9 @@ class EventConfigScreen extends ConsumerWidget {
     final availabilityNotifier = ref.read(
       availabilityNotifierProvider(eventId).notifier,
     );
-    final heatmapState = ref.watch(availabilityHeatmapNotifierProvider(eventId));
+    final heatmapState = ref.watch(
+      availabilityHeatmapNotifierProvider(eventId),
+    );
     final heatmapNotifier = ref.read(
       availabilityHeatmapNotifierProvider(eventId).notifier,
     );
