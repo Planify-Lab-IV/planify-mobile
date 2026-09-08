@@ -448,6 +448,22 @@ class AppLocalizationsEn extends AppLocalizations {
       'We could not save your availability. Please try again.';
 
   @override
+  String get availabilityHeatmapTitle => 'Combined availability';
+
+  @override
+  String get availabilityHeatmapSubtitle =>
+      'See how many people are available at each time.';
+
+  @override
+  String get availabilityHeatmapLoadError =>
+      'We could not load the combined availability.';
+
+  @override
+  String availabilityHeatmapAvailableCount(int count) {
+    return '$count available';
+  }
+
+  @override
   String get availabilityMondayShort => 'M';
 
   @override

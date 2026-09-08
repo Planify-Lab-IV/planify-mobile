@@ -932,6 +932,30 @@ abstract class AppLocalizations {
   /// **'No se pudo guardar tu disponibilidad. Intenta nuevamente.'**
   String get availabilitySaveError;
 
+  /// No description provided for @availabilityHeatmapTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Disponibilidad combinada'**
+  String get availabilityHeatmapTitle;
+
+  /// No description provided for @availabilityHeatmapSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Consultá cuántas personas están disponibles en cada horario.'**
+  String get availabilityHeatmapSubtitle;
+
+  /// No description provided for @availabilityHeatmapLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cargar la disponibilidad combinada.'**
+  String get availabilityHeatmapLoadError;
+
+  /// No description provided for @availabilityHeatmapAvailableCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} disponibles'**
+  String availabilityHeatmapAvailableCount(int count);
+
   /// No description provided for @availabilityMondayShort.
   ///
   /// In es, this message translates to:

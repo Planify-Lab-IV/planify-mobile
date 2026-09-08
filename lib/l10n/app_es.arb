@@ -155,6 +155,18 @@
       "availabilityLoadError": "No se pudo cargar tu disponibilidad.",
       "availabilitySaveSuccess": "Tu disponibilidad fue guardada.",
       "availabilitySaveError": "No se pudo guardar tu disponibilidad. Intenta nuevamente.",
+      "availabilityHeatmapTitle": "Disponibilidad combinada",
+      "availabilityHeatmapSubtitle": "Consultá cuántas personas están disponibles en cada horario.",
+      "availabilityHeatmapLoadError": "No se pudo cargar la disponibilidad combinada.",
+      "availabilityHeatmapAvailableCount": "{count} disponibles",
+      "@availabilityHeatmapAvailableCount": {
+        "placeholders": {
+          "count": {
+            "type": "int",
+            "example": "3"
+          }
+        }
+      },
       "availabilityMondayShort": "L",
       "availabilityTuesdayShort": "M",
       "availabilityWednesdayShort": "X",

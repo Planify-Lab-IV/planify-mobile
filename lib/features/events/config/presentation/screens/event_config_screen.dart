@@ -5,6 +5,7 @@ import '../../../../../l10n/app_localizations.dart';
 import '../../../attendance/widgets/attendance_response_selector.dart';
 import '../../../../availability/presentation/controllers/availability_providers.dart';
 import '../../../../availability/presentation/controllers/availability_state.dart';
+import '../../../../availability/presentation/widgets/availability_heatmap_grid.dart';
 import '../../../../availability/presentation/widgets/availability_grid.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,6 +21,10 @@ class EventConfigScreen extends ConsumerWidget {
     final availabilityState = ref.watch(availabilityNotifierProvider(eventId));
     final availabilityNotifier = ref.read(
       availabilityNotifierProvider(eventId).notifier,
+    );
+    final heatmapState = ref.watch(availabilityHeatmapNotifierProvider(eventId));
+    final heatmapNotifier = ref.read(
+      availabilityHeatmapNotifierProvider(eventId).notifier,
     );
 
     ref.listen<AvailabilityState>(availabilityNotifierProvider(eventId), (
@@ -132,6 +137,56 @@ class EventConfigScreen extends ConsumerWidget {
                         : Text(i18n.availabilitySave),
                   ),
                 ],
+                const SizedBox(height: AppSpacing.xl),
+                Text(
+                  i18n.availabilityHeatmapTitle,
+                  style: theme.textTheme.titleMedium,
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  i18n.availabilityHeatmapSubtitle,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                if (heatmapState.isLoading)
+                  const Center(child: CircularProgressIndicator())
+                else if (heatmapState.hasLoadError)
+                  Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          i18n.availabilityHeatmapLoadError,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.error,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        OutlinedButton(
+                          onPressed: heatmapNotifier.load,
+                          child: Text(i18n.retryButton),
+                        ),
+                      ],
+                    ),
+                  )
+                else if (heatmapState.heatmap case final heatmap?)
+                  AvailabilityHeatmapGrid(
+                    heatmap: heatmap,
+                    dayLabels: [
+                      i18n.availabilityMondayShort,
+                      i18n.availabilityTuesdayShort,
+                      i18n.availabilityWednesdayShort,
+                      i18n.availabilityThursdayShort,
+                      i18n.availabilityFridayShort,
+                      i18n.availabilitySaturdayShort,
+                      i18n.availabilitySundayShort,
+                    ],
+                    tooltipMessageBuilder:
+                        i18n.availabilityHeatmapAvailableCount,
+                  ),
               ],
             ),
           ),

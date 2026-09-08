@@ -88,10 +88,36 @@ void main() {
       ),
     );
 
-    final tooltip = tester.widget<Tooltip>(find.byType(Tooltip).at(1));
+    final tooltip = tester.widget<Tooltip>(
+      find.byWidgetPredicate(
+        (widget) => widget is Tooltip && widget.message == '3 disponibles',
+      ),
+    );
 
     expect(tooltip.message, '3 disponibles');
-    expect(find.byType(GestureDetector), findsNothing);
-    expect(find.byType(Listener), findsNothing);
+    expect(tooltip.waitDuration, Duration.zero);
+  });
+
+  testWidgets('shows the exact count when a mouse hovers over a slot', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildGrid(
+        tooltipMessageBuilder: (availableCount) {
+          return '$availableCount disponibles';
+        },
+      ),
+    );
+
+    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: Offset.zero);
+    await gesture.moveTo(
+      tester.getCenter(
+        find.byKey(const Key('availability_heatmap_slot_1_0')),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+
+    expect(find.text('3 disponibles'), findsOneWidget);
   });
 }

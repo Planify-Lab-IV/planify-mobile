@@ -46,9 +46,13 @@ class AvailabilityHeatmapGrid extends StatelessWidget {
         );
 
         final tooltipMessage = tooltipMessageBuilder?.call(availableCount);
-        return tooltipMessage == null
-            ? cell
-            : Tooltip(message: tooltipMessage, child: cell);
+        if (tooltipMessage == null) return cell;
+
+        return Tooltip(
+          message: tooltipMessage,
+          waitDuration: Duration.zero,
+          child: cell,
+        );
       },
     );
   }
