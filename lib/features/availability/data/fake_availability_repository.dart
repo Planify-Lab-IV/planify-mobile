@@ -1,4 +1,5 @@
 import '../domain/availability_repository.dart';
+import '../domain/availability_heatmap_dto.dart';
 import '../domain/slot.dart';
 
 class FakeAvailabilityRepository implements AvailabilityRepository {
@@ -28,5 +29,13 @@ class FakeAvailabilityRepository implements AvailabilityRepository {
       await Future<void>.delayed(delay);
     }
     _availabilityByEvent[eventId] = List<Slot>.from(slots);
+  }
+
+  @override
+  Future<AvailabilityHeatmapDto> heatmap(String eventId) async {
+    if (delay > Duration.zero) {
+      await Future<void>.delayed(delay);
+    }
+    return AvailabilityHeatmapDto(totalParticipants: 0, slots: const []);
   }
 }
