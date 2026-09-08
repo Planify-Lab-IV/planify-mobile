@@ -140,38 +140,40 @@ class _AvailabilityGridState extends State<AvailabilityGrid> {
                     child: SizedBox(
                       height: gridHeight,
                       child: GridView.builder(
-                      key: const Key('availability_grid'),
-                      controller: _scrollController,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: _dayCount,
-                            crossAxisSpacing: _slotSpacing,
-                            mainAxisSpacing: _slotSpacing,
-                            childAspectRatio: _slotAspectRatio,
-                          ),
-                      itemCount: _dayCount * _hourCount,
-                      itemBuilder: (context, index) {
-                        final slot = Slot(
-                          dayOfWeek: index % _dayCount,
-                          hour: index ~/ _dayCount,
-                        );
-                        final isSelected = widget.selectedSlots.contains(slot);
-                        final colorScheme = Theme.of(context).colorScheme;
-
-                        return Container(
-                          key: Key(
-                            'availability_slot_${slot.dayOfWeek}_${slot.hour}',
-                          ),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? colorScheme.primary
-                                : colorScheme.surfaceContainerHighest,
-                            borderRadius: BorderRadius.circular(
-                              _slotBorderRadius,
+                        key: const Key('availability_grid'),
+                        controller: _scrollController,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: _dayCount,
+                              crossAxisSpacing: _slotSpacing,
+                              mainAxisSpacing: _slotSpacing,
+                              childAspectRatio: _slotAspectRatio,
                             ),
-                          ),
-                        );
-                      },
+                        itemCount: _dayCount * _hourCount,
+                        itemBuilder: (context, index) {
+                          final slot = Slot(
+                            dayOfWeek: index % _dayCount,
+                            hour: index ~/ _dayCount,
+                          );
+                          final isSelected = widget.selectedSlots.contains(
+                            slot,
+                          );
+                          final colorScheme = Theme.of(context).colorScheme;
+
+                          return Container(
+                            key: Key(
+                              'availability_slot_${slot.dayOfWeek}_${slot.hour}',
+                            ),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? colorScheme.primary
+                                  : colorScheme.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(
+                                _slotBorderRadius,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
