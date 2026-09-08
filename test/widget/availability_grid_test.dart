@@ -42,7 +42,7 @@ void main() {
     expect(toggledSlots, [Slot(dayOfWeek: 3, hour: 0)]);
   });
 
-  testWidgets('drag marks each slot it crosses without toggling', (
+  testWidgets('long press and drag marks slots horizontally without toggling', (
     tester,
   ) async {
     final markedSlots = <Slot>{};
@@ -55,6 +55,7 @@ void main() {
     final secondCell = find.byKey(const Key('availability_slot_1_0'));
     final thirdCell = find.byKey(const Key('availability_slot_2_0'));
     final gesture = await tester.startGesture(tester.getCenter(firstCell));
+    await tester.pump(kLongPressTimeout);
     await gesture.moveTo(tester.getCenter(secondCell));
     await gesture.moveTo(tester.getCenter(thirdCell));
     await gesture.up();
@@ -65,6 +66,34 @@ void main() {
         Slot(dayOfWeek: 0, hour: 0),
         Slot(dayOfWeek: 1, hour: 0),
         Slot(dayOfWeek: 2, hour: 0),
+      ]),
+    );
+  });
+
+  testWidgets('long press and drag marks slots vertically without toggling', (
+    tester,
+  ) async {
+    final markedSlots = <Slot>{};
+
+    await tester.pumpWidget(
+      buildGrid(onToggleSlot: (_) {}, onMarkSlot: markedSlots.add),
+    );
+
+    final firstCell = find.byKey(const Key('availability_slot_0_0'));
+    final secondCell = find.byKey(const Key('availability_slot_0_1'));
+    final thirdCell = find.byKey(const Key('availability_slot_0_2'));
+    final gesture = await tester.startGesture(tester.getCenter(firstCell));
+    await tester.pump(kLongPressTimeout);
+    await gesture.moveTo(tester.getCenter(secondCell));
+    await gesture.moveTo(tester.getCenter(thirdCell));
+    await gesture.up();
+
+    expect(
+      markedSlots,
+      containsAll([
+        Slot(dayOfWeek: 0, hour: 0),
+        Slot(dayOfWeek: 0, hour: 1),
+        Slot(dayOfWeek: 0, hour: 2),
       ]),
     );
   });
