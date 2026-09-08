@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/availability/data/fake_availability_repository.dart';
+import 'package:planify/features/availability/domain/availability_heatmap_dto.dart';
 import 'package:planify/features/availability/domain/slot.dart';
+import 'package:planify/features/availability/domain/slot_heatmap_dto.dart';
 
 void main() {
   group('FakeAvailabilityRepository', () {
@@ -59,5 +61,37 @@ void main() {
         expect(await repository.load('evt-1'), [Slot(dayOfWeek: 1, hour: 9)]);
       },
     );
+
+    test('returns a heatmap with distinct availability levels by default',
+        () async {
+      final repository = FakeAvailabilityRepository(delay: Duration.zero);
+
+      final heatmap = await repository.heatmap('evt-1');
+
+      expect(heatmap.totalParticipants, 5);
+      expect(
+        heatmap.slots.map((slot) => slot.availableCount),
+        containsAll([0, 2, 3, 5]),
+      );
+    });
+
+    test('loads the heatmap supplied for an event', () async {
+      final expectedHeatmap = AvailabilityHeatmapDto(
+        totalParticipants: 2,
+        slots: [
+          SlotHeatmapDto(weekDay: 4, hourBlock: 18, availableCount: 1),
+        ],
+      );
+      final repository = FakeAvailabilityRepository(
+        delay: Duration.zero,
+        initialHeatmapByEvent: {'evt-1': expectedHeatmap},
+      );
+
+      final heatmap = await repository.heatmap('evt-1');
+
+      expect(heatmap.totalParticipants, expectedHeatmap.totalParticipants);
+      expect(heatmap.slots, expectedHeatmap.slots);
+      expect(identical(heatmap, expectedHeatmap), isFalse);
+    });
   });
 }
