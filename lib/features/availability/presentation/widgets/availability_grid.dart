@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_radius.dart';
-import '../../../../core/theme/app_spacing.dart';
 import '../../domain/slot.dart';
+import 'weekly_availability_grid.dart';
 
 class AvailabilityGrid extends StatefulWidget {
   final Set<Slot> selectedSlots;
@@ -16,34 +15,29 @@ class AvailabilityGrid extends StatefulWidget {
     required this.onToggleSlot,
     required this.onMarkSlot,
     required this.dayLabels,
-  }) : assert(dayLabels.length == 7);
+  }) : assert(dayLabels.length == WeeklyAvailabilityGrid.dayCount);
 
   @override
   State<AvailabilityGrid> createState() => _AvailabilityGridState();
 }
 
 class _AvailabilityGridState extends State<AvailabilityGrid> {
-  static const _dayCount = 7;
-  static const _hourCount = 24;
-  static const _slotSpacing = AppSpacing.sm;
-  static const _slotAspectRatio = 1.25;
-  static const _slotBorderRadius = 6.0;
-  final _scrollController = ScrollController();
   Slot? _dragStartSlot;
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  Slot? _slotAt(Offset position, double gridWidth) {
+  Slot? _slotAt(
+    Offset position,
+    double gridWidth,
+    double scrollOffset,
+  ) {
     final cellWidth =
-        (gridWidth - (_slotSpacing * (_dayCount - 1))) / _dayCount;
-    final cellHeight = cellWidth / _slotAspectRatio;
-    final cellStride = cellWidth + _slotSpacing;
-    final rowStride = cellHeight + _slotSpacing;
-    final contentY = position.dy + _scrollController.offset;
+        (gridWidth -
+            (WeeklyAvailabilityGrid.slotSpacing *
+                (WeeklyAvailabilityGrid.dayCount - 1))) /
+        WeeklyAvailabilityGrid.dayCount;
+    final cellHeight = cellWidth / WeeklyAvailabilityGrid.slotAspectRatio;
+    final cellStride = cellWidth + WeeklyAvailabilityGrid.slotSpacing;
+    final rowStride = cellHeight + WeeklyAvailabilityGrid.slotSpacing;
+    final contentY = position.dy + scrollOffset;
     final dayOfWeek = (position.dx / cellStride).floor();
     final hour = (contentY / rowStride).floor();
 
@@ -51,9 +45,9 @@ class _AvailabilityGridState extends State<AvailabilityGrid> {
     final isInRowGap = contentY - (hour * rowStride) > cellHeight;
 
     if (dayOfWeek < 0 ||
-        dayOfWeek >= _dayCount ||
+        dayOfWeek >= WeeklyAvailabilityGrid.dayCount ||
         hour < 0 ||
-        hour >= _hourCount ||
+        hour >= WeeklyAvailabilityGrid.hourCount ||
         isInColumnGap ||
         isInRowGap) {
       return null;
@@ -61,18 +55,22 @@ class _AvailabilityGridState extends State<AvailabilityGrid> {
     return Slot(dayOfWeek: dayOfWeek, hour: hour);
   }
 
-  void _toggleAt(Offset position, double gridWidth) {
-    final slot = _slotAt(position, gridWidth);
+  void _toggleAt(Offset position, double gridWidth, double scrollOffset) {
+    final slot = _slotAt(position, gridWidth, scrollOffset);
     if (slot != null) widget.onToggleSlot(slot);
   }
 
-  void _markAt(Offset position, double gridWidth) {
-    final slot = _slotAt(position, gridWidth);
+  void _markAt(Offset position, double gridWidth, double scrollOffset) {
+    final slot = _slotAt(position, gridWidth, scrollOffset);
     if (slot != null) widget.onMarkSlot(slot);
   }
 
-  void _rememberDragStart(Offset position, double gridWidth) {
-    _dragStartSlot = _slotAt(position, gridWidth);
+  void _rememberDragStart(
+    Offset position,
+    double gridWidth,
+    double scrollOffset,
+  ) {
+    _dragStartSlot = _slotAt(position, gridWidth, scrollOffset);
   }
 
   void _markDragStart() {
@@ -82,107 +80,60 @@ class _AvailabilityGridState extends State<AvailabilityGrid> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final gridHeight = MediaQuery.sizeOf(context).height * 0.45;
+    return WeeklyAvailabilityGrid(
+      dayLabels: widget.dayLabels,
+      cellBuilder: (context, slot) {
+        final isSelected = widget.selectedSlots.contains(slot);
+        final colorScheme = Theme.of(context).colorScheme;
 
-    return Card.outlined(
-      margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.card),
-        side: BorderSide(color: theme.colorScheme.outline),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                for (
-                  var index = 0;
-                  index < widget.dayLabels.length;
-                  index++
-                ) ...[
-                  Expanded(
-                    child: Text(
-                      widget.dayLabels[index],
-                      style: theme.textTheme.labelSmall,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  if (index < widget.dayLabels.length - 1)
-                    const SizedBox(width: _slotSpacing),
-                ],
-              ],
+        return Container(
+          key: Key('availability_slot_${slot.dayOfWeek}_${slot.hour}'),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? colorScheme.primary
+                : colorScheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(
+              WeeklyAvailabilityGrid.slotBorderRadius,
             ),
-            const SizedBox(height: AppSpacing.sm),
-            LayoutBuilder(
-              builder: (context, constraints) {
-                return Listener(
-                  onPointerDown: (event) => _rememberDragStart(
-                    event.localPosition,
-                    constraints.maxWidth,
-                  ),
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTapUp: (details) {
-                      _toggleAt(details.localPosition, constraints.maxWidth);
-                      _dragStartSlot = null;
-                    },
-                    onPanStart: (details) {
-                      _markDragStart();
-                      _markAt(details.localPosition, constraints.maxWidth);
-                    },
-                    onPanUpdate: (details) =>
-                        _markAt(details.localPosition, constraints.maxWidth),
-                    onPanEnd: (_) => _dragStartSlot = null,
-                    onPanCancel: () => _dragStartSlot = null,
-                    child: SizedBox(
-                      height: gridHeight,
-                      child: GridView.builder(
-                        key: const Key('availability_grid'),
-                        controller: _scrollController,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: _dayCount,
-                              crossAxisSpacing: _slotSpacing,
-                              mainAxisSpacing: _slotSpacing,
-                              childAspectRatio: _slotAspectRatio,
-                            ),
-                        itemCount: _dayCount * _hourCount,
-                        itemBuilder: (context, index) {
-                          final slot = Slot(
-                            dayOfWeek: index % _dayCount,
-                            hour: index ~/ _dayCount,
-                          );
-                          final isSelected = widget.selectedSlots.contains(
-                            slot,
-                          );
-                          final colorScheme = Theme.of(context).colorScheme;
-
-                          return Container(
-                            key: Key(
-                              'availability_slot_${slot.dayOfWeek}_${slot.hour}',
-                            ),
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? colorScheme.primary
-                                  : colorScheme.surfaceContainerHighest,
-                              borderRadius: BorderRadius.circular(
-                                _slotBorderRadius,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                );
-              },
+          ),
+        );
+      },
+      interactionBuilder: (context, constraints, scrollController, grid) {
+        return Listener(
+          onPointerDown: (event) => _rememberDragStart(
+            event.localPosition,
+            constraints.maxWidth,
+            scrollController.offset,
+          ),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTapUp: (details) {
+              _toggleAt(
+                details.localPosition,
+                constraints.maxWidth,
+                scrollController.offset,
+              );
+              _dragStartSlot = null;
+            },
+            onPanStart: (details) {
+              _markDragStart();
+              _markAt(
+                details.localPosition,
+                constraints.maxWidth,
+                scrollController.offset,
+              );
+            },
+            onPanUpdate: (details) => _markAt(
+              details.localPosition,
+              constraints.maxWidth,
+              scrollController.offset,
             ),
-          ],
-        ),
-      ),
+            onPanEnd: (_) => _dragStartSlot = null,
+            onPanCancel: () => _dragStartSlot = null,
+            child: grid,
+          ),
+        );
+      },
     );
   }
 }
