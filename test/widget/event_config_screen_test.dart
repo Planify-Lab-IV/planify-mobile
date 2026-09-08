@@ -82,7 +82,13 @@ void main() {
 
     expect(find.byKey(const Key('availability_grid')), findsOneWidget);
     await tester.tap(find.byKey(const Key('availability_slot_1_0')));
-    await tester.tap(find.byKey(const Key('availability_save_button')));
+    final saveButton = find.byKey(const Key('availability_save_button'));
+    await tester.scrollUntilVisible(
+      saveButton,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(saveButton);
     await tester.pump();
     await tester.pump();
 

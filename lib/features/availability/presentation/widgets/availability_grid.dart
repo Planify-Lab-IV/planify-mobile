@@ -29,6 +29,7 @@ class _AvailabilityGridState extends State<AvailabilityGrid> {
   static const _slotAspectRatio = 1.25;
   static const _slotBorderRadius = 6.0;
   final _scrollController = ScrollController();
+  Slot? _dragStartSlot;
 
   @override
   void dispose() {
@@ -70,6 +71,15 @@ class _AvailabilityGridState extends State<AvailabilityGrid> {
     if (slot != null) widget.onMarkSlot(slot);
   }
 
+  void _rememberDragStart(Offset position, double gridWidth) {
+    _dragStartSlot = _slotAt(position, gridWidth);
+  }
+
+  void _markDragStart() {
+    final slot = _dragStartSlot;
+    if (slot != null) widget.onMarkSlot(slot);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -88,7 +98,11 @@ class _AvailabilityGridState extends State<AvailabilityGrid> {
           children: [
             Row(
               children: [
-                for (var index = 0; index < widget.dayLabels.length; index++) ...[
+                for (
+                  var index = 0;
+                  index < widget.dayLabels.length;
+                  index++
+                ) ...[
                   Expanded(
                     child: Text(
                       widget.dayLabels[index],
@@ -104,17 +118,28 @@ class _AvailabilityGridState extends State<AvailabilityGrid> {
             const SizedBox(height: AppSpacing.sm),
             LayoutBuilder(
               builder: (context, constraints) {
-                return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTapUp: (details) =>
-                      _toggleAt(details.localPosition, constraints.maxWidth),
-                  onPanStart: (details) =>
-                      _markAt(details.localPosition, constraints.maxWidth),
-                  onPanUpdate: (details) =>
-                      _markAt(details.localPosition, constraints.maxWidth),
-                  child: SizedBox(
-                    height: gridHeight,
-                    child: GridView.builder(
+                return Listener(
+                  onPointerDown: (event) => _rememberDragStart(
+                    event.localPosition,
+                    constraints.maxWidth,
+                  ),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTapUp: (details) {
+                      _toggleAt(details.localPosition, constraints.maxWidth);
+                      _dragStartSlot = null;
+                    },
+                    onPanStart: (details) {
+                      _markDragStart();
+                      _markAt(details.localPosition, constraints.maxWidth);
+                    },
+                    onPanUpdate: (details) =>
+                        _markAt(details.localPosition, constraints.maxWidth),
+                    onPanEnd: (_) => _dragStartSlot = null,
+                    onPanCancel: () => _dragStartSlot = null,
+                    child: SizedBox(
+                      height: gridHeight,
+                      child: GridView.builder(
                       key: const Key('availability_grid'),
                       controller: _scrollController,
                       gridDelegate:
@@ -147,6 +172,7 @@ class _AvailabilityGridState extends State<AvailabilityGrid> {
                           ),
                         );
                       },
+                      ),
                     ),
                   ),
                 );
