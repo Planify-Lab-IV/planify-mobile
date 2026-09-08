@@ -4,12 +4,13 @@ import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../domain/slot.dart';
 
-typedef WeeklyAvailabilityGridInteractionBuilder = Widget Function(
-  BuildContext context,
-  BoxConstraints constraints,
-  ScrollController scrollController,
-  Widget grid,
-);
+typedef WeeklyAvailabilityGridInteractionBuilder =
+    Widget Function(
+      BuildContext context,
+      BoxConstraints constraints,
+      ScrollController scrollController,
+      Widget grid,
+    );
 
 class WeeklyAvailabilityGrid extends StatefulWidget {
   static const dayCount = 7;
@@ -62,7 +63,11 @@ class _WeeklyAvailabilityGridState extends State<WeeklyAvailabilityGrid> {
           children: [
             Row(
               children: [
-                for (var index = 0; index < widget.dayLabels.length; index++) ...[
+                for (
+                  var index = 0;
+                  index < widget.dayLabels.length;
+                  index++
+                ) ...[
                   Expanded(
                     child: Text(
                       widget.dayLabels[index],
@@ -86,13 +91,13 @@ class _WeeklyAvailabilityGridState extends State<WeeklyAvailabilityGrid> {
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: WeeklyAvailabilityGrid.dayCount,
-                          crossAxisSpacing:
-                              WeeklyAvailabilityGrid.slotSpacing,
+                          crossAxisSpacing: WeeklyAvailabilityGrid.slotSpacing,
                           mainAxisSpacing: WeeklyAvailabilityGrid.slotSpacing,
                           childAspectRatio:
                               WeeklyAvailabilityGrid.slotAspectRatio,
                         ),
-                    itemCount: WeeklyAvailabilityGrid.dayCount *
+                    itemCount:
+                        WeeklyAvailabilityGrid.dayCount *
                         WeeklyAvailabilityGrid.hourCount,
                     itemBuilder: (context, index) {
                       final slot = Slot(

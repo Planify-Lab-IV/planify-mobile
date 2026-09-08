@@ -18,10 +18,9 @@ void main() {
       );
 
       expect(heatmap.totalParticipants, 5);
-      expect(
-        heatmap.slots,
-        [SlotHeatmapDto(weekDay: 1, hourBlock: 10, availableCount: 3)],
-      );
+      expect(heatmap.slots, [
+        SlotHeatmapDto(weekDay: 1, hourBlock: 10, availableCount: 3),
+      ]);
       expect(
         () => heatmap.slots.add(
           SlotHeatmapDto(weekDay: 2, hourBlock: 11, availableCount: 1),

@@ -62,25 +62,25 @@ void main() {
       },
     );
 
-    test('returns a heatmap with distinct availability levels by default',
-        () async {
-      final repository = FakeAvailabilityRepository(delay: Duration.zero);
+    test(
+      'returns a heatmap with distinct availability levels by default',
+      () async {
+        final repository = FakeAvailabilityRepository(delay: Duration.zero);
 
-      final heatmap = await repository.heatmap('evt-1');
+        final heatmap = await repository.heatmap('evt-1');
 
-      expect(heatmap.totalParticipants, 5);
-      expect(
-        heatmap.slots.map((slot) => slot.availableCount),
-        containsAll([0, 2, 3, 5]),
-      );
-    });
+        expect(heatmap.totalParticipants, 5);
+        expect(
+          heatmap.slots.map((slot) => slot.availableCount),
+          containsAll([0, 2, 3, 5]),
+        );
+      },
+    );
 
     test('loads the heatmap supplied for an event', () async {
       final expectedHeatmap = AvailabilityHeatmapDto(
         totalParticipants: 2,
-        slots: [
-          SlotHeatmapDto(weekDay: 4, hourBlock: 18, availableCount: 1),
-        ],
+        slots: [SlotHeatmapDto(weekDay: 4, hourBlock: 18, availableCount: 1)],
       );
       final repository = FakeAvailabilityRepository(
         delay: Duration.zero,

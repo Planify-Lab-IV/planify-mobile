@@ -20,11 +20,12 @@ final availabilityNotifierProvider = StateNotifierProvider.autoDispose
     });
 
 final availabilityHeatmapNotifierProvider = StateNotifierProvider.autoDispose
-    .family<AvailabilityHeatmapNotifier, AvailabilityHeatmapState, String>(
-      (ref, eventId) {
-        return AvailabilityHeatmapNotifier(
-          repository: ref.watch(availabilityRepositoryProvider),
-          eventId: eventId,
-        );
-      },
-    );
+    .family<AvailabilityHeatmapNotifier, AvailabilityHeatmapState, String>((
+      ref,
+      eventId,
+    ) {
+      return AvailabilityHeatmapNotifier(
+        repository: ref.watch(availabilityRepositoryProvider),
+        eventId: eventId,
+      );
+    });

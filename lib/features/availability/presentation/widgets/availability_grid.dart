@@ -24,11 +24,7 @@ class AvailabilityGrid extends StatefulWidget {
 class _AvailabilityGridState extends State<AvailabilityGrid> {
   Slot? _dragStartSlot;
 
-  Slot? _slotAt(
-    Offset position,
-    double gridWidth,
-    double scrollOffset,
-  ) {
+  Slot? _slotAt(Offset position, double gridWidth, double scrollOffset) {
     final cellWidth =
         (gridWidth -
             (WeeklyAvailabilityGrid.slotSpacing *

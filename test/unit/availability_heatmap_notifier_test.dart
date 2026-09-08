@@ -13,9 +13,7 @@ void main() {
     test('loads the heatmap for its event', () async {
       final expectedHeatmap = AvailabilityHeatmapDto(
         totalParticipants: 5,
-        slots: [
-          SlotHeatmapDto(weekDay: 1, hourBlock: 10, availableCount: 3),
-        ],
+        slots: [SlotHeatmapDto(weekDay: 1, hourBlock: 10, availableCount: 3)],
       );
       final repository = _ControllableAvailabilityRepository(
         heatmapResult: expectedHeatmap,

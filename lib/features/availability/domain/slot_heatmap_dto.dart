@@ -9,11 +9,7 @@ class SlotHeatmapDto {
     required this.availableCount,
   }) {
     if (weekDay < 0 || weekDay > 6) {
-      throw ArgumentError.value(
-        weekDay,
-        'weekDay',
-        'must be between 0 and 6',
-      );
+      throw ArgumentError.value(weekDay, 'weekDay', 'must be between 0 and 6');
     }
     if (hourBlock < 0 || hourBlock > 23) {
       throw ArgumentError.value(
