@@ -121,6 +121,19 @@ void main() {
     expect(unselectedDecoration.color, colorScheme.surfaceContainerHighest);
   });
 
+  testWidgets('displays an aligned hour label for each grid row', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildGrid(onToggleSlot: (_) {}, onMarkSlot: (_) {}),
+    );
+
+    expect(find.byKey(const Key('availability_hour_0')), findsOneWidget);
+    expect(find.text('00:00'), findsOneWidget);
+    expect(find.byKey(const Key('availability_hour_1')), findsOneWidget);
+    expect(find.text('01:00'), findsOneWidget);
+  });
+
   testWidgets('groups labels and slots in a rounded card with spaced slots', (
     tester,
   ) async {
@@ -147,6 +160,7 @@ void main() {
     expect(delegate.crossAxisSpacing, AppSpacing.sm);
     expect(delegate.mainAxisSpacing, AppSpacing.sm);
     expect(delegate.childAspectRatio, 1.25);
+    expect(delegate.crossAxisCount, 8);
     expect(decoration.borderRadius, BorderRadius.circular(6));
   });
 }

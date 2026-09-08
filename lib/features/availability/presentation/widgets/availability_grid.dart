@@ -24,6 +24,7 @@ class AvailabilityGrid extends StatefulWidget {
 
 class _AvailabilityGridState extends State<AvailabilityGrid> {
   static const _dayCount = 7;
+  static const _gridColumnCount = _dayCount + 1;
   static const _hourCount = 24;
   static const _slotSpacing = AppSpacing.sm;
   static const _slotAspectRatio = 1.25;
@@ -38,15 +39,17 @@ class _AvailabilityGridState extends State<AvailabilityGrid> {
 
   Slot? _slotAt(Offset position, double gridWidth) {
     final cellWidth =
-        (gridWidth - (_slotSpacing * (_dayCount - 1))) / _dayCount;
+        (gridWidth - (_slotSpacing * (_gridColumnCount - 1))) /
+        _gridColumnCount;
     final cellHeight = cellWidth / _slotAspectRatio;
     final cellStride = cellWidth + _slotSpacing;
     final rowStride = cellHeight + _slotSpacing;
     final contentY = position.dy + _scrollController.offset;
-    final dayOfWeek = (position.dx / cellStride).floor();
+    final column = (position.dx / cellStride).floor();
+    final dayOfWeek = column - 1;
     final hour = (contentY / rowStride).floor();
 
-    final isInColumnGap = position.dx - (dayOfWeek * cellStride) > cellWidth;
+    final isInColumnGap = position.dx - (column * cellStride) > cellWidth;
     final isInRowGap = contentY - (hour * rowStride) > cellHeight;
 
     if (dayOfWeek < 0 ||
@@ -88,6 +91,8 @@ class _AvailabilityGridState extends State<AvailabilityGrid> {
           children: [
             Row(
               children: [
+                const Expanded(child: SizedBox()),
+                const SizedBox(width: _slotSpacing),
                 for (
                   var index = 0;
                   index < widget.dayLabels.length;
@@ -123,16 +128,31 @@ class _AvailabilityGridState extends State<AvailabilityGrid> {
                       controller: _scrollController,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: _dayCount,
+                            crossAxisCount: _gridColumnCount,
                             crossAxisSpacing: _slotSpacing,
                             mainAxisSpacing: _slotSpacing,
                             childAspectRatio: _slotAspectRatio,
                           ),
-                      itemCount: _dayCount * _hourCount,
+                      itemCount: _gridColumnCount * _hourCount,
                       itemBuilder: (context, index) {
+                        final column = index % _gridColumnCount;
+                        final hour = index ~/ _gridColumnCount;
+
+                        if (column == 0) {
+                          return Center(
+                            child: Text(
+                              '${hour.toString().padLeft(2, '0')}:00',
+                              key: Key('availability_hour_$hour'),
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          );
+                        }
+
                         final slot = Slot(
-                          dayOfWeek: index % _dayCount,
-                          hour: index ~/ _dayCount,
+                          dayOfWeek: column - 1,
+                          hour: hour,
                         );
                         final isSelected = widget.selectedSlots.contains(slot);
                         final colorScheme = Theme.of(context).colorScheme;
