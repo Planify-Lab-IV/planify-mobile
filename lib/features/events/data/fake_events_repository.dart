@@ -51,15 +51,6 @@ class FakeEventsRepository implements EventsRepository {
         createdAt: DateTime(2026, 1, 1),
       ),
       Event(
-        id: 'evt-fake-id',
-        name: 'EventDemo',
-        location: 'Av. Corrientes 1234',
-        organizerId: 'org-123',
-        groupId: 'grp-amigos',
-        status: EventStatus.active,
-        createdAt: DateTime(2026, 1, 1),
-      ),
-      Event(
         id: 'evt-fake-demo',
         name: 'Evento Demo',
         location: 'Av. Corrientes 1234',
