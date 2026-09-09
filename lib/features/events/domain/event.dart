@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'event_participant.dart';
 import 'event_status.dart';
 
 class Event {
@@ -8,7 +10,9 @@ class Event {
   final String groupId;
   final EventStatus status;
   final DateTime createdAt;
+  final DateTime updatedAt;
   final DateTime? date;
+  final List<EventParticipant> participants;
 
   const Event({
     required this.id,
@@ -18,7 +22,9 @@ class Event {
     required this.groupId,
     this.status = EventStatus.active,
     required this.createdAt,
+    required this.updatedAt,
     this.date,
+    this.participants = const [],
   });
 
   bool get isCancelled => status.isCancelled;
@@ -32,7 +38,9 @@ class Event {
     String? groupId,
     EventStatus? status,
     DateTime? createdAt,
+    DateTime? updatedAt,
     DateTime? date,
+    List<EventParticipant>? participants,
   }) {
     return Event(
       id: id ?? this.id,
@@ -42,7 +50,9 @@ class Event {
       groupId: groupId ?? this.groupId,
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
       date: date ?? this.date,
+      participants: participants ?? this.participants,
     );
   }
 
@@ -58,7 +68,9 @@ class Event {
           groupId == other.groupId &&
           status == other.status &&
           createdAt == other.createdAt &&
-          date == other.date;
+          updatedAt == other.updatedAt &&
+          date == other.date &&
+          listEquals(participants, other.participants);
 
   @override
   int get hashCode =>
@@ -69,10 +81,12 @@ class Event {
       groupId.hashCode ^
       status.hashCode ^
       createdAt.hashCode ^
-      date.hashCode;
+      updatedAt.hashCode ^
+      date.hashCode ^
+      Object.hashAll(participants);
 
   @override
   String toString() {
-    return 'Event(id: $id, name: $name, location: $location, organizerId: $organizerId, groupId: $groupId, status: $status, createdAt: $createdAt, date: $date)';
+    return 'Event(id: $id, name: $name, location: $location, organizerId: $organizerId, groupId: $groupId, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, date: $date, participants: $participants)';
   }
 }

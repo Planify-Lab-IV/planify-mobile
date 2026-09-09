@@ -27,6 +27,7 @@ void main() {
       groupId: 'grp-123',
       status: EventStatus.active,
       createdAt: DateTime(2026, 11, 1),
+      updatedAt: DateTime(2026, 11, 1),
       date: DateTime(2026, 11, 15, 21, 0),
     );
 

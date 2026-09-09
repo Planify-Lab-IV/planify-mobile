@@ -101,18 +101,7 @@ void main() {
           const Group(
             id: 'grp-1',
             name: 'Amigos del Fútbol',
-            memberIdentifiers: [
-              '1',
-              '2',
-              '3',
-              '4',
-              '5',
-              '6',
-              '7',
-              '8',
-              '9',
-              '10',
-            ],
+            memberCount: 10,
           ),
         ];
         final fakeGroupsRepo = FakeGroupsRepository(

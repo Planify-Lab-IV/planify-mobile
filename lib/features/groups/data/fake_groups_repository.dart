@@ -16,21 +16,17 @@ class FakeGroupsRepository implements GroupsRepository {
              Group(
                id: 'grp-1',
                name: 'Amigos del Fútbol',
-               memberIdentifiers: [
-                 'juan@gmail.com',
-                 'pedro@gmail.com',
-                 'lucas@gmail.com',
-               ],
+                memberCount: 3,
              ),
              Group(
                id: 'grp-2',
                name: 'Compañeros de Trabajo',
-               memberIdentifiers: ['ana@work.com', 'carlos@work.com'],
+                memberCount: 2,
              ),
              Group(
                id: 'grp-3',
                name: 'Familia',
-               memberIdentifiers: ['mama@gmail.com', 'papa@gmail.com'],
+                memberCount: 2,
              ),
            ];
 

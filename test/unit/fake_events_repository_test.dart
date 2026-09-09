@@ -138,6 +138,7 @@ void main() {
         groupId: 'grp-1',
         status: EventStatus.active,
         createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
       );
 
       final customRepo = FakeEventsRepository(

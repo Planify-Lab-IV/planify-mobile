@@ -31,6 +31,7 @@ class FakeEventsRepository implements EventsRepository {
         groupId: 'grp-amigos',
         status: EventStatus.active,
         createdAt: DateTime(2026, 1, 1),
+        updatedAt: DateTime(2026, 1, 1),
       ),
       Event(
         id: 'evt-cumple-lucas',
@@ -40,6 +41,7 @@ class FakeEventsRepository implements EventsRepository {
         groupId: 'grp-amigos',
         status: EventStatus.active,
         createdAt: DateTime(2026, 1, 1),
+        updatedAt: DateTime(2026, 1, 1),
       ),
       Event(
         id: 'evt-asado-amigos',
@@ -49,6 +51,7 @@ class FakeEventsRepository implements EventsRepository {
         groupId: 'grp-amigos',
         status: EventStatus.active,
         createdAt: DateTime(2026, 1, 1),
+        updatedAt: DateTime(2026, 1, 1),
       ),
       Event(
         id: 'evt-fake-demo',
@@ -58,6 +61,7 @@ class FakeEventsRepository implements EventsRepository {
         groupId: 'grp-amigos',
         status: EventStatus.active,
         createdAt: DateTime(2026, 1, 1),
+        updatedAt: DateTime(2026, 1, 1),
       ),
     ];
 
@@ -78,6 +82,7 @@ class FakeEventsRepository implements EventsRepository {
 
     _eventSequence++;
     final eventId = 'evt-$_eventSequence';
+    final now = DateTime.now();
     final groupId = draft.isNewGroup
         ? 'grp-${DateTime.now().millisecondsSinceEpoch}'
         : (draft.selectedGroupId ?? 'grp-default');
@@ -89,7 +94,17 @@ class FakeEventsRepository implements EventsRepository {
       organizerId: organizerId,
       groupId: groupId,
       status: EventStatus.active,
-      createdAt: DateTime.now(),
+      createdAt: now,
+      updatedAt: now,
+      participants: [
+        EventParticipant(
+          eventId: eventId,
+          userId: organizerId,
+          username: organizerId,
+          isAnonymous: false,
+          isOrganizer: true,
+        ),
+      ],
     );
 
     _events[eventId] = event;
