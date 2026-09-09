@@ -17,3 +17,11 @@ class AttendanceResponseException extends EventsException {
 class NetworkEventException extends EventsException {
   const NetworkEventException();
 }
+
+class InvalidEventResponseException extends EventsException {
+  const InvalidEventResponseException();
+}
+
+class UnsupportedEventOperationException extends EventsException {
+  const UnsupportedEventOperationException();
+}

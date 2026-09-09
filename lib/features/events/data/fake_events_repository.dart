@@ -73,7 +73,7 @@ class FakeEventsRepository implements EventsRepository {
   }
 
   @override
-  Future<Event> createEvent(EventDraft draft, String organizerId) async {
+  Future<Event> createEvent(EventDraft draft) async {
     if (delay > Duration.zero) {
       await Future.delayed(delay);
     }
@@ -92,7 +92,7 @@ class FakeEventsRepository implements EventsRepository {
       id: eventId,
       name: draft.name,
       location: draft.location,
-      organizerId: organizerId,
+      organizerId: 'org-123',
       groupId: groupId,
       status: EventStatus.active,
       createdAt: now,
@@ -100,8 +100,8 @@ class FakeEventsRepository implements EventsRepository {
       participants: [
         EventParticipant(
           eventId: eventId,
-          userId: organizerId,
-          username: organizerId,
+          userId: 'org-123',
+          username: 'org-123',
           isAnonymous: false,
           isOrganizer: true,
         ),

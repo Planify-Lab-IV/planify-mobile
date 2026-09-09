@@ -26,7 +26,7 @@ Widget _buildTestApp({
       groupsRepositoryProvider.overrideWithValue(
         FakeGroupsRepository(delay: Duration.zero),
       ),
-      eventsRepositoryProvider.overrideWithValue(
+      createEventsRepositoryProvider.overrideWithValue(
         FakeEventsRepository(delay: Duration.zero),
       ),
       ...overrides,

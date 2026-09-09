@@ -26,12 +26,12 @@ void main() {
           selectedGroupName: 'Amigos del Fútbol',
         );
 
-        final event = await repository.createEvent(draft, testOrganizerId);
+        final event = await repository.createEvent(draft);
 
         expect(event.id, startsWith('evt-'));
         expect(event.name, equals('Cumpleaños de Lucas'));
         expect(event.location, equals('Av. Corrientes 1234'));
-        expect(event.organizerId, equals(testOrganizerId));
+        expect(event.organizerId, equals('org-123'));
         expect(event.groupId, equals('grp-1'));
         expect(event.status, equals(EventStatus.active));
 
@@ -51,7 +51,7 @@ void main() {
           newGroupMembers: ['juan@gmail.com', '@pedro123'],
         );
 
-        final event = await repository.createEvent(draft, testOrganizerId);
+        final event = await repository.createEvent(draft);
 
         expect(event.id, startsWith('evt-'));
         expect(event.name, equals('Asado de Fin de Año'));
@@ -75,7 +75,7 @@ void main() {
         );
 
         expect(
-          () => errorRepo.createEvent(draft, testOrganizerId),
+          () => errorRepo.createEvent(draft),
           throwsException,
         );
       },
@@ -87,7 +87,7 @@ void main() {
         location: 'Lugar',
         selectedGroupId: 'grp-1',
       );
-      final event = await repository.createEvent(draft, testOrganizerId);
+      final event = await repository.createEvent(draft);
 
       await repository.cancel(event.id);
 
@@ -119,7 +119,6 @@ void main() {
             location: 'Loc',
             selectedGroupId: 'grp-1',
           ),
-          testOrganizerId,
         );
 
         expect(

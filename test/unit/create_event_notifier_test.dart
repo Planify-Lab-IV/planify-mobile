@@ -11,7 +11,7 @@ void main() {
 
     setUp(() {
       repository = FakeEventsRepository(delay: Duration.zero);
-      notifier = CreateEventNotifier(repository, 'org-123');
+      notifier = CreateEventNotifier(repository);
     });
 
     test('estado inicial es EventCreationInitial', () {
@@ -39,7 +39,7 @@ void main() {
         delay: Duration.zero,
         shouldThrowError: true,
       );
-      final errorNotifier = CreateEventNotifier(errorRepo, 'org-123');
+      final errorNotifier = CreateEventNotifier(errorRepo);
 
       const draft = EventDraft(
         name: 'Cumpleaños',

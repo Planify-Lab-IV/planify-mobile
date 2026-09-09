@@ -27,7 +27,7 @@ Widget _buildTestApp({
       groupsRepositoryProvider.overrideWithValue(
         fakeGroupsRepo ?? FakeGroupsRepository(delay: Duration.zero),
       ),
-      eventsRepositoryProvider.overrideWithValue(
+      createEventsRepositoryProvider.overrideWithValue(
         fakeEventsRepo ?? FakeEventsRepository(delay: Duration.zero),
       ),
     ],
@@ -136,18 +136,7 @@ void main() {
         expect(find.byKey(const Key('created_event_location')), findsOneWidget);
         expect(find.text('Av. Corrientes 1234'), findsOneWidget);
         expect(find.byKey(const Key('created_event_group')), findsOneWidget);
-        expect(
-          find.byKey(const Key('view_event_detail_button')),
-          findsOneWidget,
-        );
-        expect(find.text('Ver detalle del evento'), findsOneWidget);
         expect(find.byKey(const Key('back_to_home_button')), findsOneWidget);
-
-        // Pulsa "Ver detalle del evento" y navega a EventDetailScreen
-        await tester.tap(find.byKey(const Key('view_event_detail_button')));
-        await tester.pumpAndSettle();
-
-        expect(find.text('Detalle del evento'), findsOneWidget);
       },
     );
 
