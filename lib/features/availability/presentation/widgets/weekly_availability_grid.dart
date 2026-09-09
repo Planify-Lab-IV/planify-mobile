@@ -14,6 +14,7 @@ typedef WeeklyAvailabilityGridInteractionBuilder =
 
 class WeeklyAvailabilityGrid extends StatefulWidget {
   static const dayCount = 7;
+  static const gridColumnCount = dayCount + 1;
   static const hourCount = 24;
   static const slotSpacing = AppSpacing.sm;
   static const slotAspectRatio = 1.25;
@@ -63,6 +64,8 @@ class _WeeklyAvailabilityGridState extends State<WeeklyAvailabilityGrid> {
           children: [
             Row(
               children: [
+                const Expanded(child: SizedBox()),
+                const SizedBox(width: WeeklyAvailabilityGrid.slotSpacing),
                 for (
                   var index = 0;
                   index < widget.dayLabels.length;
@@ -90,19 +93,37 @@ class _WeeklyAvailabilityGridState extends State<WeeklyAvailabilityGrid> {
                     controller: _scrollController,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: WeeklyAvailabilityGrid.dayCount,
+                          crossAxisCount:
+                              WeeklyAvailabilityGrid.gridColumnCount,
                           crossAxisSpacing: WeeklyAvailabilityGrid.slotSpacing,
                           mainAxisSpacing: WeeklyAvailabilityGrid.slotSpacing,
                           childAspectRatio:
                               WeeklyAvailabilityGrid.slotAspectRatio,
                         ),
                     itemCount:
-                        WeeklyAvailabilityGrid.dayCount *
+                        WeeklyAvailabilityGrid.gridColumnCount *
                         WeeklyAvailabilityGrid.hourCount,
                     itemBuilder: (context, index) {
+                      final column =
+                          index % WeeklyAvailabilityGrid.gridColumnCount;
+                      final hour =
+                          index ~/ WeeklyAvailabilityGrid.gridColumnCount;
+
+                      if (column == 0) {
+                        return Center(
+                          child: Text(
+                            '${hour.toString().padLeft(2, '0')}:00',
+                            key: Key('availability_hour_$hour'),
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        );
+                      }
+
                       final slot = Slot(
-                        dayOfWeek: index % WeeklyAvailabilityGrid.dayCount,
-                        hour: index ~/ WeeklyAvailabilityGrid.dayCount,
+                        dayOfWeek: column - 1,
+                        hour: hour,
                       );
                       return widget.cellBuilder(context, slot);
                     },

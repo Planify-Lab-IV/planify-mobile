@@ -114,6 +114,7 @@ class EventConfigScreen extends ConsumerWidget {
                     selectedSlots: availabilityState.selectedSlots,
                     onToggleSlot: availabilityNotifier.toggleSlot,
                     onMarkSlot: availabilityNotifier.markSlot,
+                    isEnabled: !availabilityState.isSaving,
                     dayLabels: [
                       i18n.availabilityMondayShort,
                       i18n.availabilityTuesdayShort,

@@ -40,9 +40,11 @@ void main() {
     expect(find.text('D'), findsOneWidget);
     expect(find.byKey(const Key('shared_slot_0_0')), findsOneWidget);
     expect(cardShape.borderRadius, BorderRadius.circular(AppRadius.card));
-    expect(delegate.crossAxisCount, WeeklyAvailabilityGrid.dayCount);
+    expect(delegate.crossAxisCount, WeeklyAvailabilityGrid.gridColumnCount);
     expect(delegate.crossAxisSpacing, AppSpacing.sm);
     expect(delegate.mainAxisSpacing, AppSpacing.sm);
     expect(delegate.childAspectRatio, WeeklyAvailabilityGrid.slotAspectRatio);
+    expect(find.byKey(const Key('availability_hour_0')), findsOneWidget);
+    expect(find.text('00:00'), findsOneWidget);
   });
 }

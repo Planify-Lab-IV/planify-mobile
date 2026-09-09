@@ -8,6 +8,7 @@ class AvailabilityGrid extends StatefulWidget {
   final ValueChanged<Slot> onToggleSlot;
   final ValueChanged<Slot> onMarkSlot;
   final List<String> dayLabels;
+  final bool isEnabled;
 
   const AvailabilityGrid({
     super.key,
@@ -15,6 +16,7 @@ class AvailabilityGrid extends StatefulWidget {
     required this.onToggleSlot,
     required this.onMarkSlot,
     required this.dayLabels,
+    this.isEnabled = true,
   }) : assert(dayLabels.length == WeeklyAvailabilityGrid.dayCount);
 
   @override
@@ -22,22 +24,21 @@ class AvailabilityGrid extends StatefulWidget {
 }
 
 class _AvailabilityGridState extends State<AvailabilityGrid> {
-  Slot? _dragStartSlot;
-
   Slot? _slotAt(Offset position, double gridWidth, double scrollOffset) {
     final cellWidth =
         (gridWidth -
             (WeeklyAvailabilityGrid.slotSpacing *
-                (WeeklyAvailabilityGrid.dayCount - 1))) /
-        WeeklyAvailabilityGrid.dayCount;
+                (WeeklyAvailabilityGrid.gridColumnCount - 1))) /
+        WeeklyAvailabilityGrid.gridColumnCount;
     final cellHeight = cellWidth / WeeklyAvailabilityGrid.slotAspectRatio;
     final cellStride = cellWidth + WeeklyAvailabilityGrid.slotSpacing;
     final rowStride = cellHeight + WeeklyAvailabilityGrid.slotSpacing;
     final contentY = position.dy + scrollOffset;
-    final dayOfWeek = (position.dx / cellStride).floor();
+    final column = (position.dx / cellStride).floor();
+    final dayOfWeek = column - 1;
     final hour = (contentY / rowStride).floor();
 
-    final isInColumnGap = position.dx - (dayOfWeek * cellStride) > cellWidth;
+    final isInColumnGap = position.dx - (column * cellStride) > cellWidth;
     final isInRowGap = contentY - (hour * rowStride) > cellHeight;
 
     if (dayOfWeek < 0 ||
@@ -48,6 +49,7 @@ class _AvailabilityGridState extends State<AvailabilityGrid> {
         isInRowGap) {
       return null;
     }
+
     return Slot(dayOfWeek: dayOfWeek, hour: hour);
   }
 
@@ -58,19 +60,6 @@ class _AvailabilityGridState extends State<AvailabilityGrid> {
 
   void _markAt(Offset position, double gridWidth, double scrollOffset) {
     final slot = _slotAt(position, gridWidth, scrollOffset);
-    if (slot != null) widget.onMarkSlot(slot);
-  }
-
-  void _rememberDragStart(
-    Offset position,
-    double gridWidth,
-    double scrollOffset,
-  ) {
-    _dragStartSlot = _slotAt(position, gridWidth, scrollOffset);
-  }
-
-  void _markDragStart() {
-    final slot = _dragStartSlot;
     if (slot != null) widget.onMarkSlot(slot);
   }
 
@@ -95,37 +84,25 @@ class _AvailabilityGridState extends State<AvailabilityGrid> {
         );
       },
       interactionBuilder: (context, constraints, scrollController, grid) {
-        return Listener(
-          onPointerDown: (event) => _rememberDragStart(
-            event.localPosition,
-            constraints.maxWidth,
-            scrollController.offset,
-          ),
+        return AbsorbPointer(
+          absorbing: !widget.isEnabled,
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onTapUp: (details) {
-              _toggleAt(
-                details.localPosition,
-                constraints.maxWidth,
-                scrollController.offset,
-              );
-              _dragStartSlot = null;
-            },
-            onPanStart: (details) {
-              _markDragStart();
-              _markAt(
-                details.localPosition,
-                constraints.maxWidth,
-                scrollController.offset,
-              );
-            },
-            onPanUpdate: (details) => _markAt(
+            onTapUp: (details) => _toggleAt(
               details.localPosition,
               constraints.maxWidth,
               scrollController.offset,
             ),
-            onPanEnd: (_) => _dragStartSlot = null,
-            onPanCancel: () => _dragStartSlot = null,
+            onLongPressStart: (details) => _markAt(
+              details.localPosition,
+              constraints.maxWidth,
+              scrollController.offset,
+            ),
+            onLongPressMoveUpdate: (details) => _markAt(
+              details.localPosition,
+              constraints.maxWidth,
+              scrollController.offset,
+            ),
             child: grid,
           ),
         );
