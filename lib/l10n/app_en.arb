@@ -155,6 +155,18 @@
     "availabilityLoadError": "We could not load your availability.",
     "availabilitySaveSuccess": "Your availability was saved.",
     "availabilitySaveError": "We could not save your availability. Please try again.",
+    "availabilityHeatmapTitle": "Combined availability",
+    "availabilityHeatmapSubtitle": "See how many people are available at each time.",
+    "availabilityHeatmapLoadError": "We could not load the combined availability.",
+    "availabilityHeatmapAvailableCount": "{count} available",
+    "@availabilityHeatmapAvailableCount": {
+      "placeholders": {
+        "count": {
+          "type": "int",
+          "example": "3"
+        }
+      }
+    },
     "availabilityMondayShort": "M",
     "availabilityTuesdayShort": "T",
     "availabilityWednesdayShort": "W",

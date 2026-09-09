@@ -454,6 +454,22 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo guardar tu disponibilidad. Intenta nuevamente.';
 
   @override
+  String get availabilityHeatmapTitle => 'Disponibilidad combinada';
+
+  @override
+  String get availabilityHeatmapSubtitle =>
+      'Consultá cuántas personas están disponibles en cada horario.';
+
+  @override
+  String get availabilityHeatmapLoadError =>
+      'No se pudo cargar la disponibilidad combinada.';
+
+  @override
+  String availabilityHeatmapAvailableCount(int count) {
+    return '$count disponibles';
+  }
+
+  @override
   String get availabilityMondayShort => 'L';
 
   @override

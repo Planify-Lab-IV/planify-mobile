@@ -54,7 +54,7 @@ void main() {
         final anonSession = authState.session as AnonymousSession;
         expect(anonSession.name, equals('Lucas'));
         expect(anonSession.isAnonymous, isTrue);
-        expect(anonSession.eventId, equals('evt-fake-id'));
+        expect(anonSession.eventId, equals('evt-fake-demo'));
 
         final storedToken = await storage.getToken();
         expect(storedToken, equals(anonSession.token));

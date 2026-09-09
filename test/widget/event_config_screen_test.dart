@@ -102,6 +102,19 @@ void main() {
     );
   });
 
+  testWidgets('muestra el heatmap combinado para cualquier usuario', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildScreen(FakeEventsRepository(delay: Duration.zero)),
+    );
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text('Disponibilidad combinada'), findsOneWidget);
+    expect(find.byKey(const Key('availability_heatmap_grid')), findsOneWidget);
+  });
+
   testWidgets('bloquea la grilla mientras se guarda la disponibilidad', (
     tester,
   ) async {

@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/availability/data/fake_availability_repository.dart';
+import 'package:planify/features/availability/domain/availability_heatmap_dto.dart';
 import 'package:planify/features/availability/domain/availability_repository.dart';
 import 'package:planify/features/availability/domain/slot.dart';
 import 'package:planify/features/availability/presentation/controllers/availability_notifier.dart';
@@ -85,6 +86,11 @@ void main() {
 }
 
 class _FailingAvailabilityRepository implements AvailabilityRepository {
+  @override
+  Future<AvailabilityHeatmapDto> heatmap(String eventId) async {
+    return AvailabilityHeatmapDto(totalParticipants: 0, slots: const []);
+  }
+
   @override
   Future<List<Slot>> load(String eventId) async => [];
 
