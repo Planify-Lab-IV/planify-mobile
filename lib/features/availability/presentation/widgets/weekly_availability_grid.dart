@@ -121,10 +121,7 @@ class _WeeklyAvailabilityGridState extends State<WeeklyAvailabilityGrid> {
                         );
                       }
 
-                      final slot = Slot(
-                        dayOfWeek: column - 1,
-                        hour: hour,
-                      );
+                      final slot = Slot(dayOfWeek: column - 1, hour: hour);
                       return widget.cellBuilder(context, slot);
                     },
                   ),
