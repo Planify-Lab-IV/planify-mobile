@@ -1,17 +1,13 @@
-import 'package:flutter/foundation.dart';
-
 class Group {
   final String id;
   final String name;
-  final List<String> memberIdentifiers;
+  final int memberCount;
 
   const Group({
     required this.id,
     required this.name,
-    this.memberIdentifiers = const [],
+    required this.memberCount,
   });
-
-  int get memberCount => memberIdentifiers.length;
 
   @override
   bool operator ==(Object other) =>
@@ -20,11 +16,10 @@ class Group {
           runtimeType == other.runtimeType &&
           id == other.id &&
           name == other.name &&
-          listEquals(memberIdentifiers, other.memberIdentifiers);
+          memberCount == other.memberCount;
 
   @override
-  int get hashCode =>
-      id.hashCode ^ name.hashCode ^ Object.hashAll(memberIdentifiers);
+  int get hashCode => id.hashCode ^ name.hashCode ^ memberCount.hashCode;
 
   @override
   String toString() => 'Group(id: $id, name: $name, memberCount: $memberCount)';

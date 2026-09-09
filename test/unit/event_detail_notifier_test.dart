@@ -22,6 +22,7 @@ void main() {
       groupId: 'grp-amigos',
       status: EventStatus.active,
       createdAt: fixedCreatedAt,
+      updatedAt: fixedCreatedAt,
       date: testDate,
     );
 
@@ -112,6 +113,7 @@ void main() {
             organizerId: '  ',
             groupId: 'grp-1',
             createdAt: fixedCreatedAt,
+            updatedAt: fixedCreatedAt,
           );
 
           expect(

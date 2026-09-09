@@ -34,7 +34,7 @@ void main() {
       const newGroup = Group(
         id: 'grp-custom',
         name: 'Nuevo Grupo Test',
-        memberIdentifiers: ['usr-1', 'usr-2'],
+        memberCount: 2,
       );
       repository.addGroup(newGroup);
 

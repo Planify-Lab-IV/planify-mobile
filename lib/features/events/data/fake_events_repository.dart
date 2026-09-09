@@ -1,5 +1,6 @@
 import '../domain/event.dart';
 import '../domain/event_draft.dart';
+import '../domain/event_participant.dart';
 import '../domain/event_status.dart';
 import '../domain/events_repository.dart';
 import '../domain/attendance_status.dart';
@@ -31,6 +32,7 @@ class FakeEventsRepository implements EventsRepository {
         groupId: 'grp-amigos',
         status: EventStatus.active,
         createdAt: DateTime(2026, 1, 1),
+        updatedAt: DateTime(2026, 1, 1),
       ),
       Event(
         id: 'evt-cumple-lucas',
@@ -40,6 +42,7 @@ class FakeEventsRepository implements EventsRepository {
         groupId: 'grp-amigos',
         status: EventStatus.active,
         createdAt: DateTime(2026, 1, 1),
+        updatedAt: DateTime(2026, 1, 1),
       ),
       Event(
         id: 'evt-asado-amigos',
@@ -49,6 +52,7 @@ class FakeEventsRepository implements EventsRepository {
         groupId: 'grp-amigos',
         status: EventStatus.active,
         createdAt: DateTime(2026, 1, 1),
+        updatedAt: DateTime(2026, 1, 1),
       ),
       Event(
         id: 'evt-fake-demo',
@@ -58,6 +62,7 @@ class FakeEventsRepository implements EventsRepository {
         groupId: 'grp-amigos',
         status: EventStatus.active,
         createdAt: DateTime(2026, 1, 1),
+        updatedAt: DateTime(2026, 1, 1),
       ),
     ];
 
@@ -68,7 +73,7 @@ class FakeEventsRepository implements EventsRepository {
   }
 
   @override
-  Future<Event> createEvent(EventDraft draft, String organizerId) async {
+  Future<Event> createEvent(EventDraft draft) async {
     if (delay > Duration.zero) {
       await Future.delayed(delay);
     }
@@ -78,6 +83,7 @@ class FakeEventsRepository implements EventsRepository {
 
     _eventSequence++;
     final eventId = 'evt-$_eventSequence';
+    final now = DateTime.now();
     final groupId = draft.isNewGroup
         ? 'grp-${DateTime.now().millisecondsSinceEpoch}'
         : (draft.selectedGroupId ?? 'grp-default');
@@ -86,10 +92,20 @@ class FakeEventsRepository implements EventsRepository {
       id: eventId,
       name: draft.name,
       location: draft.location,
-      organizerId: organizerId,
+      organizerId: 'org-123',
       groupId: groupId,
       status: EventStatus.active,
-      createdAt: DateTime.now(),
+      createdAt: now,
+      updatedAt: now,
+      participants: [
+        EventParticipant(
+          eventId: eventId,
+          userId: 'org-123',
+          username: 'org-123',
+          isAnonymous: false,
+          isOrganizer: true,
+        ),
+      ],
     );
 
     _events[eventId] = event;

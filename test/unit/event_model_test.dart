@@ -1,11 +1,22 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/events/domain/event.dart';
+import 'package:planify/features/events/domain/event_participant.dart';
 import 'package:planify/features/events/domain/event_status.dart';
 
 void main() {
   group('Event Domain Model Tests', () {
     final fixedCreatedAt = DateTime(2026, 11, 1, 12, 0);
+    final fixedUpdatedAt = DateTime(2026, 11, 2, 12, 0);
     final testDate = DateTime(2026, 11, 15, 21, 0);
+    const testParticipants = [
+      EventParticipant(
+        eventId: 'evt-001',
+        userId: 'usr-org-1',
+        username: 'organizer',
+        isAnonymous: false,
+        isOrganizer: true,
+      ),
+    ];
 
     final testEvent = Event(
       id: 'evt-001',
@@ -15,7 +26,9 @@ void main() {
       groupId: 'grp-001',
       status: EventStatus.active,
       createdAt: fixedCreatedAt,
+      updatedAt: fixedUpdatedAt,
       date: testDate,
+      participants: testParticipants,
     );
 
     test('inicializa con valores correctos y estado active por defecto', () {
@@ -26,6 +39,7 @@ void main() {
         organizerId: 'usr-org-2',
         groupId: 'grp-002',
         createdAt: fixedCreatedAt,
+        updatedAt: fixedUpdatedAt,
       );
 
       expect(defaultEvent.id, 'evt-002');
@@ -37,7 +51,9 @@ void main() {
       expect(defaultEvent.isActive, isTrue);
       expect(defaultEvent.isCancelled, isFalse);
       expect(defaultEvent.createdAt, fixedCreatedAt);
+      expect(defaultEvent.updatedAt, fixedUpdatedAt);
       expect(defaultEvent.date, isNull);
+      expect(defaultEvent.participants, isEmpty);
     });
 
     test('isCancelled e isActive reflejan el estado correctamente', () {
@@ -59,12 +75,24 @@ void main() {
       expect(updated.groupId, testEvent.groupId);
       expect(updated.status, testEvent.status);
       expect(updated.createdAt, testEvent.createdAt);
+      expect(updated.updatedAt, testEvent.updatedAt);
       expect(updated.date, testEvent.date);
+      expect(updated.participants, testEvent.participants);
     });
 
     test('copyWith sobreescribe todos los campos cuando se proveen', () {
       final newCreatedAt = DateTime(2026, 12, 1);
+      final newUpdatedAt = DateTime(2026, 12, 2);
       final newDate = DateTime(2026, 12, 20);
+      const newParticipants = [
+        EventParticipant(
+          eventId: 'evt-999',
+          userId: null,
+          username: 'anonymous',
+          isAnonymous: true,
+          isOrganizer: false,
+        ),
+      ];
       final updated = testEvent.copyWith(
         id: 'evt-999',
         name: 'Nuevo Nombre',
@@ -73,7 +101,9 @@ void main() {
         groupId: 'grp-999',
         status: EventStatus.cancelled,
         createdAt: newCreatedAt,
+        updatedAt: newUpdatedAt,
         date: newDate,
+        participants: newParticipants,
       );
 
       expect(updated.id, 'evt-999');
@@ -83,7 +113,9 @@ void main() {
       expect(updated.groupId, 'grp-999');
       expect(updated.status, EventStatus.cancelled);
       expect(updated.createdAt, newCreatedAt);
+      expect(updated.updatedAt, newUpdatedAt);
       expect(updated.date, newDate);
+      expect(updated.participants, newParticipants);
     });
 
     test('igualdad estructural por valor (==) y hashCode', () {
@@ -95,7 +127,9 @@ void main() {
         groupId: 'grp-001',
         status: EventStatus.active,
         createdAt: fixedCreatedAt,
+        updatedAt: fixedUpdatedAt,
         date: testDate,
+        participants: testParticipants,
       );
 
       final event2 = Event(
@@ -106,7 +140,9 @@ void main() {
         groupId: 'grp-001',
         status: EventStatus.active,
         createdAt: fixedCreatedAt,
+        updatedAt: fixedUpdatedAt,
         date: testDate,
+        participants: testParticipants,
       );
 
       final differentEvent = Event(
@@ -117,7 +153,9 @@ void main() {
         groupId: 'grp-001',
         status: EventStatus.active,
         createdAt: fixedCreatedAt,
+        updatedAt: fixedUpdatedAt,
         date: DateTime(2026, 12, 25),
+        participants: testParticipants,
       );
 
       expect(event1, equals(event2));

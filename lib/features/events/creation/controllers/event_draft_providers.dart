@@ -1,27 +1,23 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../auth/presentation/controllers/auth_providers.dart';
-import '../../../auth/presentation/controllers/auth_state.dart';
+import '../../../../core/providers/core_providers.dart';
+import '../../data/http_events_repository.dart';
+import '../../domain/events_repository.dart';
 import '../../domain/event_draft.dart';
 import 'create_event_notifier.dart';
 import 'event_creation_state.dart';
 import 'event_draft_notifier.dart';
-import '../../detail/controllers/events_providers.dart';
-
-export '../../detail/controllers/events_providers.dart'
-    show eventsRepositoryProvider;
 
 final eventDraftProvider =
     StateNotifierProvider<EventDraftNotifier, EventDraft>((ref) {
       return EventDraftNotifier();
     });
 
+final createEventsRepositoryProvider = Provider<EventsRepository>((ref) {
+  return HttpEventsRepository(dio: ref.watch(dioClientProvider));
+});
+
 final createEventNotifierProvider =
     StateNotifierProvider<CreateEventNotifier, EventCreationState>((ref) {
-      final repository = ref.watch(eventsRepositoryProvider);
-      final authState = ref.watch(authNotifierProvider);
-      final organizerId = authState is AuthAuthenticated
-          ? authState.session.userId
-          : '';
-
-      return CreateEventNotifier(repository, organizerId);
+      final repository = ref.watch(createEventsRepositoryProvider);
+      return CreateEventNotifier(repository);
     });

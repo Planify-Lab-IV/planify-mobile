@@ -13,25 +13,9 @@ class FakeGroupsRepository implements GroupsRepository {
   }) : _groups =
            initialGroups ??
            const [
-             Group(
-               id: 'grp-1',
-               name: 'Amigos del Fútbol',
-               memberIdentifiers: [
-                 'juan@gmail.com',
-                 'pedro@gmail.com',
-                 'lucas@gmail.com',
-               ],
-             ),
-             Group(
-               id: 'grp-2',
-               name: 'Compañeros de Trabajo',
-               memberIdentifiers: ['ana@work.com', 'carlos@work.com'],
-             ),
-             Group(
-               id: 'grp-3',
-               name: 'Familia',
-               memberIdentifiers: ['mama@gmail.com', 'papa@gmail.com'],
-             ),
+             Group(id: 'grp-1', name: 'Amigos del Fútbol', memberCount: 3),
+             Group(id: 'grp-2', name: 'Compañeros de Trabajo', memberCount: 2),
+             Group(id: 'grp-3', name: 'Familia', memberCount: 2),
            ];
 
   @override

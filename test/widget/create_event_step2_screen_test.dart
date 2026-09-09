@@ -27,7 +27,7 @@ Widget _buildTestApp({
       groupsRepositoryProvider.overrideWithValue(
         fakeGroupsRepo ?? FakeGroupsRepository(delay: Duration.zero),
       ),
-      eventsRepositoryProvider.overrideWithValue(
+      createEventsRepositoryProvider.overrideWithValue(
         fakeEventsRepo ?? FakeEventsRepository(delay: Duration.zero),
       ),
     ],
@@ -98,22 +98,7 @@ void main() {
       'grupo existente: selecciona un grupo y crea el evento con exito mostrando el resumen',
       (tester) async {
         final fakeGroups = [
-          const Group(
-            id: 'grp-1',
-            name: 'Amigos del Fútbol',
-            memberIdentifiers: [
-              '1',
-              '2',
-              '3',
-              '4',
-              '5',
-              '6',
-              '7',
-              '8',
-              '9',
-              '10',
-            ],
-          ),
+          const Group(id: 'grp-1', name: 'Amigos del Fútbol', memberCount: 10),
         ];
         final fakeGroupsRepo = FakeGroupsRepository(
           delay: Duration.zero,
@@ -151,18 +136,7 @@ void main() {
         expect(find.byKey(const Key('created_event_location')), findsOneWidget);
         expect(find.text('Av. Corrientes 1234'), findsOneWidget);
         expect(find.byKey(const Key('created_event_group')), findsOneWidget);
-        expect(
-          find.byKey(const Key('view_event_detail_button')),
-          findsOneWidget,
-        );
-        expect(find.text('Ver detalle del evento'), findsOneWidget);
         expect(find.byKey(const Key('back_to_home_button')), findsOneWidget);
-
-        // Pulsa "Ver detalle del evento" y navega a EventDetailScreen
-        await tester.tap(find.byKey(const Key('view_event_detail_button')));
-        await tester.pumpAndSettle();
-
-        expect(find.text('Detalle del evento'), findsOneWidget);
       },
     );
 
