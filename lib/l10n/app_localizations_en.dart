@@ -421,4 +421,66 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get attendanceUpdateError =>
       'We could not update your attendance. Please try again.';
+
+  @override
+  String get eventConfigTitle => 'Event configuration';
+
+  @override
+  String get eventConfigAction => 'Configure participation';
+
+  @override
+  String get availabilityTitle => 'Weekly availability';
+
+  @override
+  String get availabilitySubtitle => 'Select the times when you are available.';
+
+  @override
+  String get availabilitySave => 'Save availability';
+
+  @override
+  String get availabilityLoadError => 'We could not load your availability.';
+
+  @override
+  String get availabilitySaveSuccess => 'Your availability was saved.';
+
+  @override
+  String get availabilitySaveError =>
+      'We could not save your availability. Please try again.';
+
+  @override
+  String get availabilityHeatmapTitle => 'Combined availability';
+
+  @override
+  String get availabilityHeatmapSubtitle =>
+      'See how many people are available at each time.';
+
+  @override
+  String get availabilityHeatmapLoadError =>
+      'We could not load the combined availability.';
+
+  @override
+  String availabilityHeatmapAvailableCount(int count) {
+    return '$count available';
+  }
+
+  @override
+  String get availabilityMondayShort => 'M';
+
+  @override
+  String get availabilityTuesdayShort => 'T';
+
+  @override
+  String get availabilityWednesdayShort => 'W';
+
+  @override
+  String get availabilityThursdayShort => 'T';
+
+  @override
+  String get availabilityFridayShort => 'F';
+
+  @override
+  String get availabilitySaturdayShort => 'S';
+
+  @override
+  String get availabilitySundayShort => 'S';
 }

@@ -17,7 +17,6 @@ final eventNameProvider = Provider.family<String, String>((ref, eventId) {
       return 'Cumpleaños de Lucas';
     case 'evt-asado-amigos':
       return 'Asado con Amigos';
-    case 'evt-fake-id':
     case 'evt-fake-demo':
       return 'Evento Demo';
     default:

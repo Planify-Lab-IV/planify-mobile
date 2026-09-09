@@ -48,7 +48,7 @@ void main() {
         expect(anonSession.name, equals('Lucas'));
         expect(anonSession.isAnonymous, isTrue);
         expect(anonSession.role, equals(UserRole.anonymous));
-        expect(anonSession.eventId, equals('evt-fake-id'));
+        expect(anonSession.eventId, equals('evt-fake-demo'));
         expect(anonSession.token, isNotEmpty);
         expect(anonSession.token.contains('1234'), isFalse);
 

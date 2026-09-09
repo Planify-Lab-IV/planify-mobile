@@ -80,7 +80,7 @@ class FakeAuthRepository implements AuthRepository {
       throw const InvalidPinException();
     }
 
-    final resolvedEventId = eventId ?? 'evt-fake-id';
+    final resolvedEventId = eventId ?? 'evt-fake-demo';
 
     final session = AnonymousSession(
       userId: 'anon-${trimmedName.hashCode.abs()}',

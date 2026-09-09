@@ -198,6 +198,11 @@ void main() {
 
         final evtAsado = await defaultRepo.getEvent('evt-asado-amigos');
         expect(evtAsado, isNotNull);
+
+        final eventDemo = await defaultRepo.getEvent('evt-fake-demo');
+        expect(eventDemo, isNotNull);
+        expect(eventDemo?.name, equals('Evento Demo'));
+        expect(eventDemo?.status, equals(EventStatus.active));
       },
     );
   });

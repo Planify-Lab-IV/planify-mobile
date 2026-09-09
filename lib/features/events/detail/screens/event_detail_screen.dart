@@ -9,7 +9,7 @@ import '../widgets/cancel_event_dialog.dart';
 import '../widgets/event_header_card.dart';
 import '../widgets/event_quick_actions_card.dart';
 import '../widgets/event_section_placeholder_card.dart';
-import '../../attendance/widgets/attendance_response_selector.dart';
+import '../../config/presentation/screens/event_config_screen.dart';
 
 class EventDetailScreen extends ConsumerWidget {
   final String eventId;
@@ -80,6 +80,19 @@ class EventDetailScreen extends ConsumerWidget {
           onPressed: () => Navigator.of(context).maybePop(),
         ),
         actions: [
+          if (event?.isActive == true && hasCurrentSession)
+            IconButton(
+              key: const Key('event_config_button'),
+              tooltip: i18n.eventConfigAction,
+              icon: const Icon(Icons.tune_rounded),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) => EventConfigScreen(eventId: event!.id),
+                  ),
+                );
+              },
+            ),
           if (canCancel)
             PopupMenuButton<String>(
               key: const Key('event_actions_menu_button'),
@@ -197,10 +210,6 @@ class EventDetailScreen extends ConsumerWidget {
                     ],
                     EventHeaderCard(event: event),
                     const SizedBox(height: AppSpacing.lg),
-                    if (event.isActive && hasCurrentSession) ...[
-                      AttendanceResponseSelector(eventId: event.id),
-                      const SizedBox(height: AppSpacing.lg),
-                    ],
                     EventQuickActionsCard(isCancelled: event.isCancelled),
                     const SizedBox(height: AppSpacing.lg),
                     EventSectionPlaceholderCard(
