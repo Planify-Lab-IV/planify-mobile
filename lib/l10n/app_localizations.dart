@@ -883,6 +883,96 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No se pudo actualizar tu asistencia. Intenta nuevamente.'**
   String get attendanceUpdateError;
+
+  /// No description provided for @eventConfigTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Configuración del evento'**
+  String get eventConfigTitle;
+
+  /// No description provided for @eventConfigAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Configurar participación'**
+  String get eventConfigAction;
+
+  /// No description provided for @availabilityTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Disponibilidad semanal'**
+  String get availabilityTitle;
+
+  /// No description provided for @availabilitySubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Marcá los horarios en los que estás disponible.'**
+  String get availabilitySubtitle;
+
+  /// No description provided for @availabilitySave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar disponibilidad'**
+  String get availabilitySave;
+
+  /// No description provided for @availabilityLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cargar tu disponibilidad.'**
+  String get availabilityLoadError;
+
+  /// No description provided for @availabilitySaveSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu disponibilidad fue guardada.'**
+  String get availabilitySaveSuccess;
+
+  /// No description provided for @availabilitySaveError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo guardar tu disponibilidad. Intenta nuevamente.'**
+  String get availabilitySaveError;
+
+  /// No description provided for @availabilityMondayShort.
+  ///
+  /// In es, this message translates to:
+  /// **'L'**
+  String get availabilityMondayShort;
+
+  /// No description provided for @availabilityTuesdayShort.
+  ///
+  /// In es, this message translates to:
+  /// **'M'**
+  String get availabilityTuesdayShort;
+
+  /// No description provided for @availabilityWednesdayShort.
+  ///
+  /// In es, this message translates to:
+  /// **'X'**
+  String get availabilityWednesdayShort;
+
+  /// No description provided for @availabilityThursdayShort.
+  ///
+  /// In es, this message translates to:
+  /// **'J'**
+  String get availabilityThursdayShort;
+
+  /// No description provided for @availabilityFridayShort.
+  ///
+  /// In es, this message translates to:
+  /// **'V'**
+  String get availabilityFridayShort;
+
+  /// No description provided for @availabilitySaturdayShort.
+  ///
+  /// In es, this message translates to:
+  /// **'S'**
+  String get availabilitySaturdayShort;
+
+  /// No description provided for @availabilitySundayShort.
+  ///
+  /// In es, this message translates to:
+  /// **'D'**
+  String get availabilitySundayShort;
 }
 
 class _AppLocalizationsDelegate

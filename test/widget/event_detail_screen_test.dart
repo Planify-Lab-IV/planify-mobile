@@ -10,6 +10,7 @@ import 'package:planify/features/events/domain/event.dart';
 import 'package:planify/features/events/domain/event_status.dart';
 import 'package:planify/features/events/detail/controllers/event_detail_notifier.dart';
 import 'package:planify/features/events/detail/controllers/events_providers.dart';
+import 'package:planify/features/events/config/presentation/screens/event_config_screen.dart';
 import 'package:planify/features/events/detail/screens/event_detail_screen.dart';
 import 'package:planify/features/events/detail/widgets/cancel_event_dialog.dart';
 import 'package:planify/l10n/app_localizations.dart';
@@ -176,6 +177,30 @@ void main() {
       expect(find.text('Cancelar evento'), findsNothing);
     });
 
+    testWidgets('participante activo navega a configuración del evento', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildDetailScreen(session: guestSession));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('event_config_button')), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('event_config_button')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(EventConfigScreen), findsOneWidget);
+      expect(find.text('Configuración del evento'), findsOneWidget);
+    });
+
+    testWidgets('organizador activo también ve la configuración del evento', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildDetailScreen(session: organizerSession));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('event_config_button')), findsOneWidget);
+    });
+
     testWidgets(
       'el participante responde asistencia sin perder la posición del detalle',
       (tester) async {
@@ -189,6 +214,9 @@ void main() {
         );
         await tester.pump();
         await tester.pump();
+
+        await tester.tap(find.byKey(const Key('event_config_button')));
+        await tester.pumpAndSettle();
 
         expect(
           find.byKey(const Key('attendance_response_selector')),
