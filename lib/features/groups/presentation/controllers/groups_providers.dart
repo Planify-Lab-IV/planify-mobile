@@ -8,7 +8,7 @@ final groupsRepositoryProvider = Provider<GroupsRepository>((ref) {
   return HttpGroupsRepository(dio: ref.watch(dioClientProvider));
 });
 
-final myGroupsProvider = FutureProvider<List<Group>>((ref) async {
+final myGroupsProvider = FutureProvider.autoDispose<List<Group>>((ref) async {
   final repository = ref.watch(groupsRepositoryProvider);
   return repository.getMyGroups();
 });
