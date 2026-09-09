@@ -119,10 +119,8 @@ class _AvailabilityGridState extends State<AvailabilityGrid> {
                   absorbing: !widget.isEnabled,
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
-                    onTapUp: (details) => _toggleAt(
-                      details.localPosition,
-                      constraints.maxWidth,
-                    ),
+                    onTapUp: (details) =>
+                        _toggleAt(details.localPosition, constraints.maxWidth),
                     onLongPressStart: (details) =>
                         _markAt(details.localPosition, constraints.maxWidth),
                     onLongPressMoveUpdate: (details) =>
@@ -156,10 +154,7 @@ class _AvailabilityGridState extends State<AvailabilityGrid> {
                             );
                           }
 
-                          final slot = Slot(
-                            dayOfWeek: column - 1,
-                            hour: hour,
-                          );
+                          final slot = Slot(dayOfWeek: column - 1, hour: hour);
                           final isSelected = widget.selectedSlots.contains(
                             slot,
                           );
