@@ -13,6 +13,7 @@ void main() {
     Set<Slot> selectedSlots = const {},
     required ValueChanged<Slot> onToggleSlot,
     required ValueChanged<Slot> onMarkSlot,
+    bool isEnabled = true,
   }) {
     return MaterialApp(
       theme: AppTheme.light,
@@ -23,6 +24,7 @@ void main() {
             selectedSlots: selectedSlots,
             onToggleSlot: onToggleSlot,
             onMarkSlot: onMarkSlot,
+            isEnabled: isEnabled,
             dayLabels: dayLabels,
           ),
         ),
@@ -40,6 +42,32 @@ void main() {
     await tester.tap(find.byKey(const Key('availability_slot_3_0')));
 
     expect(toggledSlots, [Slot(dayOfWeek: 3, hour: 0)]);
+  });
+
+  testWidgets('does not accept slot interactions while disabled', (
+    tester,
+  ) async {
+    final toggledSlots = <Slot>[];
+    final markedSlots = <Slot>{};
+
+    await tester.pumpWidget(
+      buildGrid(
+        isEnabled: false,
+        onToggleSlot: toggledSlots.add,
+        onMarkSlot: markedSlots.add,
+      ),
+    );
+
+    final firstCell = find.byKey(const Key('availability_slot_3_0'));
+    final secondCell = find.byKey(const Key('availability_slot_4_0'));
+    await tester.tap(firstCell);
+    final gesture = await tester.startGesture(tester.getCenter(firstCell));
+    await tester.pump(kLongPressTimeout);
+    await gesture.moveTo(tester.getCenter(secondCell));
+    await gesture.up();
+
+    expect(toggledSlots, isEmpty);
+    expect(markedSlots, isEmpty);
   });
 
   testWidgets('long press and drag marks slots horizontally without toggling', (

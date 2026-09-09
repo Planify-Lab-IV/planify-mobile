@@ -6,6 +6,7 @@ import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/availability/data/fake_availability_repository.dart';
 import 'package:planify/features/availability/domain/slot.dart';
 import 'package:planify/features/availability/presentation/controllers/availability_providers.dart';
+import 'package:planify/features/availability/presentation/widgets/availability_grid.dart';
 import 'package:planify/features/events/config/presentation/screens/event_config_screen.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
 import 'package:planify/features/events/detail/controllers/events_providers.dart';
@@ -99,5 +100,39 @@ void main() {
         Slot(dayOfWeek: 1, hour: 0),
       ]),
     );
+  });
+
+  testWidgets('bloquea la grilla mientras se guarda la disponibilidad', (
+    tester,
+  ) async {
+    final availabilityRepository = FakeAvailabilityRepository(
+      delay: const Duration(seconds: 1),
+    );
+
+    await tester.pumpWidget(
+      buildScreen(
+        FakeEventsRepository(delay: Duration.zero),
+        availabilityRepository: availabilityRepository,
+      ),
+    );
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+
+    await tester.tap(find.byKey(const Key('availability_slot_1_0')));
+    final saveButton = find.byKey(const Key('availability_save_button'));
+    await tester.scrollUntilVisible(
+      saveButton,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(saveButton);
+    await tester.pump();
+
+    final availabilityGrid = tester.widget<AvailabilityGrid>(
+      find.byType(AvailabilityGrid),
+    );
+    expect(availabilityGrid.isEnabled, isFalse);
+
+    await tester.pump(const Duration(seconds: 1));
   });
 }

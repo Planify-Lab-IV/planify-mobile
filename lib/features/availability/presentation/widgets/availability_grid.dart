@@ -9,6 +9,7 @@ class AvailabilityGrid extends StatefulWidget {
   final ValueChanged<Slot> onToggleSlot;
   final ValueChanged<Slot> onMarkSlot;
   final List<String> dayLabels;
+  final bool isEnabled;
 
   const AvailabilityGrid({
     super.key,
@@ -16,6 +17,7 @@ class AvailabilityGrid extends StatefulWidget {
     required this.onToggleSlot,
     required this.onMarkSlot,
     required this.dayLabels,
+    this.isEnabled = true,
   }) : assert(dayLabels.length == 7);
 
   @override
@@ -113,64 +115,71 @@ class _AvailabilityGridState extends State<AvailabilityGrid> {
             const SizedBox(height: AppSpacing.sm),
             LayoutBuilder(
               builder: (context, constraints) {
-                return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTapUp: (details) =>
-                      _toggleAt(details.localPosition, constraints.maxWidth),
-                  onLongPressStart: (details) =>
-                      _markAt(details.localPosition, constraints.maxWidth),
-                  onLongPressMoveUpdate: (details) =>
-                      _markAt(details.localPosition, constraints.maxWidth),
-                  child: SizedBox(
-                    height: gridHeight,
-                    child: GridView.builder(
-                      key: const Key('availability_grid'),
-                      controller: _scrollController,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: _gridColumnCount,
-                            crossAxisSpacing: _slotSpacing,
-                            mainAxisSpacing: _slotSpacing,
-                            childAspectRatio: _slotAspectRatio,
-                          ),
-                      itemCount: _gridColumnCount * _hourCount,
-                      itemBuilder: (context, index) {
-                        final column = index % _gridColumnCount;
-                        final hour = index ~/ _gridColumnCount;
+                return AbsorbPointer(
+                  absorbing: !widget.isEnabled,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTapUp: (details) => _toggleAt(
+                      details.localPosition,
+                      constraints.maxWidth,
+                    ),
+                    onLongPressStart: (details) =>
+                        _markAt(details.localPosition, constraints.maxWidth),
+                    onLongPressMoveUpdate: (details) =>
+                        _markAt(details.localPosition, constraints.maxWidth),
+                    child: SizedBox(
+                      height: gridHeight,
+                      child: GridView.builder(
+                        key: const Key('availability_grid'),
+                        controller: _scrollController,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: _gridColumnCount,
+                              crossAxisSpacing: _slotSpacing,
+                              mainAxisSpacing: _slotSpacing,
+                              childAspectRatio: _slotAspectRatio,
+                            ),
+                        itemCount: _gridColumnCount * _hourCount,
+                        itemBuilder: (context, index) {
+                          final column = index % _gridColumnCount;
+                          final hour = index ~/ _gridColumnCount;
 
-                        if (column == 0) {
-                          return Center(
-                            child: Text(
-                              '${hour.toString().padLeft(2, '0')}:00',
-                              key: Key('availability_hour_$hour'),
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
+                          if (column == 0) {
+                            return Center(
+                              child: Text(
+                                '${hour.toString().padLeft(2, '0')}:00',
+                                key: Key('availability_hour_$hour'),
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            );
+                          }
+
+                          final slot = Slot(
+                            dayOfWeek: column - 1,
+                            hour: hour,
+                          );
+                          final isSelected = widget.selectedSlots.contains(
+                            slot,
+                          );
+                          final colorScheme = Theme.of(context).colorScheme;
+
+                          return Container(
+                            key: Key(
+                              'availability_slot_${slot.dayOfWeek}_${slot.hour}',
+                            ),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? colorScheme.primary
+                                  : colorScheme.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(
+                                _slotBorderRadius,
                               ),
                             ),
                           );
-                        }
-
-                        final slot = Slot(
-                          dayOfWeek: column - 1,
-                          hour: hour,
-                        );
-                        final isSelected = widget.selectedSlots.contains(slot);
-                        final colorScheme = Theme.of(context).colorScheme;
-
-                        return Container(
-                          key: Key(
-                            'availability_slot_${slot.dayOfWeek}_${slot.hour}',
-                          ),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? colorScheme.primary
-                                : colorScheme.surfaceContainerHighest,
-                            borderRadius: BorderRadius.circular(
-                              _slotBorderRadius,
-                            ),
-                          ),
-                        );
-                      },
+                        },
+                      ),
                     ),
                   ),
                 );
