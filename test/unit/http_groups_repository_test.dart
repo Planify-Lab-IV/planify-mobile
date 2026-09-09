@@ -67,10 +67,7 @@ void main() {
       );
       final repository = HttpGroupsRepository(dio: dio);
 
-      expect(
-        repository.getMyGroups,
-        throwsA(isA<NetworkGroupsException>()),
-      );
+      expect(repository.getMyGroups, throwsA(isA<NetworkGroupsException>()));
     });
   });
 }

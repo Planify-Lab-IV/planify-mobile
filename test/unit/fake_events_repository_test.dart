@@ -74,10 +74,7 @@ void main() {
           selectedGroupId: 'grp-1',
         );
 
-        expect(
-          () => errorRepo.createEvent(draft),
-          throwsException,
-        );
+        expect(() => errorRepo.createEvent(draft), throwsException);
       },
     );
 

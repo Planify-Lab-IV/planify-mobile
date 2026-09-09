@@ -60,7 +60,7 @@ class HttpEventsRepository implements EventsRepository {
       location: _requiredString(data, 'location'),
       organizerId: _requiredString(data, 'organizerId'),
       groupId: _requiredString(data, 'groupId'),
-      status:  _eventStatus(data['status']),
+      status: _eventStatus(data['status']),
       createdAt: _requiredDateTime(data, 'createdAt'),
       updatedAt: _requiredDateTime(data, 'updatedAt'),
       participants: _participantsFromResponse(data['participants']),

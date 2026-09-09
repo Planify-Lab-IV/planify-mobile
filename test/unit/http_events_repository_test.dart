@@ -35,10 +35,7 @@ void main() {
       ],
     };
 
-    Dio dioResolving(
-      dynamic body,
-      void Function(RequestOptions)? inspect,
-    ) {
+    Dio dioResolving(dynamic body, void Function(RequestOptions)? inspect) {
       final dio = Dio();
       dio.interceptors.add(
         InterceptorsWrapper(
@@ -78,10 +75,7 @@ void main() {
         'groupId': 'grp-1',
       });
       expect(event.status, EventStatus.active);
-      expect(
-        event.updatedAt,
-        DateTime.parse('2026-09-09T12:00:00.000Z'),
-      );
+      expect(event.updatedAt, DateTime.parse('2026-09-09T12:00:00.000Z'));
       expect(event.participants, hasLength(2));
       expect(event.participants.first.username, 'dev1');
       expect(event.participants.last.userId, isNull);
