@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/events/domain/event.dart';
+import 'package:planify/features/events/domain/event_participant.dart';
 import 'package:planify/features/events/domain/event_status.dart';
 
 void main() {

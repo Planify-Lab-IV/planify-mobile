@@ -16,13 +16,13 @@ class EventParticipant {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is EventParticipant &&
-              runtimeType == other.runtimeType &&
-              eventId == other.eventId &&
-              userId == other.userId &&
-              username == other.username &&
-              isAnonymous == other.isAnonymous &&
-              isOrganizer == other.isOrganizer;
+      other is EventParticipant &&
+          runtimeType == other.runtimeType &&
+          eventId == other.eventId &&
+          userId == other.userId &&
+          username == other.username &&
+          isAnonymous == other.isAnonymous &&
+          isOrganizer == other.isOrganizer;
 
   @override
   int get hashCode =>

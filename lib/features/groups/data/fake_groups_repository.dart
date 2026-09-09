@@ -13,21 +13,9 @@ class FakeGroupsRepository implements GroupsRepository {
   }) : _groups =
            initialGroups ??
            const [
-             Group(
-               id: 'grp-1',
-               name: 'Amigos del Fútbol',
-                memberCount: 3,
-             ),
-             Group(
-               id: 'grp-2',
-               name: 'Compañeros de Trabajo',
-                memberCount: 2,
-             ),
-             Group(
-               id: 'grp-3',
-               name: 'Familia',
-                memberCount: 2,
-             ),
+             Group(id: 'grp-1', name: 'Amigos del Fútbol', memberCount: 3),
+             Group(id: 'grp-2', name: 'Compañeros de Trabajo', memberCount: 2),
+             Group(id: 'grp-3', name: 'Familia', memberCount: 2),
            ];
 
   @override

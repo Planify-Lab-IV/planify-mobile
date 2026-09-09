@@ -4,11 +4,7 @@ import 'package:planify/features/groups/domain/group.dart';
 void main() {
   group('Group', () {
     test('stores the member count returned by the API', () {
-      const group = Group(
-        id: 'grp-1',
-        name: 'Amigos',
-        memberCount: 3,
-      );
+      const group = Group(id: 'grp-1', name: 'Amigos', memberCount: 3);
 
       expect(group.memberCount, 3);
     });

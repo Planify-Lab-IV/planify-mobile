@@ -1,5 +1,6 @@
 import '../domain/event.dart';
 import '../domain/event_draft.dart';
+import '../domain/event_participant.dart';
 import '../domain/event_status.dart';
 import '../domain/events_repository.dart';
 import '../domain/attendance_status.dart';

@@ -98,11 +98,7 @@ void main() {
       'grupo existente: selecciona un grupo y crea el evento con exito mostrando el resumen',
       (tester) async {
         final fakeGroups = [
-          const Group(
-            id: 'grp-1',
-            name: 'Amigos del Fútbol',
-            memberCount: 10,
-          ),
+          const Group(id: 'grp-1', name: 'Amigos del Fútbol', memberCount: 10),
         ];
         final fakeGroupsRepo = FakeGroupsRepository(
           delay: Duration.zero,
