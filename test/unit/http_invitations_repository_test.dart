@@ -72,20 +72,23 @@ void main() {
       expect(result, expectedEventId);
     });
 
-    test('throws InvalidInvitationException immediately on empty or blank token', () async {
-      bool called = false;
-      final repository = HttpInvitationsRepository(
-        dio: dioResolving({'eventId': expectedEventId}, (_) {
-          called = true;
-        }),
-      );
+    test(
+      'throws InvalidInvitationException immediately on empty or blank token',
+      () async {
+        bool called = false;
+        final repository = HttpInvitationsRepository(
+          dio: dioResolving({'eventId': expectedEventId}, (_) {
+            called = true;
+          }),
+        );
 
-      expect(
-        () => repository.resolveInvitationToken('   '),
-        throwsA(isA<InvalidInvitationException>()),
-      );
-      expect(called, isFalse);
-    });
+        expect(
+          () => repository.resolveInvitationToken('   '),
+          throwsA(isA<InvalidInvitationException>()),
+        );
+        expect(called, isFalse);
+      },
+    );
 
     test('maps 400 Bad Request to InvalidInvitationException', () async {
       final repository = HttpInvitationsRepository(
@@ -101,44 +104,53 @@ void main() {
       );
     });
 
-    test('maps 404 INVITATION_NOT_FOUND to InvitationNotFoundException', () async {
-      final repository = HttpInvitationsRepository(
-        dio: dioRejecting(404, {
-          'error': 'INVITATION_NOT_FOUND',
-          'message': 'Invitación no encontrada',
-        }),
-      );
+    test(
+      'maps 404 INVITATION_NOT_FOUND to InvitationNotFoundException',
+      () async {
+        final repository = HttpInvitationsRepository(
+          dio: dioRejecting(404, {
+            'error': 'INVITATION_NOT_FOUND',
+            'message': 'Invitación no encontrada',
+          }),
+        );
 
-      expect(
-        () => repository.resolveInvitationToken(validToken),
-        throwsA(isA<InvitationNotFoundException>()),
-      );
-    });
+        expect(
+          () => repository.resolveInvitationToken(validToken),
+          throwsA(isA<InvitationNotFoundException>()),
+        );
+      },
+    );
 
-    test('maps 404 INVITATION_UNAVAILABLE to InvitationExpiredException', () async {
-      final repository = HttpInvitationsRepository(
-        dio: dioRejecting(404, {
-          'error': 'INVITATION_UNAVAILABLE',
-          'message': 'Invitación no disponible',
-        }),
-      );
+    test(
+      'maps 404 INVITATION_UNAVAILABLE to InvitationExpiredException',
+      () async {
+        final repository = HttpInvitationsRepository(
+          dio: dioRejecting(404, {
+            'error': 'INVITATION_UNAVAILABLE',
+            'message': 'Invitación no disponible',
+          }),
+        );
 
-      expect(
-        () => repository.resolveInvitationToken(validToken),
-        throwsA(isA<InvitationExpiredException>()),
-      );
-    });
+        expect(
+          () => repository.resolveInvitationToken(validToken),
+          throwsA(isA<InvitationExpiredException>()),
+        );
+      },
+    );
 
-    test('maps 404 without specific error body to InvitationNotFoundException', () async {
-      final repository = HttpInvitationsRepository(
-        dio: dioRejecting(404, null),
-      );
+    test(
+      'maps 404 without specific error body to InvitationNotFoundException',
+      () async {
+        final repository = HttpInvitationsRepository(
+          dio: dioRejecting(404, null),
+        );
 
-      expect(
-        () => repository.resolveInvitationToken(validToken),
-        throwsA(isA<InvitationNotFoundException>()),
-      );
-    });
+        expect(
+          () => repository.resolveInvitationToken(validToken),
+          throwsA(isA<InvitationNotFoundException>()),
+        );
+      },
+    );
 
     test('maps connection error to NetworkInvitationException', () async {
       final dio = Dio();
@@ -170,10 +182,7 @@ void main() {
         dio.interceptors.add(
           InterceptorsWrapper(
             onRequest: (options, handler) => handler.reject(
-              DioException(
-                requestOptions: options,
-                type: type,
-              ),
+              DioException(requestOptions: options, type: type),
             ),
           ),
         );
@@ -186,26 +195,29 @@ void main() {
       }
     });
 
-    test('rejects malformed 200 responses where eventId is missing or empty', () async {
-      final malformedBodies = [
-        {},
-        {'eventId': ''},
-        {'eventId': '   '},
-        {'eventId': 123},
-        {'somethingElse': 'evt-123'},
-        'not a map',
-      ];
+    test(
+      'rejects malformed 200 responses where eventId is missing or empty',
+      () async {
+        final malformedBodies = [
+          {},
+          {'eventId': ''},
+          {'eventId': '   '},
+          {'eventId': 123},
+          {'somethingElse': 'evt-123'},
+          'not a map',
+        ];
 
-      for (final body in malformedBodies) {
-        final repository = HttpInvitationsRepository(
-          dio: dioResolving(body, null),
-        );
+        for (final body in malformedBodies) {
+          final repository = HttpInvitationsRepository(
+            dio: dioResolving(body, null),
+          );
 
-        expect(
-          () => repository.resolveInvitationToken(validToken),
-          throwsA(isA<InvalidInvitationException>()),
-        );
-      }
-    });
+          expect(
+            () => repository.resolveInvitationToken(validToken),
+            throwsA(isA<InvalidInvitationException>()),
+          );
+        }
+      },
+    );
   });
 }
