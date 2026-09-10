@@ -174,6 +174,30 @@ void main() {
       expect(anonymous.token, 'participant-session-token');
     });
 
+    test('trims name, pin and eventId before sending HTTP request', () async {
+      RequestOptions? request;
+      final repository = repositoryWith(
+        dioResolvingWithStatus(201, {
+          'participant': {
+            'id': 'participant-a',
+            'eventId': 'event-a',
+            'username': 'Gil',
+            'isAnonymous': true,
+          },
+          'token': 'participant-session-token',
+        }, (options) => request = options),
+      );
+
+      await repository.loginAnonymously(
+        name: '  Gil  ',
+        pin: ' 1234 ',
+        eventId: ' event-a ',
+      );
+
+      expect(request?.path, '/events/event-a/participants/anonymous');
+      expect(request?.data, {'name': 'Gil', 'pin': '1234'});
+    });
+
     test(
       'maps a re-entry response to the existing participant session',
       () async {

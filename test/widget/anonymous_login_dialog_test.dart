@@ -272,5 +272,59 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets('envía el nombre y PIN normalizados con trim al backend', (
+      tester,
+    ) async {
+      RequestOptions? capturedRequest;
+      final dio = Dio();
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            capturedRequest = options;
+            handler.resolve(
+              Response<dynamic>(
+                requestOptions: options,
+                statusCode: 201,
+                data: {
+                  'participant': {
+                    'id': 'part-1',
+                    'eventId': 'event-trim-test',
+                    'username': 'Lucas',
+                    'isAnonymous': true,
+                  },
+                  'token': 'fake-token',
+                },
+              ),
+            );
+          },
+        ),
+      );
+
+      await tester.pumpWidget(
+        _buildDialogTestApp(
+          eventId: 'event-trim-test',
+          authRepository: HttpAuthRepository(dio: dio),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('open_dialog_button')));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byKey(const Key('anonymous_name_input')),
+        '  Lucas  ',
+      );
+      await tester.enterText(
+        find.byKey(const Key('anonymous_pin_input')),
+        '  1234  ',
+      );
+
+      await tester.tap(find.byKey(const Key('anonymous_submit_button')));
+      await tester.pumpAndSettle();
+
+      expect(capturedRequest?.data, {'name': 'Lucas', 'pin': '1234'});
+    });
   });
 }

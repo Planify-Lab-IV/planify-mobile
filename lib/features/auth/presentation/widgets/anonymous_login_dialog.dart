@@ -40,8 +40,8 @@ class _AnonymousLoginDialogState extends ConsumerState<AnonymousLoginDialog> {
       await ref
           .read(authNotifierProvider.notifier)
           .loginAnonymously(
-            name: _nameController.text,
-            pin: _pinController.text,
+            name: _nameController.text.trim(),
+            pin: _pinController.text.trim(),
             eventId: widget.eventId,
           );
 

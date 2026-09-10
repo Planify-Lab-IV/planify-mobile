@@ -45,18 +45,19 @@ class HttpAuthRepository implements AuthRepository {
     required String pin,
     String? eventId,
   }) async {
-    if (eventId == null || eventId.trim().isEmpty) {
+    final normalizedEventId = eventId?.trim();
+    if (normalizedEventId == null || normalizedEventId.isEmpty) {
       throw const UnknownAuthException();
     }
 
     try {
       final response = await dio.post<dynamic>(
-        '/events/${eventId.trim()}/participants/anonymous',
-        data: {'name': name, 'pin': pin},
+        '/events/$normalizedEventId/participants/anonymous',
+        data: {'name': name.trim(), 'pin': pin.trim()},
       );
       final session = _anonymousSessionFromResponse(
         response.data,
-        requestedEventId: eventId.trim(),
+        requestedEventId: normalizedEventId,
       );
       _currentSession = session;
       return session;
