@@ -45,6 +45,7 @@ void main() {
 
         expect(session, isA<AnonymousSession>());
         final anonSession = session as AnonymousSession;
+        expect(anonSession.participantId, startsWith('anon-'));
         expect(anonSession.name, equals('Lucas'));
         expect(anonSession.isAnonymous, isTrue);
         expect(anonSession.role, equals(UserRole.anonymous));

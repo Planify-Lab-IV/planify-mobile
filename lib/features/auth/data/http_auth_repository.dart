@@ -153,7 +153,7 @@ class HttpAuthRepository implements AuthRepository {
     }
 
     return AnonymousSession(
-      userId: participantId,
+      participantId: participantId,
       name: username,
       eventId: eventId,
       token: token,

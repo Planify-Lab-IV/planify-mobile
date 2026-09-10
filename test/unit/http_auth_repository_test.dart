@@ -168,7 +168,7 @@ void main() {
       expect(request?.data, {'name': 'Gil', 'pin': '1234'});
       expect(session, isA<AnonymousSession>());
       final anonymous = session as AnonymousSession;
-      expect(anonymous.userId, 'participant-a');
+      expect(anonymous.participantId, 'participant-a');
       expect(anonymous.name, 'Gil');
       expect(anonymous.eventId, 'event-a');
       expect(anonymous.token, 'participant-session-token');
@@ -195,7 +195,8 @@ void main() {
           eventId: 'event-a',
         );
 
-        expect(session.userId, 'participant-a');
+        expect(session, isA<AnonymousSession>());
+        expect((session as AnonymousSession).participantId, 'participant-a');
         expect(session.token, 'new-participant-session-token');
       },
     );
@@ -221,8 +222,10 @@ void main() {
           eventId: 'event-b',
         );
 
-        expect(session.userId, 'participant-b');
-        expect((session as AnonymousSession).eventId, 'event-b');
+        expect(session, isA<AnonymousSession>());
+        final anonymous = session as AnonymousSession;
+        expect(anonymous.participantId, 'participant-b');
+        expect(anonymous.eventId, 'event-b');
       },
     );
 
