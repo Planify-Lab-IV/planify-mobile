@@ -26,4 +26,3 @@ class NetworkInvitationException extends InvitationException {
 class UnknownInvitationException extends InvitationException {
   const UnknownInvitationException();
 }
-
