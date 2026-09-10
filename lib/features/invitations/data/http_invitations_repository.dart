@@ -31,19 +31,19 @@ class HttpInvitationsRepository implements InvitationsRepository {
       if (_isNetworkError(error)) {
         throw const NetworkInvitationException();
       }
-      throw const InvalidInvitationException();
+      throw const UnknownInvitationException();
     } on InvitationException {
       rethrow;
     } catch (_) {
-      throw const InvalidInvitationException();
+      throw const UnknownInvitationException();
     }
   }
 
   String _parseEventId(dynamic data) {
-    if (data is! Map) throw const InvalidInvitationException();
+    if (data is! Map) throw const UnknownInvitationException();
     final eventId = data['eventId'];
     if (eventId is! String || eventId.trim().isEmpty) {
-      throw const InvalidInvitationException();
+      throw const UnknownInvitationException();
     }
     return eventId.trim();
   }

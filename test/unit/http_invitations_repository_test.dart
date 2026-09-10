@@ -195,8 +195,32 @@ void main() {
       }
     });
 
+    test('maps 500 Internal Server Error to UnknownInvitationException', () async {
+      final repository = HttpInvitationsRepository(
+        dio: dioRejecting(500, {'error': 'INTERNAL_ERROR'}),
+      );
+
+      expect(
+        () => repository.resolveInvitationToken(validToken),
+        throwsA(isA<UnknownInvitationException>()),
+      );
+    });
+
+    test('maps unexpected 502/503 server errors to UnknownInvitationException', () async {
+      for (final statusCode in [502, 503]) {
+        final repository = HttpInvitationsRepository(
+          dio: dioRejecting(statusCode, 'Bad Gateway'),
+        );
+
+        expect(
+          () => repository.resolveInvitationToken(validToken),
+          throwsA(isA<UnknownInvitationException>()),
+        );
+      }
+    });
+
     test(
-      'rejects malformed 200 responses where eventId is missing or empty',
+      'maps malformed 200 responses where eventId is missing or empty to UnknownInvitationException',
       () async {
         final malformedBodies = [
           {},
@@ -214,7 +238,7 @@ void main() {
 
           expect(
             () => repository.resolveInvitationToken(validToken),
-            throwsA(isA<InvalidInvitationException>()),
+            throwsA(isA<UnknownInvitationException>()),
           );
         }
       },
