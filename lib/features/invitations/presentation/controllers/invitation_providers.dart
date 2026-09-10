@@ -1,13 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/fake_invitations_repository.dart';
+import '../../../../core/providers/core_providers.dart';
+import '../../data/http_invitations_repository.dart';
 import '../../domain/invitations_repository.dart';
 import 'invitation_notifier.dart';
 import 'invitation_state.dart';
 
-/// Punto de extensión: una vez mergeado PLANIFY-33, este provider puede reemplazarse
-/// por una implementación real basada en Dio (ej. `HttpInvitationsRepository`).
 final invitationsRepositoryProvider = Provider<InvitationsRepository>((ref) {
-  return FakeInvitationsRepository();
+  return HttpInvitationsRepository(dio: ref.watch(dioClientProvider));
 });
 
 /// Provider del estado de invitaciones procesadas por Deep Link.
