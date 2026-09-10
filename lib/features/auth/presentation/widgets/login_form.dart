@@ -56,6 +56,8 @@ class _LoginFormState extends ConsumerState<LoginForm> {
         return i18n.loginErrorInvalidCredentials;
       case AuthFailureReason.eventNotFound:
         return i18n.loginErrorEventNotFound;
+      case AuthFailureReason.eventUnavailable:
+        return i18n.loginErrorEventUnavailable;
       case AuthFailureReason.networkError:
       case AuthFailureReason.unknown:
         return i18n.loginErrorGeneric;

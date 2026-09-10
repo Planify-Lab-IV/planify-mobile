@@ -68,6 +68,9 @@ class HttpAuthRepository implements AuthRepository {
       if (error.response?.statusCode == 404) {
         throw const AnonymousEventNotFoundException();
       }
+      if (error.response?.statusCode == 409) {
+        throw const AnonymousEventUnavailableException();
+      }
       if (_isNetworkError(error)) {
         throw const NetworkAuthException();
       }

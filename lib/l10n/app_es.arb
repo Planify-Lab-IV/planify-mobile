@@ -46,6 +46,7 @@
   "cancelButton": "Cancelar",
   "loginErrorInvalidPin": "PIN incorrecto. Verifica el código e intenta nuevamente.",
   "loginErrorEventNotFound": "El evento ya no existe o no está disponible.",
+  "loginErrorEventUnavailable": "El evento no está disponible.",
   "eventIdLabel": "ID del Evento",
   "participantPanelTitle": "Panel de Participante",
   "sessionActiveParticipantDescription": "Has ingresado correctamente como participante del evento.",

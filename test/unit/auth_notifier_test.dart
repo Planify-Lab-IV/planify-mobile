@@ -191,5 +191,39 @@ void main() {
         expect(await storage.getToken(), 'existing-token');
       },
     );
+
+    test(
+      'sets state to AuthError(eventUnavailable) when event is unavailable (409)',
+      () async {
+        await storage.saveToken('existing-token');
+        final dio = Dio();
+        dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) => handler.reject(
+              DioException(
+                requestOptions: options,
+                response: Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 409,
+                ),
+              ),
+            ),
+          ),
+        );
+        notifier = AuthNotifier(HttpAuthRepository(dio: dio), storage);
+
+        await notifier.loginAnonymously(
+          name: 'Gil',
+          pin: '1234',
+          eventId: 'event-unavailable',
+        );
+
+        expect(
+          notifier.state,
+          const AuthError(AuthFailureReason.eventUnavailable),
+        );
+        expect(await storage.getToken(), 'existing-token');
+      },
+    );
   });
 }

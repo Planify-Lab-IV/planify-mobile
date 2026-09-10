@@ -4,6 +4,7 @@ enum AuthFailureReason {
   invalidCredentials,
   invalidPin,
   eventNotFound,
+  eventUnavailable,
   networkError,
   unknown,
 }

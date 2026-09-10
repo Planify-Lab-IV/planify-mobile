@@ -129,6 +129,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'This event no longer exists or is unavailable.';
 
   @override
+  String get loginErrorEventUnavailable => 'The event is unavailable.';
+
+  @override
   String get eventIdLabel => 'Event ID';
 
   @override

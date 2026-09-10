@@ -131,6 +131,9 @@ class AppLocalizationsEs extends AppLocalizations {
       'El evento ya no existe o no está disponible.';
 
   @override
+  String get loginErrorEventUnavailable => 'El evento no está disponible.';
+
+  @override
   String get eventIdLabel => 'ID del Evento';
 
   @override

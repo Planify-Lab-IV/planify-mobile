@@ -326,6 +326,12 @@ abstract class AppLocalizations {
   /// **'El evento ya no existe o no está disponible.'**
   String get loginErrorEventNotFound;
 
+  /// No description provided for @loginErrorEventUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'El evento no está disponible.'**
+  String get loginErrorEventUnavailable;
+
   /// No description provided for @eventIdLabel.
   ///
   /// In es, this message translates to:

@@ -273,6 +273,49 @@ void main() {
       );
     });
 
+    testWidgets(
+      'muestra el mensaje de error cuando el evento no está disponible (409)',
+      (tester) async {
+        final dio = Dio();
+        dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) => handler.reject(
+              DioException(
+                requestOptions: options,
+                response: Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 409,
+                ),
+              ),
+            ),
+          ),
+        );
+
+        await tester.pumpWidget(
+          _buildDialogTestApp(
+            eventId: 'event-unavailable',
+            authRepository: HttpAuthRepository(dio: dio),
+          ),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('open_dialog_button')));
+        await tester.pumpAndSettle();
+        await tester.enterText(
+          find.byKey(const Key('anonymous_name_input')),
+          'Gil',
+        );
+        await tester.enterText(
+          find.byKey(const Key('anonymous_pin_input')),
+          '1234',
+        );
+
+        await tester.tap(find.byKey(const Key('anonymous_submit_button')));
+        await tester.pumpAndSettle();
+
+        expect(find.text('El evento no está disponible.'), findsOneWidget);
+      },
+    );
+
     testWidgets('envía el nombre y PIN normalizados con trim al backend', (
       tester,
     ) async {

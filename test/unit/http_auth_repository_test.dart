@@ -304,6 +304,35 @@ void main() {
       );
     });
 
+    test(
+      'maps an unavailable event (409) to AnonymousEventUnavailableException',
+      () async {
+        final dio = Dio();
+        dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) => handler.reject(
+              DioException(
+                requestOptions: options,
+                response: Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 409,
+                ),
+              ),
+            ),
+          ),
+        );
+
+        expect(
+          () => repositoryWith(dio).loginAnonymously(
+            name: 'Gil',
+            pin: '1234',
+            eventId: 'event-unavailable',
+          ),
+          throwsA(isA<AnonymousEventUnavailableException>()),
+        );
+      },
+    );
+
     test('rejects malformed anonymous responses', () async {
       final repository = repositoryWith(
         dioResolving({
