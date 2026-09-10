@@ -95,6 +95,20 @@ void main() {
       },
     );
 
+    test(
+      'token con error desconocido simulado arroja UnknownInvitationException',
+      () async {
+        expect(
+          () => repository.resolveInvitationToken('token-unknown-error'),
+          throwsA(isA<UnknownInvitationException>()),
+        );
+        expect(
+          () => repository.resolveInvitationToken('unknown-error'),
+          throwsA(isA<UnknownInvitationException>()),
+        );
+      },
+    );
+
     test('token no registrado arroja InvitationNotFoundException', () async {
       expect(
         () => repository.resolveInvitationToken('token-desconocido-999'),

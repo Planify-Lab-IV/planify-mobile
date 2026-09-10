@@ -31,6 +31,11 @@ class FakeInvitationsRepository implements InvitationsRepository {
       throw const InvitationExpiredException();
     }
 
+    if (trimmedToken == 'token-unknown-error' ||
+        trimmedToken == 'unknown-error') {
+      throw const UnknownInvitationException();
+    }
+
     if (trimmedToken == 'token-valid-123' || trimmedToken == 'valid-token') {
       return 'evt-123';
     }

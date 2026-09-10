@@ -36,6 +36,8 @@ class InvitationNotifier extends StateNotifier<InvitationState> {
       state = const InvitationError(InvitationErrorReason.expired);
     } on NetworkInvitationException {
       state = const InvitationError(InvitationErrorReason.network);
+    } on UnknownInvitationException {
+      state = const InvitationError(InvitationErrorReason.unknown);
     } catch (_) {
       state = const InvitationError(InvitationErrorReason.unknown);
     }

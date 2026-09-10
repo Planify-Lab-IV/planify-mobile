@@ -100,6 +100,18 @@ void main() {
       },
     );
 
+    test(
+      'link con error desconocido cambia estado a InvitationError(unknown)',
+      () async {
+        await notifier.handleDeepLink(
+          Uri.parse('planify://invite/token-unknown-error'),
+        );
+        expect(notifier.state, isA<InvitationError>());
+        final errorState = notifier.state as InvitationError;
+        expect(errorState.reason, equals(InvitationErrorReason.unknown));
+      },
+    );
+
     test('clearInvitation restablece el estado a InvitationInitial', () async {
       await notifier.handleDeepLink(
         Uri.parse('planify://invite/token-valid-123'),

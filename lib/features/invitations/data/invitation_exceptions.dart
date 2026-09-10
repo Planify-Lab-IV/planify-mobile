@@ -21,3 +21,8 @@ class InvitationExpiredException extends InvitationException {
 class NetworkInvitationException extends InvitationException {
   const NetworkInvitationException();
 }
+
+/// Ocurrió un error inesperado o del servidor al intentar resolver la invitación.
+class UnknownInvitationException extends InvitationException {
+  const UnknownInvitationException();
+}
