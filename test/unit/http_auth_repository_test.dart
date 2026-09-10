@@ -20,7 +20,8 @@ void main() {
       return HttpAuthRepository(dio: dio);
     }
 
-    Dio dioResolving(
+    Dio dioResolvingWithStatus(
+      int statusCode,
       Map<String, dynamic> body,
       void Function(RequestOptions)? inspect,
     ) {
@@ -32,7 +33,7 @@ void main() {
             handler.resolve(
               Response<dynamic>(
                 requestOptions: options,
-                statusCode: 200,
+                statusCode: statusCode,
                 data: body,
               ),
             );
@@ -40,6 +41,13 @@ void main() {
         ),
       );
       return dio;
+    }
+
+    Dio dioResolving(
+      Map<String, dynamic> body,
+      void Function(RequestOptions)? inspect,
+    ) {
+      return dioResolvingWithStatus(200, body, inspect);
     }
 
     test(
@@ -138,7 +146,7 @@ void main() {
     test('creates an anonymous participant and maps its session', () async {
       RequestOptions? request;
       final repository = repositoryWith(
-        dioResolving({
+        dioResolvingWithStatus(201, {
           'participant': {
             'id': 'participant-a',
             'eventId': 'event-a',
@@ -166,74 +174,84 @@ void main() {
       expect(anonymous.token, 'participant-session-token');
     });
 
-    test('maps a re-entry response to the existing participant session', () async {
-      final repository = repositoryWith(
-        dioResolving({
-          'participant': {
-            'id': 'participant-a',
-            'eventId': 'event-a',
-            'username': 'Gil',
-            'isAnonymous': true,
-          },
-          'token': 'new-participant-session-token',
-        }, null),
-      );
+    test(
+      'maps a re-entry response to the existing participant session',
+      () async {
+        final repository = repositoryWith(
+          dioResolvingWithStatus(200, {
+            'participant': {
+              'id': 'participant-a',
+              'eventId': 'event-a',
+              'username': 'Gil',
+              'isAnonymous': true,
+            },
+            'token': 'new-participant-session-token',
+          }, null),
+        );
 
-      final session = await repository.loginAnonymously(
-        name: 'Gil',
-        pin: '1234',
-        eventId: 'event-a',
-      );
+        final session = await repository.loginAnonymously(
+          name: 'Gil',
+          pin: '1234',
+          eventId: 'event-a',
+        );
 
-      expect(session.userId, 'participant-a');
-      expect(session.token, 'new-participant-session-token');
-    });
+        expect(session.userId, 'participant-a');
+        expect(session.token, 'new-participant-session-token');
+      },
+    );
 
-    test('keeps participants scoped to the event returned by the backend', () async {
-      final repository = repositoryWith(
-        dioResolving({
-          'participant': {
-            'id': 'participant-b',
-            'eventId': 'event-b',
-            'username': 'Gil',
-            'isAnonymous': true,
-          },
-          'token': 'event-b-token',
-        }, null),
-      );
+    test(
+      'keeps participants scoped to the event returned by the backend',
+      () async {
+        final repository = repositoryWith(
+          dioResolvingWithStatus(201, {
+            'participant': {
+              'id': 'participant-b',
+              'eventId': 'event-b',
+              'username': 'Gil',
+              'isAnonymous': true,
+            },
+            'token': 'event-b-token',
+          }, null),
+        );
 
-      final session = await repository.loginAnonymously(
-        name: 'Gil',
-        pin: '1234',
-        eventId: 'event-b',
-      );
+        final session = await repository.loginAnonymously(
+          name: 'Gil',
+          pin: '1234',
+          eventId: 'event-b',
+        );
 
-      expect(session.userId, 'participant-b');
-      expect((session as AnonymousSession).eventId, 'event-b');
-    });
+        expect(session.userId, 'participant-b');
+        expect((session as AnonymousSession).eventId, 'event-b');
+      },
+    );
 
-    test('maps anonymous invalid PIN responses to InvalidPinException', () async {
-      final dio = Dio();
-      dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) => handler.reject(
-            DioException(
-              requestOptions: options,
-              response: Response<dynamic>(requestOptions: options, statusCode: 401),
+    test(
+      'maps anonymous invalid PIN responses to InvalidPinException',
+      () async {
+        final dio = Dio();
+        dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) => handler.reject(
+              DioException(
+                requestOptions: options,
+                response: Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 401,
+                ),
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      expect(
-        () => repositoryWith(dio).loginAnonymously(
-          name: 'Gil',
-          pin: '9999',
-          eventId: 'event-a',
-        ),
-        throwsA(isA<InvalidPinException>()),
-      );
-    });
+        expect(
+          () => repositoryWith(
+            dio,
+          ).loginAnonymously(name: 'Gil', pin: '9999', eventId: 'event-a'),
+          throwsA(isA<InvalidPinException>()),
+        );
+      },
+    );
 
     test('maps an absent event to AnonymousEventNotFoundException', () async {
       final dio = Dio();
@@ -242,18 +260,19 @@ void main() {
           onRequest: (options, handler) => handler.reject(
             DioException(
               requestOptions: options,
-              response: Response<dynamic>(requestOptions: options, statusCode: 404),
+              response: Response<dynamic>(
+                requestOptions: options,
+                statusCode: 404,
+              ),
             ),
           ),
         ),
       );
 
       expect(
-        () => repositoryWith(dio).loginAnonymously(
-          name: 'Gil',
-          pin: '1234',
-          eventId: 'event-missing',
-        ),
+        () => repositoryWith(
+          dio,
+        ).loginAnonymously(name: 'Gil', pin: '1234', eventId: 'event-missing'),
         throwsA(isA<AnonymousEventNotFoundException>()),
       );
     });
@@ -306,10 +325,7 @@ void main() {
 
     test('requires an event ID before creating an anonymous session', () async {
       expect(
-        () => repositoryWith(Dio()).loginAnonymously(
-          name: 'Gil',
-          pin: '1234',
-        ),
+        () => repositoryWith(Dio()).loginAnonymously(name: 'Gil', pin: '1234'),
         throwsA(isA<UnknownAuthException>()),
       );
     });

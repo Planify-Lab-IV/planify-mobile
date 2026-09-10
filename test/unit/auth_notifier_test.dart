@@ -111,12 +111,7 @@ void main() {
       () async {
         await storage.saveToken('fake-org-token:lucas@gmail.com:123456');
 
-        notifier = AuthNotifier(
-          HttpAuthRepository(
-            dio: Dio(),
-          ),
-          storage,
-        );
+        notifier = AuthNotifier(HttpAuthRepository(dio: Dio()), storage);
 
         await notifier.checkAuthStatus();
 
@@ -124,65 +119,77 @@ void main() {
       },
     );
 
-    test('persists the token returned by the anonymous HTTP endpoint', () async {
-      final dio = Dio();
-      dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) => handler.resolve(
-            Response<dynamic>(
-              requestOptions: options,
-              statusCode: 201,
-              data: {
-                'participant': {
-                  'id': 'participant-a',
-                  'eventId': 'event-a',
-                  'username': 'Gil',
-                  'isAnonymous': true,
+    test(
+      'persists the token returned by the anonymous HTTP endpoint',
+      () async {
+        final dio = Dio();
+        dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) => handler.resolve(
+              Response<dynamic>(
+                requestOptions: options,
+                statusCode: 201,
+                data: {
+                  'participant': {
+                    'id': 'participant-a',
+                    'eventId': 'event-a',
+                    'username': 'Gil',
+                    'isAnonymous': true,
+                  },
+                  'token': 'real-anonymous-token',
                 },
-                'token': 'real-anonymous-token',
-              },
+              ),
             ),
           ),
-        ),
-      );
-      notifier = AuthNotifier(HttpAuthRepository(dio: dio), storage);
+        );
+        notifier = AuthNotifier(HttpAuthRepository(dio: dio), storage);
 
-      await notifier.loginAnonymously(
-        name: 'Gil',
-        pin: '1234',
-        eventId: 'event-a',
-      );
+        await notifier.loginAnonymously(
+          name: 'Gil',
+          pin: '1234',
+          eventId: 'event-a',
+        );
 
-      expect(notifier.state, isA<AuthAuthenticated>());
-      final session = (notifier.state as AuthAuthenticated).session;
-      expect(session, isA<AnonymousSession>());
-      expect((session as AnonymousSession).eventId, 'event-a');
-      expect(await storage.getToken(), 'real-anonymous-token');
-    });
+        expect(notifier.state, isA<AuthAuthenticated>());
+        final session = (notifier.state as AuthAuthenticated).session;
+        expect(session, isA<AnonymousSession>());
+        expect((session as AnonymousSession).eventId, 'event-a');
+        expect(await storage.getToken(), 'real-anonymous-token');
+      },
+    );
 
-    test('does not overwrite storage when the anonymous event does not exist', () async {
-      await storage.saveToken('existing-token');
-      final dio = Dio();
-      dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) => handler.reject(
-            DioException(
-              requestOptions: options,
-              response: Response<dynamic>(requestOptions: options, statusCode: 404),
+    test(
+      'does not overwrite storage when the anonymous event does not exist',
+      () async {
+        await storage.saveToken('existing-token');
+        final dio = Dio();
+        dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) => handler.reject(
+              DioException(
+                requestOptions: options,
+                response: Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 404,
+                ),
+              ),
             ),
           ),
-        ),
-      );
-      notifier = AuthNotifier(HttpAuthRepository(dio: dio), storage);
+        );
+        notifier = AuthNotifier(HttpAuthRepository(dio: dio), storage);
 
-      await notifier.loginAnonymously(
-        name: 'Gil',
-        pin: '1234',
-        eventId: 'event-missing',
-      );
+        await notifier.loginAnonymously(
+          name: 'Gil',
+          pin: '1234',
+          eventId: 'event-missing',
+        );
 
-      expect(notifier.state, const AuthError(AuthFailureReason.eventNotFound));
-      expect(await storage.getToken(), 'existing-token');
-    });
+        expect(
+          notifier.state,
+          const AuthError(AuthFailureReason.eventNotFound),
+        );
+        expect(await storage.getToken(), 'existing-token');
+      },
+    );
   });
 }
