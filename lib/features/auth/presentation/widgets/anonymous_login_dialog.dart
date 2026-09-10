@@ -57,6 +57,8 @@ class _AnonymousLoginDialogState extends ConsumerState<AnonymousLoginDialog> {
         return i18n.loginErrorInvalidPin;
       case AuthFailureReason.invalidCredentials:
         return i18n.loginErrorInvalidCredentials;
+      case AuthFailureReason.eventNotFound:
+        return i18n.loginErrorEventNotFound;
       case AuthFailureReason.networkError:
       case AuthFailureReason.unknown:
         return i18n.loginErrorGeneric;
@@ -196,7 +198,7 @@ class _AnonymousLoginDialogState extends ConsumerState<AnonymousLoginDialog> {
                     validator: (value) {
                       final trimmed = value?.trim() ?? '';
                       if (trimmed.isEmpty) return i18n.nameRequired;
-                      if (trimmed.length < 2) return i18n.nameMinLength;
+                      if (trimmed.length > 80) return i18n.nameMaxLength;
                       return null;
                     },
                   ),
@@ -225,7 +227,9 @@ class _AnonymousLoginDialogState extends ConsumerState<AnonymousLoginDialog> {
                     validator: (value) {
                       final trimmed = value?.trim() ?? '';
                       if (trimmed.isEmpty) return i18n.pinRequired;
-                      if (trimmed.length < 4) return i18n.pinMinLength;
+                      if (!RegExp(r'^\d{4}$').hasMatch(trimmed)) {
+                        return i18n.pinInvalidFormat;
+                      }
                       return null;
                     },
                   ),

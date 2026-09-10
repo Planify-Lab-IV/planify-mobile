@@ -56,6 +56,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
       state = AuthAuthenticated(session);
     } on InvalidPinException {
       state = const AuthError(AuthFailureReason.invalidPin);
+    } on AnonymousEventNotFoundException {
+      state = const AuthError(AuthFailureReason.eventNotFound);
     } on InvalidCredentialsException {
       state = const AuthError(AuthFailureReason.invalidCredentials);
     } on NetworkAuthException {
