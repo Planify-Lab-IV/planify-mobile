@@ -502,4 +502,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get availabilitySundayShort => 'D';
+
+  @override
+  String get loadingEvent => 'Cargando evento...';
 }
