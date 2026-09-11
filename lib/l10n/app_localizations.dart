@@ -272,6 +272,12 @@ abstract class AppLocalizations {
   /// **'El nombre debe tener al menos 2 caracteres'**
   String get nameMinLength;
 
+  /// No description provided for @nameMaxLength.
+  ///
+  /// In es, this message translates to:
+  /// **'El nombre no puede superar los 80 caracteres'**
+  String get nameMaxLength;
+
   /// No description provided for @pinLabel.
   ///
   /// In es, this message translates to:
@@ -290,6 +296,12 @@ abstract class AppLocalizations {
   /// **'El PIN debe tener al menos 4 caracteres'**
   String get pinMinLength;
 
+  /// No description provided for @pinInvalidFormat.
+  ///
+  /// In es, this message translates to:
+  /// **'El PIN debe tener exactamente 4 dígitos'**
+  String get pinInvalidFormat;
+
   /// No description provided for @joinButton.
   ///
   /// In es, this message translates to:
@@ -307,6 +319,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'PIN incorrecto. Verifica el código e intenta nuevamente.'**
   String get loginErrorInvalidPin;
+
+  /// No description provided for @loginErrorEventNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'El evento ya no existe o no está disponible.'**
+  String get loginErrorEventNotFound;
+
+  /// No description provided for @loginErrorEventUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'El evento no está disponible.'**
+  String get loginErrorEventUnavailable;
 
   /// No description provided for @eventIdLabel.
   ///

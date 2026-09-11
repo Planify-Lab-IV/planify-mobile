@@ -10,6 +10,14 @@ class InvalidPinException extends AuthException {
   const InvalidPinException();
 }
 
+class AnonymousEventNotFoundException extends AuthException {
+  const AnonymousEventNotFoundException();
+}
+
+class AnonymousEventUnavailableException extends AuthException {
+  const AnonymousEventUnavailableException();
+}
+
 class NetworkAuthException extends AuthException {
   const NetworkAuthException();
 }

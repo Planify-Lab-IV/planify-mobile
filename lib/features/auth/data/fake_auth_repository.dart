@@ -83,7 +83,7 @@ class FakeAuthRepository implements AuthRepository {
     final resolvedEventId = eventId ?? 'evt-fake-demo';
 
     final session = AnonymousSession(
-      userId: 'anon-${trimmedName.hashCode.abs()}',
+      participantId: 'anon-${trimmedName.hashCode.abs()}',
       name: trimmedName,
       eventId: resolvedEventId,
       token:
@@ -122,7 +122,7 @@ class FakeAuthRepository implements AuthRepository {
       final name = parts.length > 1 ? parts[1] : 'Invitado';
       final eventId = parts.length > 2 ? parts[2] : 'evt-fake-demo';
       _currentSession = AnonymousSession(
-        userId: 'anon-${name.hashCode.abs()}',
+        participantId: 'anon-${name.hashCode.abs()}',
         name: name,
         eventId: eventId,
         token: token,

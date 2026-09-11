@@ -41,6 +41,7 @@ class EventDetailNotifier extends StateNotifier<EventDetailState> {
     required Event? event,
   }) {
     if (session == null || event == null) return false;
+    if (session is! OrganizerSession) return false;
     if (session.userId.trim().isEmpty || event.organizerId.trim().isEmpty) {
       return false;
     }
@@ -50,8 +51,14 @@ class EventDetailNotifier extends StateNotifier<EventDetailState> {
   bool get isOrganizer =>
       isUserOrganizerOfEvent(session: _currentSession, event: state.event);
 
-  bool get hasCurrentSession =>
-      _currentSession != null && _currentSession.userId.trim().isNotEmpty;
+  bool get hasCurrentSession {
+    final session = _currentSession;
+    if (session == null) return false;
+    return switch (session) {
+      OrganizerSession(:final userId) => userId.trim().isNotEmpty,
+      AnonymousSession(:final participantId) => participantId.trim().isNotEmpty,
+    };
+  }
 
   bool get canCancelEvent {
     final event = state.event;

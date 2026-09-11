@@ -1,13 +1,11 @@
 enum UserRole { organizer, anonymous }
 
 sealed class UserSession {
-  final String userId;
   final String name;
   final UserRole role;
   final String token;
 
   const UserSession({
-    required this.userId,
     required this.name,
     required this.role,
     required this.token,
@@ -18,11 +16,12 @@ sealed class UserSession {
 }
 
 class OrganizerSession extends UserSession {
+  final String userId;
   final String email;
   final String username;
 
   const OrganizerSession({
-    required super.userId,
+    required this.userId,
     required super.name,
     required this.email,
     required this.username,
@@ -65,10 +64,11 @@ class OrganizerSession extends UserSession {
 }
 
 class AnonymousSession extends UserSession {
+  final String participantId;
   final String eventId;
 
   const AnonymousSession({
-    required super.userId,
+    required this.participantId,
     required super.name,
     required super.token,
     required this.eventId,
@@ -79,7 +79,7 @@ class AnonymousSession extends UserSession {
       identical(this, other) ||
       other is AnonymousSession &&
           runtimeType == other.runtimeType &&
-          userId == other.userId &&
+          participantId == other.participantId &&
           name == other.name &&
           role == other.role &&
           token == other.token &&
@@ -87,7 +87,7 @@ class AnonymousSession extends UserSession {
 
   @override
   int get hashCode =>
-      userId.hashCode ^
+      participantId.hashCode ^
       name.hashCode ^
       role.hashCode ^
       token.hashCode ^
@@ -95,6 +95,6 @@ class AnonymousSession extends UserSession {
 
   @override
   String toString() {
-    return 'AnonymousSession(userId: $userId, name: $name, role: $role, eventId: $eventId)';
+    return 'AnonymousSession(participantId: $participantId, name: $name, role: $role, eventId: $eventId)';
   }
 }

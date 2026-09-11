@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/providers/core_providers.dart';
 import 'package:planify/data/secure_storage.dart';
 import 'package:planify/features/auth/data/fake_auth_repository.dart';
+import 'package:planify/features/auth/data/http_auth_repository.dart';
+import 'package:planify/features/auth/domain/auth_repository.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
 import 'package:planify/features/events/detail/screens/event_detail_screen.dart';
 import 'package:planify/features/home/presentation/screens/participant_home_screen.dart';
@@ -32,12 +35,14 @@ void main() {
       );
     });
 
-    Widget createTestApp() {
+    Widget createTestApp({AuthRepository? authRepository}) {
       return ProviderScope(
         overrides: [
           appLinksProvider.overrideWithValue(fakeAppLinks),
           secureStorageProvider.overrideWithValue(fakeStorage),
-          authRepositoryProvider.overrideWithValue(fakeAuthRepository),
+          authRepositoryProvider.overrideWithValue(
+            authRepository ?? fakeAuthRepository,
+          ),
           invitationsRepositoryProvider.overrideWithValue(
             fakeInvitationsRepository,
           ),
@@ -106,6 +111,78 @@ void main() {
         expect(find.text('Cumpleaños de Lucas'), findsOneWidget);
       },
     );
+
+    testWidgets('flujo HTTP navega al panel y detalle del evento resuelto', (
+      tester,
+    ) async {
+      RequestOptions? request;
+      final dio = Dio();
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            request = options;
+            handler.resolve(
+              Response<dynamic>(
+                requestOptions: options,
+                statusCode: 201,
+                data: {
+                  'participant': {
+                    'id': 'participant-evt-123',
+                    'eventId': 'evt-123',
+                    'username': 'Gil',
+                    'isAnonymous': true,
+                  },
+                  'token': 'anonymous-http-session-token',
+                },
+              ),
+            );
+          },
+        ),
+      );
+
+      await tester.pumpWidget(
+        createTestApp(authRepository: HttpAuthRepository(dio: dio)),
+      );
+      await tester.pump();
+      fakeAppLinks.emitUri(Uri.parse('planify://invite/token-valid-123'));
+      await tester.pump();
+      final guestButton = find.byKey(const Key('guest_login_button'));
+      await tester.ensureVisible(guestButton);
+      await tester.tap(guestButton);
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.enterText(
+        find.byKey(const Key('anonymous_name_input')),
+        'Gil',
+      );
+      await tester.enterText(
+        find.byKey(const Key('anonymous_pin_input')),
+        '1234',
+      );
+
+      await tester.tap(find.byKey(const Key('anonymous_submit_button')));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(request?.method, 'POST');
+      expect(request?.path, '/events/evt-123/participants/anonymous');
+      expect(request?.data, {'name': 'Gil', 'pin': '1234'});
+      final storedToken = fakeStorage.getToken();
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(await storedToken, 'anonymous-http-session-token');
+      expect(find.text('anonymous-http-session-token'), findsNothing);
+      expect(find.byType(ParticipantHomeScreen), findsOneWidget);
+      expect(find.text('Evento: '), findsOneWidget);
+      expect(find.text('Cumpleaños de Lucas'), findsOneWidget);
+
+      final detailButton = find.byKey(const Key('view_event_detail_button'));
+      await tester.ensureVisible(detailButton);
+      await tester.tap(detailButton);
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      expect(find.byType(EventDetailScreen), findsOneWidget);
+      expect(find.text('Cumpleaños de Lucas'), findsOneWidget);
+    });
 
     testWidgets(
       'Deep link con token expirado muestra banner de error controlado y permite descartarlo',

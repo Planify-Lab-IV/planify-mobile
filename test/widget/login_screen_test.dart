@@ -15,8 +15,13 @@ import 'package:planify/main.dart';
 
 import 'package:planify/features/auth/presentation/widgets/anonymous_login_dialog.dart';
 import 'package:planify/features/home/presentation/screens/participant_home_screen.dart';
+import 'package:planify/features/invitations/data/fake_invitations_repository.dart';
+import 'package:planify/features/invitations/presentation/controllers/invitation_providers.dart';
+
+import '../unit/deep_link_service_test.dart';
 
 Widget _buildTestApp({
+  String? eventId,
   FakeAuthRepository? fakeAuthRepo,
   FakeSecureStorage? fakeStorage,
 }) {
@@ -39,27 +44,39 @@ Widget _buildTestApp({
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       locale: const Locale('es'),
-      home: const LoginScreen(),
+      home: LoginScreen(eventId: eventId),
     ),
   );
 }
 
 void main() {
   group('LoginScreen Widget Tests', () {
-    testWidgets('renderiza logo, titulo, eslogan, campos y botones', (
-      tester,
-    ) async {
-      await tester.pumpWidget(_buildTestApp());
-      await tester.pumpAndSettle();
+    testWidgets(
+      'renderiza logo, titulo, eslogan, campos y botón de login (sin botón de invitado si no hay eventId)',
+      (tester) async {
+        await tester.pumpWidget(_buildTestApp());
+        await tester.pumpAndSettle();
 
-      expect(find.byType(PlanifyLogo), findsOneWidget);
-      expect(find.text('Planify'), findsOneWidget);
-      expect(find.text('Organizá tus planes, sin vueltas'), findsOneWidget);
-      expect(find.byKey(const Key('identifier_input')), findsOneWidget);
-      expect(find.byKey(const Key('password_input')), findsOneWidget);
-      expect(find.byKey(const Key('login_submit_button')), findsOneWidget);
-      expect(find.byKey(const Key('guest_login_button')), findsOneWidget);
-    });
+        expect(find.byType(PlanifyLogo), findsOneWidget);
+        expect(find.text('Planify'), findsOneWidget);
+        expect(find.text('Organizá tus planes, sin vueltas'), findsOneWidget);
+        expect(find.byKey(const Key('identifier_input')), findsOneWidget);
+        expect(find.byKey(const Key('password_input')), findsOneWidget);
+        expect(find.byKey(const Key('login_submit_button')), findsOneWidget);
+        expect(find.byKey(const Key('guest_login_button')), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'renderiza botón de invitado y separador cuando eventId está presente',
+      (tester) async {
+        await tester.pumpWidget(_buildTestApp(eventId: 'evt-123'));
+        await tester.pumpAndSettle();
+
+        expect(find.byKey(const Key('guest_login_button')), findsOneWidget);
+        expect(find.text('Continuar como invitado'), findsOneWidget);
+      },
+    );
 
     testWidgets('muestra errores de validación si los campos están vacíos', (
       tester,
@@ -98,13 +115,15 @@ void main() {
       );
     });
 
-    testWidgets('ingreso como invitado abre AnonymousLoginDialog', (
+    testWidgets('ingreso como invitado con eventId abre AnonymousLoginDialog', (
       tester,
     ) async {
-      await tester.pumpWidget(_buildTestApp());
+      await tester.pumpWidget(_buildTestApp(eventId: 'evt-123'));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('guest_login_button')));
+      final guestButton = find.byKey(const Key('guest_login_button'));
+      await tester.ensureVisible(guestButton);
+      await tester.tap(guestButton);
       await tester.pumpAndSettle();
 
       expect(find.byType(AnonymousLoginDialog), findsOneWidget);
@@ -118,11 +137,16 @@ void main() {
           storage: fakeStorage,
           delay: Duration.zero,
         );
+        final fakeAppLinks = FakeAppLinks();
 
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
+              appLinksProvider.overrideWithValue(fakeAppLinks),
               authRepositoryProvider.overrideWithValue(fakeRepo),
+              invitationsRepositoryProvider.overrideWithValue(
+                FakeInvitationsRepository(delay: Duration.zero),
+              ),
               secureStorageProvider.overrideWithValue(fakeStorage),
               localeNotifierProvider.overrideWith(
                 (ref) => LocaleNotifier()..setLocale(const Locale('es')),
@@ -135,7 +159,13 @@ void main() {
 
         expect(find.text('Planify'), findsOneWidget);
 
-        await tester.tap(find.byKey(const Key('guest_login_button')));
+        // Emitimos la invitación válida para que se resuelva el eventId y aparezca el botón de invitado
+        fakeAppLinks.emitUri(Uri.parse('planify://invite/token-valid-123'));
+        await tester.pumpAndSettle();
+
+        final guestButton = find.byKey(const Key('guest_login_button'));
+        await tester.ensureVisible(guestButton);
+        await tester.tap(guestButton);
         await tester.pumpAndSettle();
 
         expect(find.byType(AnonymousLoginDialog), findsOneWidget);
@@ -155,7 +185,7 @@ void main() {
         expect(find.byType(ParticipantHomeScreen), findsOneWidget);
         expect(find.text('¡Bienvenido, Lucas Invitado!'), findsOneWidget);
         expect(find.text('Evento: '), findsOneWidget);
-        expect(find.text('Evento Demo'), findsOneWidget);
+        expect(find.text('Cumpleaños de Lucas'), findsOneWidget);
 
         await tester.ensureVisible(find.byKey(const Key('logout_button')));
         await tester.tap(find.byKey(const Key('logout_button')));

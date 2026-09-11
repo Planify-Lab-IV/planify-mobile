@@ -49,7 +49,7 @@ void main() {
     );
 
     const guestSession = AnonymousSession(
-      userId: 'anon-456',
+      participantId: 'anon-456',
       name: 'Invitado',
       eventId: testEventId,
       token: 'fake-anon-token',

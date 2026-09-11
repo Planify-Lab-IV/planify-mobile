@@ -54,6 +54,10 @@ class _LoginFormState extends ConsumerState<LoginForm> {
         return i18n.loginErrorInvalidPin;
       case AuthFailureReason.invalidCredentials:
         return i18n.loginErrorInvalidCredentials;
+      case AuthFailureReason.eventNotFound:
+        return i18n.loginErrorEventNotFound;
+      case AuthFailureReason.eventUnavailable:
+        return i18n.loginErrorEventUnavailable;
       case AuthFailureReason.networkError:
       case AuthFailureReason.unknown:
         return i18n.loginErrorGeneric;
@@ -172,50 +176,52 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                       )
                     : Text(i18n.loginButton),
               ),
-              const SizedBox(height: AppSpacing.md),
-
-              // Separador "o"
-              Row(
-                children: [
-                  const Expanded(child: Divider(color: AppColors.outline)),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.sm,
-                    ),
-                    child: Text(
-                      i18n.orDivider,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppColors.onSurfaceVariant,
+              // Separador "o" y Botón Continuar como Invitado (solo si hay un eventId de invitación)
+              if (widget.eventId != null &&
+                  widget.eventId!.trim().isNotEmpty) ...[
+                const SizedBox(height: AppSpacing.md),
+                Row(
+                  children: [
+                    const Expanded(child: Divider(color: AppColors.outline)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm,
+                      ),
+                      child: Text(
+                        i18n.orDivider,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: AppColors.onSurfaceVariant,
+                        ),
                       ),
                     ),
-                  ),
-                  const Expanded(child: Divider(color: AppColors.outline)),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.md),
-
-              // Botón Continuar como Invitado
-              OutlinedButton(
-                key: const Key('guest_login_button'),
-                style: OutlinedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppRadius.card),
-                  ),
+                    const Expanded(child: Divider(color: AppColors.outline)),
+                  ],
                 ),
-                onPressed: isLoading
-                    ? null
-                    : () {
-                        ref.read(authNotifierProvider.notifier).clearError();
-                        showDialog<void>(
-                          context: context,
-                          barrierDismissible: !isLoading,
-                          builder: (dialogContext) =>
-                              AnonymousLoginDialog(eventId: widget.eventId),
-                        );
-                      },
-                child: Text(i18n.continueAsGuest),
-              ),
+                const SizedBox(height: AppSpacing.md),
+
+                // Botón Continuar como Invitado
+                OutlinedButton(
+                  key: const Key('guest_login_button'),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppRadius.card),
+                    ),
+                  ),
+                  onPressed: isLoading
+                      ? null
+                      : () {
+                          ref.read(authNotifierProvider.notifier).clearError();
+                          showDialog<void>(
+                            context: context,
+                            barrierDismissible: !isLoading,
+                            builder: (dialogContext) =>
+                                AnonymousLoginDialog(eventId: widget.eventId),
+                          );
+                        },
+                  child: Text(i18n.continueAsGuest),
+                ),
+              ],
             ],
           ),
         ),

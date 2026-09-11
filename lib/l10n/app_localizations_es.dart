@@ -102,6 +102,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get nameMinLength => 'El nombre debe tener al menos 2 caracteres';
 
   @override
+  String get nameMaxLength => 'El nombre no puede superar los 80 caracteres';
+
+  @override
   String get pinLabel => 'PIN del evento';
 
   @override
@@ -109,6 +112,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get pinMinLength => 'El PIN debe tener al menos 4 caracteres';
+
+  @override
+  String get pinInvalidFormat => 'El PIN debe tener exactamente 4 dígitos';
 
   @override
   String get joinButton => 'Ingresar';
@@ -119,6 +125,13 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get loginErrorInvalidPin =>
       'PIN incorrecto. Verifica el código e intenta nuevamente.';
+
+  @override
+  String get loginErrorEventNotFound =>
+      'El evento ya no existe o no está disponible.';
+
+  @override
+  String get loginErrorEventUnavailable => 'El evento no está disponible.';
 
   @override
   String get eventIdLabel => 'ID del Evento';
