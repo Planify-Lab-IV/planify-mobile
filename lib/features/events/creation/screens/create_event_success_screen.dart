@@ -4,6 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../detail/screens/event_detail_screen.dart';
 import '../../domain/event.dart';
 import '../controllers/event_draft_providers.dart';
 
@@ -112,25 +113,24 @@ class CreateEventSuccessScreen extends ConsumerWidget {
 
                 const SizedBox(height: AppSpacing.xl),
 
-                // TODO() esto queda comentado hasta que se integre el get de un event
                 // Botón principal: Ver detalle del evento
-                // ElevatedButton.icon(
-                //   key: const Key('view_event_detail_button'),
-                //   onPressed: () {
-                //     ref.read(eventDraftProvider.notifier).reset();
-                //     ref.read(createEventNotifierProvider.notifier).resetState();
-                //     Navigator.of(context).pushAndRemoveUntil(
-                //       MaterialPageRoute<void>(
-                //         builder: (context) =>
-                //             EventDetailScreen(eventId: event.id),
-                //       ),
-                //       (route) => route.isFirst,
-                //     );
-                //   },
-                //   icon: const Icon(Icons.arrow_forward_rounded),
-                //   label: Text(i18n.viewEventDetailButton),
-                // ),
-                // const SizedBox(height: AppSpacing.sm),
+                ElevatedButton.icon(
+                  key: const Key('view_event_detail_button'),
+                  onPressed: () {
+                    ref.read(eventDraftProvider.notifier).reset();
+                    ref.read(createEventNotifierProvider.notifier).resetState();
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute<void>(
+                        builder: (context) =>
+                            EventDetailScreen(eventId: event.id),
+                      ),
+                      (route) => route.isFirst,
+                    );
+                  },
+                  icon: const Icon(Icons.arrow_forward_rounded),
+                  label: Text(i18n.viewEventDetailButton),
+                ),
+                const SizedBox(height: AppSpacing.sm),
 
                 // Botón secundario: Volver al inicio
                 OutlinedButton.icon(
