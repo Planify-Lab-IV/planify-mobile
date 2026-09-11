@@ -59,8 +59,27 @@ class HttpEventsRepository implements EventsRepository {
   }
 
   @override
-  Future<void> cancel(String eventId) {
-    throw const UnsupportedEventOperationException();
+  Future<void> cancel(String eventId) async {
+    final normalizedEventId = eventId.trim();
+    if (normalizedEventId.isEmpty) {
+      throw const InvalidEventResponseException();
+    }
+
+    try {
+      await dio.put<dynamic>('/events/$normalizedEventId/cancel');
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 404) {
+        throw const EventNotFoundException();
+      }
+      if (_isNetworkError(error)) {
+        throw const NetworkEventException();
+      }
+      throw const EventCancellationException();
+    } on EventsException {
+      rethrow;
+    } catch (_) {
+      throw const EventCancellationException();
+    }
   }
 
   @override
