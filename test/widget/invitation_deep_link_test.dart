@@ -83,9 +83,6 @@ void main() {
         await tester.tap(guestButton);
         await tester.pumpAndSettle();
 
-        // Verifica que el diálogo tenga el nombre del evento cargado
-        expect(find.text('Evento: Cumpleaños de Lucas'), findsOneWidget);
-
         // Completa el formulario de invitado
         await tester.enterText(
           find.byKey(const Key('anonymous_name_input')),

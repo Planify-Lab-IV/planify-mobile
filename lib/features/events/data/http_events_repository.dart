@@ -70,9 +70,9 @@ class HttpEventsRepository implements EventsRepository {
 
   @override
   Future<void> updateCurrentUserAttendance(
-      String eventId,
-      AttendanceResponse response,
-      ) {
+    String eventId,
+    AttendanceResponse response,
+  ) {
     throw const UnsupportedEventOperationException();
   }
 
@@ -171,5 +171,4 @@ class HttpEventsRepository implements EventsRepository {
       _ => false,
     };
   }
-
 }

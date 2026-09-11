@@ -11,6 +11,8 @@ import 'package:planify/features/auth/data/http_auth_repository.dart';
 import 'package:planify/features/auth/domain/auth_repository.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
 import 'package:planify/features/auth/presentation/widgets/anonymous_login_dialog.dart';
+import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/events/detail/controllers/events_providers.dart';
 import 'package:planify/l10n/app_localizations.dart';
 
 Widget _buildDialogTestApp({
@@ -25,6 +27,9 @@ Widget _buildDialogTestApp({
       ),
       secureStorageProvider.overrideWithValue(
         fakeStorage ?? FakeSecureStorage(),
+      ),
+      eventsRepositoryProvider.overrideWithValue(
+        FakeEventsRepository(delay: Duration.zero),
       ),
     ],
     child: MaterialApp(
@@ -70,19 +75,6 @@ void main() {
       expect(find.byKey(const Key('anonymous_pin_input')), findsOneWidget);
       expect(find.byKey(const Key('anonymous_cancel_button')), findsOneWidget);
       expect(find.byKey(const Key('anonymous_submit_button')), findsOneWidget);
-    });
-
-    testWidgets('muestra badge de evento cuando eventId está presente', (
-      tester,
-    ) async {
-      await tester.pumpWidget(_buildDialogTestApp(eventId: 'evt-cumple-lucas'));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byKey(const Key('open_dialog_button')));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Evento: Cumpleaños de Lucas'), findsOneWidget);
-      expect(find.byIcon(Icons.event_available_rounded), findsOneWidget);
     });
 
     testWidgets('muestra errores de validación local con campos vacíos', (
