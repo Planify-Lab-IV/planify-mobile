@@ -13,11 +13,16 @@ import 'package:planify/features/groups/domain/group.dart';
 import 'package:planify/features/groups/presentation/controllers/groups_providers.dart';
 import 'package:planify/l10n/app_localizations.dart';
 
+import 'package:planify/features/events/detail/controllers/events_providers.dart';
+import 'package:planify/features/events/detail/screens/event_detail_screen.dart';
+
 Widget _buildTestApp({
   EventDraft? initialDraft,
   FakeGroupsRepository? fakeGroupsRepo,
   FakeEventsRepository? fakeEventsRepo,
 }) {
+  final eventsRepo =
+      fakeEventsRepo ?? FakeEventsRepository(delay: Duration.zero);
   return ProviderScope(
     overrides: [
       if (initialDraft != null)
@@ -27,9 +32,8 @@ Widget _buildTestApp({
       groupsRepositoryProvider.overrideWithValue(
         fakeGroupsRepo ?? FakeGroupsRepository(delay: Duration.zero),
       ),
-      createEventsRepositoryProvider.overrideWithValue(
-        fakeEventsRepo ?? FakeEventsRepository(delay: Duration.zero),
-      ),
+      createEventsRepositoryProvider.overrideWithValue(eventsRepo),
+      eventsRepositoryProvider.overrideWithValue(eventsRepo),
     ],
     child: MaterialApp(
       theme: AppTheme.light,
@@ -258,5 +262,44 @@ void main() {
         findsOneWidget,
       );
     });
+
+    testWidgets(
+      'permite navegar al detalle del evento creado tocando Ver detalle del evento',
+      (tester) async {
+        const draftWithGroup = EventDraft(
+          name: 'Cumpleaños de Lucas',
+          location: 'Casa de Lucas',
+          isNewGroup: false,
+          selectedGroupId: 'grp-1',
+          selectedGroupName: 'Amigos',
+        );
+
+        await tester.pumpWidget(_buildTestApp(initialDraft: draftWithGroup));
+        await tester.pumpAndSettle();
+
+        await tester.ensureVisible(
+          find.byKey(const Key('create_event_submit_button')),
+        );
+        await tester.tap(find.byKey(const Key('create_event_submit_button')));
+        await tester.pumpAndSettle();
+
+        expect(find.text('¡Evento creado con éxito!'), findsOneWidget);
+        expect(
+          find.byKey(const Key('view_event_detail_button')),
+          findsOneWidget,
+        );
+
+        await tester.ensureVisible(
+          find.byKey(const Key('view_event_detail_button')),
+        );
+        await tester.tap(find.byKey(const Key('view_event_detail_button')));
+        await tester.pumpAndSettle();
+
+        // Verifica que se renderiza EventDetailScreen con los datos del evento
+        expect(find.byType(EventDetailScreen), findsOneWidget);
+        expect(find.text('Detalle del evento'), findsOneWidget);
+        expect(find.text('Cumpleaños de Lucas'), findsOneWidget);
+      },
+    );
   });
 }

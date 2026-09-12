@@ -4,7 +4,6 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../home/presentation/screens/participant_home_screen.dart';
 import '../controllers/auth_providers.dart';
 import '../controllers/auth_state.dart';
 
@@ -113,45 +112,6 @@ class _AnonymousLoginDialogState extends ConsumerState<AnonymousLoginDialog> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-
-                  // Badge de Evento si existe
-                  if (widget.eventId != null) ...[
-                    const SizedBox(height: AppSpacing.sm),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.sm,
-                        vertical: AppSpacing.xs,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.background,
-                        borderRadius: BorderRadius.circular(AppRadius.sm),
-                        border: Border.all(color: AppColors.outline),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.event_available_rounded,
-                            size: 16,
-                            color: theme.colorScheme.primary,
-                          ),
-                          const SizedBox(width: AppSpacing.xs),
-                          Flexible(
-                            child: Text(
-                              '${i18n.eventLabel}: ${ref.watch(eventNameProvider(widget.eventId!))}',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.darkBlue,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-
                   const SizedBox(height: AppSpacing.lg),
 
                   // Banner de Error
