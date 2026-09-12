@@ -7,6 +7,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../auth/domain/user_session.dart';
 import '../../../auth/presentation/controllers/auth_providers.dart';
 import '../../../auth/presentation/controllers/auth_state.dart';
+import '../../../events/detail/controllers/events_providers.dart';
 import '../../../events/detail/screens/event_detail_screen.dart';
 import '../widgets/participant_event_info_row.dart';
 
@@ -115,6 +116,9 @@ class ParticipantHomeScreen extends ConsumerWidget {
                         ),
                       ),
                       onPressed: () {
+                        ref.invalidate(
+                          eventDetailNotifierProvider(session.eventId),
+                        );
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) =>
