@@ -337,19 +337,21 @@ void main() {
         );
       });
 
-      test('maps non-recoverable HTTP errors to EventCancellationException',
-          () async {
-        for (final statusCode in [401, 403, 409, 500, 503]) {
-          final repository = HttpEventsRepository(
-            dio: dioRejecting(statusCode),
-          );
+      test(
+        'maps non-recoverable HTTP errors to EventCancellationException',
+        () async {
+          for (final statusCode in [401, 403, 409, 500, 503]) {
+            final repository = HttpEventsRepository(
+              dio: dioRejecting(statusCode),
+            );
 
-          await expectLater(
-            repository.cancel('evt-1'),
-            throwsA(isA<EventCancellationException>()),
-          );
-        }
-      });
+            await expectLater(
+              repository.cancel('evt-1'),
+              throwsA(isA<EventCancellationException>()),
+            );
+          }
+        },
+      );
 
       test('rejects blank event IDs before sending a request', () async {
         final repository = HttpEventsRepository(dio: Dio());
