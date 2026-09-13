@@ -1021,6 +1021,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'D'**
   String get availabilitySundayShort;
+
+  /// No description provided for @loadingEvent.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando evento...'**
+  String get loadingEvent;
 }
 
 class _AppLocalizationsDelegate

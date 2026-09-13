@@ -33,6 +33,68 @@ class HttpEventsRepository implements EventsRepository {
     }
   }
 
+  @override
+  Future<Event?> getEvent(String eventId) async {
+    final normalizedEventId = eventId.trim();
+    if (normalizedEventId.isEmpty) {
+      throw const InvalidEventResponseException();
+    }
+
+    try {
+      final response = await dio.get<dynamic>('/events/$normalizedEventId');
+      return _eventFromResponse(response.data);
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 404) {
+        return null;
+      }
+      if (_isNetworkError(error)) {
+        throw const NetworkEventException();
+      }
+      throw const InvalidEventResponseException();
+    } on EventsException {
+      rethrow;
+    } catch (_) {
+      throw const InvalidEventResponseException();
+    }
+  }
+
+  @override
+  Future<void> cancel(String eventId) async {
+    final normalizedEventId = eventId.trim();
+    if (normalizedEventId.isEmpty) {
+      throw const InvalidEventResponseException();
+    }
+
+    try {
+      await dio.put<dynamic>('/events/$normalizedEventId/cancel');
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 404) {
+        throw const EventNotFoundException();
+      }
+      if (_isNetworkError(error)) {
+        throw const NetworkEventException();
+      }
+      throw const EventCancellationException();
+    } on EventsException {
+      rethrow;
+    } catch (_) {
+      throw const EventCancellationException();
+    }
+  }
+
+  @override
+  Future<AttendanceStatus> getCurrentUserAttendance(String eventId) {
+    throw const UnsupportedEventOperationException();
+  }
+
+  @override
+  Future<void> updateCurrentUserAttendance(
+    String eventId,
+    AttendanceResponse response,
+  ) {
+    throw const UnsupportedEventOperationException();
+  }
+
   Map<String, Object> _createEventRequest(EventDraft draft) {
     final request = <String, Object>{
       'name': draft.name,
@@ -127,28 +189,5 @@ class HttpEventsRepository implements EventsRepository {
       DioExceptionType.connectionError => true,
       _ => false,
     };
-  }
-
-  @override
-  Future<Event?> getEvent(String eventId) {
-    throw const UnsupportedEventOperationException();
-  }
-
-  @override
-  Future<void> cancel(String eventId) {
-    throw const UnsupportedEventOperationException();
-  }
-
-  @override
-  Future<AttendanceStatus> getCurrentUserAttendance(String eventId) {
-    throw const UnsupportedEventOperationException();
-  }
-
-  @override
-  Future<void> updateCurrentUserAttendance(
-    String eventId,
-    AttendanceResponse response,
-  ) {
-    throw const UnsupportedEventOperationException();
   }
 }

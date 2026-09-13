@@ -496,4 +496,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get availabilitySundayShort => 'S';
+
+  @override
+  String get loadingEvent => 'Loading event...';
 }
