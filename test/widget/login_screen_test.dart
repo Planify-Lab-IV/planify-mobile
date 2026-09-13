@@ -14,6 +14,8 @@ import 'package:planify/l10n/app_localizations.dart';
 import 'package:planify/main.dart';
 
 import 'package:planify/features/auth/presentation/widgets/anonymous_login_dialog.dart';
+import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/events/detail/controllers/events_providers.dart';
 import 'package:planify/features/home/presentation/screens/participant_home_screen.dart';
 import 'package:planify/features/invitations/data/fake_invitations_repository.dart';
 import 'package:planify/features/invitations/presentation/controllers/invitation_providers.dart';
@@ -32,6 +34,9 @@ Widget _buildTestApp({
       ),
       secureStorageProvider.overrideWithValue(
         fakeStorage ?? FakeSecureStorage(),
+      ),
+      eventsRepositoryProvider.overrideWithValue(
+        FakeEventsRepository(delay: Duration.zero),
       ),
     ],
     child: MaterialApp(
@@ -146,6 +151,9 @@ void main() {
               authRepositoryProvider.overrideWithValue(fakeRepo),
               invitationsRepositoryProvider.overrideWithValue(
                 FakeInvitationsRepository(delay: Duration.zero),
+              ),
+              eventsRepositoryProvider.overrideWithValue(
+                FakeEventsRepository(delay: Duration.zero),
               ),
               secureStorageProvider.overrideWithValue(fakeStorage),
               localeNotifierProvider.overrideWith(

@@ -177,5 +177,6 @@
       "availabilityThursdayShort": "J",
       "availabilityFridayShort": "V",
       "availabilitySaturdayShort": "S",
-      "availabilitySundayShort": "D"
+      "availabilitySundayShort": "D",
+      "loadingEvent": "Cargando evento..."
 }

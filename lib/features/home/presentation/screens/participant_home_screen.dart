@@ -8,27 +8,7 @@ import '../../../auth/domain/user_session.dart';
 import '../../../auth/presentation/controllers/auth_providers.dart';
 import '../../../auth/presentation/controllers/auth_state.dart';
 import '../../../events/detail/screens/event_detail_screen.dart';
-
-// Punto de extensión: en PLANIFY-30 esto consultará la API real (EventsRepository).
-final eventNameProvider = Provider.family<String, String>((ref, eventId) {
-  switch (eventId) {
-    case 'evt-123':
-    case 'evt-cumple-lucas':
-      return 'Cumpleaños de Lucas';
-    case 'evt-asado-amigos':
-      return 'Asado con Amigos';
-    case 'evt-fake-demo':
-      return 'Evento Demo';
-    default:
-      if (eventId.startsWith('evt-')) {
-        final clean = eventId.replaceFirst('evt-', '').replaceAll('-', ' ');
-        return clean.isEmpty
-            ? 'Evento Planify'
-            : clean[0].toUpperCase() + clean.substring(1);
-      }
-      return 'Evento Planify';
-  }
-});
+import '../widgets/participant_event_info_row.dart';
 
 class ParticipantHomeScreen extends ConsumerWidget {
   final AnonymousSession session;
@@ -40,7 +20,6 @@ class ParticipantHomeScreen extends ConsumerWidget {
     final i18n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final authState = ref.watch(authNotifierProvider);
-    final eventName = ref.watch(eventNameProvider(session.eventId));
     final isLoggingOut = authState is AuthLoading;
 
     return Scaffold(
@@ -116,12 +95,7 @@ class ParticipantHomeScreen extends ConsumerWidget {
                       icon: Icons.person_outline_rounded,
                     ),
                     const SizedBox(height: AppSpacing.sm),
-                    _buildInfoRow(
-                      context,
-                      label: i18n.eventLabel,
-                      value: eventName,
-                      icon: Icons.event_available_rounded,
-                    ),
+                    ParticipantEventInfoRow(eventId: session.eventId),
                     const SizedBox(height: AppSpacing.sm),
                     _buildInfoRow(
                       context,
