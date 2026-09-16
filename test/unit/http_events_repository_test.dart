@@ -54,6 +54,24 @@ void main() {
       return dio;
     }
 
+    Dio dioRejecting(int statusCode) {
+      final dio = Dio();
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) => handler.reject(
+            DioException(
+              requestOptions: options,
+              response: Response<dynamic>(
+                requestOptions: options,
+                statusCode: statusCode,
+              ),
+            ),
+          ),
+        ),
+      );
+      return dio;
+    }
+
     test('sends the existing group payload and maps the full event', () async {
       RequestOptions? request;
       final repository = HttpEventsRepository(
@@ -263,13 +281,91 @@ void main() {
       );
     });
 
-    test('reports unintegrated methods as unsupported', () async {
+    group('cancel', () {
+      test('executes PUT /events/:eventId', () async {
+        RequestOptions? request;
+        final repository = HttpEventsRepository(
+          dio: dioResolving(null, (options) => request = options),
+        );
+
+        await repository.cancel('evt-1');
+
+        expect(request?.method, 'PUT');
+        expect(request?.path, '/events/evt-1/cancel');
+      });
+
+      test('maps a missing event to EventNotFoundException', () async {
+        final dio = Dio();
+        dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) => handler.reject(
+              DioException(
+                requestOptions: options,
+                response: Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 404,
+                ),
+              ),
+            ),
+          ),
+        );
+        final repository = HttpEventsRepository(dio: dio);
+
+        expect(
+          () => repository.cancel('evt-missing'),
+          throwsA(isA<EventNotFoundException>()),
+        );
+      });
+
+      test('maps connection errors to NetworkEventException', () async {
+        final dio = Dio();
+        dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) => handler.reject(
+              DioException(
+                requestOptions: options,
+                type: DioExceptionType.connectionError,
+              ),
+            ),
+          ),
+        );
+        final repository = HttpEventsRepository(dio: dio);
+
+        expect(
+          () => repository.cancel('evt-1'),
+          throwsA(isA<NetworkEventException>()),
+        );
+      });
+
+      test(
+        'maps non-recoverable HTTP errors to EventCancellationException',
+        () async {
+          for (final statusCode in [401, 403, 409, 500, 503]) {
+            final repository = HttpEventsRepository(
+              dio: dioRejecting(statusCode),
+            );
+
+            await expectLater(
+              repository.cancel('evt-1'),
+              throwsA(isA<EventCancellationException>()),
+            );
+          }
+        },
+      );
+
+      test('rejects blank event IDs before sending a request', () async {
+        final repository = HttpEventsRepository(dio: Dio());
+
+        expect(
+          () => repository.cancel('   '),
+          throwsA(isA<InvalidEventResponseException>()),
+        );
+      });
+    });
+
+    test('reports attendance methods as unsupported', () async {
       final repository = HttpEventsRepository(dio: Dio());
 
-      expect(
-        () => repository.cancel('evt-1'),
-        throwsA(isA<UnsupportedEventOperationException>()),
-      );
       expect(
         () => repository.getCurrentUserAttendance('evt-1'),
         throwsA(isA<UnsupportedEventOperationException>()),
