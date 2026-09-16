@@ -384,6 +384,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get eventNotFound => 'Evento no encontrado';
 
   @override
+  String get eventLoadError =>
+      'No se pudo cargar el evento. Verificá tu conexión e intentá nuevamente.';
+  @override
   String get eventCancelledNotice =>
       'Este evento ha sido cancelado y ya no acepta nuevas acciones.';
 

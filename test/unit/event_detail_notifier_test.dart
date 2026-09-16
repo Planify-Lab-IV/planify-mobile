@@ -211,8 +211,28 @@ void main() {
 
         await Future<void>.delayed(Duration.zero);
 
+        expect(notifier.state.loadStatus, EventDetailLoadStatus.notFound);
+        expect(notifier.state.isNotFound, isTrue);
+        expect(notifier.state.hasLoadError, isFalse);
+        expect(notifier.state.event, isNull);
+      });
+
+      test('marca error de carga ante una falla del repositorio', () async {
+        final repo = FakeEventsRepository(
+          delay: Duration.zero,
+          shouldThrowError: true,
+        );
+        final notifier = EventDetailNotifier(
+          repository: repo,
+          currentSession: organizerSession,
+          eventId: testEventId,
+        );
+
+        await Future<void>.delayed(Duration.zero);
+
         expect(notifier.state.loadStatus, EventDetailLoadStatus.error);
         expect(notifier.state.hasLoadError, isTrue);
+        expect(notifier.state.isNotFound, isFalse);
         expect(notifier.state.event, isNull);
       });
     });
