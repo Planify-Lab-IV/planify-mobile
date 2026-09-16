@@ -1,28 +1,34 @@
 class Slot {
-  final int dayOfWeek;
-  final int hour;
+  final int weekDay;
+  final int hourBlock;
 
-  Slot({required this.dayOfWeek, required this.hour}) {
-    if (dayOfWeek < 0 || dayOfWeek > 6) {
+  Slot({required this.weekDay, required this.hourBlock}) {
+    if (weekDay < 0 || weekDay > 6) {
       throw ArgumentError.value(
-        dayOfWeek,
-        'dayOfWeek',
+        weekDay,
+        'weekDay',
         'must be between 0 and 6',
       );
     }
-    if (hour < 0 || hour > 23) {
-      throw ArgumentError.value(hour, 'hour', 'must be between 0 and 23');
+    if (hourBlock < 0 || hourBlock > 23) {
+      throw ArgumentError.value(
+        hourBlock,
+        'hourBlock',
+        'must be between 0 and 23',
+      );
     }
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Slot && dayOfWeek == other.dayOfWeek && hour == other.hour;
+      other is Slot &&
+          weekDay == other.weekDay &&
+          hourBlock == other.hourBlock;
 
   @override
-  int get hashCode => Object.hash(dayOfWeek, hour);
+  int get hashCode => Object.hash(weekDay, hourBlock);
 
   @override
-  String toString() => 'Slot(dayOfWeek: $dayOfWeek, hour: $hour)';
+  String toString() => 'Slot(weekDay: $weekDay, hourBlock: $hourBlock)';
 }

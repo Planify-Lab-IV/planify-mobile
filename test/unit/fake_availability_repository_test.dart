@@ -17,8 +17,8 @@ void main() {
 
     test('loads the availability supplied for an event', () async {
       final initialSlots = [
-        Slot(dayOfWeek: 1, hour: 9),
-        Slot(dayOfWeek: 4, hour: 18),
+        Slot(weekDay: 1, hourBlock: 9),
+        Slot(weekDay: 4, hourBlock: 18),
       ];
       final repository = FakeAvailabilityRepository(
         delay: Duration.zero,
@@ -32,12 +32,12 @@ void main() {
       final repository = FakeAvailabilityRepository(
         delay: Duration.zero,
         initialAvailabilityByEvent: {
-          'evt-1': [Slot(dayOfWeek: 0, hour: 8)],
+          'evt-1': [Slot(weekDay: 0, hourBlock: 8)],
         },
       );
       final replacementSlots = [
-        Slot(dayOfWeek: 2, hour: 12),
-        Slot(dayOfWeek: 6, hour: 20),
+        Slot(weekDay: 2, hourBlock: 12),
+        Slot(weekDay: 6, hourBlock: 20),
       ];
 
       await repository.save('evt-1', replacementSlots);
@@ -48,17 +48,20 @@ void main() {
     test(
       'does not expose mutable references to its stored availability',
       () async {
-        final initialSlots = [Slot(dayOfWeek: 1, hour: 9)];
+        final initialSlots = [Slot(weekDay: 1, hourBlock: 9)];
         final repository = FakeAvailabilityRepository(
           delay: Duration.zero,
           initialAvailabilityByEvent: {'evt-1': initialSlots},
         );
 
-        initialSlots.add(Slot(dayOfWeek: 2, hour: 10));
+        initialSlots.add(Slot(weekDay: 2, hourBlock: 10));
         final loadedSlots = await repository.load('evt-1');
-        loadedSlots.add(Slot(dayOfWeek: 3, hour: 11));
+        loadedSlots.add(Slot(weekDay: 3, hourBlock: 11));
 
-        expect(await repository.load('evt-1'), [Slot(dayOfWeek: 1, hour: 9)]);
+        expect(
+          await repository.load('evt-1'),
+          [Slot(weekDay: 1, hourBlock: 9)],
+        );
       },
     );
 
