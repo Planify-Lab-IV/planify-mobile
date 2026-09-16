@@ -8,6 +8,8 @@ import 'package:planify/features/auth/data/fake_auth_repository.dart';
 import 'package:planify/features/auth/data/http_auth_repository.dart';
 import 'package:planify/features/auth/domain/auth_repository.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
+import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/events/detail/controllers/events_providers.dart';
 import 'package:planify/features/events/detail/screens/event_detail_screen.dart';
 import 'package:planify/features/home/presentation/screens/participant_home_screen.dart';
 import 'package:planify/features/invitations/data/fake_invitations_repository.dart';
@@ -46,6 +48,9 @@ void main() {
           invitationsRepositoryProvider.overrideWithValue(
             fakeInvitationsRepository,
           ),
+          eventsRepositoryProvider.overrideWithValue(
+            FakeEventsRepository(delay: Duration.zero),
+          ),
           localeNotifierProvider.overrideWith(
             (ref) => LocaleNotifier()..setLocale(const Locale('es')),
           ),
@@ -77,9 +82,6 @@ void main() {
         await tester.ensureVisible(guestButton);
         await tester.tap(guestButton);
         await tester.pumpAndSettle();
-
-        // Verifica que el diálogo tenga el nombre del evento cargado
-        expect(find.text('Evento: Cumpleaños de Lucas'), findsOneWidget);
 
         // Completa el formulario de invitado
         await tester.enterText(

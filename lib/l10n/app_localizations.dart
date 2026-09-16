@@ -806,6 +806,12 @@ abstract class AppLocalizations {
   /// **'Evento no encontrado'**
   String get eventNotFound;
 
+  /// No description provided for @eventLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cargar el evento. Verificá tu conexión e intentá nuevamente.'**
+  String get eventLoadError;
+
   /// No description provided for @eventCancelledNotice.
   ///
   /// In es, this message translates to:
@@ -1021,6 +1027,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'D'**
   String get availabilitySundayShort;
+
+  /// No description provided for @loadingEvent.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando evento...'**
+  String get loadingEvent;
 }
 
 class _AppLocalizationsDelegate

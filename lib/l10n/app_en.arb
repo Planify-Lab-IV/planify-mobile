@@ -134,6 +134,7 @@
   "cancelEventSuccess": "The event was successfully cancelled.",
   "cancelEventError": "Could not cancel the event. Please try again.",
   "eventNotFound": "Event not found",
+  "eventLoadError": "Could not load the event. Check your connection and try again.",
   "eventCancelledNotice": "This event has been cancelled and no longer accepts new actions.",
   "eventActionsTooltip": "Event options",
   "cancellingEvent": "Cancelling event...",
@@ -177,5 +178,6 @@
     "availabilityThursdayShort": "T",
     "availabilityFridayShort": "F",
     "availabilitySaturdayShort": "S",
-    "availabilitySundayShort": "S"
+    "availabilitySundayShort": "S",
+    "loadingEvent": "Loading event..."
 }

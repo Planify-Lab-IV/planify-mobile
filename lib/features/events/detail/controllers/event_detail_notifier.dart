@@ -74,13 +74,16 @@ class EventDetailNotifier extends StateNotifier<EventDetailState> {
       if (!mounted) return;
 
       if (event == null) {
-        state = state.copyWith(loadStatus: EventDetailLoadStatus.error);
+        state = state.copyWith(loadStatus: EventDetailLoadStatus.notFound);
       } else {
         state = state.copyWith(
           event: event,
           loadStatus: EventDetailLoadStatus.success,
         );
       }
+    } on EventNotFoundException {
+      if (!mounted) return;
+      state = state.copyWith(loadStatus: EventDetailLoadStatus.notFound);
     } on EventsException {
       if (!mounted) return;
       state = state.copyWith(loadStatus: EventDetailLoadStatus.error);
