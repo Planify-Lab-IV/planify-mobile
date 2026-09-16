@@ -31,51 +31,55 @@ void main() {
     test('loads slots using the backend availability contract', () async {
       RequestOptions? request;
       final repository = HttpAvailabilityRepository(
-        dio: dioResolving(
-          {
-            'slots': [
-              {'weekDay': 0, 'hourBlock': 9},
-              {'weekDay': 5, 'hourBlock': 18},
-            ],
-          },
-          (options) => request = options,
-        ),
+        dio: dioResolving({
+          'slots': [
+            {'weekDay': 0, 'hourBlock': 9},
+            {'weekDay': 5, 'hourBlock': 18},
+          ],
+        }, (options) => request = options),
       );
 
       final slots = await repository.load('evt-1');
 
       expect(request?.method, 'GET');
       expect(request?.path, '/events/evt-1/availability');
-      expect(
-        slots,
-        [Slot(weekDay: 0, hourBlock: 9), Slot(weekDay: 5, hourBlock: 18)],
-      );
-    });
-
-    test('saves the complete slot selection using backend field names', () async {
-      RequestOptions? request;
-      final repository = HttpAvailabilityRepository(
-        dio: dioResolving(null, (options) => request = options),
-      );
-
-      await repository.save('evt-1', [
-        Slot(weekDay: 1, hourBlock: 8),
-        Slot(weekDay: 4, hourBlock: 21),
+      expect(slots, [
+        Slot(weekDay: 0, hourBlock: 9),
+        Slot(weekDay: 5, hourBlock: 18),
       ]);
-
-      expect(request?.method, 'PUT');
-      expect(request?.path, '/events/evt-1/availability');
-      expect(request?.data, {
-        'slots': [
-          {'weekDay': 1, 'hourBlock': 8},
-          {'weekDay': 4, 'hourBlock': 21},
-        ],
-      });
     });
+
+    test(
+      'saves the complete slot selection using backend field names',
+      () async {
+        RequestOptions? request;
+        final repository = HttpAvailabilityRepository(
+          dio: dioResolving(null, (options) => request = options),
+        );
+
+        await repository.save('evt-1', [
+          Slot(weekDay: 1, hourBlock: 8),
+          Slot(weekDay: 4, hourBlock: 21),
+        ]);
+
+        expect(request?.method, 'PUT');
+        expect(request?.path, '/events/evt-1/availability');
+        expect(request?.data, {
+          'slots': [
+            {'weekDay': 1, 'hourBlock': 8},
+            {'weekDay': 4, 'hourBlock': 21},
+          ],
+        });
+      },
+    );
 
     test('rejects a malformed load response', () async {
       final repository = HttpAvailabilityRepository(
-        dio: dioResolving({'slots': [{'weekDay': 1}]}, null),
+        dio: dioResolving({
+          'slots': [
+            {'weekDay': 1},
+          ],
+        }, null),
       );
 
       expect(

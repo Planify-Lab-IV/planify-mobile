@@ -19,12 +19,17 @@ void main() {
     FakeEventsRepository repository, {
     FakeAvailabilityRepository? availabilityRepository,
   }) {
+    final resolvedAvailabilityRepository =
+        availabilityRepository ?? FakeAvailabilityRepository(delay: Duration.zero);
+
     return ProviderScope(
       overrides: [
         eventsRepositoryProvider.overrideWithValue(repository),
         availabilityRepositoryProvider.overrideWithValue(
-          availabilityRepository ??
-              FakeAvailabilityRepository(delay: Duration.zero),
+          resolvedAvailabilityRepository,
+        ),
+        availabilityHeatmapRepositoryProvider.overrideWithValue(
+          resolvedAvailabilityRepository,
         ),
       ],
       child: MaterialApp(

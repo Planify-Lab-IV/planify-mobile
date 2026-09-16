@@ -5,6 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
+import 'package:planify/features/availability/data/fake_availability_repository.dart';
+import 'package:planify/features/availability/presentation/controllers/availability_providers.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
 import 'package:planify/features/events/domain/event.dart';
 import 'package:planify/features/events/domain/event_status.dart';
@@ -70,6 +72,12 @@ void main() {
       return ProviderScope(
         overrides: [
           eventsRepositoryProvider.overrideWithValue(repository),
+          availabilityRepositoryProvider.overrideWithValue(
+            FakeAvailabilityRepository(delay: Duration.zero),
+          ),
+          availabilityHeatmapRepositoryProvider.overrideWithValue(
+            FakeAvailabilityRepository(delay: Duration.zero),
+          ),
           authNotifierProvider.overrideWith((ref) {
             final authNotifier = ref.watch(authNotifierProvider.notifier);
             return authNotifier;

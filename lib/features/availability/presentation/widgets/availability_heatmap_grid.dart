@@ -31,7 +31,9 @@ class AvailabilityHeatmapGrid extends StatelessWidget {
             slotsByPosition[(slot.weekDay, slot.hourBlock)] ?? 0;
         final colorScheme = Theme.of(context).colorScheme;
         final cell = Container(
-          key: Key('availability_heatmap_slot_${slot.weekDay}_${slot.hourBlock}'),
+          key: Key(
+            'availability_heatmap_slot_${slot.weekDay}_${slot.hourBlock}',
+          ),
           decoration: BoxDecoration(
             color: resolveAvailabilityHeatmapColor(
               primaryContainer: colorScheme.primaryContainer,

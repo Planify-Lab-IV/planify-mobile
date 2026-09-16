@@ -58,10 +58,9 @@ void main() {
         final loadedSlots = await repository.load('evt-1');
         loadedSlots.add(Slot(weekDay: 3, hourBlock: 11));
 
-        expect(
-          await repository.load('evt-1'),
-          [Slot(weekDay: 1, hourBlock: 9)],
-        );
+        expect(await repository.load('evt-1'), [
+          Slot(weekDay: 1, hourBlock: 9),
+        ]);
       },
     );
 

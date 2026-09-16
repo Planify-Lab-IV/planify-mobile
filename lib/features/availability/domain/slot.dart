@@ -4,11 +4,7 @@ class Slot {
 
   Slot({required this.weekDay, required this.hourBlock}) {
     if (weekDay < 0 || weekDay > 6) {
-      throw ArgumentError.value(
-        weekDay,
-        'weekDay',
-        'must be between 0 and 6',
-      );
+      throw ArgumentError.value(weekDay, 'weekDay', 'must be between 0 and 6');
     }
     if (hourBlock < 0 || hourBlock > 23) {
       throw ArgumentError.value(
@@ -22,9 +18,7 @@ class Slot {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Slot &&
-          weekDay == other.weekDay &&
-          hourBlock == other.hourBlock;
+      other is Slot && weekDay == other.weekDay && hourBlock == other.hourBlock;
 
   @override
   int get hashCode => Object.hash(weekDay, hourBlock);
