@@ -142,6 +142,11 @@ class FakeEventsRepository implements EventsRepository {
   }
 
   @override
+  Future<void> confirmSchedule(String eventId, DateTime startDateTime) {
+    throw const UnsupportedEventOperationException();
+  }
+
+  @override
   Future<AttendanceStatus> getCurrentUserAttendance(String eventId) async {
     if (delay > Duration.zero) {
       await Future.delayed(delay);
