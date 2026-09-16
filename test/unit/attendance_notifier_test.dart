@@ -16,9 +16,9 @@ void main() {
 
     tearDown(() => notifier.dispose());
 
-    test('starts ready without loading the persisted response', () {
+    test('starts without loading the persisted response', () {
       expect(notifier.state.status, AttendanceStatus.noResponse);
-      expect(notifier.state.loadStatus, AttendanceLoadStatus.success);
+      expect(notifier.state.saveStatus, AttendanceSaveStatus.idle);
     });
 
     test('rolls back to noResponse when the first response fails', () async {
