@@ -31,31 +31,31 @@ class AttendanceResponseSelector extends ConsumerWidget {
             const SizedBox(height: AppSpacing.md),
             Row(
               children: [
-                  Expanded(
-                    child: _AttendanceButton(
-                      key: const Key('attendance_confirm_button'),
-                      label: i18n.attendanceGoing,
-                      color: AppColors.success,
-                      foregroundColor: AppColors.onSuccess,
-                      isSelected: state.status == AttendanceStatus.confirmed,
-                      isSaving: state.isSaving,
-                      onPressed: () =>
-                          notifier.respond(AttendanceResponse.confirmed),
-                    ),
+                Expanded(
+                  child: _AttendanceButton(
+                    key: const Key('attendance_confirm_button'),
+                    label: i18n.attendanceGoing,
+                    color: AppColors.success,
+                    foregroundColor: AppColors.onSuccess,
+                    isSelected: state.status == AttendanceStatus.confirmed,
+                    isSaving: state.isSaving,
+                    onPressed: () =>
+                        notifier.respond(AttendanceResponse.confirmed),
                   ),
-                  const SizedBox(width: AppSpacing.sm),
-                  Expanded(
-                    child: _AttendanceButton(
-                      key: const Key('attendance_reject_button'),
-                      label: i18n.attendanceNotGoing,
-                      color: AppColors.danger,
-                      foregroundColor: AppColors.onDanger,
-                      isSelected: state.status == AttendanceStatus.rejected,
-                      isSaving: state.isSaving,
-                      onPressed: () =>
-                          notifier.respond(AttendanceResponse.rejected),
-                    ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: _AttendanceButton(
+                    key: const Key('attendance_reject_button'),
+                    label: i18n.attendanceNotGoing,
+                    color: AppColors.danger,
+                    foregroundColor: AppColors.onDanger,
+                    isSelected: state.status == AttendanceStatus.rejected,
+                    isSaving: state.isSaving,
+                    onPressed: () =>
+                        notifier.respond(AttendanceResponse.rejected),
                   ),
+                ),
               ],
             ),
             if (state.hasSaveError) ...[
