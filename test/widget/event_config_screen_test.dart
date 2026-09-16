@@ -20,7 +20,8 @@ void main() {
     FakeAvailabilityRepository? availabilityRepository,
   }) {
     final resolvedAvailabilityRepository =
-        availabilityRepository ?? FakeAvailabilityRepository(delay: Duration.zero);
+        availabilityRepository ??
+        FakeAvailabilityRepository(delay: Duration.zero);
 
     return ProviderScope(
       overrides: [
