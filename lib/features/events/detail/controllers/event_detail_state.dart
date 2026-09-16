@@ -1,6 +1,6 @@
 import '../../domain/event.dart';
 
-enum EventDetailLoadStatus { initial, loading, success, error }
+enum EventDetailLoadStatus { initial, loading, success, notFound, error }
 
 enum EventCancellationStatus { idle, inProgress, success, failure }
 
@@ -23,6 +23,7 @@ class EventDetailState {
 
   bool get isLoading => loadStatus == EventDetailLoadStatus.loading;
   bool get isSuccess => loadStatus == EventDetailLoadStatus.success;
+  bool get isNotFound => loadStatus == EventDetailLoadStatus.notFound;
   bool get hasLoadError => loadStatus == EventDetailLoadStatus.error;
 
   bool get isCancelling =>

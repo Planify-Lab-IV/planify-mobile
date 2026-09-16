@@ -135,7 +135,7 @@ class EventDetailScreen extends ConsumerWidget {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (state.hasLoadError && event == null) {
+          if ((state.isNotFound || state.hasLoadError) && event == null) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.lg),
@@ -149,7 +149,9 @@ class EventDetailScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppSpacing.md),
                     Text(
-                      i18n.eventNotFound,
+                      state.isNotFound
+                          ? i18n.eventNotFound
+                          : i18n.eventLoadError,
                       style: theme.textTheme.bodyLarge,
                       textAlign: TextAlign.center,
                     ),

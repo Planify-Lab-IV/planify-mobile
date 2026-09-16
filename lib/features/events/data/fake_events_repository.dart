@@ -117,6 +117,9 @@ class FakeEventsRepository implements EventsRepository {
     if (delay > Duration.zero) {
       await Future.delayed(delay);
     }
+    if (shouldThrowError) {
+      throw const NetworkEventException();
+    }
     return _events[eventId];
   }
 
