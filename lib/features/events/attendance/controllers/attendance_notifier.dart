@@ -8,9 +8,7 @@ class AttendanceNotifier extends StateNotifier<AttendanceState> {
   final String eventId;
 
   AttendanceNotifier({required this.repository, required this.eventId})
-    : super(const AttendanceState()) {
-    load();
-  }
+    : super(const AttendanceState(loadStatus: AttendanceLoadStatus.success));
 
   Future<void> load() async {
     try {

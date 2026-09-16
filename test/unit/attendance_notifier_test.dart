@@ -9,15 +9,14 @@ void main() {
     late FakeEventsRepository repository;
     late AttendanceNotifier notifier;
 
-    setUp(() async {
+    setUp(() {
       repository = FakeEventsRepository(delay: Duration.zero);
       notifier = AttendanceNotifier(repository: repository, eventId: 'evt-123');
-      await notifier.load();
     });
 
     tearDown(() => notifier.dispose());
 
-    test('loads noResponse when the participant has not responded', () {
+    test('starts ready without loading the persisted response', () {
       expect(notifier.state.status, AttendanceStatus.noResponse);
       expect(notifier.state.loadStatus, AttendanceLoadStatus.success);
     });
