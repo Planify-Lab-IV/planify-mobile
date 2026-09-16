@@ -125,6 +125,54 @@ void main() {
       },
     );
 
+    test('confirmSchedule guarda el horario y confirma el evento', () async {
+      const eventId = 'evt-123';
+      final startDateTime = DateTime.now().add(const Duration(days: 1));
+
+      await repository.confirmSchedule(eventId, startDateTime);
+
+      final event = await repository.getEvent(eventId);
+      expect(event?.status, EventStatus.confirmed);
+      expect(event?.isConfirmed, isTrue);
+      expect(event?.startDateTime, startDateTime);
+    });
+
+    test('confirmSchedule no modifica el evento cuando el fake falla', () async {
+      final failingRepository = FakeEventsRepository(
+        delay: Duration.zero,
+        shouldFailScheduleConfirmation: true,
+      );
+
+      await expectLater(
+        failingRepository.confirmSchedule(
+          'evt-123',
+          DateTime.now().add(const Duration(days: 1)),
+        ),
+        throwsA(isA<EventScheduleConfirmationException>()),
+      );
+
+      final event = await failingRepository.getEvent('evt-123');
+      expect(event?.status, EventStatus.active);
+      expect(event?.startDateTime, isNull);
+    });
+
+    test('confirmSchedule rejects past dates and cancelled events', () async {
+      await expectLater(
+        repository.confirmSchedule('evt-123', DateTime.now().subtract(const Duration(days: 1))),
+        throwsA(isA<EventScheduleValidationException>()),
+      );
+
+      await repository.cancel('evt-123');
+
+      await expectLater(
+        repository.confirmSchedule(
+          'evt-123',
+          DateTime.now().add(const Duration(days: 1)),
+        ),
+        throwsA(isA<EventScheduleValidationException>()),
+      );
+    });
+
     test('permite inicializar con initialEvents personalizados', () async {
       final customEvent = Event(
         id: 'custom-1',

@@ -29,7 +29,7 @@ void main() {
       status: EventStatus.active,
       createdAt: DateTime(2026, 11, 1),
       updatedAt: DateTime(2026, 11, 1),
-      date: DateTime(2026, 11, 15, 21, 0),
+      startDateTime: DateTime(2026, 11, 15, 21, 0),
     );
 
     const organizerSession = OrganizerSession(

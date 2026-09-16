@@ -23,7 +23,7 @@ void main() {
       status: EventStatus.active,
       createdAt: fixedCreatedAt,
       updatedAt: fixedCreatedAt,
-      date: testDate,
+      startDateTime: testDate,
     );
 
     const organizerSession = OrganizerSession(

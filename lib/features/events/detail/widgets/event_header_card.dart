@@ -66,7 +66,7 @@ class EventHeaderCard extends StatelessWidget {
             const SizedBox(width: AppSpacing.xs),
             Expanded(
               child: Text(
-                _formatDate(context, event.date),
+                _formatDate(context, event.startDateTime),
                 key: const Key('event_detail_date'),
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: AppColors.onSurfaceVariant,

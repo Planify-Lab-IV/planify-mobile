@@ -11,6 +11,7 @@ class FakeEventsRepository implements EventsRepository {
   final bool shouldThrowError;
   bool shouldFailCancellation;
   bool shouldFailAttendanceResponse;
+  bool shouldFailScheduleConfirmation;
   int _eventSequence = 1000;
   final Map<String, Event> _events = {};
   // cada entry representa el attendance status del current user para un eventid
@@ -21,6 +22,7 @@ class FakeEventsRepository implements EventsRepository {
     this.shouldThrowError = false,
     this.shouldFailCancellation = false,
     this.shouldFailAttendanceResponse = false,
+    this.shouldFailScheduleConfirmation = false,
     List<Event>? initialEvents,
   }) {
     final defaults = [
@@ -142,8 +144,30 @@ class FakeEventsRepository implements EventsRepository {
   }
 
   @override
-  Future<void> confirmSchedule(String eventId, DateTime startDateTime) {
-    throw const UnsupportedEventOperationException();
+  Future<void> confirmSchedule(String eventId, DateTime startDateTime) async {
+    if (delay > Duration.zero) {
+      await Future.delayed(delay);
+    }
+    if (shouldFailScheduleConfirmation) {
+      throw const EventScheduleConfirmationException();
+    }
+    if (startDateTime.isBefore(DateTime.now())) {
+      throw const EventScheduleValidationException();
+    }
+
+    final event = _events[eventId];
+    if (event == null) {
+      throw const EventNotFoundException();
+    }
+    if (event.isCancelled) {
+      throw const EventScheduleValidationException();
+    }
+
+    _events[eventId] = event.copyWith(
+      status: EventStatus.confirmed,
+      startDateTime: startDateTime,
+      updatedAt: DateTime.now(),
+    );
   }
 
   @override
