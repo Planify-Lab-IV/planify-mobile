@@ -7,7 +7,7 @@
       "request": "launch",
       "program": "lib/main.dart",
       "toolArgs": [
-        "--dart-define=API_BASE_URL=http://52.15.75.193"
+        "--dart-define-from-file=.env"
       ]
     },
     {
