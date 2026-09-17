@@ -115,6 +115,7 @@ void main() {
         expect(find.byKey(const Key('event_detail_name')), findsOneWidget);
         expect(find.text('Cumpleaños de Lucas'), findsOneWidget);
         expect(find.byKey(const Key('event_detail_date')), findsOneWidget);
+        expect(find.textContaining('21:00'), findsOneWidget);
         expect(find.text('Activo'), findsOneWidget);
 
         // Acciones rápidas (4 botones)

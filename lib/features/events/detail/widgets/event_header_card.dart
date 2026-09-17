@@ -87,7 +87,7 @@ class EventHeaderCard extends StatelessWidget {
     final locale = Localizations.localeOf(context);
     return DateFormat.yMMMMd(
       locale.languageCode,
-    ).add_jm().format(startDateTime.toLocal());
+    ).add_Hm().format(startDateTime.toLocal());
   }
 
   Widget _buildStatusChip(BuildContext context) {
