@@ -683,7 +683,7 @@ abstract class AppLocalizations {
   /// No description provided for @eventStatusActive.
   ///
   /// In es, this message translates to:
-  /// **'Activo'**
+  /// **'En planificación'**
   String get eventStatusActive;
 
   /// No description provided for @eventStatusCancelled.
@@ -1033,6 +1033,66 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Cargando evento...'**
   String get loadingEvent;
+
+  /// No description provided for @scheduleConfirmationTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar horario'**
+  String get scheduleConfirmationTitle;
+
+  /// No description provided for @scheduleConfirmationSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegí la fecha y la hora de inicio del evento.'**
+  String get scheduleConfirmationSubtitle;
+
+  /// No description provided for @scheduleSelectDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir fecha'**
+  String get scheduleSelectDate;
+
+  /// No description provided for @scheduleSelectTime.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir hora'**
+  String get scheduleSelectTime;
+
+  /// No description provided for @scheduleConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar horario'**
+  String get scheduleConfirm;
+
+  /// No description provided for @scheduleConfirmationValidationError.
+  ///
+  /// In es, this message translates to:
+  /// **'ElegÃ­ una fecha y hora futuras para confirmar el evento.'**
+  String get scheduleConfirmationValidationError;
+
+  /// No description provided for @scheduleConfirmationAuthorizationError.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo el organizador puede confirmar el horario.'**
+  String get scheduleConfirmationAuthorizationError;
+
+  /// No description provided for @scheduleConfirmationNotFoundError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontrÃ³ el evento.'**
+  String get scheduleConfirmationNotFoundError;
+
+  /// No description provided for @scheduleConfirmationNetworkError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo confirmar el horario por un problema de conexiÃ³n.'**
+  String get scheduleConfirmationNetworkError;
+
+  /// No description provided for @scheduleConfirmationGenericError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo confirmar el horario. IntentÃ¡ nuevamente.'**
+  String get scheduleConfirmationGenericError;
 }
 
 class _AppLocalizationsDelegate

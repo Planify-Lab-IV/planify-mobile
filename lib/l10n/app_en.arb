@@ -113,7 +113,7 @@
   "generateWithAiComingSoon": "AI event generation coming soon",
   "eventDetailTitle": "Event Details",
   "eventStatusLabel": "Status",
-  "eventStatusActive": "Active",
+  "eventStatusActive": "Planning",
   "eventStatusCancelled": "Cancelled",
   "eventDateFallback": "Date TBD",
   "quickActionsTitle": "Quick actions",
@@ -179,5 +179,15 @@
     "availabilityFridayShort": "F",
     "availabilitySaturdayShort": "S",
     "availabilitySundayShort": "S",
-    "loadingEvent": "Loading event..."
+    "loadingEvent": "Loading event...",
+    "scheduleConfirmationTitle": "Confirm schedule",
+    "scheduleConfirmationSubtitle": "Choose the event start date and time.",
+    "scheduleSelectDate": "Choose date",
+    "scheduleSelectTime": "Choose time",
+    "scheduleConfirm": "Confirm schedule",
+    "scheduleConfirmationValidationError": "Choose a future date and time to confirm the event.",
+    "scheduleConfirmationAuthorizationError": "Only the organizer can confirm the schedule.",
+    "scheduleConfirmationNotFoundError": "The event was not found.",
+    "scheduleConfirmationNetworkError": "The schedule could not be confirmed because of a network problem.",
+    "scheduleConfirmationGenericError": "The schedule could not be confirmed. Please try again."
 }

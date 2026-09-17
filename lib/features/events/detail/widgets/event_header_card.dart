@@ -5,6 +5,7 @@ import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/event.dart';
+import '../../domain/event_status.dart';
 
 class EventHeaderCard extends StatelessWidget {
   final Event event;
@@ -79,28 +80,23 @@ class EventHeaderCard extends StatelessWidget {
     );
   }
 
-  String _formatDate(BuildContext context, DateTime? date) {
-    if (date == null) {
+  String _formatDate(BuildContext context, DateTime? startDateTime) {
+    if (startDateTime == null) {
       return AppLocalizations.of(context)!.eventDateFallback;
     }
     final locale = Localizations.localeOf(context);
-    return DateFormat.yMMMMd(locale.languageCode).format(date);
+    return DateFormat.yMMMMd(
+      locale.languageCode,
+    ).add_jm().format(startDateTime.toLocal());
   }
 
   Widget _buildStatusChip(BuildContext context) {
     final i18n = AppLocalizations.of(context)!;
-    final isCancelled = event.isCancelled;
-
-    final backgroundColor = isCancelled
-        ? AppColors.error.withValues(alpha: 0.12)
-        : AppColors.lightBlue;
-    final contentColor = isCancelled ? AppColors.error : AppColors.darkBlue;
-    final icon = isCancelled
-        ? Icons.cancel_outlined
-        : Icons.check_circle_outline_rounded;
-    final label = isCancelled
-        ? i18n.eventStatusCancelled
-        : i18n.eventStatusActive;
+    final (backgroundColor, contentColor, icon, label) = switch (event.status) {
+      EventStatus.active => (AppColors.lightBlue, AppColors.darkBlue, Icons.calendar_month_outlined, i18n.eventStatusActive),
+      EventStatus.confirmed => (AppColors.success.withValues(alpha: 0.12), AppColors.success, Icons.event_available_outlined, i18n.attendanceConfirmed),
+      EventStatus.cancelled => (AppColors.error.withValues(alpha: 0.12), AppColors.error, Icons.cancel_outlined, i18n.eventStatusCancelled),
+    };
 
     return Container(
       key: const Key('event_detail_status_chip'),
@@ -112,9 +108,7 @@ class EventHeaderCard extends StatelessWidget {
         color: backgroundColor,
         borderRadius: BorderRadius.circular(AppRadius.pill),
         border: Border.all(
-          color: isCancelled
-              ? AppColors.error
-              : AppColors.primary.withValues(alpha: 0.3),
+          color: contentColor.withValues(alpha: 0.5),
         ),
       ),
       child: Row(

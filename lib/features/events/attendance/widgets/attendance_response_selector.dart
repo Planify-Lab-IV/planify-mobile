@@ -26,9 +26,6 @@ class AttendanceResponseSelector extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(i18n.attendanceTitle, style: theme.textTheme.titleMedium),
-            const SizedBox(height: AppSpacing.xs),
-            const SizedBox(height: AppSpacing.md),
             if (state.isLoading)
               const Center(
                 child: SizedBox(

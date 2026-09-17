@@ -95,7 +95,7 @@ class HttpEventsRepository implements EventsRepository {
     try {
       await dio.patch<dynamic>(
         '/events/$normalizedEventId/confirm-schedule',
-        data: {'startDateTime': startDateTime.toIso8601String()},
+        data: {'startDateTime': startDateTime.toUtc().toIso8601String()},
       );
     } on DioException catch (error) {
       switch (error.response?.statusCode) {

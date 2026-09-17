@@ -396,7 +396,7 @@ void main() {
         expect(request?.method, 'PATCH');
         expect(request?.path, '/events/evt-1/confirm-schedule');
         expect(request?.data, {
-          'startDateTime': startDateTime.toIso8601String(),
+          'startDateTime': startDateTime.toUtc().toIso8601String(),
         });
       });
 

@@ -15,6 +15,25 @@ class ScheduleConfirmationNotifier
     required this.eventId,
   }) : super(const ScheduleConfirmationState());
 
+  void setInitialStartDateTime(DateTime? startDateTime) {
+    if (startDateTime == null ||
+        state.selectedDate != null ||
+        state.selectedTime != null ||
+        state.isConfirming) {
+      return;
+    }
+
+    final localStartDateTime = startDateTime.toLocal();
+    state = state.copyWith(
+      selectedDate: DateTime(
+        localStartDateTime.year,
+        localStartDateTime.month,
+        localStartDateTime.day,
+      ),
+      selectedTime: TimeOfDay.fromDateTime(localStartDateTime),
+    );
+  }
+
   void selectDate(DateTime date) {
     if (state.isConfirming) return;
 
