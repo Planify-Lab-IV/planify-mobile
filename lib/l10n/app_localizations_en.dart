@@ -381,6 +381,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get eventLoadError =>
       'Could not load the event. Check your connection and try again.';
+
   @override
   String get eventCancelledNotice =>
       'This event has been cancelled and no longer accepts new actions.';

@@ -35,22 +35,22 @@ class _AvailabilityGridState extends State<AvailabilityGrid> {
     final rowStride = cellHeight + WeeklyAvailabilityGrid.slotSpacing;
     final contentY = position.dy + scrollOffset;
     final column = (position.dx / cellStride).floor();
-    final dayOfWeek = column - 1;
-    final hour = (contentY / rowStride).floor();
+    final weekDay = column - 1;
+    final hourBlock = (contentY / rowStride).floor();
 
     final isInColumnGap = position.dx - (column * cellStride) > cellWidth;
-    final isInRowGap = contentY - (hour * rowStride) > cellHeight;
+    final isInRowGap = contentY - (hourBlock * rowStride) > cellHeight;
 
-    if (dayOfWeek < 0 ||
-        dayOfWeek >= WeeklyAvailabilityGrid.dayCount ||
-        hour < 0 ||
-        hour >= WeeklyAvailabilityGrid.hourCount ||
+    if (weekDay < 0 ||
+        weekDay >= WeeklyAvailabilityGrid.dayCount ||
+        hourBlock < 0 ||
+        hourBlock >= WeeklyAvailabilityGrid.hourCount ||
         isInColumnGap ||
         isInRowGap) {
       return null;
     }
 
-    return Slot(dayOfWeek: dayOfWeek, hour: hour);
+    return Slot(weekDay: weekDay, hourBlock: hourBlock);
   }
 
   void _toggleAt(Offset position, double gridWidth, double scrollOffset) {
@@ -72,7 +72,7 @@ class _AvailabilityGridState extends State<AvailabilityGrid> {
         final colorScheme = Theme.of(context).colorScheme;
 
         return Container(
-          key: Key('availability_slot_${slot.dayOfWeek}_${slot.hour}'),
+          key: Key('availability_slot_${slot.weekDay}_${slot.hourBlock}'),
           decoration: BoxDecoration(
             color: isSelected
                 ? colorScheme.primary

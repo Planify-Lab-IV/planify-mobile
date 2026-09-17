@@ -16,7 +16,7 @@ void main() {
       repository = FakeAvailabilityRepository(
         delay: Duration.zero,
         initialAvailabilityByEvent: {
-          eventId: [Slot(dayOfWeek: 1, hour: 9)],
+          eventId: [Slot(weekDay: 1, hourBlock: 9)],
         },
       );
       notifier = AvailabilityNotifier(repository: repository, eventId: eventId);
@@ -29,12 +29,12 @@ void main() {
       expect(notifier.state.loadStatus, AvailabilityLoadStatus.success);
       expect(
         notifier.state.selectedSlots,
-        unorderedEquals([Slot(dayOfWeek: 1, hour: 9)]),
+        unorderedEquals([Slot(weekDay: 1, hourBlock: 9)]),
       );
     });
 
     test('toggleSlot marks then unmarks a slot', () {
-      final slot = Slot(dayOfWeek: 2, hour: 10);
+      final slot = Slot(weekDay: 2, hourBlock: 10);
 
       notifier.toggleSlot(slot);
       expect(notifier.state.selectedSlots, contains(slot));
@@ -44,7 +44,7 @@ void main() {
     });
 
     test('markSlot never removes a selected slot', () {
-      final slot = Slot(dayOfWeek: 1, hour: 9);
+      final slot = Slot(weekDay: 1, hourBlock: 9);
 
       notifier.markSlot(slot);
 
@@ -52,7 +52,7 @@ void main() {
     });
 
     test('save persists the complete current selection', () async {
-      final newSlot = Slot(dayOfWeek: 5, hour: 18);
+      final newSlot = Slot(weekDay: 5, hourBlock: 18);
       notifier.markSlot(newSlot);
 
       await notifier.save();
@@ -60,12 +60,12 @@ void main() {
       expect(notifier.state.saveStatus, AvailabilitySaveStatus.success);
       expect(
         await repository.load(eventId),
-        unorderedEquals([Slot(dayOfWeek: 1, hour: 9), newSlot]),
+        unorderedEquals([Slot(weekDay: 1, hourBlock: 9), newSlot]),
       );
     });
 
     test('keeps the local selection when saving fails', () async {
-      final selectedSlot = Slot(dayOfWeek: 3, hour: 14);
+      final selectedSlot = Slot(weekDay: 3, hourBlock: 14);
       final failingNotifier = AvailabilityNotifier(
         repository: _FailingAvailabilityRepository(),
         eventId: eventId,
