@@ -23,7 +23,10 @@ void main() {
   }
 
   ScheduleConfirmationNotifier buildNotifier(FakeEventsRepository repository) {
-    return ScheduleConfirmationNotifier(repository: repository, eventId: eventId);
+    return ScheduleConfirmationNotifier(
+      repository: repository,
+      eventId: eventId,
+    );
   }
 
   void selectDateAndTime(ScheduleConfirmationNotifier notifier) {

@@ -5,11 +5,12 @@ import 'schedule_confirmation_notifier.dart';
 import 'schedule_confirmation_state.dart';
 
 final scheduleConfirmationNotifierProvider = StateNotifierProvider.autoDispose
-    .family<ScheduleConfirmationNotifier, ScheduleConfirmationState, String>(
-      (ref, eventId) {
-        return ScheduleConfirmationNotifier(
-          repository: ref.watch(eventsRepositoryProvider),
-          eventId: eventId,
-        );
-      },
-    );
+    .family<ScheduleConfirmationNotifier, ScheduleConfirmationState, String>((
+      ref,
+      eventId,
+    ) {
+      return ScheduleConfirmationNotifier(
+        repository: ref.watch(eventsRepositoryProvider),
+        eventId: eventId,
+      );
+    });

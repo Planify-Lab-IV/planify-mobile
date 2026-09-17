@@ -82,10 +82,7 @@ class EventConfigScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                  i18n.attendanceTitle,
-                  style: theme.textTheme.titleMedium,
-                ),
+                Text(i18n.attendanceTitle, style: theme.textTheme.titleMedium),
                 const SizedBox(height: AppSpacing.md),
                 AttendanceResponseSelector(eventId: eventId),
                 const SizedBox(height: AppSpacing.lg),

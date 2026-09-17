@@ -137,28 +137,34 @@ void main() {
       expect(event?.startDateTime, startDateTime);
     });
 
-    test('confirmSchedule no modifica el evento cuando el fake falla', () async {
-      final failingRepository = FakeEventsRepository(
-        delay: Duration.zero,
-        shouldFailScheduleConfirmation: true,
-      );
+    test(
+      'confirmSchedule no modifica el evento cuando el fake falla',
+      () async {
+        final failingRepository = FakeEventsRepository(
+          delay: Duration.zero,
+          shouldFailScheduleConfirmation: true,
+        );
 
-      await expectLater(
-        failingRepository.confirmSchedule(
-          'evt-123',
-          DateTime.now().add(const Duration(days: 1)),
-        ),
-        throwsA(isA<EventScheduleConfirmationException>()),
-      );
+        await expectLater(
+          failingRepository.confirmSchedule(
+            'evt-123',
+            DateTime.now().add(const Duration(days: 1)),
+          ),
+          throwsA(isA<EventScheduleConfirmationException>()),
+        );
 
-      final event = await failingRepository.getEvent('evt-123');
-      expect(event?.status, EventStatus.active);
-      expect(event?.startDateTime, isNull);
-    });
+        final event = await failingRepository.getEvent('evt-123');
+        expect(event?.status, EventStatus.active);
+        expect(event?.startDateTime, isNull);
+      },
+    );
 
     test('confirmSchedule rejects past dates and cancelled events', () async {
       await expectLater(
-        repository.confirmSchedule('evt-123', DateTime.now().subtract(const Duration(days: 1))),
+        repository.confirmSchedule(
+          'evt-123',
+          DateTime.now().subtract(const Duration(days: 1)),
+        ),
         throwsA(isA<EventScheduleValidationException>()),
       );
 

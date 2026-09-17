@@ -31,12 +31,10 @@ void main() {
 
   Future<void> pumpCard(
     WidgetTester tester,
-    ProviderContainer container,
-    {
+    ProviderContainer container, {
     DateTime? initialStartDateTime,
     Future<void> Function()? onConfirmationSucceeded,
-  }
-  ) {
+  }) {
     return tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
@@ -70,48 +68,49 @@ void main() {
     notifier.selectTime(const TimeOfDay(hour: 21, minute: 30));
   }
 
-  testWidgets('keeps the confirmation button disabled until date and time are selected', (
-    tester,
-  ) async {
-    final repository = FakeEventsRepository(
-      delay: Duration.zero,
-      initialEvents: [event()],
-    );
-    final container = ProviderContainer(
-      overrides: [eventsRepositoryProvider.overrideWithValue(repository)],
-    );
-    addTearDown(container.dispose);
+  testWidgets(
+    'keeps the confirmation button disabled until date and time are selected',
+    (tester) async {
+      final repository = FakeEventsRepository(
+        delay: Duration.zero,
+        initialEvents: [event()],
+      );
+      final container = ProviderContainer(
+        overrides: [eventsRepositoryProvider.overrideWithValue(repository)],
+      );
+      addTearDown(container.dispose);
 
-    await pumpCard(tester, container);
-    final button = tester.widget<ElevatedButton>(
-      find.byKey(const Key('schedule_confirm_button')),
-    );
-    expect(button.onPressed, isNull);
+      await pumpCard(tester, container);
+      final button = tester.widget<ElevatedButton>(
+        find.byKey(const Key('schedule_confirm_button')),
+      );
+      expect(button.onPressed, isNull);
 
-    container
-        .read(scheduleConfirmationNotifierProvider(eventId).notifier)
-        .selectDate(DateTime(2026, 12, 20));
-    await tester.pump();
-    expect(
-      tester
-          .widget<ElevatedButton>(
-            find.byKey(const Key('schedule_confirm_button')),
-          )
-          .onPressed,
-      isNull,
-    );
+      container
+          .read(scheduleConfirmationNotifierProvider(eventId).notifier)
+          .selectDate(DateTime(2026, 12, 20));
+      await tester.pump();
+      expect(
+        tester
+            .widget<ElevatedButton>(
+              find.byKey(const Key('schedule_confirm_button')),
+            )
+            .onPressed,
+        isNull,
+      );
 
-    selectDateAndTime(container);
-    await tester.pump();
-    expect(
-      tester
-          .widget<ElevatedButton>(
-            find.byKey(const Key('schedule_confirm_button')),
-          )
-          .onPressed,
-      isNotNull,
-    );
-  });
+      selectDateAndTime(container);
+      await tester.pump();
+      expect(
+        tester
+            .widget<ElevatedButton>(
+              find.byKey(const Key('schedule_confirm_button')),
+            )
+            .onPressed,
+        isNotNull,
+      );
+    },
+  );
 
   testWidgets('initializes the selected date and time after the first frame', (
     tester,

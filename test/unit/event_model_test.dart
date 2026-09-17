@@ -56,21 +56,26 @@ void main() {
       expect(defaultEvent.participants, isEmpty);
     });
 
-    test('isCancelled, isConfirmed e isActive reflejan el estado correctamente', () {
-      expect(testEvent.isActive, isTrue);
-      expect(testEvent.isCancelled, isFalse);
-      expect(testEvent.isConfirmed, isFalse);
+    test(
+      'isCancelled, isConfirmed e isActive reflejan el estado correctamente',
+      () {
+        expect(testEvent.isActive, isTrue);
+        expect(testEvent.isCancelled, isFalse);
+        expect(testEvent.isConfirmed, isFalse);
 
-      final confirmedEvent = testEvent.copyWith(
-        status: EventStatus.confirmed,
-      );
-      expect(confirmedEvent.isActive, isFalse);
-      expect(confirmedEvent.isConfirmed, isTrue);
+        final confirmedEvent = testEvent.copyWith(
+          status: EventStatus.confirmed,
+        );
+        expect(confirmedEvent.isActive, isFalse);
+        expect(confirmedEvent.isConfirmed, isTrue);
 
-      final cancelledEvent = testEvent.copyWith(status: EventStatus.cancelled);
-      expect(cancelledEvent.isActive, isFalse);
-      expect(cancelledEvent.isCancelled, isTrue);
-    });
+        final cancelledEvent = testEvent.copyWith(
+          status: EventStatus.cancelled,
+        );
+        expect(cancelledEvent.isActive, isFalse);
+        expect(cancelledEvent.isCancelled, isTrue);
+      },
+    );
 
     test('copyWith preserva campos existentes cuando no se especifican', () {
       final updated = testEvent.copyWith(name: 'Asado de Primavera');

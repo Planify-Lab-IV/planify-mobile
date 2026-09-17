@@ -400,14 +400,17 @@ void main() {
         });
       });
 
-      test('maps validation errors to EventScheduleValidationException', () async {
-        final repository = HttpEventsRepository(dio: dioRejecting(400));
+      test(
+        'maps validation errors to EventScheduleValidationException',
+        () async {
+          final repository = HttpEventsRepository(dio: dioRejecting(400));
 
-        expect(
-          () => repository.confirmSchedule('evt-1', DateTime.now()),
-          throwsA(isA<EventScheduleValidationException>()),
-        );
-      });
+          expect(
+            () => repository.confirmSchedule('evt-1', DateTime.now()),
+            throwsA(isA<EventScheduleValidationException>()),
+          );
+        },
+      );
 
       test(
         'maps authentication and authorization errors to EventScheduleAuthorizationException',

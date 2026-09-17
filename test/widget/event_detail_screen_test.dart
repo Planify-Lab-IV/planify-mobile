@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/auth/domain/user_session.dart';
-import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
 import 'package:planify/features/availability/data/fake_availability_repository.dart';
 import 'package:planify/features/availability/presentation/controllers/availability_providers.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
@@ -78,10 +77,6 @@ void main() {
           availabilityHeatmapRepositoryProvider.overrideWithValue(
             FakeAvailabilityRepository(delay: Duration.zero),
           ),
-          authNotifierProvider.overrideWith((ref) {
-            final authNotifier = ref.watch(authNotifierProvider.notifier);
-            return authNotifier;
-          }),
         ],
         child: MaterialApp(
           theme: AppTheme.light,
@@ -116,7 +111,7 @@ void main() {
         expect(find.text('Cumpleaños de Lucas'), findsOneWidget);
         expect(find.byKey(const Key('event_detail_date')), findsOneWidget);
         expect(find.textContaining('21:00'), findsOneWidget);
-        expect(find.text('Activo'), findsOneWidget);
+        expect(find.text('En planificación'), findsOneWidget);
 
         // Acciones rápidas (4 botones)
         expect(find.text('Acciones rápidas'), findsOneWidget);
@@ -347,7 +342,7 @@ void main() {
 
         // El diálogo se cierra y el evento sigue Activo
         expect(find.byType(CancelEventDialog), findsNothing);
-        expect(find.text('Activo'), findsOneWidget);
+        expect(find.text('En planificación'), findsOneWidget);
       },
     );
 
@@ -381,7 +376,7 @@ void main() {
           findsOneWidget,
         );
         expect(find.text('Reintentar'), findsOneWidget);
-        expect(find.text('Activo'), findsOneWidget);
+        expect(find.text('En planificación'), findsOneWidget);
       },
     );
   });

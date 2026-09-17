@@ -93,9 +93,24 @@ class EventHeaderCard extends StatelessWidget {
   Widget _buildStatusChip(BuildContext context) {
     final i18n = AppLocalizations.of(context)!;
     final (backgroundColor, contentColor, icon, label) = switch (event.status) {
-      EventStatus.active => (AppColors.lightBlue, AppColors.darkBlue, Icons.calendar_month_outlined, i18n.eventStatusActive),
-      EventStatus.confirmed => (AppColors.success.withValues(alpha: 0.12), AppColors.success, Icons.event_available_outlined, i18n.attendanceConfirmed),
-      EventStatus.cancelled => (AppColors.error.withValues(alpha: 0.12), AppColors.error, Icons.cancel_outlined, i18n.eventStatusCancelled),
+      EventStatus.active => (
+        AppColors.lightBlue,
+        AppColors.darkBlue,
+        Icons.calendar_month_outlined,
+        i18n.eventStatusActive,
+      ),
+      EventStatus.confirmed => (
+        AppColors.success.withValues(alpha: 0.12),
+        AppColors.success,
+        Icons.event_available_outlined,
+        i18n.attendanceConfirmed,
+      ),
+      EventStatus.cancelled => (
+        AppColors.error.withValues(alpha: 0.12),
+        AppColors.error,
+        Icons.cancel_outlined,
+        i18n.eventStatusCancelled,
+      ),
     };
 
     return Container(
@@ -107,9 +122,7 @@ class EventHeaderCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(AppRadius.pill),
-        border: Border.all(
-          color: contentColor.withValues(alpha: 0.5),
-        ),
+        border: Border.all(color: contentColor.withValues(alpha: 0.5)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

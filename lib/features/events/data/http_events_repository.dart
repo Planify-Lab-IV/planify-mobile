@@ -83,10 +83,7 @@ class HttpEventsRepository implements EventsRepository {
   }
 
   @override
-  Future<void> confirmSchedule(
-    String eventId,
-    DateTime startDateTime,
-  ) async {
+  Future<void> confirmSchedule(String eventId, DateTime startDateTime) async {
     final normalizedEventId = eventId.trim();
     if (normalizedEventId.isEmpty) {
       throw const InvalidEventResponseException();

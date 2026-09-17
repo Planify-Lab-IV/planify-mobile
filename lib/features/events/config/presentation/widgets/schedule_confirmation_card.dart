@@ -38,7 +38,9 @@ class _ScheduleConfirmationCardState
   }
 
   Future<void> _selectDate() async {
-    final state = ref.read(scheduleConfirmationNotifierProvider(widget.eventId));
+    final state = ref.read(
+      scheduleConfirmationNotifierProvider(widget.eventId),
+    );
     final now = DateUtils.dateOnly(DateTime.now());
     final selectedDate = await showDatePicker(
       context: context,
@@ -54,7 +56,9 @@ class _ScheduleConfirmationCardState
   }
 
   Future<void> _selectTime() async {
-    final state = ref.read(scheduleConfirmationNotifierProvider(widget.eventId));
+    final state = ref.read(
+      scheduleConfirmationNotifierProvider(widget.eventId),
+    );
     final selectedTime = await showTimePicker(
       context: context,
       initialTime: state.selectedTime ?? TimeOfDay.now(),
@@ -88,7 +92,9 @@ class _ScheduleConfirmationCardState
     messenger.showSnackBar(
       SnackBar(
         key: const Key('schedule_confirmation_success_snackbar'),
-        content: Text(AppLocalizations.of(context)!.scheduleConfirmationSuccess),
+        content: Text(
+          AppLocalizations.of(context)!.scheduleConfirmationSuccess,
+        ),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -98,7 +104,9 @@ class _ScheduleConfirmationCardState
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final state = ref.watch(scheduleConfirmationNotifierProvider(widget.eventId));
+    final state = ref.watch(
+      scheduleConfirmationNotifierProvider(widget.eventId),
+    );
 
     return Card.outlined(
       key: const Key('schedule_confirmation_card'),
