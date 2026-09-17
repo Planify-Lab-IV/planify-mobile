@@ -363,20 +363,104 @@ void main() {
       });
     });
 
-    test('reports attendance methods as unsupported', () async {
-      final repository = HttpEventsRepository(dio: Dio());
+    group('updateCurrentUserAttendance', () {
+      test('sends the confirmed attendance response', () async {
+        RequestOptions? request;
+        final repository = HttpEventsRepository(
+          dio: dioResolving(null, (options) => request = options),
+        );
 
-      expect(
-        () => repository.getCurrentUserAttendance('evt-1'),
-        throwsA(isA<UnsupportedEventOperationException>()),
-      );
-      expect(
-        () => repository.updateCurrentUserAttendance(
+        await repository.updateCurrentUserAttendance(
           'evt-1',
           AttendanceResponse.confirmed,
-        ),
-        throwsA(isA<UnsupportedEventOperationException>()),
-      );
+        );
+
+        expect(request?.method, 'PUT');
+        expect(request?.path, '/events/evt-1/participants/me/attendance');
+        expect(request?.data, {'state': 'confirmed'});
+      });
+
+      test('sends the rejected attendance response', () async {
+        RequestOptions? request;
+        final repository = HttpEventsRepository(
+          dio: dioResolving(null, (options) => request = options),
+        );
+
+        await repository.updateCurrentUserAttendance(
+          'evt-1',
+          AttendanceResponse.rejected,
+        );
+
+        expect(request?.data, {'state': 'rejected'});
+      });
+
+      test('maps a missing event to EventNotFoundException', () async {
+        final repository = HttpEventsRepository(dio: dioRejecting(404));
+
+        expect(
+          () => repository.updateCurrentUserAttendance(
+            'evt-missing',
+            AttendanceResponse.confirmed,
+          ),
+          throwsA(isA<EventNotFoundException>()),
+        );
+      });
+
+      test('maps connection errors to NetworkEventException', () async {
+        final dio = Dio();
+        dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) => handler.reject(
+              DioException(
+                requestOptions: options,
+                type: DioExceptionType.connectionError,
+              ),
+            ),
+          ),
+        );
+        final repository = HttpEventsRepository(dio: dio);
+
+        expect(
+          () => repository.updateCurrentUserAttendance(
+            'evt-1',
+            AttendanceResponse.confirmed,
+          ),
+          throwsA(isA<NetworkEventException>()),
+        );
+      });
+
+      test('maps other HTTP errors to AttendanceResponseException', () async {
+        final repository = HttpEventsRepository(dio: dioRejecting(409));
+
+        expect(
+          () => repository.updateCurrentUserAttendance(
+            'evt-1',
+            AttendanceResponse.confirmed,
+          ),
+          throwsA(isA<AttendanceResponseException>()),
+        );
+      });
+
+      test('rejects blank event IDs before sending a request', () async {
+        final repository = HttpEventsRepository(dio: Dio());
+
+        expect(
+          () => repository.updateCurrentUserAttendance(
+            '   ',
+            AttendanceResponse.confirmed,
+          ),
+          throwsA(isA<InvalidEventResponseException>()),
+        );
+      });
+
+      test('keeps the attendance read operation unsupported', () async {
+        final repository = HttpEventsRepository(dio: Dio());
+
+        expect(
+          () => repository.getCurrentUserAttendance('evt-1'),
+          throwsA(isA<UnsupportedEventOperationException>()),
+        );
+      });
     });
   });
 }

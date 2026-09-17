@@ -8,23 +8,7 @@ class AttendanceNotifier extends StateNotifier<AttendanceState> {
   final String eventId;
 
   AttendanceNotifier({required this.repository, required this.eventId})
-    : super(const AttendanceState()) {
-    load();
-  }
-
-  Future<void> load() async {
-    try {
-      final status = await repository.getCurrentUserAttendance(eventId);
-      if (!mounted) return;
-      state = state.copyWith(
-        status: status,
-        loadStatus: AttendanceLoadStatus.success,
-      );
-    } catch (_) {
-      if (!mounted) return;
-      state = state.copyWith(loadStatus: AttendanceLoadStatus.error);
-    }
-  }
+    : super(const AttendanceState());
 
   Future<void> respond(AttendanceResponse response) async {
     if (state.isSaving) return;
