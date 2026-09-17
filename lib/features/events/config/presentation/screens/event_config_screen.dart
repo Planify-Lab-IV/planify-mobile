@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../../core/theme/app_spacing.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../attendance/widgets/attendance_response_selector.dart';
+import '../../../detail/controllers/events_providers.dart';
+import '../widgets/schedule_confirmation_card.dart';
 import '../../../../availability/presentation/controllers/availability_providers.dart';
 import '../../../../availability/presentation/controllers/availability_state.dart';
 import '../../../../availability/presentation/widgets/availability_heatmap_grid.dart';
@@ -28,6 +30,13 @@ class EventConfigScreen extends ConsumerWidget {
     final heatmapNotifier = ref.read(
       availabilityHeatmapNotifierProvider(eventId).notifier,
     );
+    final eventDetailState = ref.watch(eventDetailNotifierProvider(eventId));
+    final eventDetailNotifier = ref.read(
+      eventDetailNotifierProvider(eventId).notifier,
+    );
+    final canConfirmSchedule =
+        eventDetailState.event?.isCancelled == false &&
+        eventDetailNotifier.isOrganizer;
 
     ref.listen<AvailabilityState>(availabilityNotifierProvider(eventId), (
       previous,
@@ -73,6 +82,8 @@ class EventConfigScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Text(i18n.attendanceTitle, style: theme.textTheme.titleMedium),
+                const SizedBox(height: AppSpacing.md),
                 AttendanceResponseSelector(eventId: eventId),
                 const SizedBox(height: AppSpacing.lg),
                 Text(
@@ -190,6 +201,26 @@ class EventConfigScreen extends ConsumerWidget {
                     tooltipMessageBuilder:
                         i18n.availabilityHeatmapAvailableCount,
                   ),
+                if (canConfirmSchedule) ...[
+                  const SizedBox(height: AppSpacing.xl),
+                  Text(
+                    i18n.scheduleConfirmationTitle,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    i18n.scheduleConfirmationSubtitle,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  ScheduleConfirmationCard(
+                    eventId: eventId,
+                    initialStartDateTime: eventDetailState.event?.startDateTime,
+                    onConfirmationSucceeded: eventDetailNotifier.loadEvent,
+                  ),
+                ],
               ],
             ),
           ),

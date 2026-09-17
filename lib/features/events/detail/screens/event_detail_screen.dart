@@ -80,15 +80,19 @@ class EventDetailScreen extends ConsumerWidget {
           onPressed: () => Navigator.of(context).maybePop(),
         ),
         actions: [
-          if (event?.isActive == true && hasCurrentSession)
+          if (event != null && !event.isCancelled && hasCurrentSession)
             IconButton(
               key: const Key('event_config_button'),
               tooltip: i18n.eventConfigAction,
-              icon: const Icon(Icons.tune_rounded),
+              icon: Icon(
+                event.isConfirmed
+                    ? Icons.event_available_outlined
+                    : Icons.calendar_month_outlined,
+              ),
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute<void>(
-                    builder: (context) => EventConfigScreen(eventId: event!.id),
+                    builder: (context) => EventConfigScreen(eventId: event.id),
                   ),
                 );
               },
