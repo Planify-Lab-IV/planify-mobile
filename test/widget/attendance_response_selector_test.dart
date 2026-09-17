@@ -59,16 +59,11 @@ void main() {
       tester,
     ) async {
       final repository = FakeEventsRepository(delay: Duration.zero);
-      await repository.updateCurrentUserAttendance(
-        eventId,
-        AttendanceResponse.confirmed,
-      );
-
       await tester.pumpWidget(buildSelector(repository));
       await tester.pump();
       await tester.pump();
 
-      expect(find.widgetWithText(FilledButton, 'Voy'), findsOneWidget);
+      expect(find.widgetWithText(OutlinedButton, 'Voy'), findsOneWidget);
       await tester.tap(find.byKey(const Key('attendance_reject_button')));
       await tester.pump();
       await tester.pump();
@@ -85,26 +80,22 @@ void main() {
       tester,
     ) async {
       final repository = FakeEventsRepository(delay: Duration.zero);
-      await repository.updateCurrentUserAttendance(
-        eventId,
-        AttendanceResponse.confirmed,
-      );
       repository.shouldFailAttendanceResponse = true;
 
       await tester.pumpWidget(buildSelector(repository));
       await tester.pump();
       await tester.pump();
 
-      await tester.tap(find.byKey(const Key('attendance_reject_button')));
+      await tester.tap(find.byKey(const Key('attendance_confirm_button')));
       await tester.pump();
       await tester.pump();
 
-      expect(find.widgetWithText(FilledButton, 'Voy'), findsOneWidget);
+      expect(find.widgetWithText(OutlinedButton, 'Voy'), findsOneWidget);
       expect(find.widgetWithText(OutlinedButton, 'No voy'), findsOneWidget);
       expect(find.byKey(const Key('attendance_error_message')), findsOneWidget);
       expect(
         await repository.getCurrentUserAttendance(eventId),
-        AttendanceStatus.confirmed,
+        AttendanceStatus.noResponse,
       );
     });
   });

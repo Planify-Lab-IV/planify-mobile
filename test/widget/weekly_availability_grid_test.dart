@@ -20,7 +20,7 @@ void main() {
             child: WeeklyAvailabilityGrid(
               dayLabels: dayLabels,
               cellBuilder: (context, slot) => Container(
-                key: Key('shared_slot_${slot.dayOfWeek}_${slot.hour}'),
+                key: Key('shared_slot_${slot.weekDay}_${slot.hourBlock}'),
               ),
             ),
           ),

@@ -19,12 +19,18 @@ void main() {
     FakeEventsRepository repository, {
     FakeAvailabilityRepository? availabilityRepository,
   }) {
+    final resolvedAvailabilityRepository =
+        availabilityRepository ??
+        FakeAvailabilityRepository(delay: Duration.zero);
+
     return ProviderScope(
       overrides: [
         eventsRepositoryProvider.overrideWithValue(repository),
         availabilityRepositoryProvider.overrideWithValue(
-          availabilityRepository ??
-              FakeAvailabilityRepository(delay: Duration.zero),
+          resolvedAvailabilityRepository,
+        ),
+        availabilityHeatmapRepositoryProvider.overrideWithValue(
+          resolvedAvailabilityRepository,
         ),
       ],
       child: MaterialApp(
@@ -68,7 +74,7 @@ void main() {
     final availabilityRepository = FakeAvailabilityRepository(
       delay: Duration.zero,
       initialAvailabilityByEvent: {
-        eventId: [Slot(dayOfWeek: 0, hour: 0)],
+        eventId: [Slot(weekDay: 0, hourBlock: 0)],
       },
     );
 
@@ -96,8 +102,8 @@ void main() {
     expect(
       await availabilityRepository.load(eventId),
       unorderedEquals([
-        Slot(dayOfWeek: 0, hour: 0),
-        Slot(dayOfWeek: 1, hour: 0),
+        Slot(weekDay: 0, hourBlock: 0),
+        Slot(weekDay: 1, hourBlock: 0),
       ]),
     );
   });

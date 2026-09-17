@@ -42,7 +42,7 @@ void main() {
 
     await tester.tap(find.byKey(const Key('availability_slot_3_0')));
 
-    expect(toggledSlots, [Slot(dayOfWeek: 3, hour: 0)]);
+    expect(toggledSlots, [Slot(weekDay: 3, hourBlock: 0)]);
   });
 
   testWidgets('does not accept slot interactions while disabled', (
@@ -92,9 +92,9 @@ void main() {
     expect(
       markedSlots,
       containsAll([
-        Slot(dayOfWeek: 0, hour: 0),
-        Slot(dayOfWeek: 1, hour: 0),
-        Slot(dayOfWeek: 2, hour: 0),
+        Slot(weekDay: 0, hourBlock: 0),
+        Slot(weekDay: 1, hourBlock: 0),
+        Slot(weekDay: 2, hourBlock: 0),
       ]),
     );
   });
@@ -120,9 +120,9 @@ void main() {
     expect(
       markedSlots,
       containsAll([
-        Slot(dayOfWeek: 0, hour: 0),
-        Slot(dayOfWeek: 0, hour: 1),
-        Slot(dayOfWeek: 0, hour: 2),
+        Slot(weekDay: 0, hourBlock: 0),
+        Slot(weekDay: 0, hourBlock: 1),
+        Slot(weekDay: 0, hourBlock: 2),
       ]),
     );
   });
@@ -132,7 +132,7 @@ void main() {
   ) async {
     await tester.pumpWidget(
       buildGrid(
-        selectedSlots: {Slot(dayOfWeek: 0, hour: 0)},
+        selectedSlots: {Slot(weekDay: 0, hourBlock: 0)},
         onToggleSlot: (_) {},
         onMarkSlot: (_) {},
       ),
