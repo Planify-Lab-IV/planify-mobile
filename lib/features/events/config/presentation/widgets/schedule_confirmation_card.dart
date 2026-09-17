@@ -58,6 +58,12 @@ class _ScheduleConfirmationCardState
     final selectedTime = await showTimePicker(
       context: context,
       initialTime: state.selectedTime ?? TimeOfDay.now(),
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child!,
+        );
+      },
     );
     if (!mounted || selectedTime == null) return;
 
@@ -121,7 +127,10 @@ class _ScheduleConfirmationCardState
               label: Text(
                 state.selectedTime == null
                     ? i18n.scheduleSelectTime
-                    : state.selectedTime!.format(context),
+                    : MaterialLocalizations.of(context).formatTimeOfDay(
+                        state.selectedTime!,
+                        alwaysUse24HourFormat: true,
+                      ),
               ),
             ),
             if (state.confirmationFailed) ...[
