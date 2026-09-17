@@ -92,7 +92,7 @@ class EventDetailScreen extends ConsumerWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute<void>(
-                    builder: (context) => EventConfigScreen(eventId: event!.id),
+                    builder: (context) => EventConfigScreen(eventId: event.id),
                   ),
                 );
               },

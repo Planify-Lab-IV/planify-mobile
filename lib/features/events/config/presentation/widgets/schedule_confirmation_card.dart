@@ -28,9 +28,13 @@ class _ScheduleConfirmationCardState
   @override
   void initState() {
     super.initState();
-    ref
-        .read(scheduleConfirmationNotifierProvider(widget.eventId).notifier)
-        .setInitialStartDateTime(widget.initialStartDateTime);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      ref
+          .read(scheduleConfirmationNotifierProvider(widget.eventId).notifier)
+          .setInitialStartDateTime(widget.initialStartDateTime);
+    });
   }
 
   Future<void> _selectDate() async {
@@ -69,6 +73,19 @@ class _ScheduleConfirmationCardState
     if (!mounted || !success) return;
 
     await widget.onConfirmationSucceeded();
+    if (!mounted) return;
+
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    if (messenger == null) return;
+
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(
+      SnackBar(
+        key: const Key('schedule_confirmation_success_snackbar'),
+        content: Text(AppLocalizations.of(context)!.scheduleConfirmationSuccess),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   @override

@@ -538,4 +538,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get scheduleConfirmationGenericError =>
       'The schedule could not be confirmed. Please try again.';
+
+  @override
+  String get scheduleConfirmationSuccess => 'The event schedule was confirmed.';
 }

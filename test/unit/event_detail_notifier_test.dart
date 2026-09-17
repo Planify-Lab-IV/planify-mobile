@@ -164,6 +164,22 @@ void main() {
         expect(notifier.canCancelEvent, isFalse);
       });
 
+      test('es true para un evento confirmado del organizador', () {
+        final repo = FakeEventsRepository(delay: Duration.zero);
+        final confirmedEvent = testEvent.copyWith(
+          status: EventStatus.confirmed,
+        );
+        final notifier = EventDetailNotifier(
+          repository: repo,
+          currentSession: organizerSession,
+          eventId: testEventId,
+          initialEvent: confirmedEvent,
+        );
+
+        expect(notifier.isOrganizer, isTrue);
+        expect(notifier.canCancelEvent, isTrue);
+      });
+
       test('es false si el usuario no es organizador de este evento', () {
         final repo = FakeEventsRepository(delay: Duration.zero);
         final notifier = EventDetailNotifier(

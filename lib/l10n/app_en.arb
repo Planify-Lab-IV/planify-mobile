@@ -189,5 +189,6 @@
     "scheduleConfirmationAuthorizationError": "Only the organizer can confirm the schedule.",
     "scheduleConfirmationNotFoundError": "The event was not found.",
     "scheduleConfirmationNetworkError": "The schedule could not be confirmed because of a network problem.",
-    "scheduleConfirmationGenericError": "The schedule could not be confirmed. Please try again."
+    "scheduleConfirmationGenericError": "The schedule could not be confirmed. Please try again.",
+    "scheduleConfirmationSuccess": "The event schedule was confirmed."
 }

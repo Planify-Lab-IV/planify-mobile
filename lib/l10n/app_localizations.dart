@@ -1093,6 +1093,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No se pudo confirmar el horario. IntentÃ¡ nuevamente.'**
   String get scheduleConfirmationGenericError;
+
+  /// No description provided for @scheduleConfirmationSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'El horario del evento fue confirmado.'**
+  String get scheduleConfirmationSuccess;
 }
 
 class _AppLocalizationsDelegate

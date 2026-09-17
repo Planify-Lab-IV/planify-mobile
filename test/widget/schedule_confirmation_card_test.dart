@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,6 +32,10 @@ void main() {
   Future<void> pumpCard(
     WidgetTester tester,
     ProviderContainer container,
+    {
+    DateTime? initialStartDateTime,
+    Future<void> Function()? onConfirmationSucceeded,
+  }
   ) {
     return tester.pumpWidget(
       UncontrolledProviderScope(
@@ -44,9 +50,12 @@ void main() {
           ],
           supportedLocales: AppLocalizations.supportedLocales,
           locale: const Locale('es'),
-          home: ScheduleConfirmationCard(
-            eventId: eventId,
-            onConfirmationSucceeded: () async {},
+          home: Scaffold(
+            body: ScheduleConfirmationCard(
+              eventId: eventId,
+              initialStartDateTime: initialStartDateTime,
+              onConfirmationSucceeded: onConfirmationSucceeded ?? () async {},
+            ),
           ),
         ),
       ),
@@ -104,6 +113,31 @@ void main() {
     );
   });
 
+  testWidgets('initializes the selected date and time after the first frame', (
+    tester,
+  ) async {
+    final repository = FakeEventsRepository(
+      delay: Duration.zero,
+      initialEvents: [event()],
+    );
+    final container = ProviderContainer(
+      overrides: [eventsRepositoryProvider.overrideWithValue(repository)],
+    );
+    addTearDown(container.dispose);
+
+    await pumpCard(
+      tester,
+      container,
+      initialStartDateTime: DateTime(2026, 12, 20, 21, 30),
+    );
+    await tester.pump();
+
+    final state = container.read(scheduleConfirmationNotifierProvider(eventId));
+    expect(state.selectedDate, DateTime(2026, 12, 20));
+    expect(state.selectedTime, const TimeOfDay(hour: 21, minute: 30));
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('confirms the selected schedule successfully', (tester) async {
     final repository = FakeEventsRepository(
       delay: Duration.zero,
@@ -123,6 +157,50 @@ void main() {
     final confirmedEvent = await repository.getEvent(eventId);
     expect(confirmedEvent?.status, EventStatus.confirmed);
     expect(confirmedEvent?.startDateTime, DateTime(2026, 12, 20, 21, 30));
+  });
+
+  testWidgets('refreshes the event before showing the confirmation message', (
+    tester,
+  ) async {
+    final repository = FakeEventsRepository(
+      delay: Duration.zero,
+      initialEvents: [event()],
+    );
+    final container = ProviderContainer(
+      overrides: [eventsRepositoryProvider.overrideWithValue(repository)],
+    );
+    addTearDown(container.dispose);
+    final refreshCompleter = Completer<void>();
+    var didRefreshEvent = false;
+
+    await pumpCard(
+      tester,
+      container,
+      onConfirmationSucceeded: () async {
+        didRefreshEvent = true;
+        await refreshCompleter.future;
+      },
+    );
+    selectDateAndTime(container);
+    await tester.pump();
+
+    await tester.tap(find.byKey(const Key('schedule_confirm_button')));
+    await tester.pump();
+
+    expect(didRefreshEvent, isTrue);
+    expect(
+      find.byKey(const Key('schedule_confirmation_success_snackbar')),
+      findsNothing,
+    );
+
+    refreshCompleter.complete();
+    await tester.pump();
+
+    expect(
+      find.byKey(const Key('schedule_confirmation_success_snackbar')),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('shows a clear error and re-enables the button after a failure', (
