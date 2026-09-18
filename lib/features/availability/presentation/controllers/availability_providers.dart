@@ -12,7 +12,9 @@ final availabilityRepositoryProvider = Provider<AvailabilityRepository>((ref) {
   return HttpAvailabilityRepository(dio: ref.watch(dioClientProvider));
 });
 
-final availabilityHeatmapRepositoryProvider = Provider<AvailabilityRepository>((ref) {
+final availabilityHeatmapRepositoryProvider = Provider<AvailabilityRepository>((
+  ref,
+) {
   return HttpAvailabilityRepository(dio: ref.watch(dioClientProvider));
 });
 
