@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../domain/availability_heatmap_dto.dart';
 import '../domain/availability_repository.dart';
 import '../domain/slot.dart';
+import '../domain/slot_heatmap_dto.dart';
 import 'availability_exceptions.dart';
 
 class HttpAvailabilityRepository implements AvailabilityRepository {
@@ -62,8 +63,24 @@ class HttpAvailabilityRepository implements AvailabilityRepository {
   }
 
   @override
-  Future<AvailabilityHeatmapDto> heatmap(String eventId) {
-    throw UnsupportedError('Availability heatmap is not integrated yet');
+  Future<AvailabilityHeatmapDto> heatmap(String eventId) async {
+    final normalizedEventId = _normalizedEventId(eventId);
+
+    try {
+      final response = await dio.get<dynamic>(
+        '/events/$normalizedEventId/availability/heatmap',
+      );
+      return _heatmapFromResponse(response.data);
+    } on DioException catch (error) {
+      if (_isNetworkError(error)) {
+        throw const NetworkAvailabilityException();
+      }
+      throw const InvalidAvailabilityResponseException();
+    } on AvailabilityException {
+      rethrow;
+    } catch (_) {
+      throw const InvalidAvailabilityResponseException();
+    }
   }
 
   String _normalizedEventId(String eventId) {
@@ -92,6 +109,33 @@ class HttpAvailabilityRepository implements AvailabilityRepository {
           );
         })
         .toList(growable: false);
+  }
+
+  AvailabilityHeatmapDto _heatmapFromResponse(dynamic data) {
+    if (data is! Map ||
+        data['totalParticipants'] is! int ||
+        data['slots'] is! List) {
+      throw const InvalidAvailabilityResponseException();
+    }
+
+    return AvailabilityHeatmapDto(
+      totalParticipants: data['totalParticipants'] as int,
+      slots: (data['slots'] as List<dynamic>)
+          .map((slot) {
+            if (slot is! Map ||
+                slot['weekDay'] is! int ||
+                slot['hourBlock'] is! int ||
+                slot['availableCount'] is! int) {
+              throw const InvalidAvailabilityResponseException();
+            }
+            return SlotHeatmapDto(
+              weekDay: slot['weekDay'] as int,
+              hourBlock: slot['hourBlock'] as int,
+              availableCount: slot['availableCount'] as int,
+            );
+          })
+          .toList(growable: false),
+    );
   }
 
   bool _isNetworkError(DioException error) {
