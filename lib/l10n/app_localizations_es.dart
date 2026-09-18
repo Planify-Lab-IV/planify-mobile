@@ -317,7 +317,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get eventStatusLabel => 'Estado';
 
   @override
-  String get eventStatusActive => 'Activo';
+  String get eventStatusActive => 'En planificación';
 
   @override
   String get eventStatusCancelled => 'Cancelado';
@@ -509,4 +509,43 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get loadingEvent => 'Cargando evento...';
+
+  @override
+  String get scheduleConfirmationTitle => 'Confirmar horario';
+
+  @override
+  String get scheduleConfirmationSubtitle =>
+      'Elegí la fecha y la hora de inicio del evento.';
+
+  @override
+  String get scheduleSelectDate => 'Elegir fecha';
+
+  @override
+  String get scheduleSelectTime => 'Elegir hora';
+
+  @override
+  String get scheduleConfirm => 'Confirmar horario';
+
+  @override
+  String get scheduleConfirmationValidationError =>
+      'ElegÃ­ una fecha y hora futuras para confirmar el evento.';
+
+  @override
+  String get scheduleConfirmationAuthorizationError =>
+      'Solo el organizador puede confirmar el horario.';
+
+  @override
+  String get scheduleConfirmationNotFoundError => 'No se encontrÃ³ el evento.';
+
+  @override
+  String get scheduleConfirmationNetworkError =>
+      'No se pudo confirmar el horario por un problema de conexiÃ³n.';
+
+  @override
+  String get scheduleConfirmationGenericError =>
+      'No se pudo confirmar el horario. IntentÃ¡ nuevamente.';
+
+  @override
+  String get scheduleConfirmationSuccess =>
+      'El horario del evento fue confirmado.';
 }

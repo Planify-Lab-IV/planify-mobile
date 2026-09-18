@@ -106,6 +106,25 @@ void main() {
       expect(storedToken, isNull);
     });
 
+    test('logout informa un error si no puede borrar el token local', () async {
+      final failingStorage = _FailingDeleteSecureStorage();
+      final failingRepository = FakeAuthRepository(
+        storage: failingStorage,
+        delay: Duration.zero,
+      );
+      notifier = AuthNotifier(failingRepository, failingStorage);
+
+      await notifier.login(
+        identifier: 'lucas@gmail.com',
+        password: 'password123',
+      );
+
+      await notifier.logout();
+
+      expect(notifier.state, const AuthError(AuthFailureReason.unknown));
+      expect(await failingStorage.getToken(), isNotNull);
+    });
+
     test(
       'checkAuthStatus does not reconstruct an organizer session from a token',
       () async {
@@ -226,4 +245,21 @@ void main() {
       },
     );
   });
+}
+
+class _FailingDeleteSecureStorage implements SecureStorage {
+  String? _token;
+
+  @override
+  Future<void> deleteToken() async {
+    throw StateError('No se pudo eliminar el token');
+  }
+
+  @override
+  Future<String?> getToken() async => _token;
+
+  @override
+  Future<void> saveToken(String token) async {
+    _token = token;
+  }
 }

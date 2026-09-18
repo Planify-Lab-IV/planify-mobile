@@ -11,7 +11,7 @@ class Event {
   final EventStatus status;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final DateTime? date;
+  final DateTime? startDateTime;
   final List<EventParticipant> participants;
 
   const Event({
@@ -23,11 +23,12 @@ class Event {
     this.status = EventStatus.active,
     required this.createdAt,
     required this.updatedAt,
-    this.date,
+    this.startDateTime,
     this.participants = const [],
   });
 
   bool get isCancelled => status.isCancelled;
+  bool get isConfirmed => status.isConfirmed;
   bool get isActive => status.isActive;
 
   Event copyWith({
@@ -39,7 +40,7 @@ class Event {
     EventStatus? status,
     DateTime? createdAt,
     DateTime? updatedAt,
-    DateTime? date,
+    DateTime? startDateTime,
     List<EventParticipant>? participants,
   }) {
     return Event(
@@ -51,7 +52,7 @@ class Event {
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      date: date ?? this.date,
+      startDateTime: startDateTime ?? this.startDateTime,
       participants: participants ?? this.participants,
     );
   }
@@ -69,7 +70,7 @@ class Event {
           status == other.status &&
           createdAt == other.createdAt &&
           updatedAt == other.updatedAt &&
-          date == other.date &&
+          startDateTime == other.startDateTime &&
           listEquals(participants, other.participants);
 
   @override
@@ -82,11 +83,11 @@ class Event {
       status.hashCode ^
       createdAt.hashCode ^
       updatedAt.hashCode ^
-      date.hashCode ^
+      startDateTime.hashCode ^
       Object.hashAll(participants);
 
   @override
   String toString() {
-    return 'Event(id: $id, name: $name, location: $location, organizerId: $organizerId, groupId: $groupId, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, date: $date, participants: $participants)';
+    return 'Event(id: $id, name: $name, location: $location, organizerId: $organizerId, groupId: $groupId, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, startDateTime: $startDateTime, participants: $participants)';
   }
 }

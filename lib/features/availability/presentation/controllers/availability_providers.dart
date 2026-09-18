@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/providers/core_providers.dart';
-import '../../data/fake_availability_repository.dart';
 import '../../data/http_availability_repository.dart';
 import '../../domain/availability_repository.dart';
 import 'availability_heatmap_notifier.dart';
@@ -16,7 +15,7 @@ final availabilityRepositoryProvider = Provider<AvailabilityRepository>((ref) {
 final availabilityHeatmapRepositoryProvider = Provider<AvailabilityRepository>((
   ref,
 ) {
-  return FakeAvailabilityRepository();
+  return HttpAvailabilityRepository(dio: ref.watch(dioClientProvider));
 });
 
 final availabilityNotifierProvider = StateNotifierProvider.autoDispose
