@@ -130,7 +130,10 @@ void main() {
       () async {
         await storage.saveToken('fake-org-token:lucas@gmail.com:123456');
 
-        notifier = AuthNotifier(HttpAuthRepository(dio: Dio()), storage);
+        notifier = AuthNotifier(
+          HttpAuthRepository(dio: Dio(), storage: storage),
+          storage,
+        );
 
         await notifier.checkAuthStatus();
 
@@ -161,7 +164,10 @@ void main() {
             ),
           ),
         );
-        notifier = AuthNotifier(HttpAuthRepository(dio: dio), storage);
+        notifier = AuthNotifier(
+          HttpAuthRepository(dio: dio, storage: storage),
+          storage,
+        );
 
         await notifier.loginAnonymously(
           name: 'Gil',
@@ -195,7 +201,10 @@ void main() {
             ),
           ),
         );
-        notifier = AuthNotifier(HttpAuthRepository(dio: dio), storage);
+        notifier = AuthNotifier(
+          HttpAuthRepository(dio: dio, storage: storage),
+          storage,
+        );
 
         await notifier.loginAnonymously(
           name: 'Gil',
@@ -229,7 +238,10 @@ void main() {
             ),
           ),
         );
-        notifier = AuthNotifier(HttpAuthRepository(dio: dio), storage);
+        notifier = AuthNotifier(
+          HttpAuthRepository(dio: dio, storage: storage),
+          storage,
+        );
 
         await notifier.loginAnonymously(
           name: 'Gil',

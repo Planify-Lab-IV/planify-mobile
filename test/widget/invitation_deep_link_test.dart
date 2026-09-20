@@ -143,7 +143,12 @@ void main() {
       );
 
       await tester.pumpWidget(
-        createTestApp(authRepository: HttpAuthRepository(dio: dio)),
+        createTestApp(
+          authRepository: HttpAuthRepository(
+            dio: dio,
+            storage: fakeStorage,
+          ),
+        ),
       );
       await tester.pump();
       fakeAppLinks.emitUri(Uri.parse('planify://invite/token-valid-123'));

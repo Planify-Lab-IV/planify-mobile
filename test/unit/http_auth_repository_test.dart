@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:planify/data/secure_storage.dart';
 import 'package:planify/features/auth/data/auth_exceptions.dart';
 import 'package:planify/features/auth/data/http_auth_repository.dart';
 import 'package:planify/features/auth/domain/user_session.dart';
@@ -17,7 +18,7 @@ void main() {
     };
 
     HttpAuthRepository repositoryWith(Dio dio) {
-      return HttpAuthRepository(dio: dio);
+      return HttpAuthRepository(dio: dio, storage: FakeSecureStorage());
     }
 
     Dio dioResolvingWithStatus(

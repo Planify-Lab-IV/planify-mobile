@@ -1,14 +1,17 @@
 import 'package:dio/dio.dart';
 
+import '../../../data/secure_storage.dart';
 import '../domain/auth_repository.dart';
 import '../domain/user_session.dart';
 import 'auth_exceptions.dart';
 
+// Recibe tambien el SecureStorage para poder ir a buscar un token en una sesion anterior
 class HttpAuthRepository implements AuthRepository {
   final Dio dio;
+  final SecureStorage storage;
   UserSession? _currentSession;
 
-  HttpAuthRepository({required this.dio});
+  HttpAuthRepository({required this.dio, required this.storage});
 
   @override
   Future<UserSession> login({
