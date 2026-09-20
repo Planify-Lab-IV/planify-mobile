@@ -101,11 +101,19 @@ class HttpAuthRepository implements AuthRepository {
   OrganizerSession _organizerSessionFromResponse(dynamic data) {
     if (data is! Map) throw const UnknownAuthException();
 
-    final user = data['user'];
     final token = data['token'];
-    if (user is! Map || token is! String || token.isEmpty) {
+    if (token is! String || token.isEmpty) {
       throw const UnknownAuthException();
     }
+
+    return _organizerSessionFromUser(data['user'], token: token);
+  }
+
+  OrganizerSession _organizerSessionFromUser(
+    dynamic user, {
+    required String token,
+  }) {
+    if (user is! Map) throw const UnknownAuthException();
 
     final userId = user['id'];
     final name = user['name'];

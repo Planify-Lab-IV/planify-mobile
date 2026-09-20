@@ -144,6 +144,24 @@ void main() {
       );
     });
 
+    test('rejects a user missing a canonical organizer field', () async {
+      final repository = repositoryWith(
+        dioResolving({
+          'user': {
+            'id': 'uuid-organizer-1',
+            'name': 'Dev One',
+            'username': 'dev1',
+          },
+          'token': 'backend-jwt-token',
+        }, null),
+      );
+
+      expect(
+        () => repository.login(identifier: 'dev1', password: 'DevPass123!'),
+        throwsA(isA<UnknownAuthException>()),
+      );
+    });
+
     test('creates an anonymous participant and maps its session', () async {
       RequestOptions? request;
       final repository = repositoryWith(
