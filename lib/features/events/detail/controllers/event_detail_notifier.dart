@@ -63,7 +63,7 @@ class EventDetailNotifier extends StateNotifier<EventDetailState> {
   bool get canCancelEvent {
     final event = state.event;
     if (event == null) return false;
-    return isOrganizer && event.isActive && !state.isCancelling;
+    return isOrganizer && !event.isCancelled && !state.isCancelling;
   }
 
   Future<void> loadEvent() async {

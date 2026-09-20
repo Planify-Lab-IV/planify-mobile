@@ -113,7 +113,7 @@
   "generateWithAiComingSoon": "Generación de eventos con IA disponible próximamente",
   "eventDetailTitle": "Detalle del evento",
     "eventStatusLabel": "Estado",
-    "eventStatusActive": "Activo",
+    "eventStatusActive": "En planificación",
     "eventStatusCancelled": "Cancelado",
     "eventDateFallback": "Fecha a definir",
     "quickActionsTitle": "Acciones rápidas",
@@ -179,5 +179,16 @@
       "availabilityFridayShort": "V",
       "availabilitySaturdayShort": "S",
       "availabilitySundayShort": "D",
-      "loadingEvent": "Cargando evento..."
+      "loadingEvent": "Cargando evento...",
+      "scheduleConfirmationTitle": "Confirmar horario",
+      "scheduleConfirmationSubtitle": "Elegí la fecha y la hora de inicio del evento.",
+      "scheduleSelectDate": "Elegir fecha",
+      "scheduleSelectTime": "Elegir hora",
+      "scheduleConfirm": "Confirmar horario",
+      "scheduleConfirmationValidationError": "ElegÃ­ una fecha y hora futuras para confirmar el evento.",
+      "scheduleConfirmationAuthorizationError": "Solo el organizador puede confirmar el horario.",
+      "scheduleConfirmationNotFoundError": "No se encontrÃ³ el evento.",
+      "scheduleConfirmationNetworkError": "No se pudo confirmar el horario por un problema de conexiÃ³n.",
+      "scheduleConfirmationGenericError": "No se pudo confirmar el horario. IntentÃ¡ nuevamente.",
+      "scheduleConfirmationSuccess": "El horario del evento fue confirmado."
 }

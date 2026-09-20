@@ -83,6 +83,39 @@ class HttpEventsRepository implements EventsRepository {
   }
 
   @override
+  Future<void> confirmSchedule(String eventId, DateTime startDateTime) async {
+    final normalizedEventId = eventId.trim();
+    if (normalizedEventId.isEmpty) {
+      throw const InvalidEventResponseException();
+    }
+
+    try {
+      await dio.patch<dynamic>(
+        '/events/$normalizedEventId/confirm-schedule',
+        data: {'startDateTime': startDateTime.toUtc().toIso8601String()},
+      );
+    } on DioException catch (error) {
+      switch (error.response?.statusCode) {
+        case 400:
+          throw const EventScheduleValidationException();
+        case 401:
+        case 403:
+          throw const EventScheduleAuthorizationException();
+        case 404:
+          throw const EventNotFoundException();
+      }
+      if (_isNetworkError(error)) {
+        throw const NetworkEventException();
+      }
+      throw const EventScheduleConfirmationException();
+    } on EventsException {
+      rethrow;
+    } catch (_) {
+      throw const EventScheduleConfirmationException();
+    }
+  }
+
+  @override
   Future<AttendanceStatus> getCurrentUserAttendance(String eventId) {
     throw const UnsupportedEventOperationException();
   }
@@ -147,6 +180,7 @@ class HttpEventsRepository implements EventsRepository {
       status: _eventStatus(data['status']),
       createdAt: _requiredDateTime(data, 'createdAt'),
       updatedAt: _requiredDateTime(data, 'updatedAt'),
+      startDateTime: _nullableDateTime(data, 'startDateTime'),
       participants: _participantsFromResponse(data['participants']),
     );
   }
@@ -195,9 +229,20 @@ class HttpEventsRepository implements EventsRepository {
     return dateTime;
   }
 
+  DateTime? _nullableDateTime(Map<dynamic, dynamic> data, String key) {
+    final value = data[key];
+    if (value == null) return null;
+    if (value is! String) throw const InvalidEventResponseException();
+
+    final dateTime = DateTime.tryParse(value);
+    if (dateTime == null) throw const InvalidEventResponseException();
+    return dateTime;
+  }
+
   EventStatus _eventStatus(dynamic value) {
     return switch (value) {
       'active' => EventStatus.active,
+      'confirmed' => EventStatus.confirmed,
       'cancelled' => EventStatus.cancelled,
       _ => throw const InvalidEventResponseException(),
     };
