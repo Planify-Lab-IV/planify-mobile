@@ -17,8 +17,14 @@ void main() {
       'token': 'backend-jwt-token',
     };
 
-    HttpAuthRepository repositoryWith(Dio dio) {
-      return HttpAuthRepository(dio: dio, storage: FakeSecureStorage());
+    HttpAuthRepository repositoryWith(
+      Dio dio, {
+      SecureStorage? storage,
+    }) {
+      return HttpAuthRepository(
+        dio: dio,
+        storage: storage ?? FakeSecureStorage(),
+      );
     }
 
     Dio dioResolvingWithStatus(
@@ -50,6 +56,76 @@ void main() {
     ) {
       return dioResolvingWithStatus(200, body, inspect);
     }
+
+    test('returns null without a stored token and does not call /auth/me', () async {
+      var requestCount = 0;
+      final repository = repositoryWith(
+        dioResolving({'user': {}}, (_) => requestCount++),
+      );
+
+      final session = await repository.getCurrentSession();
+
+      expect(session, isNull);
+      expect(requestCount, 0);
+    });
+
+    test('restores an organizer session from /auth/me using the stored token',
+        () async {
+      final storage = FakeSecureStorage();
+      await storage.saveToken('stored-jwt-token');
+      RequestOptions? request;
+      final repository = repositoryWith(
+        dioResolving({
+          'user': responseData['user'],
+        }, (options) => request = options),
+        storage: storage,
+      );
+
+      final session = await repository.getCurrentSession();
+
+      expect(request?.method, 'GET');
+      expect(request?.path, '/auth/me');
+      expect(request?.data, isNull);
+      expect(session, isA<OrganizerSession>());
+      final organizer = session! as OrganizerSession;
+      expect(organizer.userId, 'uuid-organizer-1');
+      expect(organizer.name, 'Dev One');
+      expect(organizer.username, 'dev1');
+      expect(organizer.email, 'dev1@planify.dev');
+      expect(organizer.token, 'stored-jwt-token');
+    });
+
+    test('does not repeat /auth/me when the session is already in memory',
+        () async {
+      final storage = FakeSecureStorage();
+      await storage.saveToken('stored-jwt-token');
+      var requestCount = 0;
+      final repository = repositoryWith(
+        dioResolving({
+          'user': responseData['user'],
+        }, (_) => requestCount++),
+        storage: storage,
+      );
+
+      await repository.getCurrentSession();
+      await repository.getCurrentSession();
+
+      expect(requestCount, 1);
+    });
+
+    test('rejects a malformed /auth/me success response', () async {
+      final storage = FakeSecureStorage();
+      await storage.saveToken('stored-jwt-token');
+      final repository = repositoryWith(
+        dioResolving({}, null),
+        storage: storage,
+      );
+
+      expect(
+        repository.getCurrentSession,
+        throwsA(isA<UnknownAuthException>()),
+      );
+    });
 
     test(
       'sends an email unchanged as identifier and maps canonical user data',

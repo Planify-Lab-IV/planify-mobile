@@ -94,8 +94,16 @@ class HttpAuthRepository implements AuthRepository {
   Future<UserSession?> getCurrentSession() async {
     if (_currentSession != null) return _currentSession;
 
-    // Session restoration requires a backend validation endpoint.
-    return null;
+    final token = await storage.getToken();
+    if (token == null || token.isEmpty) return null;
+
+    final response = await dio.get<dynamic>('/auth/me');
+    final data = response.data;
+    if (data is! Map) throw const UnknownAuthException();
+
+    final session = _organizerSessionFromUser(data['user'], token: token);
+    _currentSession = session;
+    return session;
   }
 
   OrganizerSession _organizerSessionFromResponse(dynamic data) {
