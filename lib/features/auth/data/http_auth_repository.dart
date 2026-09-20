@@ -97,13 +97,27 @@ class HttpAuthRepository implements AuthRepository {
     final token = await storage.getToken();
     if (token == null || token.isEmpty) return null;
 
-    final response = await dio.get<dynamic>('/auth/me');
-    final data = response.data;
-    if (data is! Map) throw const UnknownAuthException();
+    try {
+      final response = await dio.get<dynamic>('/auth/me');
+      final data = response.data;
+      if (data is! Map) throw const UnknownAuthException();
 
-    final session = _organizerSessionFromUser(data['user'], token: token);
-    _currentSession = session;
-    return session;
+      final session = _organizerSessionFromUser(data['user'], token: token);
+      _currentSession = session;
+      return session;
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 401) {
+        throw const InvalidStoredSessionException();
+      }
+      if (_isNetworkError(error)) {
+        throw const NetworkAuthException();
+      }
+      throw const UnknownAuthException();
+    } on AuthException { // Un error definido por nosotros llega al notifier
+      rethrow;
+    } catch (_) {
+      throw const UnknownAuthException();
+    }
   }
 
   OrganizerSession _organizerSessionFromResponse(dynamic data) {

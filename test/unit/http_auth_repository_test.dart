@@ -127,6 +127,75 @@ void main() {
       );
     });
 
+    test('maps a 401 from /auth/me to an invalid stored session', () async {
+      final storage = FakeSecureStorage();
+      await storage.saveToken('expired-jwt-token');
+      final dio = Dio();
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) => handler.reject(
+            DioException(
+              requestOptions: options,
+              response: Response<dynamic>(
+                requestOptions: options,
+                statusCode: 401,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        repositoryWith(dio, storage: storage).getCurrentSession,
+        throwsA(isA<InvalidStoredSessionException>()),
+      );
+    });
+
+    test('maps a network failure from /auth/me to a network error', () async {
+      final storage = FakeSecureStorage();
+      await storage.saveToken('stored-jwt-token');
+      final dio = Dio();
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) => handler.reject(
+            DioException(
+              requestOptions: options,
+              type: DioExceptionType.connectionError,
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        repositoryWith(dio, storage: storage).getCurrentSession,
+        throwsA(isA<NetworkAuthException>()),
+      );
+    });
+
+    test('maps unexpected /auth/me failures to an unknown error', () async {
+      final storage = FakeSecureStorage();
+      await storage.saveToken('stored-jwt-token');
+      final dio = Dio();
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) => handler.reject(
+            DioException(
+              requestOptions: options,
+              response: Response<dynamic>(
+                requestOptions: options,
+                statusCode: 500,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        repositoryWith(dio, storage: storage).getCurrentSession,
+        throwsA(isA<UnknownAuthException>()),
+      );
+    });
+
     test(
       'sends an email unchanged as identifier and maps canonical user data',
       () async {
