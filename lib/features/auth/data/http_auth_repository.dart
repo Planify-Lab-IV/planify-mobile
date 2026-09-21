@@ -113,7 +113,8 @@ class HttpAuthRepository implements AuthRepository {
         throw const NetworkAuthException();
       }
       throw const UnknownAuthException();
-    } on AuthException { // Un error definido por nosotros llega al notifier
+    } on AuthException {
+      // Un error definido por nosotros llega al notifier
       rethrow;
     } catch (_) {
       throw const UnknownAuthException();

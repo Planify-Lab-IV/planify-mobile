@@ -154,30 +154,29 @@ void main() {
 
       await notifier.checkAuthStatus();
 
-      expect(
-        notifier.state,
-        const AuthError(AuthFailureReason.networkError),
-      );
+      expect(notifier.state, const AuthError(AuthFailureReason.networkError));
       expect(await storage.getToken(), 'stored-jwt-token');
     });
 
-    test('checkAuthStatus reports an error if it cannot clear an invalid token',
-        () async {
-      final failingStorage = _FailingDeleteSecureStorage();
-      await failingStorage.saveToken('expired-jwt-token');
-      notifier = AuthNotifier(
-        _ThrowingCurrentSessionRepository(
-          storage: failingStorage,
-          exception: const InvalidStoredSessionException(),
-        ),
-        failingStorage,
-      );
+    test(
+      'checkAuthStatus reports an error if it cannot clear an invalid token',
+      () async {
+        final failingStorage = _FailingDeleteSecureStorage();
+        await failingStorage.saveToken('expired-jwt-token');
+        notifier = AuthNotifier(
+          _ThrowingCurrentSessionRepository(
+            storage: failingStorage,
+            exception: const InvalidStoredSessionException(),
+          ),
+          failingStorage,
+        );
 
-      await notifier.checkAuthStatus();
+        await notifier.checkAuthStatus();
 
-      expect(notifier.state, const AuthError(AuthFailureReason.unknown));
-      expect(await failingStorage.getToken(), 'expired-jwt-token');
-    });
+        expect(notifier.state, const AuthError(AuthFailureReason.unknown));
+        expect(await failingStorage.getToken(), 'expired-jwt-token');
+      },
+    );
 
     test(
       'persists the token returned by the anonymous HTTP endpoint',
