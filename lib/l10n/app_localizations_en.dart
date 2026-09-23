@@ -541,4 +541,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scheduleConfirmationSuccess => 'The event schedule was confirmed.';
+
+  @override
+  String get addExpenseDescriptionLabel => 'Expense description';
+
+  @override
+  String get addExpenseDescriptionHint => 'e.g. Year-end dinner';
+
+  @override
+  String get addExpenseDescriptionRequired =>
+      'Enter a description for the expense.';
+
+  @override
+  String get addExpenseTotalLabel => 'Expense total';
+
+  @override
+  String get addExpenseTotalHint => 'e.g. 2,500.00';
+
+  @override
+  String get addExpenseTotalRequired => 'Enter the expense total.';
+
+  @override
+  String get addExpenseTotalInvalid => 'Enter a valid total greater than zero.';
+
+  @override
+  String get addExpensePayersTitle => 'Who paid?';
+
+  @override
+  String get addExpensePayersSubtitle =>
+      'Select one or more people who made the payment.';
 }

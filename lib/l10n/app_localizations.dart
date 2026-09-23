@@ -1099,6 +1099,60 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'El horario del evento fue confirmado.'**
   String get scheduleConfirmationSuccess;
+
+  /// No description provided for @addExpenseDescriptionLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Descripción del gasto'**
+  String get addExpenseDescriptionLabel;
+
+  /// No description provided for @addExpenseDescriptionHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Cena de fin de año'**
+  String get addExpenseDescriptionHint;
+
+  /// No description provided for @addExpenseDescriptionRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá una descripción para el gasto.'**
+  String get addExpenseDescriptionRequired;
+
+  /// No description provided for @addExpenseTotalLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Total del gasto'**
+  String get addExpenseTotalLabel;
+
+  /// No description provided for @addExpenseTotalHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. 2.500,00'**
+  String get addExpenseTotalHint;
+
+  /// No description provided for @addExpenseTotalRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá el total del gasto.'**
+  String get addExpenseTotalRequired;
+
+  /// No description provided for @addExpenseTotalInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá un total válido mayor a cero.'**
+  String get addExpenseTotalInvalid;
+
+  /// No description provided for @addExpensePayersTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Quiénes pagaron?'**
+  String get addExpensePayersTitle;
+
+  /// No description provided for @addExpensePayersSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccioná una o más personas que hicieron el pago.'**
+  String get addExpensePayersSubtitle;
 }
 
 class _AppLocalizationsDelegate

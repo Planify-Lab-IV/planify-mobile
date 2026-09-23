@@ -190,5 +190,14 @@
     "scheduleConfirmationNotFoundError": "The event was not found.",
     "scheduleConfirmationNetworkError": "The schedule could not be confirmed because of a network problem.",
     "scheduleConfirmationGenericError": "The schedule could not be confirmed. Please try again.",
-    "scheduleConfirmationSuccess": "The event schedule was confirmed."
+    "scheduleConfirmationSuccess": "The event schedule was confirmed.",
+    "addExpenseDescriptionLabel": "Expense description",
+    "addExpenseDescriptionHint": "e.g. Year-end dinner",
+    "addExpenseDescriptionRequired": "Enter a description for the expense.",
+    "addExpenseTotalLabel": "Expense total",
+    "addExpenseTotalHint": "e.g. 2,500.00",
+    "addExpenseTotalRequired": "Enter the expense total.",
+    "addExpenseTotalInvalid": "Enter a valid total greater than zero.",
+    "addExpensePayersTitle": "Who paid?",
+    "addExpensePayersSubtitle": "Select one or more people who made the payment."
 }
