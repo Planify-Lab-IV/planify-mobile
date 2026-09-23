@@ -42,9 +42,12 @@ class _ScheduleConfirmationCardState
       scheduleConfirmationNotifierProvider(widget.eventId),
     );
     final now = DateUtils.dateOnly(DateTime.now());
+    final initialDate = state.selectedDate;
     final selectedDate = await showDatePicker(
       context: context,
-      initialDate: state.selectedDate ?? now,
+      initialDate: initialDate != null && !initialDate.isBefore(now)
+          ? initialDate
+          : now,
       firstDate: now,
       lastDate: DateTime(now.year + 10),
     );
