@@ -1153,6 +1153,54 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Seleccioná una o más personas que hicieron el pago.'**
   String get addExpensePayersSubtitle;
+
+  /// No description provided for @addExpenseDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar gasto'**
+  String get addExpenseDialogTitle;
+
+  /// No description provided for @addExpenseCloseTooltip.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar'**
+  String get addExpenseCloseTooltip;
+
+  /// No description provided for @addExpensePayerAmountsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Montos pagados'**
+  String get addExpensePayerAmountsTitle;
+
+  /// No description provided for @addExpensePayerAmountLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto de {name}'**
+  String addExpensePayerAmountLabel(String name);
+
+  /// No description provided for @addExpensePayerAmountInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá un monto válido.'**
+  String get addExpensePayerAmountInvalid;
+
+  /// No description provided for @addExpenseSplitEvenly.
+  ///
+  /// In es, this message translates to:
+  /// **'Repartir en partes iguales'**
+  String get addExpenseSplitEvenly;
+
+  /// No description provided for @addExpenseDifferenceMissing.
+  ///
+  /// In es, this message translates to:
+  /// **'Faltan {amount} para completar el total.'**
+  String addExpenseDifferenceMissing(String amount);
+
+  /// No description provided for @addExpenseDifferenceExceeded.
+  ///
+  /// In es, this message translates to:
+  /// **'Sobran {amount} respecto del total.'**
+  String addExpenseDifferenceExceeded(String amount);
 }
 
 class _AppLocalizationsDelegate

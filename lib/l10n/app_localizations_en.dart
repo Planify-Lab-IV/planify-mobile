@@ -570,4 +570,34 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get addExpensePayersSubtitle =>
       'Select one or more people who made the payment.';
+
+  @override
+  String get addExpenseDialogTitle => 'Add expense';
+
+  @override
+  String get addExpenseCloseTooltip => 'Close';
+
+  @override
+  String get addExpensePayerAmountsTitle => 'Amounts paid';
+
+  @override
+  String addExpensePayerAmountLabel(String name) {
+    return '$name\'s amount';
+  }
+
+  @override
+  String get addExpensePayerAmountInvalid => 'Enter a valid amount.';
+
+  @override
+  String get addExpenseSplitEvenly => 'Split equally';
+
+  @override
+  String addExpenseDifferenceMissing(String amount) {
+    return '$amount is still needed to reach the total.';
+  }
+
+  @override
+  String addExpenseDifferenceExceeded(String amount) {
+    return '$amount exceeds the total.';
+  }
 }

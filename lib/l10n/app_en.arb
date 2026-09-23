@@ -199,5 +199,37 @@
     "addExpenseTotalRequired": "Enter the expense total.",
     "addExpenseTotalInvalid": "Enter a valid total greater than zero.",
     "addExpensePayersTitle": "Who paid?",
-    "addExpensePayersSubtitle": "Select one or more people who made the payment."
+    "addExpensePayersSubtitle": "Select one or more people who made the payment.",
+    "addExpenseDialogTitle": "Add expense",
+    "addExpenseCloseTooltip": "Close",
+    "addExpensePayerAmountsTitle": "Amounts paid",
+    "addExpensePayerAmountLabel": "{name}'s amount",
+    "@addExpensePayerAmountLabel": {
+      "placeholders": {
+        "name": {
+          "type": "String",
+          "example": "Lucía"
+        }
+      }
+    },
+    "addExpensePayerAmountInvalid": "Enter a valid amount.",
+    "addExpenseSplitEvenly": "Split equally",
+    "addExpenseDifferenceMissing": "{amount} is still needed to reach the total.",
+    "@addExpenseDifferenceMissing": {
+      "placeholders": {
+        "amount": {
+          "type": "String",
+          "example": "$ 10.00"
+        }
+      }
+    },
+    "addExpenseDifferenceExceeded": "{amount} exceeds the total.",
+    "@addExpenseDifferenceExceeded": {
+      "placeholders": {
+        "amount": {
+          "type": "String",
+          "example": "$ 10.00"
+        }
+      }
+    }
 }

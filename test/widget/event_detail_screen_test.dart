@@ -14,6 +14,7 @@ import 'package:planify/features/events/detail/controllers/events_providers.dart
 import 'package:planify/features/events/config/presentation/screens/event_config_screen.dart';
 import 'package:planify/features/events/detail/screens/event_detail_screen.dart';
 import 'package:planify/features/events/detail/widgets/cancel_event_dialog.dart';
+import 'package:planify/features/expenses/presentation/widgets/add_expense_dialog.dart';
 import 'package:planify/l10n/app_localizations.dart';
 
 void main() {
@@ -138,27 +139,36 @@ void main() {
       },
     );
 
-    testWidgets(
-      'acciones rápidas muestran feedback de funcionalidad en desarrollo',
-      (tester) async {
-        await tester.pumpWidget(buildDetailScreen(session: organizerSession));
-        await tester.pumpAndSettle();
+    testWidgets('las acciones aún no construidas muestran feedback', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildDetailScreen(session: organizerSession));
+      await tester.pumpAndSettle();
 
-        await tester.tap(find.byKey(const Key('quick_action_invite')));
-        await tester.pumpAndSettle();
-        expect(
-          find.text('Esta funcionalidad estará disponible próximamente.'),
-          findsOneWidget,
-        );
+      await tester.tap(find.byKey(const Key('quick_action_invite')));
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Esta funcionalidad estará disponible próximamente.'),
+        findsOneWidget,
+      );
+    });
 
-        await tester.tap(find.byKey(const Key('quick_action_add_expense')));
-        await tester.pumpAndSettle();
-        expect(
-          find.text('Esta funcionalidad estará disponible próximamente.'),
-          findsOneWidget,
-        );
-      },
-    );
+    testWidgets('Agregar gasto abre el panel de gasto', (tester) async {
+      await tester.pumpWidget(buildDetailScreen(session: organizerSession));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('quick_action_add_expense')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AddExpenseDialog), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(AddExpenseDialog),
+          matching: find.text('Agregar gasto'),
+        ),
+        findsOneWidget,
+      );
+    });
 
     testWidgets('organizador del evento ve la opción Cancelar evento en menú', (
       tester,

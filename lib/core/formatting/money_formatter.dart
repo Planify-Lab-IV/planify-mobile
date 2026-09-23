@@ -2,7 +2,6 @@ import 'package:intl/intl.dart';
 
 const _defaultMoneyLocale = 'es_AR';
 
-
 String formatCents(int cents, {String locale = _defaultMoneyLocale}) {
   final isNegative = cents.isNegative;
   final absoluteCents = cents.abs();
@@ -14,7 +13,6 @@ String formatCents(int cents, {String locale = _defaultMoneyLocale}) {
 
   return '$sign${formatter.format(wholeAmount)}${formatter.symbols.DECIMAL_SEP}$fractionalText';
 }
-
 
 int parseToCents(String input) {
   final normalizedInput = input.replaceAll(RegExp(r'\s+'), '');

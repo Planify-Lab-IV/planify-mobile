@@ -199,5 +199,37 @@
       "addExpenseTotalRequired": "Ingresá el total del gasto.",
       "addExpenseTotalInvalid": "Ingresá un total válido mayor a cero.",
       "addExpensePayersTitle": "¿Quiénes pagaron?",
-      "addExpensePayersSubtitle": "Seleccioná una o más personas que hicieron el pago."
+      "addExpensePayersSubtitle": "Seleccioná una o más personas que hicieron el pago.",
+      "addExpenseDialogTitle": "Agregar gasto",
+      "addExpenseCloseTooltip": "Cerrar",
+      "addExpensePayerAmountsTitle": "Montos pagados",
+      "addExpensePayerAmountLabel": "Monto de {name}",
+      "@addExpensePayerAmountLabel": {
+        "placeholders": {
+          "name": {
+            "type": "String",
+            "example": "Lucía"
+          }
+        }
+      },
+      "addExpensePayerAmountInvalid": "Ingresá un monto válido.",
+      "addExpenseSplitEvenly": "Repartir en partes iguales",
+      "addExpenseDifferenceMissing": "Faltan {amount} para completar el total.",
+      "@addExpenseDifferenceMissing": {
+        "placeholders": {
+          "amount": {
+            "type": "String",
+            "example": "$ 10,00"
+          }
+        }
+      },
+      "addExpenseDifferenceExceeded": "Sobran {amount} respecto del total.",
+      "@addExpenseDifferenceExceeded": {
+        "placeholders": {
+          "amount": {
+            "type": "String",
+            "example": "$ 10,00"
+          }
+        }
+      }
 }
