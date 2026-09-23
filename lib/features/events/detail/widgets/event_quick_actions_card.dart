@@ -3,11 +3,17 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../domain/event_participant.dart';
 
 class EventQuickActionsCard extends StatelessWidget {
   final bool isCancelled;
+  final List<EventParticipant> participants;
 
-  const EventQuickActionsCard({super.key, this.isCancelled = false});
+  const EventQuickActionsCard({
+    super.key,
+    required this.participants,
+    this.isCancelled = false,
+  });
 
   void _handleActionTap(BuildContext context, String actionLabel) {
     if (isCancelled) return;

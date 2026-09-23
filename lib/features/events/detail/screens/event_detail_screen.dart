@@ -216,7 +216,10 @@ class EventDetailScreen extends ConsumerWidget {
                     ],
                     EventHeaderCard(event: event),
                     const SizedBox(height: AppSpacing.lg),
-                    EventQuickActionsCard(isCancelled: event.isCancelled),
+                    EventQuickActionsCard(
+                      isCancelled: event.isCancelled,
+                      participants: event.participants,
+                    ),
                     const SizedBox(height: AppSpacing.lg),
                     EventSectionPlaceholderCard(
                       cardKey: const Key('tasks_placeholder_card'),
