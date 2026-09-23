@@ -101,6 +101,7 @@ class FakeEventsRepository implements EventsRepository {
       updatedAt: now,
       participants: [
         EventParticipant(
+          id: 'participant-org-$eventId',
           eventId: eventId,
           userId: 'org-123',
           username: 'org-123',

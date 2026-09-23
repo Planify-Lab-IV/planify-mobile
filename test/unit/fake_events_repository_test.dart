@@ -34,6 +34,8 @@ void main() {
         expect(event.organizerId, equals('org-123'));
         expect(event.groupId, equals('grp-1'));
         expect(event.status, equals(EventStatus.active));
+        expect(event.participants, hasLength(1));
+        expect(event.participants.single.id, 'participant-org-${event.id}');
 
         final fetched = await repository.getEvent(event.id);
         expect(fetched, equals(event));

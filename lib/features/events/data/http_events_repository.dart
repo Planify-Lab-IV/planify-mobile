@@ -204,6 +204,7 @@ class HttpEventsRepository implements EventsRepository {
     }
 
     return EventParticipant(
+      id: _requiredString(data, 'id'),
       eventId: _requiredString(data, 'eventId'),
       userId: userId as String?,
       username: _requiredString(data, 'username'),
