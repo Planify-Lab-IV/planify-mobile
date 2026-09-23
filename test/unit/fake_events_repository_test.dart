@@ -34,8 +34,8 @@ void main() {
         expect(event.organizerId, equals('org-123'));
         expect(event.groupId, equals('grp-1'));
         expect(event.status, equals(EventStatus.active));
-        expect(event.participants, hasLength(1));
-        expect(event.participants.single.id, 'participant-org-${event.id}');
+        expect(event.participants, hasLength(3));
+        expect(event.participants.first.id, 'participant-org-${event.id}');
 
         final fetched = await repository.getEvent(event.id);
         expect(fetched, equals(event));
@@ -248,6 +248,25 @@ void main() {
         expect(evt123, isNotNull);
         expect(evt123?.name, equals('Cumpleaños de Lucas'));
         expect(evt123?.status, equals(EventStatus.active));
+        expect(evt123?.participants, hasLength(3));
+        expect(
+          evt123?.participants.map((participant) => participant.id).toSet(),
+          hasLength(3),
+        );
+        expect(
+          evt123?.participants.every(
+            (participant) => participant.eventId == evt123.id,
+          ),
+          isTrue,
+        );
+        expect(
+          evt123?.participants.where((participant) => participant.isOrganizer),
+          hasLength(1),
+        );
+        expect(
+          evt123?.participants.any((participant) => participant.isAnonymous),
+          isTrue,
+        );
 
         final evtCumple = await defaultRepo.getEvent('evt-cumple-lucas');
         expect(evtCumple, isNotNull);
