@@ -607,4 +607,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String addExpenseDifferenceExceeded(String amount) {
     return 'Sobran $amount respecto del total.';
   }
+
+  @override
+  String get addExpenseDebtorsTitle => '¿Quiénes deben?';
+
+  @override
+  String get addExpenseDebtorsSubtitle =>
+      'Seleccioná una o más personas que deben asumir el gasto.';
 }

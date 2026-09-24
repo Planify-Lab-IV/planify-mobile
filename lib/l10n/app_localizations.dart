@@ -1201,6 +1201,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Sobran {amount} respecto del total.'**
   String addExpenseDifferenceExceeded(String amount);
+
+  /// No description provided for @addExpenseDebtorsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Quiénes deben?'**
+  String get addExpenseDebtorsTitle;
+
+  /// No description provided for @addExpenseDebtorsSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccioná una o más personas que deben asumir el gasto.'**
+  String get addExpenseDebtorsSubtitle;
 }
 
 class _AppLocalizationsDelegate

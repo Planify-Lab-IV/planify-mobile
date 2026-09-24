@@ -231,5 +231,7 @@
           "example": "$ 10.00"
         }
       }
-    }
+    },
+    "addExpenseDebtorsTitle": "Who owes?",
+    "addExpenseDebtorsSubtitle": "Select one or more people who need to cover the expense."
 }

@@ -231,5 +231,7 @@
             "example": "$ 10,00"
           }
         }
-      }
+      },
+      "addExpenseDebtorsTitle": "¿Quiénes deben?",
+      "addExpenseDebtorsSubtitle": "Seleccioná una o más personas que deben asumir el gasto."
 }
