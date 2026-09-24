@@ -15,6 +15,7 @@ import 'package:planify/features/events/config/presentation/screens/event_config
 import 'package:planify/features/events/detail/screens/event_detail_screen.dart';
 import 'package:planify/features/events/detail/widgets/cancel_event_dialog.dart';
 import 'package:planify/features/expenses/presentation/widgets/add_expense_dialog.dart';
+import 'package:planify/features/tasks/presentation/widgets/create_task_dialog.dart';
 import 'package:planify/l10n/app_localizations.dart';
 
 void main() {
@@ -168,6 +169,17 @@ void main() {
         ),
         findsOneWidget,
       );
+    });
+
+    testWidgets('Agregar tarea abre su diálogo de alta', (tester) async {
+      await tester.pumpWidget(buildDetailScreen(session: organizerSession));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('quick_action_add_task')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(CreateTaskDialog), findsOneWidget);
+      expect(find.text('¿Qué hay que hacer?'), findsOneWidget);
     });
 
     testWidgets('organizador del evento ve la opción Cancelar evento en menú', (

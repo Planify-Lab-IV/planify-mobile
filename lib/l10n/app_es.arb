@@ -231,5 +231,31 @@
             "example": "$ 10,00"
           }
         }
-      }
+      },
+      "tasksLoadError": "No se pudieron cargar las tareas.",
+      "taskStatusUnassigned": "Sin asignar",
+      "taskStatusPending": "Pendiente",
+      "taskStatusCompleted": "Completada",
+      "taskAssignedTo": "Asignada a {name}",
+      "@taskAssignedTo": {
+        "placeholders": {
+          "name": {
+            "type": "String",
+            "example": "Lucía"
+          }
+        }
+      },
+      "taskClaimAction": "Tomar",
+      "taskCompleteAction": "Completar",
+      "taskReassignAction": "Reasignar",
+      "tasksOperationError": "No se pudo actualizar la tarea. Intentá nuevamente.",
+      "createTaskDialogTitle": "Agregar tarea",
+      "createTaskTitleLabel": "¿Qué hay que hacer?",
+      "createTaskTitleHint": "Ej. Comprar hielo",
+      "createTaskTitleRequired": "Ingresá un título para la tarea.",
+      "createTaskSubmit": "Crear tarea",
+      "reassignTaskDialogTitle": "Reasignar tarea",
+      "reassignTaskParticipantLabel": "Elegí quién se hará cargo.",
+      "reassignTaskParticipantRequired": "Elegí una persona para continuar.",
+      "reassignTaskConfirm": "Reasignar"
 }

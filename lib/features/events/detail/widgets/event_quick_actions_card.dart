@@ -9,18 +9,29 @@ import '../../../expenses/presentation/widgets/add_expense_dialog.dart';
 class EventQuickActionsCard extends StatelessWidget {
   final bool isCancelled;
   final List<EventParticipant> participants;
+  final VoidCallback? onAddTask;
 
   const EventQuickActionsCard({
     super.key,
     required this.participants,
+    this.onAddTask,
     this.isCancelled = false,
   });
 
-  void _handleActionTap(BuildContext context, {required bool isAddExpense}) {
+  void _handleActionTap(
+    BuildContext context, {
+    required bool isAddExpense,
+    required bool isAddTask,
+  }) {
     if (isCancelled) return;
 
     if (isAddExpense) {
       AddExpenseDialog.show(context, participants: participants);
+      return;
+    }
+
+    if (isAddTask) {
+      onAddTask?.call();
       return;
     }
 
@@ -78,6 +89,7 @@ class EventQuickActionsCard extends StatelessWidget {
                   key: const Key('quick_action_add_task'),
                   icon: Icons.add_task_outlined,
                   label: i18n.quickActionAddTask,
+                  isAddTask: true,
                 ),
                 _buildActionButton(
                   context,
@@ -99,6 +111,7 @@ class EventQuickActionsCard extends StatelessWidget {
     required IconData icon,
     required String label,
     bool isAddExpense = false,
+    bool isAddTask = false,
   }) {
     final theme = Theme.of(context);
     final isEnabled = !isCancelled;
@@ -117,7 +130,11 @@ class EventQuickActionsCard extends StatelessWidget {
         key: key,
         borderRadius: BorderRadius.circular(AppRadius.sm),
         onTap: isEnabled
-            ? () => _handleActionTap(context, isAddExpense: isAddExpense)
+            ? () => _handleActionTap(
+                context,
+                isAddExpense: isAddExpense,
+                isAddTask: isAddTask,
+              )
             : null,
         child: Padding(
           padding: const EdgeInsets.symmetric(

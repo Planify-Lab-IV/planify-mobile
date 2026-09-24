@@ -607,4 +607,62 @@ class AppLocalizationsEs extends AppLocalizations {
   String addExpenseDifferenceExceeded(String amount) {
     return 'Sobran $amount respecto del total.';
   }
+
+  @override
+  String get tasksLoadError => 'No se pudieron cargar las tareas.';
+
+  @override
+  String get taskStatusUnassigned => 'Sin asignar';
+
+  @override
+  String get taskStatusPending => 'Pendiente';
+
+  @override
+  String get taskStatusCompleted => 'Completada';
+
+  @override
+  String taskAssignedTo(String name) {
+    return 'Asignada a $name';
+  }
+
+  @override
+  String get taskClaimAction => 'Tomar';
+
+  @override
+  String get taskCompleteAction => 'Completar';
+
+  @override
+  String get taskReassignAction => 'Reasignar';
+
+  @override
+  String get tasksOperationError =>
+      'No se pudo actualizar la tarea. Intentá nuevamente.';
+
+  @override
+  String get createTaskDialogTitle => 'Agregar tarea';
+
+  @override
+  String get createTaskTitleLabel => '¿Qué hay que hacer?';
+
+  @override
+  String get createTaskTitleHint => 'Ej. Comprar hielo';
+
+  @override
+  String get createTaskTitleRequired => 'Ingresá un título para la tarea.';
+
+  @override
+  String get createTaskSubmit => 'Crear tarea';
+
+  @override
+  String get reassignTaskDialogTitle => 'Reasignar tarea';
+
+  @override
+  String get reassignTaskParticipantLabel => 'Elegí quién se hará cargo.';
+
+  @override
+  String get reassignTaskParticipantRequired =>
+      'Elegí una persona para continuar.';
+
+  @override
+  String get reassignTaskConfirm => 'Reasignar';
 }

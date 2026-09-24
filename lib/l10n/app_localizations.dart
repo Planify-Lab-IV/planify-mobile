@@ -1201,6 +1201,114 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Sobran {amount} respecto del total.'**
   String addExpenseDifferenceExceeded(String amount);
+
+  /// No description provided for @tasksLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron cargar las tareas.'**
+  String get tasksLoadError;
+
+  /// No description provided for @taskStatusUnassigned.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin asignar'**
+  String get taskStatusUnassigned;
+
+  /// No description provided for @taskStatusPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Pendiente'**
+  String get taskStatusPending;
+
+  /// No description provided for @taskStatusCompleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Completada'**
+  String get taskStatusCompleted;
+
+  /// No description provided for @taskAssignedTo.
+  ///
+  /// In es, this message translates to:
+  /// **'Asignada a {name}'**
+  String taskAssignedTo(String name);
+
+  /// No description provided for @taskClaimAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Tomar'**
+  String get taskClaimAction;
+
+  /// No description provided for @taskCompleteAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Completar'**
+  String get taskCompleteAction;
+
+  /// No description provided for @taskReassignAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Reasignar'**
+  String get taskReassignAction;
+
+  /// No description provided for @tasksOperationError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo actualizar la tarea. Intentá nuevamente.'**
+  String get tasksOperationError;
+
+  /// No description provided for @createTaskDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar tarea'**
+  String get createTaskDialogTitle;
+
+  /// No description provided for @createTaskTitleLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué hay que hacer?'**
+  String get createTaskTitleLabel;
+
+  /// No description provided for @createTaskTitleHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Comprar hielo'**
+  String get createTaskTitleHint;
+
+  /// No description provided for @createTaskTitleRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá un título para la tarea.'**
+  String get createTaskTitleRequired;
+
+  /// No description provided for @createTaskSubmit.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear tarea'**
+  String get createTaskSubmit;
+
+  /// No description provided for @reassignTaskDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Reasignar tarea'**
+  String get reassignTaskDialogTitle;
+
+  /// No description provided for @reassignTaskParticipantLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegí quién se hará cargo.'**
+  String get reassignTaskParticipantLabel;
+
+  /// No description provided for @reassignTaskParticipantRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegí una persona para continuar.'**
+  String get reassignTaskParticipantRequired;
+
+  /// No description provided for @reassignTaskConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Reasignar'**
+  String get reassignTaskConfirm;
 }
 
 class _AppLocalizationsDelegate

@@ -1,33 +1,29 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../events/detail/controllers/events_providers.dart';
 import '../../data/fake_tasks_repository.dart';
 import '../../domain/tasks_repository.dart';
+import 'tasks_context.dart';
 import 'tasks_notifier.dart';
 import 'tasks_state.dart';
 
-final tasksRepositoryProvider = Provider<TasksRepository>((ref) {
+final tasksRepositoryProvider = Provider.family<TasksRepository, String?>((
+  ref,
+  currentParticipantId,
+) {
   return FakeTasksRepository(
-    currentParticipantIdForEvent: (eventId) {
-      return ref
-          .read(eventDetailNotifierProvider(eventId).notifier)
-          .currentParticipantId;
-    },
+    currentParticipantIdForEvent: (_) => currentParticipantId,
   );
 });
 
 final tasksNotifierProvider = StateNotifierProvider.autoDispose
-    .family<TasksNotifier, TasksState, String>((ref, eventId) {
-      final eventDetailState = ref.watch(eventDetailNotifierProvider(eventId));
-      final eventDetailNotifier = ref.read(
-        eventDetailNotifierProvider(eventId).notifier,
-      );
-
+    .family<TasksNotifier, TasksState, TasksContext>((ref, tasksContext) {
       return TasksNotifier(
-        repository: ref.watch(tasksRepositoryProvider),
-        eventId: eventId,
-        currentParticipantId: eventDetailNotifier.currentParticipantId,
-        isOrganizer: eventDetailNotifier.isOrganizer,
-        participants: eventDetailState.event?.participants ?? const [],
+        repository: ref.watch(
+          tasksRepositoryProvider(tasksContext.currentParticipantId),
+        ),
+        eventId: tasksContext.eventId,
+        currentParticipantId: tasksContext.currentParticipantId,
+        isOrganizer: tasksContext.isOrganizer,
+        participants: tasksContext.participants,
       );
     });

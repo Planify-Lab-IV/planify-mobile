@@ -10,6 +10,10 @@ import '../widgets/event_header_card.dart';
 import '../widgets/event_quick_actions_card.dart';
 import '../widgets/event_section_placeholder_card.dart';
 import '../../config/presentation/screens/event_config_screen.dart';
+import '../../../tasks/presentation/controllers/tasks_providers.dart';
+import '../../../tasks/presentation/controllers/tasks_context.dart';
+import '../../../tasks/presentation/widgets/create_task_dialog.dart';
+import '../../../tasks/presentation/widgets/task_list_card.dart';
 
 class EventDetailScreen extends ConsumerWidget {
   final String eventId;
@@ -64,6 +68,14 @@ class EventDetailScreen extends ConsumerWidget {
     final event = state.event;
     final canCancel = notifier.canCancelEvent;
     final hasCurrentSession = notifier.hasCurrentSession;
+    final tasksContext = event == null
+        ? null
+        : TasksContext(
+            eventId: event.id,
+            currentParticipantId: notifier.currentParticipantId,
+            isOrganizer: notifier.isOrganizer,
+            participants: event.participants,
+          );
 
     return Scaffold(
       appBar: AppBar(
@@ -219,13 +231,21 @@ class EventDetailScreen extends ConsumerWidget {
                     EventQuickActionsCard(
                       isCancelled: event.isCancelled,
                       participants: event.participants,
+                      onAddTask: () {
+                        CreateTaskDialog.show(
+                          context,
+                          onCreate: (title) => ref
+                              .read(
+                                tasksNotifierProvider(tasksContext!).notifier,
+                              )
+                              .create(title),
+                        );
+                      },
                     ),
                     const SizedBox(height: AppSpacing.lg),
-                    EventSectionPlaceholderCard(
-                      cardKey: const Key('tasks_placeholder_card'),
-                      title: i18n.tasksSectionTitle,
-                      placeholderText: i18n.noTasksPlaceholder,
-                      icon: Icons.checklist_rounded,
+                    TaskListCard(
+                      participants: event.participants,
+                      tasksContext: tasksContext!,
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     EventSectionPlaceholderCard(
