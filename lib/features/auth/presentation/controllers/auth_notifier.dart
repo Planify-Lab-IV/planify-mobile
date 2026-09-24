@@ -75,9 +75,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
       await _repository.logout();
     } catch (_) {
       // Continuamos con el borrado local aunque falle el logout remoto
-    } finally {
+    }
+
+    try {
       await _storage.deleteToken();
       state = const AuthUnauthenticated();
+    } catch (_) {
+      // No confirmamos el logout si el token puede seguir almacenado.
+      state = const AuthError(AuthFailureReason.unknown);
     }
   }
 
