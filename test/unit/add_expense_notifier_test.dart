@@ -55,7 +55,7 @@ void main() {
 
       expect(notifier.state.description, 'Cena');
       expect(notifier.state.hasDescription, isTrue);
-      expect(notifier.state.isReadyForSubmission, isTrue);
+      expect(notifier.state.isReadyForSubmission, isFalse);
     });
 
     test('a single payer is automatically assigned the full total', () {
