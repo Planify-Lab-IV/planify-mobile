@@ -27,7 +27,7 @@ void main() {
       status: EventStatus.active,
       createdAt: fixedCreatedAt,
       updatedAt: fixedUpdatedAt,
-      date: testDate,
+      startDateTime: testDate,
       participants: testParticipants,
     );
 
@@ -52,18 +52,30 @@ void main() {
       expect(defaultEvent.isCancelled, isFalse);
       expect(defaultEvent.createdAt, fixedCreatedAt);
       expect(defaultEvent.updatedAt, fixedUpdatedAt);
-      expect(defaultEvent.date, isNull);
+      expect(defaultEvent.startDateTime, isNull);
       expect(defaultEvent.participants, isEmpty);
     });
 
-    test('isCancelled e isActive reflejan el estado correctamente', () {
-      expect(testEvent.isActive, isTrue);
-      expect(testEvent.isCancelled, isFalse);
+    test(
+      'isCancelled, isConfirmed e isActive reflejan el estado correctamente',
+      () {
+        expect(testEvent.isActive, isTrue);
+        expect(testEvent.isCancelled, isFalse);
+        expect(testEvent.isConfirmed, isFalse);
 
-      final cancelledEvent = testEvent.copyWith(status: EventStatus.cancelled);
-      expect(cancelledEvent.isActive, isFalse);
-      expect(cancelledEvent.isCancelled, isTrue);
-    });
+        final confirmedEvent = testEvent.copyWith(
+          status: EventStatus.confirmed,
+        );
+        expect(confirmedEvent.isActive, isFalse);
+        expect(confirmedEvent.isConfirmed, isTrue);
+
+        final cancelledEvent = testEvent.copyWith(
+          status: EventStatus.cancelled,
+        );
+        expect(cancelledEvent.isActive, isFalse);
+        expect(cancelledEvent.isCancelled, isTrue);
+      },
+    );
 
     test('copyWith preserva campos existentes cuando no se especifican', () {
       final updated = testEvent.copyWith(name: 'Asado de Primavera');
@@ -76,7 +88,7 @@ void main() {
       expect(updated.status, testEvent.status);
       expect(updated.createdAt, testEvent.createdAt);
       expect(updated.updatedAt, testEvent.updatedAt);
-      expect(updated.date, testEvent.date);
+      expect(updated.startDateTime, testEvent.startDateTime);
       expect(updated.participants, testEvent.participants);
     });
 
@@ -102,7 +114,7 @@ void main() {
         status: EventStatus.cancelled,
         createdAt: newCreatedAt,
         updatedAt: newUpdatedAt,
-        date: newDate,
+        startDateTime: newDate,
         participants: newParticipants,
       );
 
@@ -114,7 +126,7 @@ void main() {
       expect(updated.status, EventStatus.cancelled);
       expect(updated.createdAt, newCreatedAt);
       expect(updated.updatedAt, newUpdatedAt);
-      expect(updated.date, newDate);
+      expect(updated.startDateTime, newDate);
       expect(updated.participants, newParticipants);
     });
 
@@ -128,7 +140,7 @@ void main() {
         status: EventStatus.active,
         createdAt: fixedCreatedAt,
         updatedAt: fixedUpdatedAt,
-        date: testDate,
+        startDateTime: testDate,
         participants: testParticipants,
       );
 
@@ -141,7 +153,7 @@ void main() {
         status: EventStatus.active,
         createdAt: fixedCreatedAt,
         updatedAt: fixedUpdatedAt,
-        date: testDate,
+        startDateTime: testDate,
         participants: testParticipants,
       );
 
@@ -154,7 +166,7 @@ void main() {
         status: EventStatus.active,
         createdAt: fixedCreatedAt,
         updatedAt: fixedUpdatedAt,
-        date: DateTime(2026, 12, 25),
+        startDateTime: DateTime(2026, 12, 25),
         participants: testParticipants,
       );
 

@@ -321,7 +321,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get eventStatusLabel => 'Status';
 
   @override
-  String get eventStatusActive => 'Active';
+  String get eventStatusActive => 'Planning';
 
   @override
   String get eventStatusCancelled => 'Cancelled';
@@ -511,4 +511,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loadingEvent => 'Loading event...';
+
+  @override
+  String get scheduleConfirmationTitle => 'Confirm schedule';
+
+  @override
+  String get scheduleConfirmationSubtitle =>
+      'Choose the event start date and time.';
+
+  @override
+  String get scheduleSelectDate => 'Choose date';
+
+  @override
+  String get scheduleSelectTime => 'Choose time';
+
+  @override
+  String get scheduleConfirm => 'Confirm schedule';
+
+  @override
+  String get scheduleConfirmationValidationError =>
+      'Choose a future date and time to confirm the event.';
+
+  @override
+  String get scheduleConfirmationAuthorizationError =>
+      'Only the organizer can confirm the schedule.';
+
+  @override
+  String get scheduleConfirmationNotFoundError => 'The event was not found.';
+
+  @override
+  String get scheduleConfirmationNetworkError =>
+      'The schedule could not be confirmed because of a network problem.';
+
+  @override
+  String get scheduleConfirmationGenericError =>
+      'The schedule could not be confirmed. Please try again.';
+
+  @override
+  String get scheduleConfirmationSuccess => 'The event schedule was confirmed.';
 }

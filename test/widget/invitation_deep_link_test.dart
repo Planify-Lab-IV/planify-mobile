@@ -155,11 +155,13 @@ void main() {
       );
 
       await tester.pumpWidget(
-        createTestApp(authRepository: HttpAuthRepository(dio: dio)),
+        createTestApp(
+          authRepository: HttpAuthRepository(dio: dio, storage: fakeStorage),
+        ),
       );
-      await tester.pump();
+      await tester.pumpAndSettle();
       fakeAppLinks.emitUri(Uri.parse('planify://invite/token-valid-123'));
-      await tester.pump();
+      await tester.pumpAndSettle();
       final guestButton = find.byKey(const Key('guest_login_button'));
       await tester.ensureVisible(guestButton);
       await tester.tap(guestButton);

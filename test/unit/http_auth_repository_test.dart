@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:planify/data/secure_storage.dart';
 import 'package:planify/features/auth/data/auth_exceptions.dart';
 import 'package:planify/features/auth/data/http_auth_repository.dart';
 import 'package:planify/features/auth/domain/user_session.dart';
@@ -16,8 +17,11 @@ void main() {
       'token': 'backend-jwt-token',
     };
 
-    HttpAuthRepository repositoryWith(Dio dio) {
-      return HttpAuthRepository(dio: dio);
+    HttpAuthRepository repositoryWith(Dio dio, {SecureStorage? storage}) {
+      return HttpAuthRepository(
+        dio: dio,
+        storage: storage ?? FakeSecureStorage(),
+      );
     }
 
     Dio dioResolvingWithStatus(
@@ -49,6 +53,150 @@ void main() {
     ) {
       return dioResolvingWithStatus(200, body, inspect);
     }
+
+    test(
+      'returns null without a stored token and does not call /auth/me',
+      () async {
+        var requestCount = 0;
+        final repository = repositoryWith(
+          dioResolving({'user': {}}, (_) => requestCount++),
+        );
+
+        final session = await repository.getCurrentSession();
+
+        expect(session, isNull);
+        expect(requestCount, 0);
+      },
+    );
+
+    test(
+      'restores an organizer session from /auth/me using the stored token',
+      () async {
+        final storage = FakeSecureStorage();
+        await storage.saveToken('stored-jwt-token');
+        RequestOptions? request;
+        final repository = repositoryWith(
+          dioResolving({
+            'user': responseData['user'],
+          }, (options) => request = options),
+          storage: storage,
+        );
+
+        final session = await repository.getCurrentSession();
+
+        expect(request?.method, 'GET');
+        expect(request?.path, '/auth/me');
+        expect(request?.data, isNull);
+        expect(session, isA<OrganizerSession>());
+        final organizer = session! as OrganizerSession;
+        expect(organizer.userId, 'uuid-organizer-1');
+        expect(organizer.name, 'Dev One');
+        expect(organizer.username, 'dev1');
+        expect(organizer.email, 'dev1@planify.dev');
+        expect(organizer.token, 'stored-jwt-token');
+      },
+    );
+
+    test(
+      'does not repeat /auth/me when the session is already in memory',
+      () async {
+        final storage = FakeSecureStorage();
+        await storage.saveToken('stored-jwt-token');
+        var requestCount = 0;
+        final repository = repositoryWith(
+          dioResolving({'user': responseData['user']}, (_) => requestCount++),
+          storage: storage,
+        );
+
+        await repository.getCurrentSession();
+        await repository.getCurrentSession();
+
+        expect(requestCount, 1);
+      },
+    );
+
+    test('rejects a malformed /auth/me success response', () async {
+      final storage = FakeSecureStorage();
+      await storage.saveToken('stored-jwt-token');
+      final repository = repositoryWith(
+        dioResolving({}, null),
+        storage: storage,
+      );
+
+      expect(
+        repository.getCurrentSession,
+        throwsA(isA<UnknownAuthException>()),
+      );
+    });
+
+    test('maps a 401 from /auth/me to an invalid stored session', () async {
+      final storage = FakeSecureStorage();
+      await storage.saveToken('expired-jwt-token');
+      final dio = Dio();
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) => handler.reject(
+            DioException(
+              requestOptions: options,
+              response: Response<dynamic>(
+                requestOptions: options,
+                statusCode: 401,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        repositoryWith(dio, storage: storage).getCurrentSession,
+        throwsA(isA<InvalidStoredSessionException>()),
+      );
+    });
+
+    test('maps a network failure from /auth/me to a network error', () async {
+      final storage = FakeSecureStorage();
+      await storage.saveToken('stored-jwt-token');
+      final dio = Dio();
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) => handler.reject(
+            DioException(
+              requestOptions: options,
+              type: DioExceptionType.connectionError,
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        repositoryWith(dio, storage: storage).getCurrentSession,
+        throwsA(isA<NetworkAuthException>()),
+      );
+    });
+
+    test('maps unexpected /auth/me failures to an unknown error', () async {
+      final storage = FakeSecureStorage();
+      await storage.saveToken('stored-jwt-token');
+      final dio = Dio();
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) => handler.reject(
+            DioException(
+              requestOptions: options,
+              response: Response<dynamic>(
+                requestOptions: options,
+                statusCode: 500,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        repositoryWith(dio, storage: storage).getCurrentSession,
+        throwsA(isA<UnknownAuthException>()),
+      );
+    });
 
     test(
       'sends an email unchanged as identifier and maps canonical user data',
@@ -136,6 +284,24 @@ void main() {
 
     test('rejects malformed success responses', () async {
       final repository = repositoryWith(dioResolving({'token': 'token'}, null));
+
+      expect(
+        () => repository.login(identifier: 'dev1', password: 'DevPass123!'),
+        throwsA(isA<UnknownAuthException>()),
+      );
+    });
+
+    test('rejects a user missing a canonical organizer field', () async {
+      final repository = repositoryWith(
+        dioResolving({
+          'user': {
+            'id': 'uuid-organizer-1',
+            'name': 'Dev One',
+            'username': 'dev1',
+          },
+          'token': 'backend-jwt-token',
+        }, null),
+      );
 
       expect(
         () => repository.login(identifier: 'dev1', password: 'DevPass123!'),

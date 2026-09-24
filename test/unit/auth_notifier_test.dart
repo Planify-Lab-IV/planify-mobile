@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dio/dio.dart';
 import 'package:planify/data/secure_storage.dart';
+import 'package:planify/features/auth/data/auth_exceptions.dart';
 import 'package:planify/features/auth/data/fake_auth_repository.dart';
 import 'package:planify/features/auth/data/http_auth_repository.dart';
 import 'package:planify/features/auth/domain/user_session.dart';
@@ -106,16 +107,74 @@ void main() {
       expect(storedToken, isNull);
     });
 
-    test(
-      'checkAuthStatus does not reconstruct an organizer session from a token',
-      () async {
-        await storage.saveToken('fake-org-token:lucas@gmail.com:123456');
+    test('logout informa un error si no puede borrar el token local', () async {
+      final failingStorage = _FailingDeleteSecureStorage();
+      final failingRepository = FakeAuthRepository(
+        storage: failingStorage,
+        delay: Duration.zero,
+      );
+      notifier = AuthNotifier(failingRepository, failingStorage);
 
-        notifier = AuthNotifier(HttpAuthRepository(dio: Dio()), storage);
+      await notifier.login(
+        identifier: 'lucas@gmail.com',
+        password: 'password123',
+      );
+
+      await notifier.logout();
+
+      expect(notifier.state, const AuthError(AuthFailureReason.unknown));
+      expect(await failingStorage.getToken(), isNotNull);
+    });
+
+    test('checkAuthStatus clears an invalid stored token', () async {
+      await storage.saveToken('expired-jwt-token');
+      notifier = AuthNotifier(
+        _ThrowingCurrentSessionRepository(
+          storage: storage,
+          exception: const InvalidStoredSessionException(),
+        ),
+        storage,
+      );
+
+      await notifier.checkAuthStatus();
+
+      expect(notifier.state, isA<AuthUnauthenticated>());
+      expect(await storage.getToken(), isNull);
+    });
+
+    test('checkAuthStatus keeps the token after a network failure', () async {
+      await storage.saveToken('stored-jwt-token');
+      notifier = AuthNotifier(
+        _ThrowingCurrentSessionRepository(
+          storage: storage,
+          exception: const NetworkAuthException(),
+        ),
+        storage,
+      );
+
+      await notifier.checkAuthStatus();
+
+      expect(notifier.state, const AuthError(AuthFailureReason.networkError));
+      expect(await storage.getToken(), 'stored-jwt-token');
+    });
+
+    test(
+      'checkAuthStatus reports an error if it cannot clear an invalid token',
+      () async {
+        final failingStorage = _FailingDeleteSecureStorage();
+        await failingStorage.saveToken('expired-jwt-token');
+        notifier = AuthNotifier(
+          _ThrowingCurrentSessionRepository(
+            storage: failingStorage,
+            exception: const InvalidStoredSessionException(),
+          ),
+          failingStorage,
+        );
 
         await notifier.checkAuthStatus();
 
-        expect(notifier.state, isA<AuthUnauthenticated>());
+        expect(notifier.state, const AuthError(AuthFailureReason.unknown));
+        expect(await failingStorage.getToken(), 'expired-jwt-token');
       },
     );
 
@@ -142,7 +201,10 @@ void main() {
             ),
           ),
         );
-        notifier = AuthNotifier(HttpAuthRepository(dio: dio), storage);
+        notifier = AuthNotifier(
+          HttpAuthRepository(dio: dio, storage: storage),
+          storage,
+        );
 
         await notifier.loginAnonymously(
           name: 'Gil',
@@ -176,7 +238,10 @@ void main() {
             ),
           ),
         );
-        notifier = AuthNotifier(HttpAuthRepository(dio: dio), storage);
+        notifier = AuthNotifier(
+          HttpAuthRepository(dio: dio, storage: storage),
+          storage,
+        );
 
         await notifier.loginAnonymously(
           name: 'Gil',
@@ -210,7 +275,10 @@ void main() {
             ),
           ),
         );
-        notifier = AuthNotifier(HttpAuthRepository(dio: dio), storage);
+        notifier = AuthNotifier(
+          HttpAuthRepository(dio: dio, storage: storage),
+          storage,
+        );
 
         await notifier.loginAnonymously(
           name: 'Gil',
@@ -226,4 +294,35 @@ void main() {
       },
     );
   });
+}
+
+class _FailingDeleteSecureStorage implements SecureStorage {
+  String? _token;
+
+  @override
+  Future<void> deleteToken() async {
+    throw StateError('No se pudo eliminar el token');
+  }
+
+  @override
+  Future<String?> getToken() async => _token;
+
+  @override
+  Future<void> saveToken(String token) async {
+    _token = token;
+  }
+}
+
+class _ThrowingCurrentSessionRepository extends FakeAuthRepository {
+  final AuthException exception;
+
+  _ThrowingCurrentSessionRepository({
+    required SecureStorage storage,
+    required this.exception,
+  }) : super(storage: storage, delay: Duration.zero);
+
+  @override
+  Future<UserSession?> getCurrentSession() async {
+    throw exception;
+  }
 }

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../../core/theme/app_spacing.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../attendance/widgets/attendance_response_selector.dart';
+import '../../../detail/controllers/events_providers.dart';
+import '../widgets/schedule_confirmation_card.dart';
 import '../../../../availability/presentation/controllers/availability_providers.dart';
 import '../../../../availability/presentation/controllers/availability_state.dart';
 import '../../../../availability/presentation/widgets/availability_heatmap_grid.dart';
@@ -22,12 +24,20 @@ class EventConfigScreen extends ConsumerWidget {
     final availabilityNotifier = ref.read(
       availabilityNotifierProvider(eventId).notifier,
     );
-    final heatmapState = ref.watch(
-      availabilityHeatmapNotifierProvider(eventId),
+    final eventDetailState = ref.watch(eventDetailNotifierProvider(eventId));
+    final eventDetailNotifier = ref.read(
+      eventDetailNotifierProvider(eventId).notifier,
     );
-    final heatmapNotifier = ref.read(
-      availabilityHeatmapNotifierProvider(eventId).notifier,
-    );
+    final canViewHeatmap = eventDetailNotifier.isOrganizer;
+    final heatmapState = canViewHeatmap
+        ? ref.watch(availabilityHeatmapNotifierProvider(eventId))
+        : null;
+    final heatmapNotifier = canViewHeatmap
+        ? ref.read(availabilityHeatmapNotifierProvider(eventId).notifier)
+        : null;
+    final canConfirmSchedule =
+        eventDetailState.event?.isCancelled == false &&
+        eventDetailNotifier.isOrganizer;
 
     ref.listen<AvailabilityState>(availabilityNotifierProvider(eventId), (
       previous,
@@ -73,6 +83,8 @@ class EventConfigScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Text(i18n.attendanceTitle, style: theme.textTheme.titleMedium),
+                const SizedBox(height: AppSpacing.md),
                 AttendanceResponseSelector(eventId: eventId),
                 const SizedBox(height: AppSpacing.lg),
                 Text(
@@ -140,56 +152,78 @@ class EventConfigScreen extends ConsumerWidget {
                         : Text(i18n.availabilitySave),
                   ),
                 ],
-                const SizedBox(height: AppSpacing.xl),
-                Text(
-                  i18n.availabilityHeatmapTitle,
-                  style: theme.textTheme.titleMedium,
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  i18n.availabilityHeatmapSubtitle,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
+                if (canViewHeatmap) ...[
+                  const SizedBox(height: AppSpacing.xl),
+                  Text(
+                    i18n.availabilityHeatmapTitle,
+                    style: theme.textTheme.titleMedium,
                   ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                if (heatmapState.isLoading)
-                  const Center(child: CircularProgressIndicator())
-                else if (heatmapState.hasLoadError)
-                  Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          i18n.availabilityHeatmapLoadError,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.error,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                        OutlinedButton(
-                          onPressed: heatmapNotifier.load,
-                          child: Text(i18n.retryButton),
-                        ),
-                      ],
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    i18n.availabilityHeatmapSubtitle,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
                     ),
-                  )
-                else if (heatmapState.heatmap case final heatmap?)
-                  AvailabilityHeatmapGrid(
-                    heatmap: heatmap,
-                    dayLabels: [
-                      i18n.availabilityMondayShort,
-                      i18n.availabilityTuesdayShort,
-                      i18n.availabilityWednesdayShort,
-                      i18n.availabilityThursdayShort,
-                      i18n.availabilityFridayShort,
-                      i18n.availabilitySaturdayShort,
-                      i18n.availabilitySundayShort,
-                    ],
-                    tooltipMessageBuilder:
-                        i18n.availabilityHeatmapAvailableCount,
                   ),
+                  const SizedBox(height: AppSpacing.md),
+                  if (heatmapState!.isLoading)
+                    const Center(child: CircularProgressIndicator())
+                  else if (heatmapState.hasLoadError)
+                    Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            i18n.availabilityHeatmapLoadError,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.error,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
+                          OutlinedButton(
+                            onPressed: heatmapNotifier!.load,
+                            child: Text(i18n.retryButton),
+                          ),
+                        ],
+                      ),
+                    )
+                  else if (heatmapState.heatmap case final heatmap?)
+                    AvailabilityHeatmapGrid(
+                      heatmap: heatmap,
+                      dayLabels: [
+                        i18n.availabilityMondayShort,
+                        i18n.availabilityTuesdayShort,
+                        i18n.availabilityWednesdayShort,
+                        i18n.availabilityThursdayShort,
+                        i18n.availabilityFridayShort,
+                        i18n.availabilitySaturdayShort,
+                        i18n.availabilitySundayShort,
+                      ],
+                      tooltipMessageBuilder:
+                          i18n.availabilityHeatmapAvailableCount,
+                    ),
+                ],
+                if (canConfirmSchedule) ...[
+                  const SizedBox(height: AppSpacing.xl),
+                  Text(
+                    i18n.scheduleConfirmationTitle,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    i18n.scheduleConfirmationSubtitle,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  ScheduleConfirmationCard(
+                    eventId: eventId,
+                    initialStartDateTime: eventDetailState.event?.startDateTime,
+                    onConfirmationSucceeded: eventDetailNotifier.loadEvent,
+                  ),
+                ],
               ],
             ),
           ),
