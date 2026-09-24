@@ -4,20 +4,43 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/availability/data/fake_availability_repository.dart';
+import 'package:planify/features/availability/domain/availability_heatmap_dto.dart';
 import 'package:planify/features/availability/domain/slot.dart';
 import 'package:planify/features/availability/presentation/controllers/availability_providers.dart';
+import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/availability/presentation/widgets/availability_grid.dart';
 import 'package:planify/features/events/config/presentation/screens/event_config_screen.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/events/detail/controllers/event_detail_notifier.dart';
 import 'package:planify/features/events/detail/controllers/events_providers.dart';
 import 'package:planify/l10n/app_localizations.dart';
 
+class TrackingAvailabilityRepository extends FakeAvailabilityRepository {
+  int heatmapCalls = 0;
+
+  TrackingAvailabilityRepository({super.delay});
+
+  @override
+  Future<AvailabilityHeatmapDto> heatmap(String eventId) {
+    heatmapCalls++;
+    return super.heatmap(eventId);
+  }
+}
+
 void main() {
   const eventId = 'evt-123';
+  const organizerSession = OrganizerSession(
+    userId: 'org-123',
+    email: 'organizer@planify.com',
+    name: 'Organizador',
+    username: 'organizador',
+    token: 'organizer-token',
+  );
 
   Widget buildScreen(
     FakeEventsRepository repository, {
     FakeAvailabilityRepository? availabilityRepository,
+    UserSession? session,
   }) {
     final resolvedAvailabilityRepository =
         availabilityRepository ??
@@ -32,6 +55,13 @@ void main() {
         availabilityHeatmapRepositoryProvider.overrideWithValue(
           resolvedAvailabilityRepository,
         ),
+        eventDetailNotifierProvider(eventId).overrideWith((ref) {
+          return EventDetailNotifier(
+            repository: repository,
+            currentSession: session,
+            eventId: eventId,
+          );
+        }),
       ],
       child: MaterialApp(
         theme: AppTheme.light,
@@ -108,17 +138,81 @@ void main() {
     );
   });
 
-  testWidgets('muestra el heatmap combinado para cualquier usuario', (
+  testWidgets('muestra y carga el heatmap combinado para el organizador', (
     tester,
   ) async {
+    final availabilityRepository = TrackingAvailabilityRepository(
+      delay: Duration.zero,
+    );
+
     await tester.pumpWidget(
-      buildScreen(FakeEventsRepository(delay: Duration.zero)),
+      buildScreen(
+        FakeEventsRepository(delay: Duration.zero),
+        availabilityRepository: availabilityRepository,
+        session: organizerSession,
+      ),
     );
     await tester.pump();
     await tester.pump();
 
     expect(find.text('Disponibilidad combinada'), findsOneWidget);
     expect(find.byKey(const Key('availability_heatmap_grid')), findsOneWidget);
+    expect(availabilityRepository.heatmapCalls, 1);
+  });
+
+  testWidgets('oculta y no carga el heatmap para un participante', (
+    tester,
+  ) async {
+    final availabilityRepository = TrackingAvailabilityRepository(
+      delay: Duration.zero,
+    );
+
+    await tester.pumpWidget(
+      buildScreen(
+        FakeEventsRepository(delay: Duration.zero),
+        availabilityRepository: availabilityRepository,
+        session: const OrganizerSession(
+          userId: 'participant-123',
+          email: 'participant@planify.com',
+          name: 'Participante',
+          username: 'participante',
+          token: 'participant-token',
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text('Disponibilidad combinada'), findsNothing);
+    expect(find.byKey(const Key('availability_heatmap_grid')), findsNothing);
+    expect(availabilityRepository.heatmapCalls, 0);
+  });
+
+  testWidgets('oculta y no carga el heatmap para un usuario anónimo', (
+    tester,
+  ) async {
+    final availabilityRepository = TrackingAvailabilityRepository(
+      delay: Duration.zero,
+    );
+
+    await tester.pumpWidget(
+      buildScreen(
+        FakeEventsRepository(delay: Duration.zero),
+        availabilityRepository: availabilityRepository,
+        session: const AnonymousSession(
+          participantId: 'anonymous-123',
+          name: 'Anónimo',
+          eventId: eventId,
+          token: 'anonymous-token',
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.text('Disponibilidad combinada'), findsNothing);
+    expect(find.byKey(const Key('availability_heatmap_grid')), findsNothing);
+    expect(availabilityRepository.heatmapCalls, 0);
   });
 
   testWidgets('bloquea la grilla mientras se guarda la disponibilidad', (
