@@ -1213,6 +1213,42 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Seleccioná una o más personas que deben asumir el gasto.'**
   String get addExpenseDebtorsSubtitle;
+
+  /// No description provided for @addExpenseDebtorAmountsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Montos adeudados'**
+  String get addExpenseDebtorAmountsTitle;
+
+  /// No description provided for @addExpenseDebtorAmountLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto de {name}'**
+  String addExpenseDebtorAmountLabel(String name);
+
+  /// No description provided for @addExpenseDebtorAmountInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá un monto válido.'**
+  String get addExpenseDebtorAmountInvalid;
+
+  /// No description provided for @addExpenseSplitDebtorsEvenly.
+  ///
+  /// In es, this message translates to:
+  /// **'Repartir en partes iguales'**
+  String get addExpenseSplitDebtorsEvenly;
+
+  /// No description provided for @addExpenseDebtorDifferenceMissing.
+  ///
+  /// In es, this message translates to:
+  /// **'Faltan {amount} para completar el total.'**
+  String addExpenseDebtorDifferenceMissing(String amount);
+
+  /// No description provided for @addExpenseDebtorDifferenceExceeded.
+  ///
+  /// In es, this message translates to:
+  /// **'Sobran {amount} respecto del total.'**
+  String addExpenseDebtorDifferenceExceeded(String amount);
 }
 
 class _AppLocalizationsDelegate

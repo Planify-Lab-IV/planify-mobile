@@ -607,4 +607,28 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get addExpenseDebtorsSubtitle =>
       'Select one or more people who need to cover the expense.';
+
+  @override
+  String get addExpenseDebtorAmountsTitle => 'Amounts owed';
+
+  @override
+  String addExpenseDebtorAmountLabel(String name) {
+    return '$name\'s amount';
+  }
+
+  @override
+  String get addExpenseDebtorAmountInvalid => 'Enter a valid amount.';
+
+  @override
+  String get addExpenseSplitDebtorsEvenly => 'Split equally';
+
+  @override
+  String addExpenseDebtorDifferenceMissing(String amount) {
+    return '$amount is still needed to reach the total.';
+  }
+
+  @override
+  String addExpenseDebtorDifferenceExceeded(String amount) {
+    return '$amount exceeds the total.';
+  }
 }

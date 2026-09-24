@@ -233,5 +233,35 @@
         }
       },
       "addExpenseDebtorsTitle": "¿Quiénes deben?",
-      "addExpenseDebtorsSubtitle": "Seleccioná una o más personas que deben asumir el gasto."
+      "addExpenseDebtorsSubtitle": "Seleccioná una o más personas que deben asumir el gasto.",
+      "addExpenseDebtorAmountsTitle": "Montos adeudados",
+      "addExpenseDebtorAmountLabel": "Monto de {name}",
+      "@addExpenseDebtorAmountLabel": {
+        "placeholders": {
+          "name": {
+            "type": "String",
+            "example": "Lucía"
+          }
+        }
+      },
+      "addExpenseDebtorAmountInvalid": "Ingresá un monto válido.",
+      "addExpenseSplitDebtorsEvenly": "Repartir en partes iguales",
+      "addExpenseDebtorDifferenceMissing": "Faltan {amount} para completar el total.",
+      "@addExpenseDebtorDifferenceMissing": {
+        "placeholders": {
+          "amount": {
+            "type": "String",
+            "example": "$ 10,00"
+          }
+        }
+      },
+      "addExpenseDebtorDifferenceExceeded": "Sobran {amount} respecto del total.",
+      "@addExpenseDebtorDifferenceExceeded": {
+        "placeholders": {
+          "amount": {
+            "type": "String",
+            "example": "$ 10,00"
+          }
+        }
+      }
 }
