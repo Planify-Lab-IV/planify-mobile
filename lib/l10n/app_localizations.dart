@@ -281,14 +281,20 @@ abstract class AppLocalizations {
   /// No description provided for @pinLabel.
   ///
   /// In es, this message translates to:
-  /// **'Tu PIN de acceso'**
+  /// **'Elegí un PIN de 4 dígitos para identificarte en este evento.'**
   String get pinLabel;
 
-  /// No description provided for @pinHelper.
+  /// No description provided for @pinRecoveryTitle.
   ///
   /// In es, this message translates to:
-  /// **'Elegí un PIN de 4 dígitos para ingresar.\nSi es tu primera vez en este evento, creá uno. Si ya ingresaste con este mismo nombre, usá el mismo PIN.'**
-  String get pinHelper;
+  /// **'¿Ya ingresaste a este evento con este nombre?'**
+  String get pinRecoveryTitle;
+
+  /// No description provided for @pinRecoveryMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Usá el mismo PIN para recuperar tu acceso.'**
+  String get pinRecoveryMessage;
 
   /// No description provided for @pinRequired.
   ///

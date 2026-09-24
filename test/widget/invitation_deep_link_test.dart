@@ -84,11 +84,7 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(
-          find.text(
-            'Elegí un PIN de 4 dígitos para ingresar.\n'
-            'Si es tu primera vez en este evento, creá uno. Si ya ingresaste '
-            'con este mismo nombre, usá el mismo PIN.',
-          ),
+          find.text('Usá el mismo PIN para recuperar tu acceso.'),
           findsOneWidget,
         );
 
@@ -97,12 +93,19 @@ void main() {
           find.byKey(const Key('anonymous_name_input')),
           'Lucas Invitado',
         );
-        await tester.enterText(
-          find.byKey(const Key('anonymous_pin_input')),
-          '1234',
-        );
+        for (var index = 0; index < 4; index++) {
+          await tester.enterText(
+            find.byKey(Key('anonymous_pin_digit_$index')),
+            '1234'[index],
+          );
+        }
 
         // Toca Unirse
+        await tester.scrollUntilVisible(
+          find.byKey(const Key('anonymous_submit_button')),
+          200,
+          scrollable: find.byType(Scrollable).last,
+        );
         await tester.tap(find.byKey(const Key('anonymous_submit_button')));
         await tester.pumpAndSettle();
 
@@ -165,11 +168,18 @@ void main() {
         find.byKey(const Key('anonymous_name_input')),
         'Gil',
       );
-      await tester.enterText(
-        find.byKey(const Key('anonymous_pin_input')),
-        '1234',
-      );
+      for (var index = 0; index < 4; index++) {
+        await tester.enterText(
+          find.byKey(Key('anonymous_pin_digit_$index')),
+          '1234'[index],
+        );
+      }
 
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('anonymous_submit_button')),
+        200,
+        scrollable: find.byType(Scrollable).last,
+      );
       await tester.tap(find.byKey(const Key('anonymous_submit_button')));
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -19,15 +20,32 @@ class AnonymousLoginDialog extends ConsumerStatefulWidget {
 
 class _AnonymousLoginDialogState extends ConsumerState<AnonymousLoginDialog> {
   final _formKey = GlobalKey<FormState>();
+  final _pinFieldKey = GlobalKey<FormFieldState<String>>();
   final _nameController = TextEditingController();
-  final _pinController = TextEditingController();
-  bool _obscurePin = true;
+  final _pinControllers = List.generate(4, (_) => TextEditingController());
+  final _pinFocusNodes = List.generate(4, (_) => FocusNode());
+
+  String get _pin =>
+      _pinControllers.map((controller) => controller.text).join();
 
   @override
   void dispose() {
     _nameController.dispose();
-    _pinController.dispose();
+    for (final controller in _pinControllers) {
+      controller.dispose();
+    }
+    for (final focusNode in _pinFocusNodes) {
+      focusNode.dispose();
+    }
     super.dispose();
+  }
+
+  void _onPinChanged(int index, String value) {
+    _pinFieldKey.currentState?.didChange(_pin);
+
+    if (value.isNotEmpty && index < _pinFocusNodes.length - 1) {
+      _pinFocusNodes[index + 1].requestFocus();
+    }
   }
 
   void _submit() async {
@@ -40,7 +58,7 @@ class _AnonymousLoginDialogState extends ConsumerState<AnonymousLoginDialog> {
           .read(authNotifierProvider.notifier)
           .loginAnonymously(
             name: _nameController.text.trim(),
-            pin: _pinController.text.trim(),
+            pin: _pin,
             eventId: widget.eventId,
           );
 
@@ -112,6 +130,14 @@ class _AnonymousLoginDialogState extends ConsumerState<AnonymousLoginDialog> {
                     ),
                     textAlign: TextAlign.center,
                   ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    i18n.pinLabel,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                   const SizedBox(height: AppSpacing.lg),
 
                   // Banner de Error
@@ -166,35 +192,103 @@ class _AnonymousLoginDialogState extends ConsumerState<AnonymousLoginDialog> {
                   ),
                   const SizedBox(height: AppSpacing.md),
 
-                  // Campo PIN
-                  TextFormField(
-                    key: const Key('anonymous_pin_input'),
-                    controller: _pinController,
-                    enabled: !isLoading,
-                    obscureText: _obscurePin,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      hintText: i18n.pinLabel,
-                      helperText: i18n.pinHelper,
-                      prefixIcon: const Icon(Icons.dialpad_rounded),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscurePin
-                              ? Icons.visibility_outlined
-                              : Icons.visibility_off_outlined,
-                        ),
-                        onPressed: () =>
-                            setState(() => _obscurePin = !_obscurePin),
-                      ),
-                    ),
-                    validator: (value) {
-                      final trimmed = value?.trim() ?? '';
-                      if (trimmed.isEmpty) return i18n.pinRequired;
-                      if (!RegExp(r'^\d{4}$').hasMatch(trimmed)) {
+                  FormField<String>(
+                    key: _pinFieldKey,
+                    validator: (_) {
+                      if (_pin.isEmpty) return i18n.pinRequired;
+                      if (!RegExp(r'^\d{4}$').hasMatch(_pin)) {
                         return i18n.pinInvalidFormat;
                       }
                       return null;
                     },
+                    builder: (field) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          children: List.generate(4, (index) {
+                            return Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  right: index == 3 ? 0 : AppSpacing.sm,
+                                ),
+                                child: TextField(
+                                  key: Key('anonymous_pin_digit_$index'),
+                                  controller: _pinControllers[index],
+                                  focusNode: _pinFocusNodes[index],
+                                  enabled: !isLoading,
+                                  autofocus: index == 0,
+                                  keyboardType: TextInputType.number,
+                                  textAlign: TextAlign.center,
+                                  style: theme.textTheme.titleLarge,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                    LengthLimitingTextInputFormatter(1),
+                                  ],
+                                  decoration: InputDecoration(
+                                    counterText: '',
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      vertical: AppSpacing.md,
+                                    ),
+                                    errorText: null,
+                                  ),
+                                  onChanged: (value) =>
+                                      _onPinChanged(index, value),
+                                ),
+                              ),
+                            );
+                          }),
+                        ),
+                        if (field.hasError) ...[
+                          const SizedBox(height: AppSpacing.xs),
+                          Text(
+                            field.errorText!,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.error,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  Container(
+                    key: const Key('anonymous_pin_info_card'),
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.secondaryContainer,
+                      borderRadius: BorderRadius.circular(AppRadius.card),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.info_outline_rounded,
+                          color: theme.colorScheme.onSecondaryContainer,
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                i18n.pinRecoveryTitle,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: theme.colorScheme.onSecondaryContainer,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.xs),
+                              Text(
+                                i18n.pinRecoveryMessage,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSecondaryContainer,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.xl),
 

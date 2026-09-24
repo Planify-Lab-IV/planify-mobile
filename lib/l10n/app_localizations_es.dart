@@ -105,11 +105,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get nameMaxLength => 'El nombre no puede superar los 80 caracteres';
 
   @override
-  String get pinLabel => 'Tu PIN de acceso';
+  String get pinLabel =>
+      'Elegí un PIN de 4 dígitos para identificarte en este evento.';
 
   @override
-  String get pinHelper =>
-      'Elegí un PIN de 4 dígitos para ingresar.\nSi es tu primera vez en este evento, creá uno. Si ya ingresaste con este mismo nombre, usá el mismo PIN.';
+  String get pinRecoveryTitle =>
+      '¿Ya ingresaste a este evento con este nombre?';
+
+  @override
+  String get pinRecoveryMessage => 'Usá el mismo PIN para recuperar tu acceso.';
 
   @override
   String get pinRequired => 'Por favor ingresá tu PIN de acceso';
