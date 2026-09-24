@@ -175,6 +175,7 @@ class _AnonymousLoginDialogState extends ConsumerState<AnonymousLoginDialog> {
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       hintText: i18n.pinLabel,
+                      helperText: i18n.pinHelper,
                       prefixIcon: const Icon(Icons.dialpad_rounded),
                       suffixIcon: IconButton(
                         icon: Icon(

@@ -73,6 +73,15 @@ void main() {
       expect(find.text('Continuar como invitado'), findsOneWidget);
       expect(find.byKey(const Key('anonymous_name_input')), findsOneWidget);
       expect(find.byKey(const Key('anonymous_pin_input')), findsOneWidget);
+      expect(find.text('Tu PIN de acceso'), findsOneWidget);
+      expect(
+        find.text(
+          'Elegí un PIN de 4 dígitos para ingresar.\n'
+          'Si es tu primera vez en este evento, creá uno. Si ya ingresaste '
+          'con este mismo nombre, usá el mismo PIN.',
+        ),
+        findsOneWidget,
+      );
       expect(find.byKey(const Key('anonymous_cancel_button')), findsOneWidget);
       expect(find.byKey(const Key('anonymous_submit_button')), findsOneWidget);
     });
@@ -90,7 +99,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Por favor ingresa tu nombre'), findsOneWidget);
-      expect(find.text('Por favor ingresa el PIN del evento'), findsOneWidget);
+      expect(find.text('Por favor ingresá tu PIN de acceso'), findsOneWidget);
     });
 
     testWidgets('muestra error cuando el nombre supera los 80 caracteres', (

@@ -83,6 +83,15 @@ void main() {
         await tester.tap(guestButton);
         await tester.pumpAndSettle();
 
+        expect(
+          find.text(
+            'Elegí un PIN de 4 dígitos para ingresar.\n'
+            'Si es tu primera vez en este evento, creá uno. Si ya ingresaste '
+            'con este mismo nombre, usá el mismo PIN.',
+          ),
+          findsOneWidget,
+        );
+
         // Completa el formulario de invitado
         await tester.enterText(
           find.byKey(const Key('anonymous_name_input')),
