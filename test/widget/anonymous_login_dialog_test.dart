@@ -272,7 +272,10 @@ void main() {
       await tester.pumpWidget(
         _buildDialogTestApp(
           eventId: 'event-missing',
-          authRepository: HttpAuthRepository(dio: dio),
+          authRepository: HttpAuthRepository(
+            dio: dio,
+            storage: FakeSecureStorage(),
+          ),
         ),
       );
       await tester.pumpAndSettle();
@@ -314,7 +317,10 @@ void main() {
         await tester.pumpWidget(
           _buildDialogTestApp(
             eventId: 'event-unavailable',
-            authRepository: HttpAuthRepository(dio: dio),
+            authRepository: HttpAuthRepository(
+              dio: dio,
+              storage: FakeSecureStorage(),
+            ),
           ),
         );
         await tester.pumpAndSettle();
@@ -364,7 +370,10 @@ void main() {
         await tester.pumpWidget(
           _buildDialogTestApp(
             eventId: 'event-trim-test',
-            authRepository: HttpAuthRepository(dio: dio),
+            authRepository: HttpAuthRepository(
+              dio: dio,
+              storage: FakeSecureStorage(),
+            ),
           ),
         );
         await tester.pumpAndSettle();
