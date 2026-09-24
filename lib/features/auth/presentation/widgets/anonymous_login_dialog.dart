@@ -205,12 +205,9 @@ class _AnonymousLoginDialogState extends ConsumerState<AnonymousLoginDialog> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Row(
-                          children: List.generate(4, (index) {
-                            return Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  right: index == 3 ? 0 : AppSpacing.sm,
-                                ),
+                          children: [
+                            for (var index = 0; index < 4; index++) ...[
+                              Expanded(
                                 child: TextField(
                                   key: Key('anonymous_pin_digit_$index'),
                                   controller: _pinControllers[index],
@@ -235,8 +232,10 @@ class _AnonymousLoginDialogState extends ConsumerState<AnonymousLoginDialog> {
                                       _onPinChanged(index, value),
                                 ),
                               ),
-                            );
-                          }),
+                              if (index < 3)
+                                const SizedBox(width: AppSpacing.sm),
+                            ],
+                          ],
                         ),
                         if (field.hasError) ...[
                           const SizedBox(height: AppSpacing.xs),

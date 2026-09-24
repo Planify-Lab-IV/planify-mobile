@@ -103,6 +103,15 @@ void main() {
         );
         expect(pinField.keyboardType, TextInputType.number);
       }
+      final firstPinFieldWidth = tester
+          .getSize(find.byKey(const Key('anonymous_pin_digit_0')))
+          .width;
+      for (var index = 1; index < 4; index++) {
+        expect(
+          tester.getSize(find.byKey(Key('anonymous_pin_digit_$index'))).width,
+          closeTo(firstPinFieldWidth, 0.01),
+        );
+      }
       expect(find.byKey(const Key('anonymous_pin_info_card')), findsOneWidget);
       expect(
         find.text('¿Ya ingresaste a este evento con este nombre?'),
