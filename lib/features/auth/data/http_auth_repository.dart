@@ -1,14 +1,17 @@
 import 'package:dio/dio.dart';
 
+import '../../../data/secure_storage.dart';
 import '../domain/auth_repository.dart';
 import '../domain/user_session.dart';
 import 'auth_exceptions.dart';
 
+// Recibe tambien el SecureStorage para poder ir a buscar un token en una sesion anterior
 class HttpAuthRepository implements AuthRepository {
   final Dio dio;
+  final SecureStorage storage;
   UserSession? _currentSession;
 
-  HttpAuthRepository({required this.dio});
+  HttpAuthRepository({required this.dio, required this.storage});
 
   @override
   Future<UserSession> login({
@@ -91,18 +94,49 @@ class HttpAuthRepository implements AuthRepository {
   Future<UserSession?> getCurrentSession() async {
     if (_currentSession != null) return _currentSession;
 
-    // Session restoration requires a backend validation endpoint.
-    return null;
+    final token = await storage.getToken();
+    if (token == null || token.isEmpty) return null;
+
+    try {
+      final response = await dio.get<dynamic>('/auth/me');
+      final data = response.data;
+      if (data is! Map) throw const UnknownAuthException();
+
+      final session = _organizerSessionFromUser(data['user'], token: token);
+      _currentSession = session;
+      return session;
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 401) {
+        throw const InvalidStoredSessionException();
+      }
+      if (_isNetworkError(error)) {
+        throw const NetworkAuthException();
+      }
+      throw const UnknownAuthException();
+    } on AuthException {
+      // Un error definido por nosotros llega al notifier
+      rethrow;
+    } catch (_) {
+      throw const UnknownAuthException();
+    }
   }
 
   OrganizerSession _organizerSessionFromResponse(dynamic data) {
     if (data is! Map) throw const UnknownAuthException();
 
-    final user = data['user'];
     final token = data['token'];
-    if (user is! Map || token is! String || token.isEmpty) {
+    if (token is! String || token.isEmpty) {
       throw const UnknownAuthException();
     }
+
+    return _organizerSessionFromUser(data['user'], token: token);
+  }
+
+  OrganizerSession _organizerSessionFromUser(
+    dynamic user, {
+    required String token,
+  }) {
+    if (user is! Map) throw const UnknownAuthException();
 
     final userId = user['id'];
     final name = user['name'];

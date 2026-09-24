@@ -95,8 +95,19 @@ class AuthNotifier extends StateNotifier<AuthState> {
       } else {
         state = const AuthUnauthenticated();
       }
+    } on InvalidStoredSessionException {
+      try {
+        await _storage.deleteToken();
+        state = const AuthUnauthenticated();
+      } catch (_) {
+        // No confirmamos la sesión como cerrada si el token sigue almacenado.
+        state = const AuthError(AuthFailureReason.unknown);
+      }
+    } on NetworkAuthException {
+      // El token puede seguir siendo válido: se conserva para reintentar.
+      state = const AuthError(AuthFailureReason.networkError);
     } catch (_) {
-      state = const AuthUnauthenticated();
+      state = const AuthError(AuthFailureReason.unknown);
     }
   }
 

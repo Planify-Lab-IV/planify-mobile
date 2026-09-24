@@ -7,7 +7,10 @@ import 'auth_state.dart';
 
 // el provider puede ser accedido globalmente por los widgets
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return HttpAuthRepository(dio: ref.watch(dioClientProvider));
+  return HttpAuthRepository(
+    dio: ref.watch(dioClientProvider),
+    storage: ref.watch(secureStorageProvider),
+  );
 });
 
 final authNotifierProvider = StateNotifierProvider<AuthNotifier, AuthState>((
