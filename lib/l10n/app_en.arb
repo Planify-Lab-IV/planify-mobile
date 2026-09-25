@@ -231,5 +231,8 @@
           "example": "$ 10.00"
         }
       }
-    }
+    },
+    "addExpenseSave": "Save expense",
+    "addExpenseSaving": "Saving expense...",
+    "addExpenseSaveSuccess": "Expense saved (simulated)."
 }

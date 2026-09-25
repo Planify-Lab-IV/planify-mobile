@@ -607,4 +607,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String addExpenseDifferenceExceeded(String amount) {
     return 'Sobran $amount respecto del total.';
   }
+
+  @override
+  String get addExpenseSave => 'Guardar gasto';
+
+  @override
+  String get addExpenseSaving => 'Guardando gasto...';
+
+  @override
+  String get addExpenseSaveSuccess => 'Gasto guardado (simulado).';
 }

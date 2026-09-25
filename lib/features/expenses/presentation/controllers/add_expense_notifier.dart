@@ -99,6 +99,16 @@ class AddExpenseNotifier extends StateNotifier<AddExpenseState> {
     _replaceState(payerDrafts: payerDrafts);
   }
 
+  /// Simula el guardado hasta que exista la persistencia real de gastos.
+  Future<bool> save() async {
+    if (!state.isReadyForSubmission || state.isSaving) return false;
+
+    state = state.copyWith(saveStatus: ExpenseSaveStatus.saving);
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+    state = state.copyWith(saveStatus: ExpenseSaveStatus.success);
+    return true;
+  }
+
   void _ensureKnownParticipant(String participantId) {
     final isKnownParticipant = _participants.any(
       (participant) => participant.id == participantId,
@@ -139,6 +149,7 @@ class AddExpenseNotifier extends StateNotifier<AddExpenseState> {
       payerDrafts: resolvedPayerDrafts,
       payersTotalCents: payersTotalCents,
       differenceCents: resolvedTotalAmountCents - payersTotalCents,
+      saveStatus: state.saveStatus,
     );
   }
 }

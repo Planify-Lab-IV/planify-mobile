@@ -1201,6 +1201,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Sobran {amount} respecto del total.'**
   String addExpenseDifferenceExceeded(String amount);
+
+  /// No description provided for @addExpenseSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar gasto'**
+  String get addExpenseSave;
+
+  /// No description provided for @addExpenseSaving.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardando gasto...'**
+  String get addExpenseSaving;
+
+  /// No description provided for @addExpenseSaveSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Gasto guardado (simulado).'**
+  String get addExpenseSaveSuccess;
 }
 
 class _AppLocalizationsDelegate
