@@ -137,6 +137,33 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets(
+    'opens the date picker from today for a past confirmed schedule',
+    (tester) async {
+      final repository = FakeEventsRepository(
+        delay: Duration.zero,
+        initialEvents: [event()],
+      );
+      final container = ProviderContainer(
+        overrides: [eventsRepositoryProvider.overrideWithValue(repository)],
+      );
+      addTearDown(container.dispose);
+
+      await pumpCard(
+        tester,
+        container,
+        initialStartDateTime: DateTime.now().subtract(const Duration(days: 1)),
+      );
+      await tester.pump();
+
+      await tester.tap(find.byKey(const Key('schedule_select_date_button')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(DatePickerDialog), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('confirms the selected schedule successfully', (tester) async {
     final repository = FakeEventsRepository(
       delay: Duration.zero,
