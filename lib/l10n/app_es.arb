@@ -234,7 +234,7 @@
       },
       "addExpenseSave": "Guardar gasto",
       "addExpenseSaving": "Guardando gasto...",
-      "addExpenseSaveSuccess": "Gasto guardado (simulado)."
+      "addExpenseSaveSuccess": "Gasto guardado (simulado).",
       "scheduleConfirmationNotFoundError": "No se encontrá el evento.",
       "scheduleConfirmationNetworkError": "No se pudo confirmar el horario por un problema de conexión.",
       "scheduleConfirmationGenericError": "No se pudo confirmar el horario. Intentá nuevamente.",
