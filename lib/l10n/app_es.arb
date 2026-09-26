@@ -187,6 +187,54 @@
       "scheduleConfirm": "Confirmar horario",
       "scheduleConfirmationValidationError": "Elegí una fecha y hora futuras para confirmar el evento.",
       "scheduleConfirmationAuthorizationError": "Solo el organizador puede confirmar el horario.",
+      "scheduleConfirmationNotFoundError": "No se encontrÃ³ el evento.",
+      "scheduleConfirmationNetworkError": "No se pudo confirmar el horario por un problema de conexiÃ³n.",
+      "scheduleConfirmationGenericError": "No se pudo confirmar el horario. IntentÃ¡ nuevamente.",
+      "scheduleConfirmationSuccess": "El horario del evento fue confirmado.",
+      "addExpenseDescriptionLabel": "Descripción del gasto",
+      "addExpenseDescriptionHint": "Ej. Cena de fin de año",
+      "addExpenseDescriptionRequired": "Ingresá una descripción para el gasto.",
+      "addExpenseTotalLabel": "Total del gasto",
+      "addExpenseTotalHint": "Ej. 2.500,00",
+      "addExpenseTotalRequired": "Ingresá el total del gasto.",
+      "addExpenseTotalInvalid": "Ingresá un total válido mayor a cero.",
+      "addExpensePayersTitle": "¿Quiénes pagaron?",
+      "addExpensePayersSubtitle": "Seleccioná una o más personas que hicieron el pago.",
+      "addExpenseDialogTitle": "Agregar gasto",
+      "addExpenseCloseTooltip": "Cerrar",
+      "addExpensePayerAmountsTitle": "Montos pagados",
+      "addExpensePayerAmountLabel": "Monto de {name}",
+      "@addExpensePayerAmountLabel": {
+        "placeholders": {
+          "name": {
+            "type": "String",
+            "example": "Lucía"
+          }
+        }
+      },
+      "addExpensePayerAmountInvalid": "Ingresá un monto válido.",
+      "addExpenseSplitEvenly": "Repartir en partes iguales",
+      "addExpenseDifferenceMissing": "Faltan {amount} para completar el total.",
+      "@addExpenseDifferenceMissing": {
+        "placeholders": {
+          "amount": {
+            "type": "String",
+            "example": "$ 10,00"
+          }
+        }
+      },
+      "addExpenseDifferenceExceeded": "Sobran {amount} respecto del total.",
+      "@addExpenseDifferenceExceeded": {
+        "placeholders": {
+          "amount": {
+            "type": "String",
+            "example": "$ 10,00"
+          }
+        }
+      },
+      "addExpenseSave": "Guardar gasto",
+      "addExpenseSaving": "Guardando gasto...",
+      "addExpenseSaveSuccess": "Gasto guardado (simulado).",
       "scheduleConfirmationNotFoundError": "No se encontrá el evento.",
       "scheduleConfirmationNetworkError": "No se pudo confirmar el horario por un problema de conexión.",
       "scheduleConfirmationGenericError": "No se pudo confirmar el horario. Intentá nuevamente.",
