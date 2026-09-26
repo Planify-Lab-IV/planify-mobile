@@ -20,6 +20,7 @@ void main() {
       'updatedAt': '2026-09-09T12:00:00.000Z',
       'participants': [
         {
+          'id': 'participant-1',
           'eventId': 'evt-1',
           'userId': 'usr-1',
           'username': 'dev1',
@@ -27,6 +28,7 @@ void main() {
           'isOrganizer': true,
         },
         {
+          'id': 'participant-2',
           'eventId': 'evt-1',
           'userId': null,
           'username': 'Invitado',
@@ -97,6 +99,7 @@ void main() {
       expect(event.startDateTime, isNull);
       expect(event.updatedAt, DateTime.parse('2026-09-09T12:00:00.000Z'));
       expect(event.participants, hasLength(2));
+      expect(event.participants.first.id, 'participant-1');
       expect(event.participants.first.username, 'dev1');
       expect(event.participants.last.userId, isNull);
       expect(event.participants.last.isAnonymous, isTrue);
@@ -190,16 +193,37 @@ void main() {
           expect(event.createdAt, DateTime.parse('2026-09-09T12:00:00.000Z'));
           expect(event.updatedAt, DateTime.parse('2026-09-09T12:00:00.000Z'));
           expect(event.participants, hasLength(2));
+          expect(event.participants[0].id, 'participant-1');
           expect(event.participants[0].userId, 'usr-1');
           expect(event.participants[0].username, 'dev1');
           expect(event.participants[0].isAnonymous, isFalse);
           expect(event.participants[0].isOrganizer, isTrue);
           expect(event.participants[1].userId, isNull);
+          expect(event.participants[1].id, 'participant-2');
           expect(event.participants[1].username, 'Invitado');
           expect(event.participants[1].isAnonymous, isTrue);
           expect(event.participants[1].isOrganizer, isFalse);
         },
       );
+
+      test('rejects a participant response without its ID', () async {
+        final participants = eventResponse['participants']! as List<dynamic>;
+        final responseWithoutParticipantId =
+            Map<String, dynamic>.from(eventResponse)
+              ..['participants'] = [
+                Map<String, dynamic>.from(participants.first as Map)
+                  ..remove('id'),
+                participants[1],
+              ];
+        final repository = HttpEventsRepository(
+          dio: dioResolving(responseWithoutParticipantId, null),
+        );
+
+        expect(
+          () => repository.getEvent('evt-1'),
+          throwsA(isA<InvalidEventResponseException>()),
+        );
+      });
 
       test('maps cancelled status correctly', () async {
         final cancelledResponse = Map<String, dynamic>.from(eventResponse)

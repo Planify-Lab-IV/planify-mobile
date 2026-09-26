@@ -1079,7 +1079,7 @@ abstract class AppLocalizations {
   /// No description provided for @scheduleConfirmationNotFoundError.
   ///
   /// In es, this message translates to:
-  /// **'No se encontrá el evento.'**
+  /// **'No se encontró el evento.'**
   String get scheduleConfirmationNotFoundError;
 
   /// No description provided for @scheduleConfirmationNetworkError.
@@ -1099,6 +1099,174 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'El horario del evento fue confirmado.'**
   String get scheduleConfirmationSuccess;
+
+  /// No description provided for @addExpenseDescriptionLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Descripción del gasto'**
+  String get addExpenseDescriptionLabel;
+
+  /// No description provided for @addExpenseDescriptionHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Cena de fin de año'**
+  String get addExpenseDescriptionHint;
+
+  /// No description provided for @addExpenseDescriptionRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá una descripción para el gasto.'**
+  String get addExpenseDescriptionRequired;
+
+  /// No description provided for @addExpenseTotalLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Total del gasto'**
+  String get addExpenseTotalLabel;
+
+  /// No description provided for @addExpenseTotalHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. 2.500,00'**
+  String get addExpenseTotalHint;
+
+  /// No description provided for @addExpenseTotalRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá el total del gasto.'**
+  String get addExpenseTotalRequired;
+
+  /// No description provided for @addExpenseTotalInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá un total válido mayor a cero.'**
+  String get addExpenseTotalInvalid;
+
+  /// No description provided for @addExpensePayersTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Quiénes pagaron?'**
+  String get addExpensePayersTitle;
+
+  /// No description provided for @addExpensePayersSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccioná una o más personas que hicieron el pago.'**
+  String get addExpensePayersSubtitle;
+
+  /// No description provided for @addExpenseDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar gasto'**
+  String get addExpenseDialogTitle;
+
+  /// No description provided for @addExpenseCloseTooltip.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar'**
+  String get addExpenseCloseTooltip;
+
+  /// No description provided for @addExpensePayerAmountsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Montos pagados'**
+  String get addExpensePayerAmountsTitle;
+
+  /// No description provided for @addExpensePayerAmountLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto de {name}'**
+  String addExpensePayerAmountLabel(String name);
+
+  /// No description provided for @addExpensePayerAmountInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá un monto válido.'**
+  String get addExpensePayerAmountInvalid;
+
+  /// No description provided for @addExpenseSplitEvenly.
+  ///
+  /// In es, this message translates to:
+  /// **'Repartir en partes iguales'**
+  String get addExpenseSplitEvenly;
+
+  /// No description provided for @addExpenseDifferenceMissing.
+  ///
+  /// In es, this message translates to:
+  /// **'Faltan {amount} para completar el total.'**
+  String addExpenseDifferenceMissing(String amount);
+
+  /// No description provided for @addExpenseDifferenceExceeded.
+  ///
+  /// In es, this message translates to:
+  /// **'Sobran {amount} respecto del total.'**
+  String addExpenseDifferenceExceeded(String amount);
+
+  /// No description provided for @addExpenseDebtorsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Quiénes deben?'**
+  String get addExpenseDebtorsTitle;
+
+  /// No description provided for @addExpenseDebtorsSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccioná una o más personas que deben asumir el gasto.'**
+  String get addExpenseDebtorsSubtitle;
+
+  /// No description provided for @addExpenseDebtorAmountsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Montos adeudados'**
+  String get addExpenseDebtorAmountsTitle;
+
+  /// No description provided for @addExpenseDebtorAmountLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto de {name}'**
+  String addExpenseDebtorAmountLabel(String name);
+
+  /// No description provided for @addExpenseDebtorAmountInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá un monto válido.'**
+  String get addExpenseDebtorAmountInvalid;
+
+  /// No description provided for @addExpenseSplitDebtorsEvenly.
+  ///
+  /// In es, this message translates to:
+  /// **'Repartir en partes iguales'**
+  String get addExpenseSplitDebtorsEvenly;
+
+  /// No description provided for @addExpenseDebtorDifferenceMissing.
+  ///
+  /// In es, this message translates to:
+  /// **'Faltan {amount} para completar el total.'**
+  String addExpenseDebtorDifferenceMissing(String amount);
+
+  /// No description provided for @addExpenseDebtorDifferenceExceeded.
+  ///
+  /// In es, this message translates to:
+  /// **'Sobran {amount} respecto del total.'**
+  String addExpenseDebtorDifferenceExceeded(String amount);
+
+  /// No description provided for @addExpenseSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar gasto'**
+  String get addExpenseSave;
+
+  /// No description provided for @addExpenseSaving.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardando gasto...'**
+  String get addExpenseSaving;
+
+  /// No description provided for @addExpenseSaveSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Gasto guardado (simulado).'**
+  String get addExpenseSaveSuccess;
 }
 
 class _AppLocalizationsDelegate

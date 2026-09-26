@@ -190,5 +190,81 @@
     "scheduleConfirmationNotFoundError": "The event was not found.",
     "scheduleConfirmationNetworkError": "The schedule could not be confirmed because of a network problem.",
     "scheduleConfirmationGenericError": "The schedule could not be confirmed. Please try again.",
-    "scheduleConfirmationSuccess": "The event schedule was confirmed."
+    "scheduleConfirmationSuccess": "The event schedule was confirmed.",
+    "addExpenseDescriptionLabel": "Expense description",
+    "addExpenseDescriptionHint": "e.g. Year-end dinner",
+    "addExpenseDescriptionRequired": "Enter a description for the expense.",
+    "addExpenseTotalLabel": "Expense total",
+    "addExpenseTotalHint": "e.g. 2,500.00",
+    "addExpenseTotalRequired": "Enter the expense total.",
+    "addExpenseTotalInvalid": "Enter a valid total greater than zero.",
+    "addExpensePayersTitle": "Who paid?",
+    "addExpensePayersSubtitle": "Select one or more people who made the payment.",
+    "addExpenseDialogTitle": "Add expense",
+    "addExpenseCloseTooltip": "Close",
+    "addExpensePayerAmountsTitle": "Amounts paid",
+    "addExpensePayerAmountLabel": "{name}'s amount",
+    "@addExpensePayerAmountLabel": {
+      "placeholders": {
+        "name": {
+          "type": "String",
+          "example": "Lucía"
+        }
+      }
+    },
+    "addExpensePayerAmountInvalid": "Enter a valid amount.",
+    "addExpenseSplitEvenly": "Split equally",
+    "addExpenseDifferenceMissing": "{amount} is still needed to reach the total.",
+    "@addExpenseDifferenceMissing": {
+      "placeholders": {
+        "amount": {
+          "type": "String",
+          "example": "$ 10.00"
+        }
+      }
+    },
+    "addExpenseDifferenceExceeded": "{amount} exceeds the total.",
+    "@addExpenseDifferenceExceeded": {
+      "placeholders": {
+        "amount": {
+          "type": "String",
+          "example": "$ 10.00"
+        }
+      }
+    },
+    "addExpenseDebtorsTitle": "Who owes?",
+    "addExpenseDebtorsSubtitle": "Select one or more people who need to cover the expense.",
+    "addExpenseDebtorAmountsTitle": "Amounts owed",
+    "addExpenseDebtorAmountLabel": "{name}'s amount",
+    "@addExpenseDebtorAmountLabel": {
+      "placeholders": {
+        "name": {
+          "type": "String",
+          "example": "Lucía"
+        }
+      }
+    },
+    "addExpenseDebtorAmountInvalid": "Enter a valid amount.",
+    "addExpenseSplitDebtorsEvenly": "Split equally",
+    "addExpenseDebtorDifferenceMissing": "{amount} is still needed to reach the total.",
+    "@addExpenseDebtorDifferenceMissing": {
+      "placeholders": {
+        "amount": {
+          "type": "String",
+          "example": "$ 10.00"
+        }
+      }
+    },
+    "addExpenseDebtorDifferenceExceeded": "{amount} exceeds the total.",
+    "@addExpenseDebtorDifferenceExceeded": {
+      "placeholders": {
+        "amount": {
+          "type": "String",
+          "example": "$ 10.00"
+        }
+      }
+    },
+    "addExpenseSave": "Save expense",
+    "addExpenseSaving": "Saving expense...",
+    "addExpenseSaveSuccess": "Expense saved (simulated)."
 }
