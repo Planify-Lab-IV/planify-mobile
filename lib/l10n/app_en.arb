@@ -266,5 +266,29 @@
     },
     "addExpenseSave": "Save expense",
     "addExpenseSaving": "Saving expense...",
-    "addExpenseSaveSuccess": "Expense saved (simulated)."
+    "addExpenseSaveSuccess": "Expense saved (simulated).",
+    "eventDebtsTitle": "Event debts",
+    "eventDebtsLoading": "Loading event debts...",
+    "eventDebtDescription": "{debtorName} owes {amount} to {creditorName}",
+    "@eventDebtDescription": {
+      "placeholders": {
+        "debtorName": {
+          "type": "String",
+          "example": "Ana"
+        },
+        "amount": {
+          "type": "String",
+          "example": "$ 500.00"
+        },
+        "creditorName": {
+          "type": "String",
+          "example": "Marcos"
+        }
+      }
+    },
+    "eventDebtPending": "Pending",
+    "eventDebtSettled": "Settled",
+    "eventDebtsAllSettled": "All settled",
+    "eventDebtsEmpty": "There are no debts in this event yet.",
+    "eventDebtsLoadError": "Could not load this event's debts. Please try again."
 }

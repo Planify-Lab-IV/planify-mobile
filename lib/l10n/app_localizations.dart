@@ -1267,6 +1267,58 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Gasto guardado (simulado).'**
   String get addExpenseSaveSuccess;
+
+  /// No description provided for @eventDebtsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Deudas del evento'**
+  String get eventDebtsTitle;
+
+  /// No description provided for @eventDebtsLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando deudas del evento...'**
+  String get eventDebtsLoading;
+
+  /// No description provided for @eventDebtDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'{debtorName} le debe {amount} a {creditorName}'**
+  String eventDebtDescription(
+    String debtorName,
+    String amount,
+    String creditorName,
+  );
+
+  /// No description provided for @eventDebtPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Pendiente'**
+  String get eventDebtPending;
+
+  /// No description provided for @eventDebtSettled.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldada'**
+  String get eventDebtSettled;
+
+  /// No description provided for @eventDebtsAllSettled.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo saldado'**
+  String get eventDebtsAllSettled;
+
+  /// No description provided for @eventDebtsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay deudas en este evento.'**
+  String get eventDebtsEmpty;
+
+  /// No description provided for @eventDebtsLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron cargar las deudas del evento. Intentá nuevamente.'**
+  String get eventDebtsLoadError;
 }
 
 class _AppLocalizationsDelegate

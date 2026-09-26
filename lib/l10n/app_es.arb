@@ -270,5 +270,29 @@
       "scheduleConfirmationNotFoundError": "No se encontró el evento.",
       "scheduleConfirmationNetworkError": "No se pudo confirmar el horario por un problema de conexión.",
       "scheduleConfirmationGenericError": "No se pudo confirmar el horario. Intentá nuevamente.",
-      "scheduleConfirmationSuccess": "El horario del evento fue confirmado."
+      "scheduleConfirmationSuccess": "El horario del evento fue confirmado.",
+      "eventDebtsTitle": "Deudas del evento",
+      "eventDebtsLoading": "Cargando deudas del evento...",
+      "eventDebtDescription": "{debtorName} le debe {amount} a {creditorName}",
+      "@eventDebtDescription": {
+        "placeholders": {
+          "debtorName": {
+            "type": "String",
+            "example": "Ana"
+          },
+          "amount": {
+            "type": "String",
+            "example": "$ 500,00"
+          },
+          "creditorName": {
+            "type": "String",
+            "example": "Marcos"
+          }
+        }
+      },
+      "eventDebtPending": "Pendiente",
+      "eventDebtSettled": "Saldada",
+      "eventDebtsAllSettled": "Todo saldado",
+      "eventDebtsEmpty": "Todavía no hay deudas en este evento.",
+      "eventDebtsLoadError": "No se pudieron cargar las deudas del evento. Intentá nuevamente."
 }

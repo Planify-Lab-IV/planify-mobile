@@ -647,4 +647,35 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get addExpenseSaveSuccess => 'Gasto guardado (simulado).';
+
+  @override
+  String get eventDebtsTitle => 'Deudas del evento';
+
+  @override
+  String get eventDebtsLoading => 'Cargando deudas del evento...';
+
+  @override
+  String eventDebtDescription(
+    String debtorName,
+    String amount,
+    String creditorName,
+  ) {
+    return '$debtorName le debe $amount a $creditorName';
+  }
+
+  @override
+  String get eventDebtPending => 'Pendiente';
+
+  @override
+  String get eventDebtSettled => 'Saldada';
+
+  @override
+  String get eventDebtsAllSettled => 'Todo saldado';
+
+  @override
+  String get eventDebtsEmpty => 'Todavía no hay deudas en este evento.';
+
+  @override
+  String get eventDebtsLoadError =>
+      'No se pudieron cargar las deudas del evento. Intentá nuevamente.';
 }
