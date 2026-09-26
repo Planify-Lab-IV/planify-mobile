@@ -541,4 +541,129 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scheduleConfirmationSuccess => 'The event schedule was confirmed.';
+
+  @override
+  String get addExpenseDescriptionLabel => 'Expense description';
+
+  @override
+  String get addExpenseDescriptionHint => 'e.g. Year-end dinner';
+
+  @override
+  String get addExpenseDescriptionRequired =>
+      'Enter a description for the expense.';
+
+  @override
+  String get addExpenseTotalLabel => 'Expense total';
+
+  @override
+  String get addExpenseTotalHint => 'e.g. 2,500.00';
+
+  @override
+  String get addExpenseTotalRequired => 'Enter the expense total.';
+
+  @override
+  String get addExpenseTotalInvalid => 'Enter a valid total greater than zero.';
+
+  @override
+  String get addExpensePayersTitle => 'Who paid?';
+
+  @override
+  String get addExpensePayersSubtitle =>
+      'Select one or more people who made the payment.';
+
+  @override
+  String get addExpenseDialogTitle => 'Add expense';
+
+  @override
+  String get addExpenseCloseTooltip => 'Close';
+
+  @override
+  String get addExpensePayerAmountsTitle => 'Amounts paid';
+
+  @override
+  String addExpensePayerAmountLabel(String name) {
+    return '$name\'s amount';
+  }
+
+  @override
+  String get addExpensePayerAmountInvalid => 'Enter a valid amount.';
+
+  @override
+  String get addExpenseSplitEvenly => 'Split equally';
+
+  @override
+  String addExpenseDifferenceMissing(String amount) {
+    return '$amount is still needed to reach the total.';
+  }
+
+  @override
+  String addExpenseDifferenceExceeded(String amount) {
+    return '$amount exceeds the total.';
+  }
+
+  @override
+  String get tasksLoadError => 'Tasks could not be loaded.';
+
+  @override
+  String get taskStatusUnassigned => 'Unassigned';
+
+  @override
+  String get taskStatusPending => 'Pending';
+
+  @override
+  String get taskStatusCompleted => 'Completed';
+
+  @override
+  String taskAssignedTo(String name) {
+    return 'Assigned to $name';
+  }
+
+  @override
+  String get taskClaimAction => 'Claim';
+
+  @override
+  String get taskCompleteAction => 'Complete';
+
+  @override
+  String get taskReassignAction => 'Reassign';
+
+  @override
+  String get tasksOperationError =>
+      'The task could not be updated. Please try again.';
+
+  @override
+  String get createTaskDialogTitle => 'Add task';
+
+  @override
+  String get createTaskTitleLabel => 'What needs to be done?';
+
+  @override
+  String get createTaskTitleHint => 'e.g. Buy ice';
+
+  @override
+  String get createTaskTitleRequired => 'Enter a task title.';
+
+  @override
+  String get createTaskSubmit => 'Create task';
+
+  @override
+  String get reassignTaskDialogTitle => 'Reassign task';
+
+  @override
+  String get reassignTaskParticipantLabel => 'Choose who will take care of it.';
+
+  @override
+  String get reassignTaskParticipantRequired => 'Choose a person to continue.';
+
+  @override
+  String get reassignTaskConfirm => 'Reassign';
+
+  @override
+  String get addExpenseSave => 'Save expense';
+
+  @override
+  String get addExpenseSaving => 'Saving expense...';
+
+  @override
+  String get addExpenseSaveSuccess => 'Expense saved (simulated).';
 }

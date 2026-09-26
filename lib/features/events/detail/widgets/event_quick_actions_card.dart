@@ -3,14 +3,37 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../domain/event_participant.dart';
+import '../../../expenses/presentation/widgets/add_expense_dialog.dart';
 
 class EventQuickActionsCard extends StatelessWidget {
   final bool isCancelled;
+  final List<EventParticipant> participants;
+  final VoidCallback? onAddTask;
 
-  const EventQuickActionsCard({super.key, this.isCancelled = false});
+  const EventQuickActionsCard({
+    super.key,
+    required this.participants,
+    this.onAddTask,
+    this.isCancelled = false,
+  });
 
-  void _handleActionTap(BuildContext context, String actionLabel) {
+  void _handleActionTap(
+    BuildContext context, {
+    required bool isAddExpense,
+    required bool isAddTask,
+  }) {
     if (isCancelled) return;
+
+    if (isAddExpense) {
+      AddExpenseDialog.show(context, participants: participants);
+      return;
+    }
+
+    if (isAddTask) {
+      onAddTask?.call();
+      return;
+    }
 
     final i18n = AppLocalizations.of(context)!;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -59,12 +82,14 @@ class EventQuickActionsCard extends StatelessWidget {
                   key: const Key('quick_action_add_expense'),
                   icon: Icons.receipt_long_outlined,
                   label: i18n.quickActionAddExpense,
+                  isAddExpense: true,
                 ),
                 _buildActionButton(
                   context,
                   key: const Key('quick_action_add_task'),
                   icon: Icons.add_task_outlined,
                   label: i18n.quickActionAddTask,
+                  isAddTask: true,
                 ),
                 _buildActionButton(
                   context,
@@ -85,6 +110,8 @@ class EventQuickActionsCard extends StatelessWidget {
     required Key key,
     required IconData icon,
     required String label,
+    bool isAddExpense = false,
+    bool isAddTask = false,
   }) {
     final theme = Theme.of(context);
     final isEnabled = !isCancelled;
@@ -102,7 +129,13 @@ class EventQuickActionsCard extends StatelessWidget {
       child: InkWell(
         key: key,
         borderRadius: BorderRadius.circular(AppRadius.sm),
-        onTap: isEnabled ? () => _handleActionTap(context, label) : null,
+        onTap: isEnabled
+            ? () => _handleActionTap(
+                context,
+                isAddExpense: isAddExpense,
+                isAddTask: isAddTask,
+              )
+            : null,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             vertical: AppSpacing.xs,

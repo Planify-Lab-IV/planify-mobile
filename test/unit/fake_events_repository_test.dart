@@ -34,6 +34,8 @@ void main() {
         expect(event.organizerId, equals('org-123'));
         expect(event.groupId, equals('grp-1'));
         expect(event.status, equals(EventStatus.active));
+        expect(event.participants, hasLength(3));
+        expect(event.participants.first.id, 'participant-org-${event.id}');
 
         final fetched = await repository.getEvent(event.id);
         expect(fetched, equals(event));
@@ -57,6 +59,32 @@ void main() {
         expect(event.name, equals('Asado de Fin de Año'));
         expect(event.location, equals('Club Social'));
         expect(event.groupId, startsWith('grp-'));
+      },
+    );
+
+    test(
+      'createEvent usa al organizador configurado como participante del evento',
+      () async {
+        const currentUserId = 'user-from-current-session';
+        final repositoryForCurrentUser = FakeEventsRepository(
+          delay: Duration.zero,
+          organizerId: currentUserId,
+        );
+
+        final event = await repositoryForCurrentUser.createEvent(
+          const EventDraft(
+            name: 'Evento de prueba',
+            location: 'Casa',
+            selectedGroupId: 'grp-1',
+          ),
+        );
+        final organizerParticipant = event.participants.singleWhere(
+          (participant) => participant.isOrganizer,
+        );
+
+        expect(event.organizerId, currentUserId);
+        expect(organizerParticipant.userId, currentUserId);
+        expect(organizerParticipant.eventId, event.id);
       },
     );
 
@@ -246,6 +274,25 @@ void main() {
         expect(evt123, isNotNull);
         expect(evt123?.name, equals('Cumpleaños de Lucas'));
         expect(evt123?.status, equals(EventStatus.active));
+        expect(evt123?.participants, hasLength(3));
+        expect(
+          evt123?.participants.map((participant) => participant.id).toSet(),
+          hasLength(3),
+        );
+        expect(
+          evt123?.participants.every(
+            (participant) => participant.eventId == evt123.id,
+          ),
+          isTrue,
+        );
+        expect(
+          evt123?.participants.where((participant) => participant.isOrganizer),
+          hasLength(1),
+        );
+        expect(
+          evt123?.participants.any((participant) => participant.isAnonymous),
+          isTrue,
+        );
 
         final evtCumple = await defaultRepo.getEvent('evt-cumple-lucas');
         expect(evtCumple, isNotNull);

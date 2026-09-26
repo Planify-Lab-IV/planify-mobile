@@ -535,7 +535,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Solo el organizador puede confirmar el horario.';
 
   @override
-  String get scheduleConfirmationNotFoundError => 'No se encontrá el evento.';
+  String get scheduleConfirmationNotFoundError => 'No se encontró el evento.';
 
   @override
   String get scheduleConfirmationNetworkError =>
@@ -548,4 +548,130 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get scheduleConfirmationSuccess =>
       'El horario del evento fue confirmado.';
+
+  @override
+  String get addExpenseDescriptionLabel => 'Descripción del gasto';
+
+  @override
+  String get addExpenseDescriptionHint => 'Ej. Cena de fin de año';
+
+  @override
+  String get addExpenseDescriptionRequired =>
+      'Ingresá una descripción para el gasto.';
+
+  @override
+  String get addExpenseTotalLabel => 'Total del gasto';
+
+  @override
+  String get addExpenseTotalHint => 'Ej. 2.500,00';
+
+  @override
+  String get addExpenseTotalRequired => 'Ingresá el total del gasto.';
+
+  @override
+  String get addExpenseTotalInvalid => 'Ingresá un total válido mayor a cero.';
+
+  @override
+  String get addExpensePayersTitle => '¿Quiénes pagaron?';
+
+  @override
+  String get addExpensePayersSubtitle =>
+      'Seleccioná una o más personas que hicieron el pago.';
+
+  @override
+  String get addExpenseDialogTitle => 'Agregar gasto';
+
+  @override
+  String get addExpenseCloseTooltip => 'Cerrar';
+
+  @override
+  String get addExpensePayerAmountsTitle => 'Montos pagados';
+
+  @override
+  String addExpensePayerAmountLabel(String name) {
+    return 'Monto de $name';
+  }
+
+  @override
+  String get addExpensePayerAmountInvalid => 'Ingresá un monto válido.';
+
+  @override
+  String get addExpenseSplitEvenly => 'Repartir en partes iguales';
+
+  @override
+  String addExpenseDifferenceMissing(String amount) {
+    return 'Faltan $amount para completar el total.';
+  }
+
+  @override
+  String addExpenseDifferenceExceeded(String amount) {
+    return 'Sobran $amount respecto del total.';
+  }
+
+  @override
+  String get tasksLoadError => 'No se pudieron cargar las tareas.';
+
+  @override
+  String get taskStatusUnassigned => 'Sin asignar';
+
+  @override
+  String get taskStatusPending => 'Pendiente';
+
+  @override
+  String get taskStatusCompleted => 'Completada';
+
+  @override
+  String taskAssignedTo(String name) {
+    return 'Asignada a $name';
+  }
+
+  @override
+  String get taskClaimAction => 'Tomar';
+
+  @override
+  String get taskCompleteAction => 'Completar';
+
+  @override
+  String get taskReassignAction => 'Reasignar';
+
+  @override
+  String get tasksOperationError =>
+      'No se pudo actualizar la tarea. Intentá nuevamente.';
+
+  @override
+  String get createTaskDialogTitle => 'Agregar tarea';
+
+  @override
+  String get createTaskTitleLabel => '¿Qué hay que hacer?';
+
+  @override
+  String get createTaskTitleHint => 'Ej. Comprar hielo';
+
+  @override
+  String get createTaskTitleRequired => 'Ingresá un título para la tarea.';
+
+  @override
+  String get createTaskSubmit => 'Crear tarea';
+
+  @override
+  String get reassignTaskDialogTitle => 'Reasignar tarea';
+
+  @override
+  String get reassignTaskParticipantLabel => 'Elegí quién se hará cargo.';
+
+  @override
+  String get reassignTaskParticipantRequired =>
+      'Elegí una persona para continuar.';
+
+  @override
+  String get reassignTaskConfirm => 'Reasignar';
+
+  @override
+  String get addExpenseSave => 'Guardar gasto';
+
+  @override
+  String get addExpenseSaving => 'Guardando gasto...';
+
+  @override
+  String get addExpenseSaveSuccess => 'Gasto guardado (simulado).';
 }

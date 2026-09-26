@@ -1,4 +1,5 @@
 class EventParticipant {
+  final String id;
   final String eventId;
   final String? userId;
   final String username;
@@ -6,6 +7,7 @@ class EventParticipant {
   final bool isOrganizer;
 
   const EventParticipant({
+    required this.id,
     required this.eventId,
     required this.userId,
     required this.username,
@@ -18,6 +20,7 @@ class EventParticipant {
       identical(this, other) ||
       other is EventParticipant &&
           runtimeType == other.runtimeType &&
+          id == other.id &&
           eventId == other.eventId &&
           userId == other.userId &&
           username == other.username &&
@@ -26,6 +29,7 @@ class EventParticipant {
 
   @override
   int get hashCode =>
+      id.hashCode ^
       eventId.hashCode ^
       userId.hashCode ^
       username.hashCode ^
@@ -34,6 +38,6 @@ class EventParticipant {
 
   @override
   String toString() {
-    return 'EventParticipant(eventId: $eventId, userId: $userId, username: $username, isAnonymous: $isAnonymous, isOrganizer: $isOrganizer)';
+    return 'EventParticipant(id: $id, eventId: $eventId, userId: $userId, username: $username, isAnonymous: $isAnonymous, isOrganizer: $isOrganizer)';
   }
 }

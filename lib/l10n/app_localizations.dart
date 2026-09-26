@@ -1079,7 +1079,7 @@ abstract class AppLocalizations {
   /// No description provided for @scheduleConfirmationNotFoundError.
   ///
   /// In es, this message translates to:
-  /// **'No se encontrá el evento.'**
+  /// **'No se encontró el evento.'**
   String get scheduleConfirmationNotFoundError;
 
   /// No description provided for @scheduleConfirmationNetworkError.
@@ -1099,6 +1099,234 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'El horario del evento fue confirmado.'**
   String get scheduleConfirmationSuccess;
+
+  /// No description provided for @addExpenseDescriptionLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Descripción del gasto'**
+  String get addExpenseDescriptionLabel;
+
+  /// No description provided for @addExpenseDescriptionHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Cena de fin de año'**
+  String get addExpenseDescriptionHint;
+
+  /// No description provided for @addExpenseDescriptionRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá una descripción para el gasto.'**
+  String get addExpenseDescriptionRequired;
+
+  /// No description provided for @addExpenseTotalLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Total del gasto'**
+  String get addExpenseTotalLabel;
+
+  /// No description provided for @addExpenseTotalHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. 2.500,00'**
+  String get addExpenseTotalHint;
+
+  /// No description provided for @addExpenseTotalRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá el total del gasto.'**
+  String get addExpenseTotalRequired;
+
+  /// No description provided for @addExpenseTotalInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá un total válido mayor a cero.'**
+  String get addExpenseTotalInvalid;
+
+  /// No description provided for @addExpensePayersTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Quiénes pagaron?'**
+  String get addExpensePayersTitle;
+
+  /// No description provided for @addExpensePayersSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccioná una o más personas que hicieron el pago.'**
+  String get addExpensePayersSubtitle;
+
+  /// No description provided for @addExpenseDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar gasto'**
+  String get addExpenseDialogTitle;
+
+  /// No description provided for @addExpenseCloseTooltip.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar'**
+  String get addExpenseCloseTooltip;
+
+  /// No description provided for @addExpensePayerAmountsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Montos pagados'**
+  String get addExpensePayerAmountsTitle;
+
+  /// No description provided for @addExpensePayerAmountLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto de {name}'**
+  String addExpensePayerAmountLabel(String name);
+
+  /// No description provided for @addExpensePayerAmountInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá un monto válido.'**
+  String get addExpensePayerAmountInvalid;
+
+  /// No description provided for @addExpenseSplitEvenly.
+  ///
+  /// In es, this message translates to:
+  /// **'Repartir en partes iguales'**
+  String get addExpenseSplitEvenly;
+
+  /// No description provided for @addExpenseDifferenceMissing.
+  ///
+  /// In es, this message translates to:
+  /// **'Faltan {amount} para completar el total.'**
+  String addExpenseDifferenceMissing(String amount);
+
+  /// No description provided for @addExpenseDifferenceExceeded.
+  ///
+  /// In es, this message translates to:
+  /// **'Sobran {amount} respecto del total.'**
+  String addExpenseDifferenceExceeded(String amount);
+
+  /// No description provided for @tasksLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron cargar las tareas.'**
+  String get tasksLoadError;
+
+  /// No description provided for @taskStatusUnassigned.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin asignar'**
+  String get taskStatusUnassigned;
+
+  /// No description provided for @taskStatusPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Pendiente'**
+  String get taskStatusPending;
+
+  /// No description provided for @taskStatusCompleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Completada'**
+  String get taskStatusCompleted;
+
+  /// No description provided for @taskAssignedTo.
+  ///
+  /// In es, this message translates to:
+  /// **'Asignada a {name}'**
+  String taskAssignedTo(String name);
+
+  /// No description provided for @taskClaimAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Tomar'**
+  String get taskClaimAction;
+
+  /// No description provided for @taskCompleteAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Completar'**
+  String get taskCompleteAction;
+
+  /// No description provided for @taskReassignAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Reasignar'**
+  String get taskReassignAction;
+
+  /// No description provided for @tasksOperationError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo actualizar la tarea. Intentá nuevamente.'**
+  String get tasksOperationError;
+
+  /// No description provided for @createTaskDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar tarea'**
+  String get createTaskDialogTitle;
+
+  /// No description provided for @createTaskTitleLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué hay que hacer?'**
+  String get createTaskTitleLabel;
+
+  /// No description provided for @createTaskTitleHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Comprar hielo'**
+  String get createTaskTitleHint;
+
+  /// No description provided for @createTaskTitleRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá un título para la tarea.'**
+  String get createTaskTitleRequired;
+
+  /// No description provided for @createTaskSubmit.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear tarea'**
+  String get createTaskSubmit;
+
+  /// No description provided for @reassignTaskDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Reasignar tarea'**
+  String get reassignTaskDialogTitle;
+
+  /// No description provided for @reassignTaskParticipantLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegí quién se hará cargo.'**
+  String get reassignTaskParticipantLabel;
+
+  /// No description provided for @reassignTaskParticipantRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegí una persona para continuar.'**
+  String get reassignTaskParticipantRequired;
+
+  /// No description provided for @reassignTaskConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Reasignar'**
+  String get reassignTaskConfirm;
+
+  /// No description provided for @addExpenseSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar gasto'**
+  String get addExpenseSave;
+
+  /// No description provided for @addExpenseSaving.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardando gasto...'**
+  String get addExpenseSaving;
+
+  /// No description provided for @addExpenseSaveSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Gasto guardado (simulado).'**
+  String get addExpenseSaveSuccess;
 }
 
 class _AppLocalizationsDelegate

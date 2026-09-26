@@ -190,5 +190,75 @@
     "scheduleConfirmationNotFoundError": "The event was not found.",
     "scheduleConfirmationNetworkError": "The schedule could not be confirmed because of a network problem.",
     "scheduleConfirmationGenericError": "The schedule could not be confirmed. Please try again.",
-    "scheduleConfirmationSuccess": "The event schedule was confirmed."
+    "scheduleConfirmationSuccess": "The event schedule was confirmed.",
+    "addExpenseDescriptionLabel": "Expense description",
+    "addExpenseDescriptionHint": "e.g. Year-end dinner",
+    "addExpenseDescriptionRequired": "Enter a description for the expense.",
+    "addExpenseTotalLabel": "Expense total",
+    "addExpenseTotalHint": "e.g. 2,500.00",
+    "addExpenseTotalRequired": "Enter the expense total.",
+    "addExpenseTotalInvalid": "Enter a valid total greater than zero.",
+    "addExpensePayersTitle": "Who paid?",
+    "addExpensePayersSubtitle": "Select one or more people who made the payment.",
+    "addExpenseDialogTitle": "Add expense",
+    "addExpenseCloseTooltip": "Close",
+    "addExpensePayerAmountsTitle": "Amounts paid",
+    "addExpensePayerAmountLabel": "{name}'s amount",
+    "@addExpensePayerAmountLabel": {
+      "placeholders": {
+        "name": {
+          "type": "String",
+          "example": "Lucía"
+        }
+      }
+    },
+    "addExpensePayerAmountInvalid": "Enter a valid amount.",
+    "addExpenseSplitEvenly": "Split equally",
+    "addExpenseDifferenceMissing": "{amount} is still needed to reach the total.",
+    "@addExpenseDifferenceMissing": {
+      "placeholders": {
+        "amount": {
+          "type": "String",
+          "example": "$ 10.00"
+        }
+      }
+    },
+    "addExpenseDifferenceExceeded": "{amount} exceeds the total.",
+    "@addExpenseDifferenceExceeded": {
+      "placeholders": {
+        "amount": {
+          "type": "String",
+          "example": "$ 10.00"
+        }
+      }
+    },
+    "tasksLoadError": "Tasks could not be loaded.",
+    "taskStatusUnassigned": "Unassigned",
+    "taskStatusPending": "Pending",
+    "taskStatusCompleted": "Completed",
+    "taskAssignedTo": "Assigned to {name}",
+    "@taskAssignedTo": {
+      "placeholders": {
+        "name": {
+          "type": "String",
+          "example": "Lucía"
+        }
+      }
+    },
+    "taskClaimAction": "Claim",
+    "taskCompleteAction": "Complete",
+    "taskReassignAction": "Reassign",
+    "tasksOperationError": "The task could not be updated. Please try again.",
+    "createTaskDialogTitle": "Add task",
+    "createTaskTitleLabel": "What needs to be done?",
+    "createTaskTitleHint": "e.g. Buy ice",
+    "createTaskTitleRequired": "Enter a task title.",
+    "createTaskSubmit": "Create task",
+    "reassignTaskDialogTitle": "Reassign task",
+    "reassignTaskParticipantLabel": "Choose who will take care of it.",
+    "reassignTaskParticipantRequired": "Choose a person to continue.",
+    "reassignTaskConfirm": "Reassign",
+    "addExpenseSave": "Save expense",
+    "addExpenseSaving": "Saving expense...",
+    "addExpenseSaveSuccess": "Expense saved (simulated)."
 }

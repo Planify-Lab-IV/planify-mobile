@@ -1,17 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/providers/core_providers.dart';
 import '../../../auth/presentation/controllers/auth_providers.dart';
 import '../../../auth/presentation/controllers/auth_state.dart';
-import '../../data/http_events_repository.dart';
-import '../../domain/events_repository.dart';
+import '../../data/events_repository_provider.dart';
 import 'event_detail_notifier.dart';
 import 'event_detail_state.dart';
 import '../../attendance/controllers/attendance_notifier.dart';
 import '../../attendance/controllers/attendance_state.dart';
-
-final eventsRepositoryProvider = Provider<EventsRepository>((ref) {
-  return HttpEventsRepository(dio: ref.watch(dioClientProvider));
-});
 
 /*
   un provider sin .family es un singleton, solo existe una instancia en toda la app

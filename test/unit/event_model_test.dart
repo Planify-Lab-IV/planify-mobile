@@ -10,6 +10,7 @@ void main() {
     final testDate = DateTime(2026, 11, 15, 21, 0);
     const testParticipants = [
       EventParticipant(
+        id: 'participant-org-1',
         eventId: 'evt-001',
         userId: 'usr-org-1',
         username: 'organizer',
@@ -98,6 +99,7 @@ void main() {
       final newDate = DateTime(2026, 12, 20);
       const newParticipants = [
         EventParticipant(
+          id: 'participant-anon-1',
           eventId: 'evt-999',
           userId: null,
           username: 'anonymous',
@@ -183,6 +185,38 @@ void main() {
       expect(str, contains('usr-org-1'));
       expect(str, contains('grp-001'));
       expect(str, contains('EventStatus.active'));
+    });
+
+    test('EventParticipant distingue participantes por su id', () {
+      const participant = EventParticipant(
+        id: 'participant-1',
+        eventId: 'evt-001',
+        userId: null,
+        username: 'Invitado',
+        isAnonymous: true,
+        isOrganizer: false,
+      );
+      const sameParticipant = EventParticipant(
+        id: 'participant-1',
+        eventId: 'evt-001',
+        userId: null,
+        username: 'Invitado',
+        isAnonymous: true,
+        isOrganizer: false,
+      );
+      const differentParticipant = EventParticipant(
+        id: 'participant-2',
+        eventId: 'evt-001',
+        userId: null,
+        username: 'Invitado',
+        isAnonymous: true,
+        isOrganizer: false,
+      );
+
+      expect(participant, sameParticipant);
+      expect(participant.hashCode, sameParticipant.hashCode);
+      expect(participant, isNot(differentParticipant));
+      expect(participant.toString(), contains('id: participant-1'));
     });
   });
 }

@@ -9,7 +9,7 @@ import 'package:planify/features/auth/data/http_auth_repository.dart';
 import 'package:planify/features/auth/domain/auth_repository.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
-import 'package:planify/features/events/detail/controllers/events_providers.dart';
+import 'package:planify/features/events/data/events_repository_provider.dart';
 import 'package:planify/features/events/detail/screens/event_detail_screen.dart';
 import 'package:planify/features/home/presentation/screens/participant_home_screen.dart';
 import 'package:planify/features/invitations/data/fake_invitations_repository.dart';
@@ -183,6 +183,7 @@ void main() {
       await tester.tap(detailButton);
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
+      await tester.pump(const Duration(milliseconds: 350));
 
       expect(find.byType(EventDetailScreen), findsOneWidget);
       expect(find.text('Cumpleaños de Lucas'), findsOneWidget);
