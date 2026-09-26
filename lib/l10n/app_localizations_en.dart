@@ -670,5 +670,5 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get eventDebtsLoadError =>
-      "Could not load this event's debts. Please try again.";
+      'Could not load this event\'s debts. Please try again.';
 }

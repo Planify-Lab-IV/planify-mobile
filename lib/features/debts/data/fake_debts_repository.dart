@@ -6,7 +6,7 @@ import '../domain/event_debts.dart';
 // Simula la respuesta de deudas calculadas
 class FakeDebtsRepository implements DebtsRepository {
   final Duration delay;
-  final bool shouldThrowError;
+  bool shouldThrowError;
   final Map<String, EventDebts> _debtsByEventId;
 
   FakeDebtsRepository({
