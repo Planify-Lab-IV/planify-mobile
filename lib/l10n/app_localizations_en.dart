@@ -657,4 +657,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reassignTaskConfirm => 'Reassign';
+
+  @override
+  String get addExpenseSave => 'Save expense';
+
+  @override
+  String get addExpenseSaving => 'Saving expense...';
+
+  @override
+  String get addExpenseSaveSuccess => 'Expense saved (simulated).';
 }

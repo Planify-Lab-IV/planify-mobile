@@ -257,5 +257,8 @@
     "reassignTaskDialogTitle": "Reassign task",
     "reassignTaskParticipantLabel": "Choose who will take care of it.",
     "reassignTaskParticipantRequired": "Choose a person to continue.",
-    "reassignTaskConfirm": "Reassign"
+    "reassignTaskConfirm": "Reassign",
+    "addExpenseSave": "Save expense",
+    "addExpenseSaving": "Saving expense...",
+    "addExpenseSaveSuccess": "Expense saved (simulated)."
 }

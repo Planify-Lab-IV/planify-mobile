@@ -528,22 +528,22 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get scheduleConfirmationValidationError =>
-      'ElegÃ­ una fecha y hora futuras para confirmar el evento.';
+      'Elegí una fecha y hora futuras para confirmar el evento.';
 
   @override
   String get scheduleConfirmationAuthorizationError =>
       'Solo el organizador puede confirmar el horario.';
 
   @override
-  String get scheduleConfirmationNotFoundError => 'No se encontrÃ³ el evento.';
+  String get scheduleConfirmationNotFoundError => 'No se encontró el evento.';
 
   @override
   String get scheduleConfirmationNetworkError =>
-      'No se pudo confirmar el horario por un problema de conexiÃ³n.';
+      'No se pudo confirmar el horario por un problema de conexión.';
 
   @override
   String get scheduleConfirmationGenericError =>
-      'No se pudo confirmar el horario. IntentÃ¡ nuevamente.';
+      'No se pudo confirmar el horario. Intentá nuevamente.';
 
   @override
   String get scheduleConfirmationSuccess =>
@@ -665,4 +665,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get reassignTaskConfirm => 'Reasignar';
+
+  @override
+  String get addExpenseSave => 'Guardar gasto';
+
+  @override
+  String get addExpenseSaving => 'Guardando gasto...';
+
+  @override
+  String get addExpenseSaveSuccess => 'Gasto guardado (simulado).';
 }

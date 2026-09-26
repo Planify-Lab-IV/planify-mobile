@@ -8,7 +8,7 @@ import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/events/config/presentation/controllers/schedule_confirmation_providers.dart';
 import 'package:planify/features/events/config/presentation/widgets/schedule_confirmation_card.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
-import 'package:planify/features/events/detail/controllers/events_providers.dart';
+import 'package:planify/features/events/data/events_repository_provider.dart';
 import 'package:planify/features/events/domain/event.dart';
 import 'package:planify/features/events/domain/event_status.dart';
 import 'package:planify/l10n/app_localizations.dart';
@@ -136,6 +136,33 @@ void main() {
     expect(state.selectedTime, const TimeOfDay(hour: 21, minute: 30));
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+    'opens the date picker from today for a past confirmed schedule',
+    (tester) async {
+      final repository = FakeEventsRepository(
+        delay: Duration.zero,
+        initialEvents: [event()],
+      );
+      final container = ProviderContainer(
+        overrides: [eventsRepositoryProvider.overrideWithValue(repository)],
+      );
+      addTearDown(container.dispose);
+
+      await pumpCard(
+        tester,
+        container,
+        initialStartDateTime: DateTime.now().subtract(const Duration(days: 1)),
+      );
+      await tester.pump();
+
+      await tester.tap(find.byKey(const Key('schedule_select_date_button')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(DatePickerDialog), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets('confirms the selected schedule successfully', (tester) async {
     final repository = FakeEventsRepository(

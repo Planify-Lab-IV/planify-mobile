@@ -1067,7 +1067,7 @@ abstract class AppLocalizations {
   /// No description provided for @scheduleConfirmationValidationError.
   ///
   /// In es, this message translates to:
-  /// **'ElegÃ­ una fecha y hora futuras para confirmar el evento.'**
+  /// **'Elegí una fecha y hora futuras para confirmar el evento.'**
   String get scheduleConfirmationValidationError;
 
   /// No description provided for @scheduleConfirmationAuthorizationError.
@@ -1079,19 +1079,19 @@ abstract class AppLocalizations {
   /// No description provided for @scheduleConfirmationNotFoundError.
   ///
   /// In es, this message translates to:
-  /// **'No se encontrÃ³ el evento.'**
+  /// **'No se encontró el evento.'**
   String get scheduleConfirmationNotFoundError;
 
   /// No description provided for @scheduleConfirmationNetworkError.
   ///
   /// In es, this message translates to:
-  /// **'No se pudo confirmar el horario por un problema de conexiÃ³n.'**
+  /// **'No se pudo confirmar el horario por un problema de conexión.'**
   String get scheduleConfirmationNetworkError;
 
   /// No description provided for @scheduleConfirmationGenericError.
   ///
   /// In es, this message translates to:
-  /// **'No se pudo confirmar el horario. IntentÃ¡ nuevamente.'**
+  /// **'No se pudo confirmar el horario. Intentá nuevamente.'**
   String get scheduleConfirmationGenericError;
 
   /// No description provided for @scheduleConfirmationSuccess.
@@ -1309,6 +1309,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Reasignar'**
   String get reassignTaskConfirm;
+
+  /// No description provided for @addExpenseSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar gasto'**
+  String get addExpenseSave;
+
+  /// No description provided for @addExpenseSaving.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardando gasto...'**
+  String get addExpenseSaving;
+
+  /// No description provided for @addExpenseSaveSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Gasto guardado (simulado).'**
+  String get addExpenseSaveSuccess;
 }
 
 class _AppLocalizationsDelegate

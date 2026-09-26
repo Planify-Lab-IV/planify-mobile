@@ -7,6 +7,7 @@ import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../events/domain/event_participant.dart';
+import '../controllers/add_expense_notifier.dart';
 import '../controllers/expenses_providers.dart';
 import 'expense_header_fields.dart';
 import 'expense_payer_amounts.dart';
@@ -27,6 +28,24 @@ class AddExpenseDialog extends ConsumerWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => AddExpenseDialog(participants: participants),
+    );
+  }
+
+  Future<void> _saveExpense(
+    BuildContext context,
+    AddExpenseNotifier notifier,
+    AppLocalizations i18n,
+  ) async {
+    final wasSaved = await notifier.save();
+    if (!context.mounted || !wasSaved) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+    Navigator.of(context).pop();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(i18n.addExpenseSaveSuccess),
+        behavior: SnackBarBehavior.floating,
+      ),
     );
   }
 
@@ -144,6 +163,34 @@ class AddExpenseDialog extends ConsumerWidget {
                             ),
                             // FE-12 inserta los montos de deudores al final.
                           ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(AppSpacing.lg),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: FilledButton.icon(
+                          key: const Key('add_expense_save_button'),
+                          onPressed:
+                              state.isReadyForSubmission && !state.isSaving
+                              ? () => _saveExpense(context, notifier, i18n)
+                              : null,
+                          icon: state.isSaving
+                              ? const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : const Icon(Icons.save_rounded),
+                          label: Text(
+                            state.isSaving
+                                ? i18n.addExpenseSaving
+                                : i18n.addExpenseSave,
+                          ),
                         ),
                       ),
                     ),

@@ -185,7 +185,7 @@
       "scheduleSelectDate": "Elegir fecha",
       "scheduleSelectTime": "Elegir hora",
       "scheduleConfirm": "Confirmar horario",
-      "scheduleConfirmationValidationError": "ElegÃ­ una fecha y hora futuras para confirmar el evento.",
+      "scheduleConfirmationValidationError": "Elegí una fecha y hora futuras para confirmar el evento.",
       "scheduleConfirmationAuthorizationError": "Solo el organizador puede confirmar el horario.",
       "scheduleConfirmationNotFoundError": "No se encontrÃ³ el evento.",
       "scheduleConfirmationNetworkError": "No se pudo confirmar el horario por un problema de conexiÃ³n.",
@@ -257,5 +257,12 @@
       "reassignTaskDialogTitle": "Reasignar tarea",
       "reassignTaskParticipantLabel": "Elegí quién se hará cargo.",
       "reassignTaskParticipantRequired": "Elegí una persona para continuar.",
-      "reassignTaskConfirm": "Reasignar"
+      "reassignTaskConfirm": "Reasignar",
+      "addExpenseSave": "Guardar gasto",
+      "addExpenseSaving": "Guardando gasto...",
+      "addExpenseSaveSuccess": "Gasto guardado (simulado).",
+      "scheduleConfirmationNotFoundError": "No se encontró el evento.",
+      "scheduleConfirmationNetworkError": "No se pudo confirmar el horario por un problema de conexión.",
+      "scheduleConfirmationGenericError": "No se pudo confirmar el horario. Intentá nuevamente.",
+      "scheduleConfirmationSuccess": "El horario del evento fue confirmado."
 }
