@@ -183,6 +183,7 @@ void main() {
       await tester.tap(detailButton);
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
+      await tester.pump(const Duration(milliseconds: 350));
 
       expect(find.byType(EventDetailScreen), findsOneWidget);
       expect(find.text('Cumpleaños de Lucas'), findsOneWidget);
