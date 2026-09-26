@@ -8,6 +8,7 @@ import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/events/config/presentation/controllers/schedule_confirmation_providers.dart';
 import 'package:planify/features/events/config/presentation/widgets/schedule_confirmation_card.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/events/data/events_repository_provider.dart';
 import 'package:planify/features/events/detail/controllers/events_providers.dart';
 import 'package:planify/features/events/domain/event.dart';
 import 'package:planify/features/events/domain/event_status.dart';

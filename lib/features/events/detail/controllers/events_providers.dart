@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../auth/presentation/controllers/auth_providers.dart';
 import '../../../auth/presentation/controllers/auth_state.dart';
 import '../../data/events_repository_provider.dart';
-import '../../domain/events_repository.dart';
 import 'event_detail_notifier.dart';
 import 'event_detail_state.dart';
 import '../../attendance/controllers/attendance_notifier.dart';

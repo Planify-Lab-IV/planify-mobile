@@ -15,6 +15,7 @@ import 'package:planify/main.dart';
 
 import 'package:planify/features/auth/presentation/widgets/anonymous_login_dialog.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/events/data/events_repository_provider.dart';
 import 'package:planify/features/events/detail/controllers/events_providers.dart';
 import 'package:planify/features/home/presentation/screens/participant_home_screen.dart';
 import 'package:planify/features/invitations/data/fake_invitations_repository.dart';

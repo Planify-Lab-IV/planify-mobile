@@ -11,6 +11,7 @@ import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/availability/presentation/widgets/availability_grid.dart';
 import 'package:planify/features/events/config/presentation/screens/event_config_screen.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/events/data/events_repository_provider.dart';
 import 'package:planify/features/events/detail/controllers/event_detail_notifier.dart';
 import 'package:planify/features/events/detail/controllers/events_providers.dart';
 import 'package:planify/l10n/app_localizations.dart';

@@ -172,7 +172,8 @@ class AddExpenseDialog extends ConsumerWidget {
                         width: double.infinity,
                         child: FilledButton.icon(
                           key: const Key('add_expense_save_button'),
-                          onPressed: state.isReadyForSubmission && !state.isSaving
+                          onPressed:
+                              state.isReadyForSubmission && !state.isSaving
                               ? () => _saveExpense(context, notifier, i18n)
                               : null,
                           icon: state.isSaving

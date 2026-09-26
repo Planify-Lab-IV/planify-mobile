@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/events/data/events_repository_provider.dart';
 import 'package:planify/features/events/domain/event_draft.dart';
 import 'package:planify/features/events/creation/controllers/event_draft_notifier.dart';
 import 'package:planify/features/events/creation/controllers/event_draft_providers.dart';
