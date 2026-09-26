@@ -7,10 +7,8 @@ class EventDebtsNotifier extends StateNotifier<EventDebtsState> {
   final DebtsRepository repository;
   final String eventId;
 
-  EventDebtsNotifier({
-    required this.repository,
-    required this.eventId,
-  }) : super(const EventDebtsState()) {
+  EventDebtsNotifier({required this.repository, required this.eventId})
+    : super(const EventDebtsState()) {
     load();
   }
 
