@@ -7,6 +7,7 @@ import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/availability/data/fake_availability_repository.dart';
 import 'package:planify/features/availability/presentation/controllers/availability_providers.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/events/data/events_repository_provider.dart';
 import 'package:planify/features/events/domain/event.dart';
 import 'package:planify/features/events/domain/event_status.dart';
 import 'package:planify/features/events/detail/controllers/event_detail_notifier.dart';

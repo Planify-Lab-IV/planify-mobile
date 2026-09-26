@@ -219,6 +219,37 @@ void main() {
       },
     );
 
+    test('does not save when the debtor side is incomplete', () async {
+      final notifier = buildNotifier();
+
+      notifier.setDescription('Cena');
+      notifier.setTotalAmountCents(1000);
+      notifier.togglePayer('participant-1');
+
+      final wasSaved = await notifier.save();
+
+      expect(notifier.state.hasBalancedPayers, isTrue);
+      expect(notifier.state.hasDebtors, isFalse);
+      expect(notifier.state.isReadyForSubmission, isFalse);
+      expect(wasSaved, isFalse);
+      expect(notifier.state.isSaving, isFalse);
+    });
+
+    test('saves the combined payer and debtor draft locally', () async {
+      final notifier = buildNotifier();
+
+      notifier.setDescription('Cena');
+      notifier.setTotalAmountCents(1000);
+      notifier.togglePayer('participant-1');
+      notifier.toggleDebtor('participant-2');
+
+      final saveFuture = notifier.save();
+
+      expect(notifier.state.isSaving, isTrue);
+      expect(await saveFuture, isTrue);
+      expect(notifier.state.isSaving, isFalse);
+    });
+
     test('rejects invalid totals, amounts and participants', () {
       final notifier = buildNotifier();
 
