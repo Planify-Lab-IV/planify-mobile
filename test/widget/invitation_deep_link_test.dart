@@ -8,6 +8,8 @@ import 'package:planify/features/auth/data/fake_auth_repository.dart';
 import 'package:planify/features/auth/data/http_auth_repository.dart';
 import 'package:planify/features/auth/domain/auth_repository.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
+import 'package:planify/features/debts/data/fake_debts_repository.dart';
+import 'package:planify/features/debts/presentation/controllers/debts_providers.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
 import 'package:planify/features/events/data/events_repository_provider.dart';
 import 'package:planify/features/events/detail/screens/event_detail_screen.dart';
@@ -50,6 +52,9 @@ void main() {
           ),
           eventsRepositoryProvider.overrideWithValue(
             FakeEventsRepository(delay: Duration.zero),
+          ),
+          debtsRepositoryProvider.overrideWithValue(
+            FakeDebtsRepository(delay: Duration.zero),
           ),
           localeNotifierProvider.overrideWith(
             (ref) => LocaleNotifier()..setLocale(const Locale('es')),

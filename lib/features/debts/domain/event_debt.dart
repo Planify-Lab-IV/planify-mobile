@@ -40,7 +40,8 @@ class EventDebt {
       eventId: eventId ?? this.eventId,
       debtorParticipantId: debtorParticipantId ?? this.debtorParticipantId,
       debtorName: debtorName ?? this.debtorName,
-      creditorParticipantId: creditorParticipantId ?? this.creditorParticipantId,
+      creditorParticipantId:
+          creditorParticipantId ?? this.creditorParticipantId,
       creditorName: creditorName ?? this.creditorName,
       amountCents: amountCents ?? this.amountCents,
       status: status ?? this.status,

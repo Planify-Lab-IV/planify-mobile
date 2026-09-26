@@ -4,15 +4,13 @@ import '../../domain/debts_repository.dart';
 import 'event_debts_state.dart';
 
 class EventDebtsNotifier extends StateNotifier<EventDebtsState> {
-  final DebtsRepository _repository;
-  final String _eventId;
+  final DebtsRepository repository;
+  final String eventId;
 
   EventDebtsNotifier({
-    required DebtsRepository repository,
-    required String eventId,
-  }) : _repository = repository,
-       _eventId = eventId,
-       super(const EventDebtsState()) {
+    required this.repository,
+    required this.eventId,
+  }) : super(const EventDebtsState()) {
     load();
   }
 
@@ -20,7 +18,7 @@ class EventDebtsNotifier extends StateNotifier<EventDebtsState> {
     state = state.copyWith(loadStatus: EventDebtsLoadStatus.loading);
 
     try {
-      final eventDebts = await _repository.listEventDebts(_eventId);
+      final eventDebts = await repository.listEventDebts(eventId);
       if (!mounted) return;
       state = state.copyWith(
         eventDebts: eventDebts,

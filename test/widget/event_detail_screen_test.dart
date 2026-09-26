@@ -166,7 +166,7 @@ void main() {
     testWidgets('Saldar desplaza el detalle hasta la sección de deudas', (
       tester,
     ) async {
-      await tester.binding.setSurfaceSize(const Size(400, 300));
+      await tester.binding.setSurfaceSize(const Size(400, 450));
       addTearDown(() => tester.binding.setSurfaceSize(null));
 
       await tester.pumpWidget(buildDetailScreen(session: organizerSession));
@@ -178,8 +178,7 @@ void main() {
       expect(scrollable.position.pixels, 0);
 
       await tester.tap(find.byKey(const Key('quick_action_settle')));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 300));
+      await tester.pumpAndSettle();
 
       expect(scrollable.position.pixels, greaterThan(0));
     });

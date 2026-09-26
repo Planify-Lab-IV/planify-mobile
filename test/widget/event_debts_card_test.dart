@@ -62,6 +62,10 @@ void main() {
 
       expect(find.byKey(const Key('event_debts_empty')), findsOneWidget);
       expect(
+        find.byKey(const Key('event_debts_feedback_icon_container')),
+        findsOneWidget,
+      );
+      expect(
         find.text('Todavía no hay deudas en este evento.'),
         findsOneWidget,
       );
@@ -86,10 +90,7 @@ void main() {
         shouldThrowError: true,
       );
       await tester.pumpWidget(
-        buildCard(
-          repository: repository,
-          eventId: 'evt-123',
-        ),
+        buildCard(repository: repository, eventId: 'evt-123'),
       );
       await tester.pumpAndSettle();
 
@@ -102,7 +103,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('event_debts_error')), findsNothing);
-      expect(find.byKey(const Key('event_debt_row_debt-evt-123-1')), findsOneWidget);
+      expect(
+        find.byKey(const Key('event_debt_row_debt-evt-123-1')),
+        findsOneWidget,
+      );
     });
 
     testWidgets('muestra loading mientras la respuesta sigue pendiente', (

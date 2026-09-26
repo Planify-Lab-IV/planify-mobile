@@ -54,12 +54,13 @@ class EventDebtsCard extends ConsumerWidget {
                 ),
               ),
               EventDebtsLoadStatus.success
-                  when state.eventDebts.debts.isEmpty => _FeedbackState(
-                    key: const Key('event_debts_empty'),
-                    icon: Icons.account_balance_wallet_outlined,
-                    iconColor: AppColors.onSurfaceVariant,
-                    message: i18n.eventDebtsEmpty,
-                  ),
+                  when state.eventDebts.debts.isEmpty =>
+                _FeedbackState(
+                  key: const Key('event_debts_empty'),
+                  icon: Icons.account_balance_wallet_outlined,
+                  iconColor: AppColors.onSurfaceVariant,
+                  message: i18n.eventDebtsEmpty,
+                ),
               EventDebtsLoadStatus.success => _DebtList(
                 debts: state.eventDebts.debts,
                 allSettled: state.eventDebts.allSettled,
@@ -114,7 +115,15 @@ class _FeedbackState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: iconColor, size: 32),
+            Container(
+              key: const Key('event_debts_feedback_icon_container'),
+              padding: const EdgeInsets.all(AppSpacing.md),
+              decoration: BoxDecoration(
+                color: AppColors.background,
+                borderRadius: BorderRadius.circular(AppRadius.card),
+              ),
+              child: Icon(icon, color: iconColor, size: 32),
+            ),
             const SizedBox(height: AppSpacing.sm),
             Text(
               message,
