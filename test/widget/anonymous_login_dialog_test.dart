@@ -13,7 +13,6 @@ import 'package:planify/features/auth/presentation/controllers/auth_providers.da
 import 'package:planify/features/auth/presentation/widgets/anonymous_login_dialog.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
 import 'package:planify/features/events/data/events_repository_provider.dart';
-import 'package:planify/features/events/detail/controllers/events_providers.dart';
 import 'package:planify/l10n/app_localizations.dart';
 
 Widget _buildDialogTestApp({

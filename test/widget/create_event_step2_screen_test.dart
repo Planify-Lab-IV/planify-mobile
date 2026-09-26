@@ -14,7 +14,6 @@ import 'package:planify/features/groups/domain/group.dart';
 import 'package:planify/features/groups/presentation/controllers/groups_providers.dart';
 import 'package:planify/l10n/app_localizations.dart';
 
-import 'package:planify/features/events/detail/controllers/events_providers.dart';
 import 'package:planify/features/events/detail/screens/event_detail_screen.dart';
 
 Widget _buildTestApp({
