@@ -9,9 +9,9 @@ import 'package:planify/features/auth/data/fake_auth_repository.dart';
 import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/events/data/events_repository_provider.dart';
 import 'package:planify/features/events/domain/event.dart';
 import 'package:planify/features/events/domain/event_status.dart';
-import 'package:planify/features/events/detail/controllers/events_providers.dart';
 import 'package:planify/features/home/presentation/screens/participant_home_screen.dart';
 import 'package:planify/l10n/app_localizations.dart';
 

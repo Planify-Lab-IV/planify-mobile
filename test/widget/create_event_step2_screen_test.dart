@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/events/data/events_repository_provider.dart';
 import 'package:planify/features/events/domain/event_draft.dart';
 import 'package:planify/features/events/creation/controllers/event_draft_notifier.dart';
 import 'package:planify/features/events/creation/controllers/event_draft_providers.dart';
@@ -13,7 +14,6 @@ import 'package:planify/features/groups/domain/group.dart';
 import 'package:planify/features/groups/presentation/controllers/groups_providers.dart';
 import 'package:planify/l10n/app_localizations.dart';
 
-import 'package:planify/features/events/detail/controllers/events_providers.dart';
 import 'package:planify/features/events/detail/screens/event_detail_screen.dart';
 
 Widget _buildTestApp({

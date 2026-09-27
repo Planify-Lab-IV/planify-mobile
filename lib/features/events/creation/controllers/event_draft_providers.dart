@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/providers/core_providers.dart';
-import '../../data/http_events_repository.dart';
+import '../../data/events_repository_provider.dart';
 import '../../domain/events_repository.dart';
 import '../../domain/event_draft.dart';
 import 'create_event_notifier.dart';
@@ -13,7 +12,7 @@ final eventDraftProvider =
     });
 
 final createEventsRepositoryProvider = Provider<EventsRepository>((ref) {
-  return HttpEventsRepository(dio: ref.watch(dioClientProvider));
+  return ref.watch(eventsRepositoryProvider);
 });
 
 final createEventNotifierProvider =

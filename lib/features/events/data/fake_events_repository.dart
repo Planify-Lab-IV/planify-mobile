@@ -35,6 +35,7 @@ class FakeEventsRepository implements EventsRepository {
         status: EventStatus.active,
         createdAt: DateTime(2026, 1, 1),
         updatedAt: DateTime(2026, 1, 1),
+        participants: _defaultParticipants('evt-123'),
       ),
       Event(
         id: 'evt-cumple-lucas',
@@ -45,6 +46,7 @@ class FakeEventsRepository implements EventsRepository {
         status: EventStatus.active,
         createdAt: DateTime(2026, 1, 1),
         updatedAt: DateTime(2026, 1, 1),
+        participants: _defaultParticipants('evt-cumple-lucas'),
       ),
       Event(
         id: 'evt-asado-amigos',
@@ -55,6 +57,7 @@ class FakeEventsRepository implements EventsRepository {
         status: EventStatus.active,
         createdAt: DateTime(2026, 1, 1),
         updatedAt: DateTime(2026, 1, 1),
+        participants: _defaultParticipants('evt-asado-amigos'),
       ),
       Event(
         id: 'evt-fake-demo',
@@ -65,6 +68,7 @@ class FakeEventsRepository implements EventsRepository {
         status: EventStatus.active,
         createdAt: DateTime(2026, 1, 1),
         updatedAt: DateTime(2026, 1, 1),
+        participants: _defaultParticipants('evt-fake-demo'),
       ),
     ];
 
@@ -99,15 +103,7 @@ class FakeEventsRepository implements EventsRepository {
       status: EventStatus.active,
       createdAt: now,
       updatedAt: now,
-      participants: [
-        EventParticipant(
-          eventId: eventId,
-          userId: 'org-123',
-          username: 'org-123',
-          isAnonymous: false,
-          isOrganizer: true,
-        ),
-      ],
+      participants: _defaultParticipants(eventId),
     );
 
     _events[eventId] = event;
@@ -197,5 +193,34 @@ class FakeEventsRepository implements EventsRepository {
     }
 
     _currentUserAttendance[eventId] = response.status;
+  }
+
+  static List<EventParticipant> _defaultParticipants(String eventId) {
+    return [
+      EventParticipant(
+        id: 'participant-org-$eventId',
+        eventId: eventId,
+        userId: 'org-123',
+        username: 'Lucía',
+        isAnonymous: false,
+        isOrganizer: true,
+      ),
+      EventParticipant(
+        id: 'participant-member-$eventId',
+        eventId: eventId,
+        userId: 'user-456',
+        username: 'Ana',
+        isAnonymous: false,
+        isOrganizer: false,
+      ),
+      EventParticipant(
+        id: 'participant-anon-$eventId',
+        eventId: eventId,
+        userId: null,
+        username: 'Juan',
+        isAnonymous: true,
+        isOrganizer: false,
+      ),
+    ];
   }
 }
