@@ -166,7 +166,7 @@ class _ExpenseDebtorAmountFieldState extends State<_ExpenseDebtorAmountField> {
 
     try {
       final amountCents = parseToCents(value);
-      if (amountCents < 0) {
+      if (amountCents <= 0) {
         setState(() => _errorText = i18n.addExpenseDebtorAmountInvalid);
         widget.onAmountChanged(null);
         return;

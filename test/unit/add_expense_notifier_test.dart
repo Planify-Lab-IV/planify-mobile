@@ -95,6 +95,22 @@ void main() {
       },
     );
 
+    test('a zero payer amount makes an otherwise balanced draft invalid', () {
+      final notifier = buildNotifier();
+
+      notifier.setDescription('Cena');
+      notifier.setTotalAmountCents(1000);
+      notifier.togglePayer('participant-1');
+      notifier.togglePayer('participant-2');
+      notifier.toggleDebtor('participant-1');
+      notifier.setPayerAmount('participant-1', 0);
+
+      expect(notifier.state.payersTotalCents, 1000);
+      expect(notifier.state.differenceCents, 0);
+      expect(notifier.state.hasBalancedPayers, isFalse);
+      expect(notifier.state.isReadyForSubmission, isFalse);
+    });
+
     test(
       'splits selected payers exactly and assigns the remainder to the last',
       () {
@@ -164,6 +180,22 @@ void main() {
         expect(notifier.state.hasBalancedDebtors, isFalse);
       },
     );
+
+    test('a zero debtor amount makes an otherwise balanced draft invalid', () {
+      final notifier = buildNotifier();
+
+      notifier.setDescription('Cena');
+      notifier.setTotalAmountCents(1000);
+      notifier.togglePayer('participant-1');
+      notifier.toggleDebtor('participant-1');
+      notifier.toggleDebtor('participant-2');
+      notifier.setDebtorAmount('participant-1', 0);
+
+      expect(notifier.state.debtorsTotalCents, 1000);
+      expect(notifier.state.debtorDifferenceCents, 0);
+      expect(notifier.state.hasBalancedDebtors, isFalse);
+      expect(notifier.state.isReadyForSubmission, isFalse);
+    });
 
     test(
       'splits selected debtors exactly and assigns the remainder to the last',

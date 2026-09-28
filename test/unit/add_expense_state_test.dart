@@ -82,5 +82,40 @@ void main() {
       expect(state.hasBalancedDebtors, isFalse);
       expect(state.isReadyForSubmission, isFalse);
     });
+
+    test(
+      'requires every selected payer and debtor to have a positive amount',
+      () {
+        final state = AddExpenseState(
+          participants: participants,
+          description: 'Cena',
+          totalAmountCents: 1000,
+          payerDrafts: const [
+            ExpensePayerDraft(participantId: 'participant-1', amountCents: 0),
+            ExpensePayerDraft(
+              participantId: 'participant-2',
+              amountCents: 1000,
+            ),
+          ],
+          payersTotalCents: 1000,
+          differenceCents: 0,
+          debtorDrafts: const [
+            ExpenseDebtorDraft(
+              participantId: 'participant-1',
+              amountCents: 500,
+            ),
+            ExpenseDebtorDraft(
+              participantId: 'participant-2',
+              amountCents: 500,
+            ),
+          ],
+          debtorsTotalCents: 1000,
+          debtorDifferenceCents: 0,
+        );
+
+        expect(state.hasBalancedPayers, isFalse);
+        expect(state.isReadyForSubmission, isFalse);
+      },
+    );
   });
 }
