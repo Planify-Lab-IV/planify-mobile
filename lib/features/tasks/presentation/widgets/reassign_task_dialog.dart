@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
@@ -70,6 +72,10 @@ class _ReassignTaskDialogState extends State<ReassignTaskDialog> {
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final participantsListHeight = math.min(
+      widget.participants.length * 56.0,
+      MediaQuery.sizeOf(context).height * 0.35,
+    );
 
     return AlertDialog(
       shape: RoundedRectangleBorder(
@@ -95,28 +101,31 @@ class _ReassignTaskDialogState extends State<ReassignTaskDialog> {
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
-            RadioGroup<String>(
-              groupValue: _selectedParticipantId,
-              onChanged: (participantId) {
-                if (_isSubmitting) return;
-                setState(() {
-                  _selectedParticipantId = participantId;
-                  _showSelectionError = false;
-                  _showOperationError = false;
-                });
-              },
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: widget.participants
-                    .map(
-                      (participant) => RadioListTile<String>(
-                        key: Key('reassign_task_participant_${participant.id}'),
-                        value: participant.id,
-                        title: Text(participant.username),
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                    )
-                    .toList(growable: false),
+            SizedBox(
+              height: participantsListHeight,
+              child: RadioGroup<String>(
+                groupValue: _selectedParticipantId,
+                onChanged: (participantId) {
+                  if (_isSubmitting) return;
+                  setState(() {
+                    _selectedParticipantId = participantId;
+                    _showSelectionError = false;
+                    _showOperationError = false;
+                  });
+                },
+                child: ListView.builder(
+                  key: const Key('reassign_task_participants_list'),
+                  itemCount: widget.participants.length,
+                  itemBuilder: (context, index) {
+                    final participant = widget.participants[index];
+                    return RadioListTile<String>(
+                      key: Key('reassign_task_participant_${participant.id}'),
+                      value: participant.id,
+                      title: Text(participant.username),
+                      contentPadding: EdgeInsets.zero,
+                    );
+                  },
+                ),
               ),
             ),
             if (_showSelectionError || _showOperationError) ...[

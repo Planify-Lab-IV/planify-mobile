@@ -1202,15 +1202,6 @@ abstract class AppLocalizations {
   /// **'Sobran {amount} respecto del total.'**
   String addExpenseDifferenceExceeded(String amount);
 
-  String get addExpenseDebtorsTitle;
-  String get addExpenseDebtorsSubtitle;
-  String get addExpenseDebtorAmountsTitle;
-  String addExpenseDebtorAmountLabel(String name);
-  String get addExpenseDebtorAmountInvalid;
-  String get addExpenseSplitDebtorsEvenly;
-  String addExpenseDebtorDifferenceMissing(String amount);
-  String addExpenseDebtorDifferenceExceeded(String amount);
-
   /// No description provided for @tasksLoadError.
   ///
   /// In es, this message translates to:
@@ -1240,6 +1231,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Asignada a {name}'**
   String taskAssignedTo(String name);
+
+  /// No description provided for @addExpenseDebtorsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Quiénes deben?'**
+  String get addExpenseDebtorsTitle;
+
+  /// No description provided for @addExpenseDebtorsSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccioná una o más personas que deben asumir el gasto.'**
+  String get addExpenseDebtorsSubtitle;
+
+  /// No description provided for @addExpenseDebtorAmountsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Montos adeudados'**
+  String get addExpenseDebtorAmountsTitle;
+
+  /// No description provided for @addExpenseDebtorAmountLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto de {name}'**
+  String addExpenseDebtorAmountLabel(String name);
 
   /// No description provided for @taskClaimAction.
   ///
@@ -1319,6 +1334,30 @@ abstract class AppLocalizations {
   /// **'Reasignar'**
   String get reassignTaskConfirm;
 
+  /// No description provided for @addExpenseDebtorAmountInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá un monto válido.'**
+  String get addExpenseDebtorAmountInvalid;
+
+  /// No description provided for @addExpenseSplitDebtorsEvenly.
+  ///
+  /// In es, this message translates to:
+  /// **'Repartir en partes iguales'**
+  String get addExpenseSplitDebtorsEvenly;
+
+  /// No description provided for @addExpenseDebtorDifferenceMissing.
+  ///
+  /// In es, this message translates to:
+  /// **'Faltan {amount} para completar el total.'**
+  String addExpenseDebtorDifferenceMissing(String amount);
+
+  /// No description provided for @addExpenseDebtorDifferenceExceeded.
+  ///
+  /// In es, this message translates to:
+  /// **'Sobran {amount} respecto del total.'**
+  String addExpenseDebtorDifferenceExceeded(String amount);
+
   /// No description provided for @addExpenseSave.
   ///
   /// In es, this message translates to:
@@ -1337,17 +1376,56 @@ abstract class AppLocalizations {
   /// **'Gasto guardado (simulado).'**
   String get addExpenseSaveSuccess;
 
+  /// No description provided for @eventDebtsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Deudas del evento'**
   String get eventDebtsTitle;
+
+  /// No description provided for @eventDebtsLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando deudas del evento...'**
   String get eventDebtsLoading;
+
+  /// No description provided for @eventDebtDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'{debtorName} le debe {amount} a {creditorName}'**
   String eventDebtDescription(
     String debtorName,
     String amount,
     String creditorName,
   );
+
+  /// No description provided for @eventDebtPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Pendiente'**
   String get eventDebtPending;
+
+  /// No description provided for @eventDebtSettled.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldada'**
   String get eventDebtSettled;
+
+  /// No description provided for @eventDebtsAllSettled.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo saldado'**
   String get eventDebtsAllSettled;
+
+  /// No description provided for @eventDebtsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay deudas en este evento.'**
   String get eventDebtsEmpty;
+
+  /// No description provided for @eventDebtsLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron cargar las deudas del evento. Intentá nuevamente.'**
   String get eventDebtsLoadError;
 }
 

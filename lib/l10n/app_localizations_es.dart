@@ -609,37 +609,6 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get addExpenseDebtorsTitle => '¿Quiénes deben?';
-
-  @override
-  String get addExpenseDebtorsSubtitle =>
-      'Seleccioná una o más personas que deben asumir el gasto.';
-
-  @override
-  String get addExpenseDebtorAmountsTitle => 'Montos adeudados';
-
-  @override
-  String addExpenseDebtorAmountLabel(String name) {
-    return 'Monto de $name';
-  }
-
-  @override
-  String get addExpenseDebtorAmountInvalid => 'Ingresá un monto válido.';
-
-  @override
-  String get addExpenseSplitDebtorsEvenly => 'Repartir en partes iguales';
-
-  @override
-  String addExpenseDebtorDifferenceMissing(String amount) {
-    return 'Faltan $amount para completar el total.';
-  }
-
-  @override
-  String addExpenseDebtorDifferenceExceeded(String amount) {
-    return 'Sobran $amount respecto del total.';
-  }
-
-  @override
   String get tasksLoadError => 'No se pudieron cargar las tareas.';
 
   @override
@@ -654,6 +623,21 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String taskAssignedTo(String name) {
     return 'Asignada a $name';
+  }
+
+  @override
+  String get addExpenseDebtorsTitle => '¿Quiénes deben?';
+
+  @override
+  String get addExpenseDebtorsSubtitle =>
+      'Seleccioná una o más personas que deben asumir el gasto.';
+
+  @override
+  String get addExpenseDebtorAmountsTitle => 'Montos adeudados';
+
+  @override
+  String addExpenseDebtorAmountLabel(String name) {
+    return 'Monto de $name';
   }
 
   @override
@@ -696,6 +680,22 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get reassignTaskConfirm => 'Reasignar';
+
+  @override
+  String get addExpenseDebtorAmountInvalid => 'Ingresá un monto válido.';
+
+  @override
+  String get addExpenseSplitDebtorsEvenly => 'Repartir en partes iguales';
+
+  @override
+  String addExpenseDebtorDifferenceMissing(String amount) {
+    return 'Faltan $amount para completar el total.';
+  }
+
+  @override
+  String addExpenseDebtorDifferenceExceeded(String amount) {
+    return 'Sobran $amount respecto del total.';
+  }
 
   @override
   String get addExpenseSave => 'Guardar gasto';

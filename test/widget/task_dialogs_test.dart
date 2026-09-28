@@ -99,4 +99,55 @@ void main() {
 
     expect(assignedParticipantId, 'participant-juan');
   });
+
+  testWidgets(
+    'reasignar permite recorrer una lista larga sin ocultar la confirmación',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(400, 400));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      final manyParticipants = List.generate(
+        20,
+        (index) => EventParticipant(
+          id: 'participant-$index',
+          eventId: 'event-1',
+          userId: 'user-$index',
+          username: 'Participante $index',
+          isAnonymous: false,
+          isOrganizer: index == 0,
+        ),
+      );
+      String? assignedParticipantId;
+
+      await tester.pumpWidget(
+        buildSubject(
+          ReassignTaskDialog(
+            participants: manyParticipants,
+            onAssign: (participantId) async {
+              assignedParticipantId = participantId;
+              return true;
+            },
+          ),
+        ),
+      );
+
+      final list = find.byKey(const Key('reassign_task_participants_list'));
+      final lastParticipant = find.byKey(
+        const Key('reassign_task_participant_participant-19'),
+      );
+      expect(list, findsOneWidget);
+      expect(tester.takeException(), isNull);
+
+      await tester.scrollUntilVisible(
+        lastParticipant,
+        200,
+        scrollable: list,
+      );
+      await tester.tap(lastParticipant);
+      await tester.tap(find.byKey(const Key('reassign_task_submit_button')));
+      await tester.pumpAndSettle();
+
+      expect(assignedParticipantId, 'participant-19');
+    },
+  );
 }
