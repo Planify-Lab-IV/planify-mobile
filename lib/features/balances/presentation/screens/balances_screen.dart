@@ -12,6 +12,7 @@ import '../../domain/person_balance_status.dart';
 import '../controllers/balances_providers.dart';
 import '../controllers/balances_state.dart';
 import '../widgets/balance_summary_card.dart';
+import '../widgets/person_balance_detail_sheet.dart';
 import '../widgets/person_balance_row.dart';
 
 class BalancesScreen extends ConsumerWidget {
@@ -72,21 +73,13 @@ class BalancesScreen extends ConsumerWidget {
     );
   }
 
-  void _handlePersonTap(BuildContext context, String personKey) {
+  Future<void> _handlePersonTap(BuildContext context, String personKey) {
     if (onPersonTap != null) {
       onPersonTap!(personKey);
-      return;
+      return Future<void>.value();
     }
 
-    final i18n = AppLocalizations.of(context)!;
-    final messenger = ScaffoldMessenger.of(context);
-    messenger.hideCurrentSnackBar();
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text(i18n.featureUnderDevelopment),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    return PersonBalanceDetailSheet.show(context, personKey);
   }
 }
 
