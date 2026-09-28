@@ -1319,6 +1319,96 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No se pudieron cargar las deudas del evento. Intentá nuevamente.'**
   String get eventDebtsLoadError;
+
+  /// No description provided for @navigationHome.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio'**
+  String get navigationHome;
+
+  /// No description provided for @navigationBalances.
+  ///
+  /// In es, this message translates to:
+  /// **'Balances'**
+  String get navigationBalances;
+
+  /// No description provided for @balancesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Balances'**
+  String get balancesTitle;
+
+  /// No description provided for @balancesOwedToMe.
+  ///
+  /// In es, this message translates to:
+  /// **'Me deben'**
+  String get balancesOwedToMe;
+
+  /// No description provided for @balancesIOwe.
+  ///
+  /// In es, this message translates to:
+  /// **'Debo'**
+  String get balancesIOwe;
+
+  /// No description provided for @balancesPeopleTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldos por persona'**
+  String get balancesPeopleTitle;
+
+  /// No description provided for @balancesLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando balances...'**
+  String get balancesLoading;
+
+  /// No description provided for @balancesEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'No tenés saldos pendientes.'**
+  String get balancesEmpty;
+
+  /// No description provided for @balancesLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron cargar tus balances. Intentá nuevamente.'**
+  String get balancesLoadError;
+
+  /// No description provided for @balanceStatusPay.
+  ///
+  /// In es, this message translates to:
+  /// **'A pagar'**
+  String get balanceStatusPay;
+
+  /// No description provided for @balanceStatusPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Pendiente'**
+  String get balanceStatusPending;
+
+  /// No description provided for @balanceStatusSettled.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldado'**
+  String get balanceStatusSettled;
+
+  /// No description provided for @balancesNetLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Balance neto'**
+  String get balancesNetLabel;
+
+  /// No description provided for @balancesFilterAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo'**
+  String get balancesFilterAll;
+
+  /// No description provided for @balancesFilterEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay saldos en esta categoría.'**
+  String get balancesFilterEmpty;
 }
 
 class _AppLocalizationsDelegate

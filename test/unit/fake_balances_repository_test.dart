@@ -12,8 +12,26 @@ void main() {
       final summary = await repository.getSummary();
       final people = await repository.listPeople();
 
-      expect(summary, const BalanceSummary(owedToMeCents: 82500, iOweCents: 24300));
-      expect(people.map((person) => person.status), containsAll(PersonBalanceStatus.values));
+      expect(
+        summary,
+        const BalanceSummary(owedToMeCents: 82500, iOweCents: 24300),
+      );
+      expect(
+        people.map((person) => person.status),
+        containsAll(PersonBalanceStatus.values),
+      );
+      expect(
+        people
+            .where((person) => person.status == PersonBalanceStatus.pending)
+            .fold(0, (sum, person) => sum + person.netCents),
+        summary.owedToMeCents,
+      );
+      expect(
+        people
+            .where((person) => person.status == PersonBalanceStatus.pay)
+            .fold(0, (sum, person) => sum + person.netCents),
+        summary.iOweCents,
+      );
     });
 
     test('permite inyectar un escenario vacío para la futura UI', () async {
@@ -23,7 +41,10 @@ void main() {
         initialPeople: const [],
       );
 
-      expect(await repository.getSummary(), const BalanceSummary(owedToMeCents: 0, iOweCents: 0));
+      expect(
+        await repository.getSummary(),
+        const BalanceSummary(owedToMeCents: 0, iOweCents: 0),
+      );
       expect(await repository.listPeople(), isEmpty);
     });
 

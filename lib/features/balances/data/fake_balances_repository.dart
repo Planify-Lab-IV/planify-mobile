@@ -51,13 +51,13 @@ class FakeBalancesRepository implements BalancesRepository {
       personKey: 'user:ana',
       displayName: 'Ana',
       status: PersonBalanceStatus.pay,
-      netCents: 50000,
+      netCents: 24300,
     ),
     PersonBalance(
       personKey: 'participant:martin',
       displayName: 'Martín',
       status: PersonBalanceStatus.pending,
-      netCents: 24300,
+      netCents: 82500,
     ),
     PersonBalance(
       personKey: 'user:sol',

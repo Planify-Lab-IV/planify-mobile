@@ -678,4 +678,50 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get eventDebtsLoadError =>
       'No se pudieron cargar las deudas del evento. Intentá nuevamente.';
+
+  @override
+  String get navigationHome => 'Inicio';
+
+  @override
+  String get navigationBalances => 'Balances';
+
+  @override
+  String get balancesTitle => 'Balances';
+
+  @override
+  String get balancesOwedToMe => 'Me deben';
+
+  @override
+  String get balancesIOwe => 'Debo';
+
+  @override
+  String get balancesPeopleTitle => 'Saldos por persona';
+
+  @override
+  String get balancesLoading => 'Cargando balances...';
+
+  @override
+  String get balancesEmpty => 'No tenés saldos pendientes.';
+
+  @override
+  String get balancesLoadError =>
+      'No se pudieron cargar tus balances. Intentá nuevamente.';
+
+  @override
+  String get balanceStatusPay => 'A pagar';
+
+  @override
+  String get balanceStatusPending => 'Pendiente';
+
+  @override
+  String get balanceStatusSettled => 'Saldado';
+
+  @override
+  String get balancesNetLabel => 'Balance neto';
+
+  @override
+  String get balancesFilterAll => 'Todo';
+
+  @override
+  String get balancesFilterEmpty => 'No hay saldos en esta categoría.';
 }

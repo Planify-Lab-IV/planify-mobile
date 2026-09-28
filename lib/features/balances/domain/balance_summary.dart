@@ -3,10 +3,7 @@ class BalanceSummary {
   final int owedToMeCents;
   final int iOweCents;
 
-  const BalanceSummary({
-    required this.owedToMeCents,
-    required this.iOweCents,
-  });
+  const BalanceSummary({required this.owedToMeCents, required this.iOweCents});
 
   BalanceSummary copyWith({int? owedToMeCents, int? iOweCents}) {
     return BalanceSummary(

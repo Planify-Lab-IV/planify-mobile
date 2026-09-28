@@ -11,6 +11,7 @@ import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/auth/presentation/screens/login_screen.dart';
 import 'package:planify/features/home/presentation/screens/organizer_home_screen.dart';
 import 'package:planify/features/home/presentation/screens/participant_home_screen.dart';
+import 'package:planify/features/home/presentation/screens/registered_home_shell.dart';
 import 'package:planify/features/invitations/presentation/controllers/invitation_providers.dart';
 import 'package:planify/features/invitations/presentation/controllers/invitation_state.dart';
 
@@ -74,7 +75,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       // Enrutamiento reactivo según el estado de autenticación
       home: switch (authState) {
         AuthAuthenticated(session: final OrganizerSession session) =>
-          OrganizerHomeScreen(session: session),
+          RegisteredHomeShell(home: OrganizerHomeScreen(session: session)),
         AuthAuthenticated(session: final AnonymousSession session) =>
           ParticipantHomeScreen(session: session),
         AuthLoading() => const Scaffold(

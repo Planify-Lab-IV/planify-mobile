@@ -19,7 +19,10 @@ void main() {
         summary,
         const BalanceSummary(owedToMeCents: 12500, iOweCents: 7300),
       );
-      expect(summary, isNot(const BalanceSummary(owedToMeCents: 0, iOweCents: 7300)));
+      expect(
+        summary,
+        isNot(const BalanceSummary(owedToMeCents: 0, iOweCents: 7300)),
+      );
     });
   });
 

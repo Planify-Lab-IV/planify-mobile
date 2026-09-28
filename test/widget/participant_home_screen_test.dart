@@ -70,6 +70,8 @@ void main() {
       await tester.pumpWidget(buildHome(repository));
       await tester.pumpAndSettle();
 
+      expect(find.byType(NavigationBar), findsNothing);
+
       await repository.cancel(eventId);
 
       await tester.tap(find.byKey(const Key('view_event_detail_button')));
