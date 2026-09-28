@@ -255,10 +255,6 @@ class _EventBalanceLineRow extends StatelessWidget {
       elevation: 2,
       surfaceTintColor: Colors.transparent,
       margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.card),
-        side: const BorderSide(color: AppColors.secondary),
-      ),
       child: InkWell(
         key: Key('person_balance_detail_line_${line.eventId}'),
         borderRadius: BorderRadius.circular(AppRadius.card),
