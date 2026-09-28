@@ -1202,6 +1202,15 @@ abstract class AppLocalizations {
   /// **'Sobran {amount} respecto del total.'**
   String addExpenseDifferenceExceeded(String amount);
 
+  String get addExpenseDebtorsTitle;
+  String get addExpenseDebtorsSubtitle;
+  String get addExpenseDebtorAmountsTitle;
+  String addExpenseDebtorAmountLabel(String name);
+  String get addExpenseDebtorAmountInvalid;
+  String get addExpenseSplitDebtorsEvenly;
+  String addExpenseDebtorDifferenceMissing(String amount);
+  String addExpenseDebtorDifferenceExceeded(String amount);
+
   /// No description provided for @tasksLoadError.
   ///
   /// In es, this message translates to:
@@ -1327,6 +1336,19 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Gasto guardado (simulado).'**
   String get addExpenseSaveSuccess;
+
+  String get eventDebtsTitle;
+  String get eventDebtsLoading;
+  String eventDebtDescription(
+    String debtorName,
+    String amount,
+    String creditorName,
+  );
+  String get eventDebtPending;
+  String get eventDebtSettled;
+  String get eventDebtsAllSettled;
+  String get eventDebtsEmpty;
+  String get eventDebtsLoadError;
 }
 
 class _AppLocalizationsDelegate

@@ -6,6 +6,8 @@ import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/availability/data/fake_availability_repository.dart';
 import 'package:planify/features/availability/presentation/controllers/availability_providers.dart';
+import 'package:planify/features/debts/data/fake_debts_repository.dart';
+import 'package:planify/features/debts/presentation/controllers/debts_providers.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
 import 'package:planify/features/events/data/events_repository_provider.dart';
 import 'package:planify/features/events/domain/event.dart';
@@ -80,6 +82,9 @@ void main() {
           availabilityHeatmapRepositoryProvider.overrideWithValue(
             FakeAvailabilityRepository(delay: Duration.zero),
           ),
+          debtsRepositoryProvider.overrideWithValue(
+            FakeDebtsRepository(delay: Duration.zero),
+          ),
         ],
         child: MaterialApp(
           theme: AppTheme.light,
@@ -101,7 +106,7 @@ void main() {
     }
 
     testWidgets(
-      'renderiza header, acciones rápidas, tareas vacías y actividad vacía',
+      'renderiza header, acciones rápidas, deudas, tareas vacías y actividad vacía',
       (tester) async {
         await tester.pumpWidget(buildDetailScreen(session: organizerSession));
         await tester.pumpAndSettle();
@@ -130,6 +135,10 @@ void main() {
         expect(find.text('Agregar tarea'), findsOneWidget);
         expect(find.text('Saldar'), findsOneWidget);
 
+        // Deudas
+        expect(find.text('Deudas del evento'), findsOneWidget);
+        expect(find.byKey(const Key('event_debts_card')), findsOneWidget);
+
         // Tareas y Actividad vacías
         expect(find.text('Tareas'), findsOneWidget);
         expect(find.text('No hay tareas asignadas todavía.'), findsOneWidget);
@@ -153,6 +162,26 @@ void main() {
         find.text('Esta funcionalidad estará disponible próximamente.'),
         findsOneWidget,
       );
+    });
+
+    testWidgets('Saldar desplaza el detalle hasta la sección de deudas', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(400, 450));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(buildDetailScreen(session: organizerSession));
+      await tester.pumpAndSettle();
+
+      final scrollable = tester.state<ScrollableState>(
+        find.byType(Scrollable).first,
+      );
+      expect(scrollable.position.pixels, 0);
+
+      await tester.tap(find.byKey(const Key('quick_action_settle')));
+      await tester.pumpAndSettle();
+
+      expect(scrollable.position.pixels, greaterThan(0));
     });
 
     testWidgets('Agregar gasto abre el panel de gasto', (tester) async {
@@ -203,6 +232,7 @@ void main() {
 
       expect(find.byKey(const Key('event_actions_menu_button')), findsNothing);
       expect(find.text('Cancelar evento'), findsNothing);
+      expect(find.byKey(const Key('event_debts_card')), findsOneWidget);
     });
 
     testWidgets('participante activo navega a configuración del evento', (

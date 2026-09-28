@@ -4,6 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../debts/presentation/widgets/event_debts_card.dart';
 import '../controllers/events_providers.dart';
 import '../widgets/cancel_event_dialog.dart';
 import '../widgets/event_header_card.dart';
@@ -15,17 +16,26 @@ import '../../../tasks/presentation/controllers/tasks_context.dart';
 import '../../../tasks/presentation/widgets/create_task_dialog.dart';
 import '../../../tasks/presentation/widgets/task_list_card.dart';
 
-class EventDetailScreen extends ConsumerWidget {
+class EventDetailScreen extends ConsumerStatefulWidget {
   final String eventId;
 
   const EventDetailScreen({super.key, required this.eventId});
 
-  Future<void> _confirmAndCancel(BuildContext context, WidgetRef ref) async {
+  @override
+  ConsumerState<EventDetailScreen> createState() => _EventDetailScreenState();
+}
+
+class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
+  final _eventDebtsSectionKey = GlobalKey();
+
+  Future<void> _confirmAndCancel(BuildContext context) async {
     final i18n = AppLocalizations.of(context)!;
     final confirmed = await CancelEventDialog.show(context);
     if (!context.mounted || confirmed != true) return;
 
-    final notifier = ref.read(eventDetailNotifierProvider(eventId).notifier);
+    final notifier = ref.read(
+      eventDetailNotifierProvider(widget.eventId).notifier,
+    );
     final success = await notifier.cancelEvent();
     if (!context.mounted) return;
 
@@ -51,19 +61,32 @@ class EventDetailScreen extends ConsumerWidget {
           action: SnackBarAction(
             label: i18n.retryButton,
             textColor: Colors.white,
-            onPressed: () => _confirmAndCancel(context, ref),
+            onPressed: () => _confirmAndCancel(context),
           ),
         ),
       );
     }
   }
 
+  void _scrollToEventDebts() {
+    final debtsContext = _eventDebtsSectionKey.currentContext;
+    if (debtsContext == null) return;
+
+    Scrollable.ensureVisible(
+      debtsContext,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final state = ref.watch(eventDetailNotifierProvider(eventId));
-    final notifier = ref.read(eventDetailNotifierProvider(eventId).notifier);
+    final state = ref.watch(eventDetailNotifierProvider(widget.eventId));
+    final notifier = ref.read(
+      eventDetailNotifierProvider(widget.eventId).notifier,
+    );
 
     final event = state.event;
     final canCancel = notifier.canCancelEvent;
@@ -116,7 +139,7 @@ class EventDetailScreen extends ConsumerWidget {
               icon: const Icon(Icons.more_vert_rounded),
               onSelected: (value) {
                 if (value == 'cancel') {
-                  _confirmAndCancel(context, ref);
+                  _confirmAndCancel(context);
                 }
               },
               itemBuilder: (context) => [
@@ -238,9 +261,15 @@ class EventDetailScreen extends ConsumerWidget {
                               .read(
                                 tasksNotifierProvider(tasksContext!).notifier,
                               )
-                              .create(title),
+                            .create(title),
                         );
                       },
+                      onSettleTap: _scrollToEventDebts,
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    EventDebtsCard(
+                      key: _eventDebtsSectionKey,
+                      eventId: event.id,
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     TaskListCard(

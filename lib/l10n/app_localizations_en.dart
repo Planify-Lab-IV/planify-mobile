@@ -602,6 +602,37 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get addExpenseDebtorsTitle => 'Who owes?';
+
+  @override
+  String get addExpenseDebtorsSubtitle =>
+      'Select one or more people who need to cover the expense.';
+
+  @override
+  String get addExpenseDebtorAmountsTitle => 'Amounts owed';
+
+  @override
+  String addExpenseDebtorAmountLabel(String name) {
+    return '$name\'s amount';
+  }
+
+  @override
+  String get addExpenseDebtorAmountInvalid => 'Enter a valid amount.';
+
+  @override
+  String get addExpenseSplitDebtorsEvenly => 'Split equally';
+
+  @override
+  String addExpenseDebtorDifferenceMissing(String amount) {
+    return '$amount is still needed to reach the total.';
+  }
+
+  @override
+  String addExpenseDebtorDifferenceExceeded(String amount) {
+    return '$amount exceeds the total.';
+  }
+
+  @override
   String get tasksLoadError => 'Tasks could not be loaded.';
 
   @override
@@ -666,4 +697,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addExpenseSaveSuccess => 'Expense saved (simulated).';
+
+  @override
+  String get eventDebtsTitle => 'Event debts';
+
+  @override
+  String get eventDebtsLoading => 'Loading event debts...';
+
+  @override
+  String eventDebtDescription(
+    String debtorName,
+    String amount,
+    String creditorName,
+  ) {
+    return '$debtorName owes $amount to $creditorName';
+  }
+
+  @override
+  String get eventDebtPending => 'Pending';
+
+  @override
+  String get eventDebtSettled => 'Settled';
+
+  @override
+  String get eventDebtsAllSettled => 'All settled';
+
+  @override
+  String get eventDebtsEmpty => 'There are no debts in this event yet.';
+
+  @override
+  String get eventDebtsLoadError =>
+      'Could not load this event\'s debts. Please try again.';
 }

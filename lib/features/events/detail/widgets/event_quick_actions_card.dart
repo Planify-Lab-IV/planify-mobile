@@ -10,11 +10,13 @@ class EventQuickActionsCard extends StatelessWidget {
   final bool isCancelled;
   final List<EventParticipant> participants;
   final VoidCallback? onAddTask;
+  final VoidCallback onSettleTap;
 
   const EventQuickActionsCard({
     super.key,
     required this.participants,
     this.onAddTask,
+    required this.onSettleTap,
     this.isCancelled = false,
   });
 
@@ -22,6 +24,7 @@ class EventQuickActionsCard extends StatelessWidget {
     BuildContext context, {
     required bool isAddExpense,
     required bool isAddTask,
+    required bool isSettle,
   }) {
     if (isCancelled) return;
 
@@ -32,6 +35,11 @@ class EventQuickActionsCard extends StatelessWidget {
 
     if (isAddTask) {
       onAddTask?.call();
+      return;
+    }
+
+    if (isSettle) {
+      onSettleTap();
       return;
     }
 
@@ -96,6 +104,7 @@ class EventQuickActionsCard extends StatelessWidget {
                   key: const Key('quick_action_settle'),
                   icon: Icons.account_balance_wallet_outlined,
                   label: i18n.quickActionSettle,
+                  isSettle: true,
                 ),
               ],
             ),
@@ -112,6 +121,7 @@ class EventQuickActionsCard extends StatelessWidget {
     required String label,
     bool isAddExpense = false,
     bool isAddTask = false,
+    bool isSettle = false,
   }) {
     final theme = Theme.of(context);
     final isEnabled = !isCancelled;
@@ -134,6 +144,7 @@ class EventQuickActionsCard extends StatelessWidget {
                 context,
                 isAddExpense: isAddExpense,
                 isAddTask: isAddTask,
+                isSettle: isSettle,
               )
             : null,
         child: Padding(

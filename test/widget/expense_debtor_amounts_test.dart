@@ -3,8 +3,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/events/domain/event_participant.dart';
-import 'package:planify/features/expenses/domain/expense_payer_draft.dart';
-import 'package:planify/features/expenses/presentation/widgets/expense_payer_amounts.dart';
+import 'package:planify/features/expenses/domain/expense_debtor_draft.dart';
+import 'package:planify/features/expenses/presentation/widgets/expense_debtor_amounts.dart';
 import 'package:planify/l10n/app_localizations.dart';
 
 void main() {
@@ -28,9 +28,9 @@ void main() {
   ];
 
   Widget buildSubject({
-    required List<ExpensePayerDraft> payerDrafts,
+    required List<ExpenseDebtorDraft> debtorDrafts,
     required int differenceCents,
-    required void Function(String, int?) onPayerAmountChanged,
+    required void Function(String, int?) onDebtorAmountChanged,
     required VoidCallback onSplitEvenly,
   }) {
     return MaterialApp(
@@ -44,44 +44,47 @@ void main() {
       supportedLocales: AppLocalizations.supportedLocales,
       locale: const Locale('es'),
       home: Scaffold(
-        body: ExpensePayerAmounts(
+        body: ExpenseDebtorAmounts(
           participants: participants,
-          payerDrafts: payerDrafts,
+          debtorDrafts: debtorDrafts,
           differenceCents: differenceCents,
-          onPayerAmountChanged: onPayerAmountChanged,
+          onDebtorAmountChanged: onDebtorAmountChanged,
           onSplitEvenly: onSplitEvenly,
         ),
       ),
     );
   }
 
-  testWidgets('un solo pagador ve el total bloqueado', (tester) async {
+  testWidgets('un solo deudor ve el total bloqueado', (tester) async {
     await tester.pumpWidget(
       buildSubject(
-        payerDrafts: const [
-          ExpensePayerDraft(
+        debtorDrafts: const [
+          ExpenseDebtorDraft(
             participantId: 'participant-lucia',
             amountCents: 1250,
           ),
         ],
         differenceCents: 0,
-        onPayerAmountChanged: (_, _) {},
+        onDebtorAmountChanged: (_, _) {},
         onSplitEvenly: () {},
       ),
     );
 
     final field = tester.widget<TextField>(
       find.descendant(
-        of: find.byKey(const Key('expense_payer_amount_participant-lucia')),
+        of: find.byKey(const Key('expense_debtor_amount_participant-lucia')),
         matching: find.byType(TextField),
       ),
     );
     expect(field.readOnly, isTrue);
     expect(find.text('12,50'), findsOneWidget);
-    expect(find.byKey(const Key('expense_split_evenly_button')), findsNothing);
+    expect(
+      find.byKey(const Key('expense_debtor_split_evenly_button')),
+      findsNothing,
+    );
   });
 
-  testWidgets('varios pagadores editan importes, reparten y ven el desvío', (
+  testWidgets('varios deudores editan importes, reparten y ven el desvío', (
     tester,
   ) async {
     String? changedParticipant;
@@ -90,18 +93,18 @@ void main() {
 
     await tester.pumpWidget(
       buildSubject(
-        payerDrafts: const [
-          ExpensePayerDraft(
+        debtorDrafts: const [
+          ExpenseDebtorDraft(
             participantId: 'participant-lucia',
             amountCents: 400,
           ),
-          ExpensePayerDraft(
+          ExpenseDebtorDraft(
             participantId: 'participant-juan',
             amountCents: 400,
           ),
         ],
         differenceCents: 200,
-        onPayerAmountChanged: (participantId, amountCents) {
+        onDebtorAmountChanged: (participantId, amountCents) {
           changedParticipant = participantId;
           changedAmount = amountCents;
         },
@@ -111,7 +114,7 @@ void main() {
 
     final luciaField = tester.widget<TextField>(
       find.descendant(
-        of: find.byKey(const Key('expense_payer_amount_participant-lucia')),
+        of: find.byKey(const Key('expense_debtor_amount_participant-lucia')),
         matching: find.byType(TextField),
       ),
     );
@@ -122,51 +125,17 @@ void main() {
     );
 
     await tester.enterText(
-      find.byKey(const Key('expense_payer_amount_participant-lucia')),
+      find.byKey(const Key('expense_debtor_amount_participant-lucia')),
       '5,50',
     );
     await tester.pump();
     expect(changedParticipant, 'participant-lucia');
     expect(changedAmount, 550);
 
-    await tester.tap(find.byKey(const Key('expense_split_evenly_button')));
+    await tester.tap(
+      find.byKey(const Key('expense_debtor_split_evenly_button')),
+    );
     await tester.pump();
     expect(didSplitEvenly, isTrue);
-  });
-
-  testWidgets('un importe vacío o cero se informa como inválido', (
-    tester,
-  ) async {
-    final changedAmounts = <int?>[];
-
-    await tester.pumpWidget(
-      buildSubject(
-        payerDrafts: const [
-          ExpensePayerDraft(
-            participantId: 'participant-lucia',
-            amountCents: 400,
-          ),
-          ExpensePayerDraft(
-            participantId: 'participant-juan',
-            amountCents: 600,
-          ),
-        ],
-        differenceCents: 0,
-        onPayerAmountChanged: (_, amountCents) =>
-            changedAmounts.add(amountCents),
-        onSplitEvenly: () {},
-      ),
-    );
-
-    final field = find.byKey(
-      const Key('expense_payer_amount_participant-lucia'),
-    );
-    await tester.enterText(field, '');
-    await tester.pump();
-    expect(changedAmounts.last, isNull);
-
-    await tester.enterText(field, '0');
-    await tester.pump();
-    expect(changedAmounts.last, isNull);
   });
 }

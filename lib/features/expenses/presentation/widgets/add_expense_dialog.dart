@@ -9,6 +9,8 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../events/domain/event_participant.dart';
 import '../controllers/add_expense_notifier.dart';
 import '../controllers/expenses_providers.dart';
+import 'expense_debtor_amounts.dart';
+import 'expense_debtor_selector.dart';
 import 'expense_header_fields.dart';
 import 'expense_payer_amounts.dart';
 import 'expense_payer_selector.dart';
@@ -57,8 +59,11 @@ class AddExpenseDialog extends ConsumerWidget {
     final notifier = ref.read(
       addExpenseNotifierProvider(participants).notifier,
     );
-    final selectedParticipantIds = {
+    final selectedPayerIds = {
       for (final payer in state.payerDrafts) payer.participantId,
+    };
+    final selectedDebtorIds = {
+      for (final debtor in state.debtorDrafts) debtor.participantId,
     };
     final viewInsets = MediaQuery.viewInsetsOf(context);
     final locale = Localizations.localeOf(context).toString();
@@ -141,10 +146,15 @@ class AddExpenseDialog extends ConsumerWidget {
                             const SizedBox(height: AppSpacing.lg),
                             ExpensePayerSelector(
                               participants: state.participants,
-                              selectedParticipantIds: selectedParticipantIds,
+                              selectedParticipantIds: selectedPayerIds,
                               onParticipantToggled: notifier.togglePayer,
                             ),
-                            // FE-12 inserta el selector de deudores aquí.
+                            const SizedBox(height: AppSpacing.lg),
+                            ExpenseDebtorSelector(
+                              participants: state.participants,
+                              selectedParticipantIds: selectedDebtorIds,
+                              onParticipantToggled: notifier.toggleDebtor,
+                            ),
                             const SizedBox(height: AppSpacing.lg),
                             ExpensePayerAmounts(
                               participants: state.participants,
@@ -152,16 +162,27 @@ class AddExpenseDialog extends ConsumerWidget {
                               differenceCents: state.differenceCents,
                               onPayerAmountChanged:
                                   (participantId, amountCents) {
-                                    if (amountCents != null) {
-                                      notifier.setPayerAmount(
-                                        participantId,
-                                        amountCents,
-                                      );
-                                    }
+                                    notifier.setPayerAmount(
+                                      participantId,
+                                      amountCents ?? 0,
+                                    );
                                   },
                               onSplitEvenly: notifier.splitPayersEvenly,
                             ),
-                            // FE-12 inserta los montos de deudores al final.
+                            const SizedBox(height: AppSpacing.lg),
+                            ExpenseDebtorAmounts(
+                              participants: state.participants,
+                              debtorDrafts: state.debtorDrafts,
+                              differenceCents: state.debtorDifferenceCents,
+                              onDebtorAmountChanged:
+                                  (participantId, amountCents) {
+                                    notifier.setDebtorAmount(
+                                      participantId,
+                                      amountCents ?? 0,
+                                    );
+                                  },
+                              onSplitEvenly: notifier.splitDebtorsEvenly,
+                            ),
                           ],
                         ),
                       ),
