@@ -23,6 +23,7 @@ class BalancesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final i18n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
     final state = ref.watch(balancesNotifierProvider);
     final notifier = ref.read(balancesNotifierProvider.notifier);
 
@@ -30,12 +31,11 @@ class BalancesScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(
           i18n.balancesTitle,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: AppColors.darkBlue,
-            fontWeight: FontWeight.bold,
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: theme.colorScheme.onPrimaryContainer,
           ),
         ),
-        backgroundColor: AppColors.background,
+        backgroundColor: theme.colorScheme.primaryContainer,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -105,77 +105,83 @@ class _BalancesContentState extends State<_BalancesContent> {
     final people = _filteredPeople(widget.state.people);
 
     return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 640),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _BalanceNetHeader(summary: widget.state.summary),
-              const SizedBox(height: AppSpacing.lg),
-              BalanceSummaryCard(summary: widget.state.summary),
-              const SizedBox(height: AppSpacing.lg),
-              _BalanceFilterSelector(
-                selected: _filter,
-                onSelected: (filter) => setState(() => _filter = filter),
-                allLabel: i18n.balancesFilterAll,
-                owedToMeLabel: i18n.balancesOwedToMe,
-                iOweLabel: i18n.balancesIOwe,
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              Text(
-                i18n.balancesPeopleTitle,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: AppColors.onSurface,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              if (widget.state.isEmpty)
-                Card(
-                  key: const Key('balances_people_card'),
-                  child: _FeedbackState(
-                    key: const Key('balances_empty'),
-                    icon: Icons.account_balance_wallet_outlined,
-                    iconColor: AppColors.onSurfaceVariant,
-                    message: i18n.balancesEmpty,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 640),
+          child: Card(
+            key: const Key('balances_content_card'),
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.xl),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _BalanceNetHeader(summary: widget.state.summary),
+                  const SizedBox(height: AppSpacing.lg),
+                  BalanceSummaryCard(summary: widget.state.summary),
+                  const SizedBox(height: AppSpacing.lg),
+                  _BalanceFilterSelector(
+                    selected: _filter,
+                    onSelected: (filter) => setState(() => _filter = filter),
+                    allLabel: i18n.balancesFilterAll,
+                    owedToMeLabel: i18n.balancesOwedToMe,
+                    iOweLabel: i18n.balancesIOwe,
                   ),
-                )
-              else if (people.isEmpty)
-                Card(
-                  key: const Key('balances_people_card'),
-                  child: _FeedbackState(
-                    key: const Key('balances_filter_empty'),
-                    icon: Icons.filter_list_off_rounded,
-                    iconColor: AppColors.onSurfaceVariant,
-                    message: i18n.balancesFilterEmpty,
+                  const SizedBox(height: AppSpacing.lg),
+                  Text(
+                    i18n.balancesPeopleTitle,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: AppColors.onSurface,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                )
-              else
-                Column(
-                  key: const Key('balances_people_card'),
-                  children: [
-                    for (var index = 0; index < people.length; index++) ...[
-                      Card(
-                        margin: EdgeInsets.zero,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.md,
-                            vertical: AppSpacing.sm,
-                          ),
-                          child: PersonBalanceRow(
-                            personBalance: people[index],
-                            onPersonTap: widget.onPersonTap,
-                          ),
-                        ),
+                  const SizedBox(height: AppSpacing.sm),
+                  if (widget.state.isEmpty)
+                    Card(
+                      key: const Key('balances_people_card'),
+                      child: _FeedbackState(
+                        key: const Key('balances_empty'),
+                        icon: Icons.account_balance_wallet_outlined,
+                        iconColor: AppColors.onSurfaceVariant,
+                        message: i18n.balancesEmpty,
                       ),
-                      if (index < people.length - 1)
-                        const SizedBox(height: AppSpacing.sm),
-                    ],
-                  ],
-                ),
-            ],
+                    )
+                  else if (people.isEmpty)
+                    Card(
+                      key: const Key('balances_people_card'),
+                      child: _FeedbackState(
+                        key: const Key('balances_filter_empty'),
+                        icon: Icons.filter_list_off_rounded,
+                        iconColor: AppColors.onSurfaceVariant,
+                        message: i18n.balancesFilterEmpty,
+                      ),
+                    )
+                  else
+                    Column(
+                      key: const Key('balances_people_card'),
+                      children: [
+                        for (var index = 0; index < people.length; index++) ...[
+                          Card(
+                            margin: EdgeInsets.zero,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppSpacing.md,
+                                vertical: AppSpacing.sm,
+                              ),
+                              child: PersonBalanceRow(
+                                personBalance: people[index],
+                                onPersonTap: widget.onPersonTap,
+                              ),
+                            ),
+                          ),
+                          if (index < people.length - 1)
+                            const SizedBox(height: AppSpacing.sm),
+                        ],
+                      ],
+                    ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
