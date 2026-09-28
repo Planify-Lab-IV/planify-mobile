@@ -261,7 +261,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                               .read(
                                 tasksNotifierProvider(tasksContext!).notifier,
                               )
-                            .create(title),
+                              .create(title),
                         );
                       },
                       onSettleTap: _scrollToEventDebts,

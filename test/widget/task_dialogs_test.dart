@@ -132,16 +132,21 @@ void main() {
       );
 
       final list = find.byKey(const Key('reassign_task_participants_list'));
+      final scrollable = find.descendant(
+        of: list,
+        matching: find.byType(Scrollable),
+      );
       final lastParticipant = find.byKey(
         const Key('reassign_task_participant_participant-19'),
       );
       expect(list, findsOneWidget);
+      expect(scrollable, findsOneWidget);
       expect(tester.takeException(), isNull);
 
       await tester.scrollUntilVisible(
         lastParticipant,
         200,
-        scrollable: list,
+        scrollable: scrollable,
       );
       await tester.tap(lastParticipant);
       await tester.tap(find.byKey(const Key('reassign_task_submit_button')));
