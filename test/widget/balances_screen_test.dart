@@ -45,7 +45,14 @@ void main() {
       );
       await tester.pumpAndSettle();
 
+      final appBar = tester.widget<AppBar>(find.byType(AppBar));
+
+      expect(
+        appBar.backgroundColor,
+        AppTheme.light.colorScheme.primaryContainer,
+      );
       expect(find.byKey(const Key('balance_summary_card')), findsOneWidget);
+      expect(find.byKey(const Key('balances_content_card')), findsOneWidget);
       expect(find.byKey(const Key('balance_owed_to_me')), findsOneWidget);
       expect(find.byKey(const Key('balance_i_owe')), findsOneWidget);
       expect(
