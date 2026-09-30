@@ -17,10 +17,7 @@ void main() {
         shouldFailClosingExpenses: true,
       );
 
-      await expectLater(
-        repository.closeExpenses('evt-1'),
-        throwsException,
-      );
+      await expectLater(repository.closeExpenses('evt-1'), throwsException);
 
       expect(repository.areExpensesClosedFor('evt-1'), isFalse);
     });

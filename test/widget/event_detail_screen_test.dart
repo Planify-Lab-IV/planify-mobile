@@ -18,6 +18,7 @@ import 'package:planify/features/events/detail/controllers/events_providers.dart
 import 'package:planify/features/events/config/presentation/screens/event_config_screen.dart';
 import 'package:planify/features/events/detail/screens/event_detail_screen.dart';
 import 'package:planify/features/events/detail/widgets/cancel_event_dialog.dart';
+import 'package:planify/features/events/detail/widgets/close_expenses_dialog.dart';
 import 'package:planify/features/expenses/presentation/widgets/add_expense_dialog.dart';
 import 'package:planify/l10n/app_localizations.dart';
 
@@ -64,6 +65,7 @@ void main() {
     Widget buildDetailScreen({
       required UserSession? session,
       FakeEventsRepository? customRepo,
+      FakeExpensesRepository? customExpensesRepository,
       String eventId = testEventId,
     }) {
       final repository =
@@ -72,6 +74,9 @@ void main() {
             delay: Duration.zero,
             initialEvents: [testEvent],
           );
+      final expensesRepository =
+          customExpensesRepository ??
+          FakeExpensesRepository(delay: Duration.zero);
 
       return ProviderScope(
         overrides: [
@@ -100,6 +105,7 @@ void main() {
             session: session,
             eventId: eventId,
             repository: repository,
+            expensesRepository: expensesRepository,
           ),
         ),
       );
@@ -213,6 +219,19 @@ void main() {
       );
     });
 
+    testWidgets('organizador ve Cerrar gastos junto a Cancelar evento', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildDetailScreen(session: organizerSession));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('event_actions_menu_button')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('cancel_event_menu_item')), findsOneWidget);
+      expect(find.byKey(const Key('close_expenses_menu_item')), findsOneWidget);
+    });
+
     testWidgets('invitado del evento NO ve la opción Cancelar evento', (
       tester,
     ) async {
@@ -221,6 +240,7 @@ void main() {
 
       expect(find.byKey(const Key('event_actions_menu_button')), findsNothing);
       expect(find.text('Cancelar evento'), findsNothing);
+      expect(find.text('Cerrar gastos'), findsNothing);
       expect(find.byKey(const Key('event_debts_card')), findsOneWidget);
     });
 
@@ -296,6 +316,109 @@ void main() {
 
       expect(find.byKey(const Key('event_actions_menu_button')), findsNothing);
       expect(find.text('Cancelar evento'), findsNothing);
+      expect(find.text('Cerrar gastos'), findsNothing);
+    });
+
+    testWidgets('cierra gastos, muestra el aviso y bloquea solo Agregar gasto', (
+      tester,
+    ) async {
+      final expensesRepository = FakeExpensesRepository(delay: Duration.zero);
+
+      await tester.pumpWidget(
+        buildDetailScreen(
+          session: organizerSession,
+          customExpensesRepository: expensesRepository,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('event_actions_menu_button')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('close_expenses_menu_item')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(CloseExpensesDialog), findsOneWidget);
+      expect(find.text('¿Cerrar gastos?'), findsOneWidget);
+      expect(
+        find.text(
+          'Ya no se podrán cargar gastos nuevos en este evento, pero se podrá seguir saldando.',
+        ),
+        findsOneWidget,
+      );
+
+      await tester.tap(
+        find.byKey(const Key('close_expenses_dialog_confirm_button')),
+      );
+      await tester.pumpAndSettle();
+
+      expect(expensesRepository.areExpensesClosedFor(testEventId), isTrue);
+      expect(
+        find.text(
+          'Los gastos están cerrados. Ya no se pueden cargar gastos nuevos.',
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Los gastos se cerraron correctamente.'),
+        findsOneWidget,
+      );
+      expect(
+        tester
+            .widget<InkWell>(find.byKey(const Key('quick_action_add_expense')))
+            .onTap,
+        isNull,
+      );
+      expect(
+        tester
+            .widget<InkWell>(find.byKey(const Key('quick_action_invite')))
+            .onTap,
+        isNotNull,
+      );
+      expect(
+        tester
+            .widget<InkWell>(find.byKey(const Key('quick_action_add_task')))
+            .onTap,
+        isNotNull,
+      );
+      expect(
+        tester
+            .widget<InkWell>(find.byKey(const Key('quick_action_settle')))
+            .onTap,
+        isNotNull,
+      );
+
+      await tester.tap(find.byKey(const Key('quick_action_add_expense')));
+      await tester.pumpAndSettle();
+      expect(find.byType(AddExpenseDialog), findsNothing);
+    });
+
+    testWidgets('participante ve gastos cerrados al cargar el evento', (
+      tester,
+    ) async {
+      final closedEvent = testEvent.copyWith(expensesClosed: true);
+      final repository = FakeEventsRepository(
+        delay: Duration.zero,
+        initialEvents: [closedEvent],
+      );
+
+      await tester.pumpWidget(
+        buildDetailScreen(session: guestSession, customRepo: repository),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text(
+          'Los gastos están cerrados. Ya no se pueden cargar gastos nuevos.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('event_actions_menu_button')), findsNothing);
+      expect(
+        tester
+            .widget<InkWell>(find.byKey(const Key('quick_action_add_expense')))
+            .onTap,
+        isNull,
+      );
     });
 
     testWidgets('flujo completo de confirmación y cancelación exitosa', (
@@ -429,12 +552,14 @@ class EventDetailScreenWithSession extends ConsumerWidget {
   final UserSession? session;
   final String eventId;
   final FakeEventsRepository repository;
+  final FakeExpensesRepository expensesRepository;
 
   const EventDetailScreenWithSession({
     super.key,
     required this.session,
     required this.eventId,
     required this.repository,
+    required this.expensesRepository,
   });
 
   @override
@@ -444,7 +569,7 @@ class EventDetailScreenWithSession extends ConsumerWidget {
         eventDetailNotifierProvider(eventId).overrideWith((ref) {
           return EventDetailNotifier(
             repository: repository,
-            expensesRepository: FakeExpensesRepository(delay: Duration.zero),
+            expensesRepository: expensesRepository,
             currentSession: session,
             eventId: eventId,
           );

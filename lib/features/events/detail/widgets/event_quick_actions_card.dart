@@ -8,6 +8,7 @@ import '../../../expenses/presentation/widgets/add_expense_dialog.dart';
 
 class EventQuickActionsCard extends StatelessWidget {
   final bool isCancelled;
+  final bool expensesClosed;
   final List<EventParticipant> participants;
   final VoidCallback onSettleTap;
 
@@ -16,6 +17,7 @@ class EventQuickActionsCard extends StatelessWidget {
     required this.participants,
     required this.onSettleTap,
     this.isCancelled = false,
+    this.expensesClosed = false,
   });
 
   void _handleActionTap(
@@ -23,7 +25,7 @@ class EventQuickActionsCard extends StatelessWidget {
     required bool isAddExpense,
     required bool isSettle,
   }) {
-    if (isCancelled) return;
+    if (isCancelled || (isAddExpense && expensesClosed)) return;
 
     if (isAddExpense) {
       AddExpenseDialog.show(context, participants: participants);
@@ -76,6 +78,7 @@ class EventQuickActionsCard extends StatelessWidget {
                   key: const Key('quick_action_invite'),
                   icon: Icons.person_add_outlined,
                   label: i18n.quickActionInvite,
+                  isEnabled: !isCancelled,
                 ),
                 _buildActionButton(
                   context,
@@ -83,12 +86,14 @@ class EventQuickActionsCard extends StatelessWidget {
                   icon: Icons.receipt_long_outlined,
                   label: i18n.quickActionAddExpense,
                   isAddExpense: true,
+                  isEnabled: !isCancelled && !expensesClosed,
                 ),
                 _buildActionButton(
                   context,
                   key: const Key('quick_action_add_task'),
                   icon: Icons.add_task_outlined,
                   label: i18n.quickActionAddTask,
+                  isEnabled: !isCancelled,
                 ),
                 _buildActionButton(
                   context,
@@ -96,6 +101,7 @@ class EventQuickActionsCard extends StatelessWidget {
                   icon: Icons.account_balance_wallet_outlined,
                   label: i18n.quickActionSettle,
                   isSettle: true,
+                  isEnabled: !isCancelled,
                 ),
               ],
             ),
@@ -110,11 +116,11 @@ class EventQuickActionsCard extends StatelessWidget {
     required Key key,
     required IconData icon,
     required String label,
+    required bool isEnabled,
     bool isAddExpense = false,
     bool isSettle = false,
   }) {
     final theme = Theme.of(context);
-    final isEnabled = !isCancelled;
     final iconColor = isEnabled
         ? theme.colorScheme.primary
         : AppColors.onSurfaceVariant.withValues(alpha: 0.5);

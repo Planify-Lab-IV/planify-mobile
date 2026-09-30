@@ -11,7 +11,8 @@ class FakeExpensesRepository implements ExpensesRepository {
     this.shouldFailClosingExpenses = false,
   });
 
-  bool areExpensesClosedFor(String eventId) => _closedEventIds.contains(eventId);
+  bool areExpensesClosedFor(String eventId) =>
+      _closedEventIds.contains(eventId);
 
   @override
   Future<void> closeExpenses(String eventId) async {

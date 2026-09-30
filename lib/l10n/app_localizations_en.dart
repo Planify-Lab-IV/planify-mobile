@@ -376,6 +376,29 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not cancel the event. Please try again.';
 
   @override
+  String get closeExpensesAction => 'Close expenses';
+
+  @override
+  String get closeExpensesDialogTitle => 'Close expenses?';
+
+  @override
+  String get closeExpensesDialogMessage =>
+      'No new expenses can be added to this event, but you can continue settling up.';
+
+  @override
+  String get closeExpensesConfirm => 'Yes, close expenses';
+
+  @override
+  String get closeExpensesDismiss => 'Back';
+
+  @override
+  String get closeExpensesSuccess => 'Expenses were closed successfully.';
+
+  @override
+  String get closeExpensesError =>
+      'Could not close expenses. Please try again.';
+
+  @override
   String get eventNotFound => 'Event not found';
 
   @override
@@ -385,6 +408,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get eventCancelledNotice =>
       'This event has been cancelled and no longer accepts new actions.';
+
+  @override
+  String get expensesClosedNotice =>
+      'Expenses are closed. No new expenses can be added.';
 
   @override
   String get eventActionsTooltip => 'Event options';

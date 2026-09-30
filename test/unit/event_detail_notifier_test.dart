@@ -415,9 +415,7 @@ void main() {
     group('closeExpenses', () {
       test('cierra los gastos y actualiza el evento local', () async {
         final expensesRepository = FakeExpensesRepository(delay: Duration.zero);
-        final notifier = buildNotifier(
-          expensesRepository: expensesRepository,
-        );
+        final notifier = buildNotifier(expensesRepository: expensesRepository);
 
         final success = await notifier.closeExpenses();
 
@@ -434,9 +432,7 @@ void main() {
           delay: Duration.zero,
           shouldFailClosingExpenses: true,
         );
-        final notifier = buildNotifier(
-          expensesRepository: expensesRepository,
-        );
+        final notifier = buildNotifier(expensesRepository: expensesRepository);
 
         final success = await notifier.closeExpenses();
 

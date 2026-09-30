@@ -203,26 +203,29 @@ void main() {
       expect(fetched, equals(customEvent));
     });
 
-    test('recupera el estado de gastos cerrados de un evento inicial', () async {
-      final closedEvent = Event(
-        id: 'closed-1',
-        name: 'Evento cerrado',
-        location: 'Loc',
-        organizerId: testOrganizerId,
-        groupId: 'grp-1',
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        expensesClosed: true,
-      );
-      final closedEventsRepository = FakeEventsRepository(
-        delay: Duration.zero,
-        initialEvents: [closedEvent],
-      );
+    test(
+      'recupera el estado de gastos cerrados de un evento inicial',
+      () async {
+        final closedEvent = Event(
+          id: 'closed-1',
+          name: 'Evento cerrado',
+          location: 'Loc',
+          organizerId: testOrganizerId,
+          groupId: 'grp-1',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          expensesClosed: true,
+        );
+        final closedEventsRepository = FakeEventsRepository(
+          delay: Duration.zero,
+          initialEvents: [closedEvent],
+        );
 
-      final fetched = await closedEventsRepository.getEvent(closedEvent.id);
+        final fetched = await closedEventsRepository.getEvent(closedEvent.id);
 
-      expect(fetched?.expensesClosed, isTrue);
-    });
+        expect(fetched?.expensesClosed, isTrue);
+      },
+    );
 
     test(
       'guarda y recupera la asistencia del usuario actual por evento',
