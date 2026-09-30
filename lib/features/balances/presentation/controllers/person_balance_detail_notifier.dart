@@ -11,9 +11,10 @@ class PersonBalanceDetailNotifier
   PersonBalanceDetailNotifier({
     required BalancesRepository repository,
     required String personKey,
-  }) : _repository = repository,
-       _personKey = personKey,
-       super(const PersonBalanceDetailState()) {
+  }) : this._(repository, personKey);
+
+  PersonBalanceDetailNotifier._(this._repository, this._personKey)
+    : super(const PersonBalanceDetailState()) {
     load();
   }
 
