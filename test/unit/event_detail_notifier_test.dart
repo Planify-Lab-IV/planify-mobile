@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/expenses/data/fake_expenses_repository.dart';
 import 'package:planify/features/events/domain/event.dart';
 import 'package:planify/features/events/domain/event_status.dart';
 import 'package:planify/features/events/detail/controllers/event_detail_notifier.dart';
@@ -48,6 +49,21 @@ void main() {
       eventId: testEventId,
       token: 'fake-anon-token',
     );
+
+    EventDetailNotifier buildNotifier({
+      UserSession? session,
+      Event? event,
+      FakeExpensesRepository? expensesRepository,
+    }) {
+      return EventDetailNotifier(
+        repository: FakeEventsRepository(delay: Duration.zero),
+        expensesRepository:
+            expensesRepository ?? FakeExpensesRepository(delay: Duration.zero),
+        currentSession: session ?? organizerSession,
+        eventId: testEventId,
+        initialEvent: event ?? testEvent,
+      );
+    }
 
     group(
       'Lógica de autorización "soy organizador de este evento puntual"',
@@ -139,6 +155,7 @@ void main() {
         final repo = FakeEventsRepository(delay: Duration.zero);
         final notifier = EventDetailNotifier(
           repository: repo,
+          expensesRepository: FakeExpensesRepository(delay: Duration.zero),
           currentSession: organizerSession,
           eventId: testEventId,
           initialEvent: testEvent,
@@ -155,6 +172,7 @@ void main() {
         );
         final notifier = EventDetailNotifier(
           repository: repo,
+          expensesRepository: FakeExpensesRepository(delay: Duration.zero),
           currentSession: organizerSession,
           eventId: testEventId,
           initialEvent: cancelledEvent,
@@ -171,6 +189,7 @@ void main() {
         );
         final notifier = EventDetailNotifier(
           repository: repo,
+          expensesRepository: FakeExpensesRepository(delay: Duration.zero),
           currentSession: organizerSession,
           eventId: testEventId,
           initialEvent: confirmedEvent,
@@ -184,6 +203,7 @@ void main() {
         final repo = FakeEventsRepository(delay: Duration.zero);
         final notifier = EventDetailNotifier(
           repository: repo,
+          expensesRepository: FakeExpensesRepository(delay: Duration.zero),
           currentSession: guestSession,
           eventId: testEventId,
           initialEvent: testEvent,
@@ -191,6 +211,49 @@ void main() {
 
         expect(notifier.isOrganizer, isFalse);
         expect(notifier.canCancelEvent, isFalse);
+      });
+    });
+
+    group('canCloseExpenses', () {
+      test('es true para el organizador de un evento activo', () {
+        final notifier = buildNotifier();
+
+        expect(notifier.canCloseExpenses, isTrue);
+      });
+
+      test('es true para el organizador de un evento confirmado', () {
+        final notifier = buildNotifier(
+          event: testEvent.copyWith(status: EventStatus.confirmed),
+        );
+
+        expect(notifier.canCloseExpenses, isTrue);
+      });
+
+      test('es false para un usuario que no organiza el evento', () {
+        final notifier = buildNotifier(session: guestSession);
+
+        expect(notifier.canCloseExpenses, isFalse);
+      });
+
+      test('es false si el evento está cancelado o sus gastos ya cerrados', () {
+        final cancelledNotifier = buildNotifier(
+          event: testEvent.copyWith(status: EventStatus.cancelled),
+        );
+        final closedNotifier = buildNotifier(
+          event: testEvent.copyWith(expensesClosed: true),
+        );
+
+        expect(cancelledNotifier.canCloseExpenses, isFalse);
+        expect(closedNotifier.canCloseExpenses, isFalse);
+      });
+
+      test('es false mientras el cierre de gastos está en curso', () {
+        final notifier = buildNotifier();
+        notifier.state = notifier.state.copyWith(
+          expensesClosureStatus: EventExpensesClosureStatus.inProgress,
+        );
+
+        expect(notifier.canCloseExpenses, isFalse);
       });
     });
 
@@ -202,6 +265,7 @@ void main() {
         );
         final notifier = EventDetailNotifier(
           repository: repo,
+          expensesRepository: FakeExpensesRepository(delay: Duration.zero),
           currentSession: organizerSession,
           eventId: testEventId,
         );
@@ -221,6 +285,7 @@ void main() {
         );
         final notifier = EventDetailNotifier(
           repository: repo,
+          expensesRepository: FakeExpensesRepository(delay: Duration.zero),
           currentSession: organizerSession,
           eventId: 'id-inexistente',
         );
@@ -240,6 +305,7 @@ void main() {
         );
         final notifier = EventDetailNotifier(
           repository: repo,
+          expensesRepository: FakeExpensesRepository(delay: Duration.zero),
           currentSession: organizerSession,
           eventId: testEventId,
         );
@@ -261,6 +327,7 @@ void main() {
         );
         final notifier = EventDetailNotifier(
           repository: repo,
+          expensesRepository: FakeExpensesRepository(delay: Duration.zero),
           currentSession: organizerSession,
           eventId: testEventId,
           initialEvent: testEvent,
@@ -285,6 +352,7 @@ void main() {
           );
           final notifier = EventDetailNotifier(
             repository: repo,
+            expensesRepository: FakeExpensesRepository(delay: Duration.zero),
             currentSession: guestSession,
             eventId: testEventId,
             initialEvent: testEvent,
@@ -308,6 +376,7 @@ void main() {
           );
           final notifier = EventDetailNotifier(
             repository: repo,
+            expensesRepository: FakeExpensesRepository(delay: Duration.zero),
             currentSession: organizerSession,
             eventId: testEventId,
             initialEvent: testEvent,
@@ -327,6 +396,7 @@ void main() {
         final repo = FakeEventsRepository(delay: Duration.zero);
         final notifier = EventDetailNotifier(
           repository: repo,
+          expensesRepository: FakeExpensesRepository(delay: Duration.zero),
           currentSession: organizerSession,
           eventId: testEventId,
           initialEvent: testEvent,
@@ -339,6 +409,70 @@ void main() {
 
         notifier.resetCancellationStatus();
         expect(notifier.state.cancellationStatus, EventCancellationStatus.idle);
+      });
+    });
+
+    group('closeExpenses', () {
+      test('cierra los gastos y actualiza el evento local', () async {
+        final expensesRepository = FakeExpensesRepository(delay: Duration.zero);
+        final notifier = buildNotifier(
+          expensesRepository: expensesRepository,
+        );
+
+        final success = await notifier.closeExpenses();
+
+        expect(success, isTrue);
+        expect(expensesRepository.areExpensesClosedFor(testEventId), isTrue);
+        expect(notifier.state.event?.expensesClosed, isTrue);
+        expect(notifier.state.expensesClosureSucceeded, isTrue);
+        expect(notifier.state.isClosingExpenses, isFalse);
+        expect(notifier.canCloseExpenses, isFalse);
+      });
+
+      test('no cierra localmente si el repositorio falla', () async {
+        final expensesRepository = FakeExpensesRepository(
+          delay: Duration.zero,
+          shouldFailClosingExpenses: true,
+        );
+        final notifier = buildNotifier(
+          expensesRepository: expensesRepository,
+        );
+
+        final success = await notifier.closeExpenses();
+
+        expect(success, isFalse);
+        expect(expensesRepository.areExpensesClosedFor(testEventId), isFalse);
+        expect(notifier.state.event?.expensesClosed, isFalse);
+        expect(notifier.state.expensesClosureFailed, isTrue);
+        expect(notifier.state.isClosingExpenses, isFalse);
+      });
+
+      test('bloquea el cierre si el usuario no es el organizador', () async {
+        final expensesRepository = FakeExpensesRepository(delay: Duration.zero);
+        final notifier = buildNotifier(
+          session: guestSession,
+          expensesRepository: expensesRepository,
+        );
+
+        final success = await notifier.closeExpenses();
+
+        expect(success, isFalse);
+        expect(expensesRepository.areExpensesClosedFor(testEventId), isFalse);
+        expect(notifier.state.expensesClosureFailed, isTrue);
+      });
+
+      test('restablece el estado del cierre de gastos', () {
+        final notifier = buildNotifier();
+        notifier.state = notifier.state.copyWith(
+          expensesClosureStatus: EventExpensesClosureStatus.failure,
+        );
+
+        notifier.resetExpensesClosureStatus();
+
+        expect(
+          notifier.state.expensesClosureStatus,
+          EventExpensesClosureStatus.idle,
+        );
       });
     });
   });

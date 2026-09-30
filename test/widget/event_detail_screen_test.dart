@@ -9,6 +9,7 @@ import 'package:planify/features/availability/presentation/controllers/availabil
 import 'package:planify/features/debts/data/fake_debts_repository.dart';
 import 'package:planify/features/debts/presentation/controllers/debts_providers.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/expenses/data/fake_expenses_repository.dart';
 import 'package:planify/features/events/data/events_repository_provider.dart';
 import 'package:planify/features/events/domain/event.dart';
 import 'package:planify/features/events/domain/event_status.dart';
@@ -443,6 +444,7 @@ class EventDetailScreenWithSession extends ConsumerWidget {
         eventDetailNotifierProvider(eventId).overrideWith((ref) {
           return EventDetailNotifier(
             repository: repository,
+            expensesRepository: FakeExpensesRepository(delay: Duration.zero),
             currentSession: session,
             eventId: eventId,
           );

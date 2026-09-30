@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../auth/presentation/controllers/auth_providers.dart';
 import '../../../auth/presentation/controllers/auth_state.dart';
 import '../../data/events_repository_provider.dart';
+import '../../../expenses/presentation/controllers/expenses_providers.dart';
 import 'event_detail_notifier.dart';
 import 'event_detail_state.dart';
 import '../../attendance/controllers/attendance_notifier.dart';
@@ -21,6 +22,7 @@ final eventDetailNotifierProvider = StateNotifierProvider.autoDispose
 
       return EventDetailNotifier(
         repository: repository,
+        expensesRepository: ref.watch(expensesRepositoryProvider),
         currentSession: session,
         eventId: eventId,
       );
