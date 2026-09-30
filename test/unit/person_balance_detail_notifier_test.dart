@@ -22,10 +22,7 @@ void main() {
 
       await Future<void>.delayed(Duration.zero);
 
-      expect(
-        notifier.state.loadStatus,
-        PersonBalanceDetailLoadStatus.success,
-      );
+      expect(notifier.state.loadStatus, PersonBalanceDetailLoadStatus.success);
       expect(notifier.state.detail?.personKey, 'user:ana');
       expect(notifier.state.detail?.breakdown, hasLength(2));
       notifier.dispose();
@@ -42,10 +39,7 @@ void main() {
 
       await Future<void>.delayed(Duration.zero);
 
-      expect(
-        notifier.state.loadStatus,
-        PersonBalanceDetailLoadStatus.error,
-      );
+      expect(notifier.state.loadStatus, PersonBalanceDetailLoadStatus.error);
       expect(notifier.state.detail, isNull);
       notifier.dispose();
     });

@@ -43,10 +43,7 @@ class PersonBalanceDetail {
   }
 }
 
-bool _sameBreakdown(
-  List<EventBalanceLine> left,
-  List<EventBalanceLine> right,
-) {
+bool _sameBreakdown(List<EventBalanceLine> left, List<EventBalanceLine> right) {
   if (left.length != right.length) return false;
   for (var index = 0; index < left.length; index++) {
     if (left[index] != right[index]) return false;

@@ -19,11 +19,10 @@ final balancesNotifierProvider =
     });
 
 final personBalanceDetailNotifierProvider = StateNotifierProvider.autoDispose
-    .family<
-      PersonBalanceDetailNotifier,
-      PersonBalanceDetailState,
-      String
-    >((ref, personKey) {
+    .family<PersonBalanceDetailNotifier, PersonBalanceDetailState, String>((
+      ref,
+      personKey,
+    ) {
       return PersonBalanceDetailNotifier(
         repository: ref.watch(balancesRepositoryProvider),
         personKey: personKey,

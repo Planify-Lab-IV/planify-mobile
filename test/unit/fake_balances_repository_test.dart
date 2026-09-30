@@ -46,10 +46,7 @@ void main() {
         initialPersonDetails: {'participant:marcos': expected},
       );
 
-      expect(
-        await repository.getPersonDetail('participant:marcos'),
-        expected,
-      );
+      expect(await repository.getPersonDetail('participant:marcos'), expected);
     });
 
     test('no expone un desglose mutable', () async {
