@@ -313,14 +313,14 @@
   ,"personBalanceDetailLoading": "Cargando detalle de saldo"
   ,"personBalanceDetailLoadError": "No se pudo cargar el detalle del saldo."
   ,"personBalanceDetailBreakdownTitle": "Desglose por evento"
-  ,"personBalanceDetailYouOwe": "Le debés {amount} a {name}"
+  ,"personBalanceDetailYouOwe": "Le debés $ {amount} a {name}"
   ,"@personBalanceDetailYouOwe": {
     "placeholders": {
       "amount": {"type": "String", "example": "$ 243,00"},
       "name": {"type": "String", "example": "Ana"}
     }
   }
-  ,"personBalanceDetailOwedToYou": "{name} te debe {amount}"
+  ,"personBalanceDetailOwedToYou": "{name} te debe $ {amount}"
   ,"@personBalanceDetailOwedToYou": {
     "placeholders": {
       "name": {"type": "String", "example": "Martín"},

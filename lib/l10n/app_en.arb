@@ -309,14 +309,14 @@
   ,"personBalanceDetailLoading": "Loading balance details"
   ,"personBalanceDetailLoadError": "Could not load the balance details."
   ,"personBalanceDetailBreakdownTitle": "Breakdown by event"
-  ,"personBalanceDetailYouOwe": "You owe {amount} to {name}"
+  ,"personBalanceDetailYouOwe": "You owe $ {amount} to {name}"
   ,"@personBalanceDetailYouOwe": {
     "placeholders": {
       "amount": {"type": "String", "example": "$ 243.00"},
       "name": {"type": "String", "example": "Ana"}
     }
   }
-  ,"personBalanceDetailOwedToYou": "{name} owes you {amount}"
+  ,"personBalanceDetailOwedToYou": "{name} owes you $ {amount}"
   ,"@personBalanceDetailOwedToYou": {
     "placeholders": {
       "name": {"type": "String", "example": "Martín"},

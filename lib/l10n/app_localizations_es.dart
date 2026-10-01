@@ -737,12 +737,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String personBalanceDetailYouOwe(String amount, String name) {
-    return 'Le debés $amount a $name';
+    return 'Le debés \$ $amount a $name';
   }
 
   @override
   String personBalanceDetailOwedToYou(String name, String amount) {
-    return '$name te debe $amount';
+    return '$name te debe \$ $amount';
   }
 
   @override

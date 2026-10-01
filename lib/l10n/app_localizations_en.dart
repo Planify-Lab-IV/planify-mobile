@@ -730,12 +730,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String personBalanceDetailYouOwe(String amount, String name) {
-    return 'You owe $amount to $name';
+    return 'You owe \$ $amount to $name';
   }
 
   @override
   String personBalanceDetailOwedToYou(String name, String amount) {
-    return '$name owes you $amount';
+    return '$name owes you \$ $amount';
   }
 
   @override
