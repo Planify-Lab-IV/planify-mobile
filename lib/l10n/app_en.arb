@@ -331,5 +331,31 @@
     "balanceStatusSettled": "Settled",
     "balancesNetLabel": "Net balance",
     "balancesFilterAll": "All",
-    "balancesFilterEmpty": "There are no balances in this category."
+  "balancesFilterEmpty": "There are no balances in this category."
+  ,"personBalanceDetailLoading": "Loading balance details"
+  ,"personBalanceDetailLoadError": "Could not load the balance details."
+  ,"personBalanceDetailBreakdownTitle": "Breakdown by event"
+  ,"personBalanceDetailYouOwe": "You owe $ {amount} to {name}"
+  ,"@personBalanceDetailYouOwe": {
+    "placeholders": {
+      "amount": {"type": "String", "example": "$ 243.00"},
+      "name": {"type": "String", "example": "Ana"}
+    }
+  }
+  ,"personBalanceDetailOwedToYou": "{name} owes you $ {amount}"
+  ,"@personBalanceDetailOwedToYou": {
+    "placeholders": {
+      "name": {"type": "String", "example": "Martín"},
+      "amount": {"type": "String", "example": "$ 825.00"}
+    }
+  }
+  ,"personBalanceDetailSettled": "You're all settled"
+  ,"personBalanceDetailLineYouOwe": "You owe {name}"
+  ,"@personBalanceDetailLineYouOwe": {
+    "placeholders": {"name": {"type": "String", "example": "Ana"}}
+  }
+  ,"personBalanceDetailLineOwedToYou": "{name} owes you"
+  ,"@personBalanceDetailLineOwedToYou": {
+    "placeholders": {"name": {"type": "String", "example": "Ana"}}
+  }
 }

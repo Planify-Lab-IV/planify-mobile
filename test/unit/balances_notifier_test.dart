@@ -3,6 +3,7 @@ import 'package:planify/features/balances/data/fake_balances_repository.dart';
 import 'package:planify/features/balances/domain/balance_summary.dart';
 import 'package:planify/features/balances/domain/balances_repository.dart';
 import 'package:planify/features/balances/domain/person_balance.dart';
+import 'package:planify/features/balances/domain/person_balance_detail.dart';
 import 'package:planify/features/balances/domain/person_balance_status.dart';
 import 'package:planify/features/balances/presentation/controllers/balances_notifier.dart';
 import 'package:planify/features/balances/presentation/controllers/balances_state.dart';
@@ -76,5 +77,10 @@ class _CountingBalancesRepository implements BalancesRepository {
         netCents: 1000,
       ),
     ];
+  }
+
+  @override
+  Future<PersonBalanceDetail> getPersonDetail(String personKey) async {
+    throw UnimplementedError();
   }
 }

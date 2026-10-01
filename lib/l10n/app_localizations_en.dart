@@ -774,4 +774,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get balancesFilterEmpty => 'There are no balances in this category.';
+
+  @override
+  String get personBalanceDetailLoading => 'Loading balance details';
+
+  @override
+  String get personBalanceDetailLoadError =>
+      'Could not load the balance details.';
+
+  @override
+  String get personBalanceDetailBreakdownTitle => 'Breakdown by event';
+
+  @override
+  String personBalanceDetailYouOwe(String amount, String name) {
+    return 'You owe \$ $amount to $name';
+  }
+
+  @override
+  String personBalanceDetailOwedToYou(String name, String amount) {
+    return '$name owes you \$ $amount';
+  }
+
+  @override
+  String get personBalanceDetailSettled => 'You\'re all settled';
+
+  @override
+  String personBalanceDetailLineYouOwe(String name) {
+    return 'You owe $name';
+  }
+
+  @override
+  String personBalanceDetailLineOwedToYou(String name) {
+    return '$name owes you';
+  }
 }

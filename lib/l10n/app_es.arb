@@ -335,5 +335,31 @@
       "balanceStatusSettled": "Saldado",
       "balancesNetLabel": "Balance neto",
       "balancesFilterAll": "Todo",
-      "balancesFilterEmpty": "No hay saldos en esta categoría."
+  "balancesFilterEmpty": "No hay saldos en esta categoría."
+  ,"personBalanceDetailLoading": "Cargando detalle de saldo"
+  ,"personBalanceDetailLoadError": "No se pudo cargar el detalle del saldo."
+  ,"personBalanceDetailBreakdownTitle": "Desglose por evento"
+  ,"personBalanceDetailYouOwe": "Le debés $ {amount} a {name}"
+  ,"@personBalanceDetailYouOwe": {
+    "placeholders": {
+      "amount": {"type": "String", "example": "$ 243,00"},
+      "name": {"type": "String", "example": "Ana"}
+    }
+  }
+  ,"personBalanceDetailOwedToYou": "{name} te debe $ {amount}"
+  ,"@personBalanceDetailOwedToYou": {
+    "placeholders": {
+      "name": {"type": "String", "example": "Martín"},
+      "amount": {"type": "String", "example": "$ 825,00"}
+    }
+  }
+  ,"personBalanceDetailSettled": "Están a mano"
+  ,"personBalanceDetailLineYouOwe": "Le debés a {name}"
+  ,"@personBalanceDetailLineYouOwe": {
+    "placeholders": {"name": {"type": "String", "example": "Ana"}}
+  }
+  ,"personBalanceDetailLineOwedToYou": "{name} te debe"
+  ,"@personBalanceDetailLineOwedToYou": {
+    "placeholders": {"name": {"type": "String", "example": "Ana"}}
+  }
 }

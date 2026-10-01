@@ -9,6 +9,7 @@ import 'package:planify/features/balances/data/fake_balances_repository.dart';
 import 'package:planify/features/balances/domain/balance_summary.dart';
 import 'package:planify/features/balances/domain/balances_repository.dart';
 import 'package:planify/features/balances/domain/person_balance.dart';
+import 'package:planify/features/balances/domain/person_balance_detail.dart';
 import 'package:planify/features/balances/domain/person_balance_status.dart';
 import 'package:planify/features/balances/presentation/controllers/balances_providers.dart';
 import 'package:planify/features/balances/presentation/screens/balances_screen.dart';
@@ -150,7 +151,7 @@ void main() {
       expect(tappedPersonKey, 'user:ana');
     });
 
-    testWidgets('muestra el aviso temporal al tocar una persona sin detalle', (
+    testWidgets('abre el detalle al tocar una persona sin callback', (
       tester,
     ) async {
       await tester.pumpWidget(
@@ -159,12 +160,13 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key('balance_person_user:ana')));
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       expect(
-        find.text('Esta funcionalidad estará disponible próximamente.'),
+        find.byKey(const Key('person_balance_detail_sheet')),
         findsOneWidget,
       );
+      expect(find.text(r'Le debés $ 243,00 a Ana'), findsOneWidget);
     });
 
     testWidgets('muestra el estado vacío', (tester) async {
@@ -231,6 +233,11 @@ class _ControlledBalancesRepository implements BalancesRepository {
 
   @override
   Future<List<PersonBalance>> listPeople() => _peopleCompleter.future;
+
+  @override
+  Future<PersonBalanceDetail> getPersonDetail(String personKey) {
+    throw UnimplementedError();
+  }
 
   void complete() {
     _summaryCompleter.complete(
