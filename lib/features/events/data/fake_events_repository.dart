@@ -7,8 +7,11 @@ import '../domain/attendance_status.dart';
 import 'event_exceptions.dart';
 
 class FakeEventsRepository implements EventsRepository {
+  static const defaultOrganizerId = 'org-123';
+
   final Duration delay;
   final bool shouldThrowError;
+  final String _organizerId;
   bool shouldFailCancellation;
   bool shouldFailAttendanceResponse;
   bool shouldFailScheduleConfirmation;
@@ -20,55 +23,58 @@ class FakeEventsRepository implements EventsRepository {
   FakeEventsRepository({
     this.delay = const Duration(milliseconds: 300),
     this.shouldThrowError = false,
+    String organizerId = defaultOrganizerId,
     this.shouldFailCancellation = false,
     this.shouldFailAttendanceResponse = false,
     this.shouldFailScheduleConfirmation = false,
     List<Event>? initialEvents,
-  }) {
+  }) : _organizerId = organizerId.trim().isEmpty
+           ? defaultOrganizerId
+           : organizerId.trim() {
     final defaults = [
       Event(
         id: 'evt-123',
         name: 'Cumpleaños de Lucas',
         location: 'Casa de Lucas',
-        organizerId: 'org-123',
+        organizerId: _organizerId,
         groupId: 'grp-amigos',
         status: EventStatus.active,
         createdAt: DateTime(2026, 1, 1),
         updatedAt: DateTime(2026, 1, 1),
-        participants: _defaultParticipants('evt-123'),
+        participants: _defaultParticipants('evt-123', _organizerId),
       ),
       Event(
         id: 'evt-cumple-lucas',
         name: 'Cumpleaños de Lucas',
         location: 'Casa de Lucas',
-        organizerId: 'org-123',
+        organizerId: _organizerId,
         groupId: 'grp-amigos',
         status: EventStatus.active,
         createdAt: DateTime(2026, 1, 1),
         updatedAt: DateTime(2026, 1, 1),
-        participants: _defaultParticipants('evt-cumple-lucas'),
+        participants: _defaultParticipants('evt-cumple-lucas', _organizerId),
       ),
       Event(
         id: 'evt-asado-amigos',
         name: 'Asado con Amigos',
         location: 'Club de Campo',
-        organizerId: 'org-123',
+        organizerId: _organizerId,
         groupId: 'grp-amigos',
         status: EventStatus.active,
         createdAt: DateTime(2026, 1, 1),
         updatedAt: DateTime(2026, 1, 1),
-        participants: _defaultParticipants('evt-asado-amigos'),
+        participants: _defaultParticipants('evt-asado-amigos', _organizerId),
       ),
       Event(
         id: 'evt-fake-demo',
         name: 'Evento Demo',
         location: 'Av. Corrientes 1234',
-        organizerId: 'org-123',
+        organizerId: _organizerId,
         groupId: 'grp-amigos',
         status: EventStatus.active,
         createdAt: DateTime(2026, 1, 1),
         updatedAt: DateTime(2026, 1, 1),
-        participants: _defaultParticipants('evt-fake-demo'),
+        participants: _defaultParticipants('evt-fake-demo', _organizerId),
       ),
     ];
 
@@ -98,12 +104,12 @@ class FakeEventsRepository implements EventsRepository {
       id: eventId,
       name: draft.name,
       location: draft.location,
-      organizerId: 'org-123',
+      organizerId: _organizerId,
       groupId: groupId,
       status: EventStatus.active,
       createdAt: now,
       updatedAt: now,
-      participants: _defaultParticipants(eventId),
+      participants: _defaultParticipants(eventId, _organizerId),
     );
 
     _events[eventId] = event;
@@ -195,12 +201,15 @@ class FakeEventsRepository implements EventsRepository {
     _currentUserAttendance[eventId] = response.status;
   }
 
-  static List<EventParticipant> _defaultParticipants(String eventId) {
+  static List<EventParticipant> _defaultParticipants(
+    String eventId,
+    String organizerId,
+  ) {
     return [
       EventParticipant(
         id: 'participant-org-$eventId',
         eventId: eventId,
-        userId: 'org-123',
+        userId: organizerId,
         username: 'Lucía',
         isAnonymous: false,
         isOrganizer: true,

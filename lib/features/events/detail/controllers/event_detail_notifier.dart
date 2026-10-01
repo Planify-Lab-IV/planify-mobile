@@ -60,6 +60,32 @@ class EventDetailNotifier extends StateNotifier<EventDetailState> {
     };
   }
 
+  // Identifica la participación de la sesión actual dentro de este evento
+  // Las tareas se asignan a participantes, no a usuarios globales. Una sesión
+  // anónima ya recibe ese identificador al ingresar; para una sesión de
+  // organizador se busca la participación cuyo `userId` coincide con la suya.
+  String? get currentParticipantId {
+    final event = state.event;
+    final session = _currentSession;
+    if (event == null || session == null) return null;
+
+    return switch (session) {
+      AnonymousSession(:final participantId, :final eventId)
+          when eventId == event.id && participantId.trim().isNotEmpty =>
+        participantId,
+      OrganizerSession(:final userId) when userId.trim().isNotEmpty =>
+        _participantIdForUser(event, userId),
+      _ => null,
+    };
+  }
+
+  String? _participantIdForUser(Event event, String userId) {
+    for (final participant in event.participants) {
+      if (participant.userId == userId) return participant.id;
+    }
+    return null;
+  }
+
   bool get canCancelEvent {
     final event = state.event;
     if (event == null) return false;

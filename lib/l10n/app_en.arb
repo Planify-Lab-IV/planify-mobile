@@ -232,6 +232,19 @@
         }
       }
     },
+    "tasksLoadError": "Tasks could not be loaded.",
+    "taskStatusUnassigned": "Unassigned",
+    "taskStatusPending": "Pending",
+    "taskStatusCompleted": "Completed",
+    "taskAssignedTo": "Assigned to {name}",
+    "@taskAssignedTo": {
+      "placeholders": {
+        "name": {
+          "type": "String",
+          "example": "Lucía"
+        }
+      }
+    },
     "addExpenseDebtorsTitle": "Who owes?",
     "addExpenseDebtorsSubtitle": "Select one or more people who need to cover the expense.",
     "addExpenseDebtorAmountsTitle": "Amounts owed",
@@ -244,6 +257,19 @@
         }
       }
     },
+    "taskClaimAction": "Claim",
+    "taskCompleteAction": "Complete",
+    "taskReassignAction": "Reassign",
+    "tasksOperationError": "The task could not be updated. Please try again.",
+    "createTaskDialogTitle": "Add task",
+    "createTaskTitleLabel": "What needs to be done?",
+    "createTaskTitleHint": "e.g. Buy ice",
+    "createTaskTitleRequired": "Enter a task title.",
+    "createTaskSubmit": "Create task",
+    "reassignTaskDialogTitle": "Reassign task",
+    "reassignTaskParticipantLabel": "Choose who will take care of it.",
+    "reassignTaskParticipantRequired": "Choose a person to continue.",
+    "reassignTaskConfirm": "Reassign",
     "addExpenseDebtorAmountInvalid": "Enter a valid amount.",
     "addExpenseSplitDebtorsEvenly": "Split equally",
     "addExpenseDebtorDifferenceMissing": "{amount} is still needed to reach the total.",

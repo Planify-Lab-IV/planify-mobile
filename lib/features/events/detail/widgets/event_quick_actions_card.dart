@@ -9,11 +9,13 @@ import '../../../expenses/presentation/widgets/add_expense_dialog.dart';
 class EventQuickActionsCard extends StatelessWidget {
   final bool isCancelled;
   final List<EventParticipant> participants;
+  final VoidCallback? onAddTask;
   final VoidCallback onSettleTap;
 
   const EventQuickActionsCard({
     super.key,
     required this.participants,
+    this.onAddTask,
     required this.onSettleTap,
     this.isCancelled = false,
   });
@@ -21,12 +23,18 @@ class EventQuickActionsCard extends StatelessWidget {
   void _handleActionTap(
     BuildContext context, {
     required bool isAddExpense,
+    required bool isAddTask,
     required bool isSettle,
   }) {
     if (isCancelled) return;
 
     if (isAddExpense) {
       AddExpenseDialog.show(context, participants: participants);
+      return;
+    }
+
+    if (isAddTask) {
+      onAddTask?.call();
       return;
     }
 
@@ -89,6 +97,7 @@ class EventQuickActionsCard extends StatelessWidget {
                   key: const Key('quick_action_add_task'),
                   icon: Icons.add_task_outlined,
                   label: i18n.quickActionAddTask,
+                  isAddTask: true,
                 ),
                 _buildActionButton(
                   context,
@@ -111,6 +120,7 @@ class EventQuickActionsCard extends StatelessWidget {
     required IconData icon,
     required String label,
     bool isAddExpense = false,
+    bool isAddTask = false,
     bool isSettle = false,
   }) {
     final theme = Theme.of(context);
@@ -133,6 +143,7 @@ class EventQuickActionsCard extends StatelessWidget {
             ? () => _handleActionTap(
                 context,
                 isAddExpense: isAddExpense,
+                isAddTask: isAddTask,
                 isSettle: isSettle,
               )
             : null,

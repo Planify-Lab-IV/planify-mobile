@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
 import 'package:planify/features/events/domain/event.dart';
+import 'package:planify/features/events/domain/event_participant.dart';
 import 'package:planify/features/events/domain/event_status.dart';
 import 'package:planify/features/events/detail/controllers/event_detail_notifier.dart';
 import 'package:planify/features/events/detail/controllers/event_detail_state.dart';
@@ -339,6 +340,80 @@ void main() {
 
         notifier.resetCancellationStatus();
         expect(notifier.state.cancellationStatus, EventCancellationStatus.idle);
+      });
+    });
+
+    group('currentParticipantId', () {
+      final eventWithParticipants = testEvent.copyWith(
+        participants: const [
+          EventParticipant(
+            id: 'participant-organizer',
+            eventId: testEventId,
+            userId: testOrganizerId,
+            username: 'lucas',
+            isAnonymous: false,
+            isOrganizer: true,
+          ),
+          EventParticipant(
+            id: 'anon-456',
+            eventId: testEventId,
+            userId: null,
+            username: 'Invitado',
+            isAnonymous: true,
+            isOrganizer: false,
+          ),
+        ],
+      );
+
+      EventDetailNotifier notifierFor(UserSession? session, Event event) {
+        return EventDetailNotifier(
+          repository: FakeEventsRepository(delay: Duration.zero),
+          currentSession: session,
+          eventId: event.id,
+          initialEvent: event,
+        );
+      }
+
+      test('usa el participantId recibido por una sesión anónima', () {
+        final notifier = notifierFor(guestSession, eventWithParticipants);
+
+        expect(notifier.currentParticipantId, 'anon-456');
+      });
+
+      test('busca el participante del organizador por su userId', () {
+        final notifier = notifierFor(organizerSession, eventWithParticipants);
+
+        expect(notifier.currentParticipantId, 'participant-organizer');
+      });
+
+      test('retorna null si el organizador no participa del evento', () {
+        final notifier = notifierFor(
+          otherOrganizerSession,
+          eventWithParticipants,
+        );
+
+        expect(notifier.currentParticipantId, isNull);
+      });
+
+      test('retorna null si la sesión anónima pertenece a otro evento', () {
+        const otherEventGuestSession = AnonymousSession(
+          participantId: 'anon-456',
+          name: 'Invitado',
+          eventId: 'evt-otro',
+          token: 'fake-anon-token',
+        );
+        final notifier = notifierFor(
+          otherEventGuestSession,
+          eventWithParticipants,
+        );
+
+        expect(notifier.currentParticipantId, isNull);
+      });
+
+      test('retorna null si no existe una sesión actual', () {
+        final notifier = notifierFor(null, eventWithParticipants);
+
+        expect(notifier.currentParticipantId, isNull);
       });
     });
   });
