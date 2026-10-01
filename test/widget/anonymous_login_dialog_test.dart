@@ -58,9 +58,28 @@ Widget _buildDialogTestApp({
   );
 }
 
+Future<void> _enterPin(WidgetTester tester, String pin) async {
+  for (var index = 0; index < pin.length; index++) {
+    await tester.enterText(
+      find.byKey(Key('anonymous_pin_digit_$index')),
+      pin[index],
+    );
+  }
+}
+
+Future<void> _tapDialogButton(WidgetTester tester, Key key) async {
+  final button = find.byKey(key);
+  await tester.scrollUntilVisible(
+    button,
+    200,
+    scrollable: find.byType(Scrollable).last,
+  );
+  await tester.tap(button);
+}
+
 void main() {
   group('AnonymousLoginDialog Widget Tests', () {
-    testWidgets('renderiza icono, titulo, campos de nombre y PIN, y botones', (
+    testWidgets('renderiza subtítulo, casilleros PIN y aviso de recuperación', (
       tester,
     ) async {
       await tester.pumpWidget(_buildDialogTestApp());
@@ -72,7 +91,36 @@ void main() {
       expect(find.byType(AnonymousLoginDialog), findsOneWidget);
       expect(find.text('Continuar como invitado'), findsOneWidget);
       expect(find.byKey(const Key('anonymous_name_input')), findsOneWidget);
-      expect(find.byKey(const Key('anonymous_pin_input')), findsOneWidget);
+      expect(
+        find.text(
+          'Elegí un PIN de 4 dígitos para identificarte en este evento.',
+        ),
+        findsOneWidget,
+      );
+      for (var index = 0; index < 4; index++) {
+        final pinField = tester.widget<TextField>(
+          find.byKey(Key('anonymous_pin_digit_$index')),
+        );
+        expect(pinField.keyboardType, TextInputType.number);
+      }
+      final firstPinFieldWidth = tester
+          .getSize(find.byKey(const Key('anonymous_pin_digit_0')))
+          .width;
+      for (var index = 1; index < 4; index++) {
+        expect(
+          tester.getSize(find.byKey(Key('anonymous_pin_digit_$index'))).width,
+          closeTo(firstPinFieldWidth, 0.01),
+        );
+      }
+      expect(find.byKey(const Key('anonymous_pin_info_card')), findsOneWidget);
+      expect(
+        find.text('¿Ya ingresaste a este evento con este nombre?'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Usá el mismo PIN para recuperar tu acceso.'),
+        findsOneWidget,
+      );
       expect(find.byKey(const Key('anonymous_cancel_button')), findsOneWidget);
       expect(find.byKey(const Key('anonymous_submit_button')), findsOneWidget);
     });
@@ -86,11 +134,11 @@ void main() {
       await tester.tap(find.byKey(const Key('open_dialog_button')));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('anonymous_submit_button')));
+      await _tapDialogButton(tester, const Key('anonymous_submit_button'));
       await tester.pumpAndSettle();
 
       expect(find.text('Por favor ingresa tu nombre'), findsOneWidget);
-      expect(find.text('Por favor ingresa el PIN del evento'), findsOneWidget);
+      expect(find.text('Por favor ingresá tu PIN de acceso'), findsOneWidget);
     });
 
     testWidgets('muestra error cuando el nombre supera los 80 caracteres', (
@@ -104,12 +152,9 @@ void main() {
         find.byKey(const Key('anonymous_name_input')),
         'a' * 81,
       );
-      await tester.enterText(
-        find.byKey(const Key('anonymous_pin_input')),
-        '1234',
-      );
+      await _enterPin(tester, '1234');
 
-      await tester.tap(find.byKey(const Key('anonymous_submit_button')));
+      await _tapDialogButton(tester, const Key('anonymous_submit_button'));
       await tester.pumpAndSettle();
 
       expect(
@@ -131,12 +176,9 @@ void main() {
           find.byKey(const Key('anonymous_name_input')),
           'A',
         );
-        await tester.enterText(
-          find.byKey(const Key('anonymous_pin_input')),
-          '12a',
-        );
+        await _enterPin(tester, '12');
 
-        await tester.tap(find.byKey(const Key('anonymous_submit_button')));
+        await _tapDialogButton(tester, const Key('anonymous_submit_button'));
         await tester.pumpAndSettle();
 
         expect(
@@ -146,7 +188,7 @@ void main() {
       },
     );
 
-    testWidgets('alterna visibilidad del PIN con el botón de ojo', (
+    testWidgets('avanza al siguiente casillero al ingresar cada dígito', (
       tester,
     ) async {
       await tester.pumpWidget(_buildDialogTestApp());
@@ -155,27 +197,19 @@ void main() {
       await tester.tap(find.byKey(const Key('open_dialog_button')));
       await tester.pumpAndSettle();
 
-      final pinFieldFinder = find.byKey(const Key('anonymous_pin_input'));
-      expect(pinFieldFinder, findsOneWidget);
-
-      final editableText = tester.widget<EditableText>(
-        find.descendant(
-          of: pinFieldFinder,
-          matching: find.byType(EditableText),
-        ),
+      await tester.enterText(
+        find.byKey(const Key('anonymous_pin_digit_0')),
+        '1',
       );
-      expect(editableText.obscureText, isTrue);
+      await tester.pump();
 
-      await tester.tap(find.byIcon(Icons.visibility_outlined));
-      await tester.pumpAndSettle();
-
-      final editableTextVisible = tester.widget<EditableText>(
-        find.descendant(
-          of: pinFieldFinder,
-          matching: find.byType(EditableText),
-        ),
+      expect(
+        tester
+            .widget<TextField>(find.byKey(const Key('anonymous_pin_digit_1')))
+            .focusNode
+            ?.hasFocus,
+        isTrue,
       );
-      expect(editableTextVisible.obscureText, isFalse);
     });
 
     testWidgets('botón Cancelar cierra el diálogo', (tester) async {
@@ -187,7 +221,7 @@ void main() {
 
       expect(find.byType(AnonymousLoginDialog), findsOneWidget);
 
-      await tester.tap(find.byKey(const Key('anonymous_cancel_button')));
+      await _tapDialogButton(tester, const Key('anonymous_cancel_button'));
       await tester.pumpAndSettle();
 
       expect(find.byType(AnonymousLoginDialog), findsNothing);
@@ -206,12 +240,9 @@ void main() {
         find.byKey(const Key('anonymous_name_input')),
         'Lucas',
       );
-      await tester.enterText(
-        find.byKey(const Key('anonymous_pin_input')),
-        '9999',
-      );
+      await _enterPin(tester, '9999');
 
-      await tester.tap(find.byKey(const Key('anonymous_submit_button')));
+      await _tapDialogButton(tester, const Key('anonymous_submit_button'));
       await tester.pumpAndSettle();
 
       expect(
@@ -254,12 +285,9 @@ void main() {
         find.byKey(const Key('anonymous_name_input')),
         'Gil',
       );
-      await tester.enterText(
-        find.byKey(const Key('anonymous_pin_input')),
-        '1234',
-      );
+      await _enterPin(tester, '1234');
 
-      await tester.tap(find.byKey(const Key('anonymous_submit_button')));
+      await _tapDialogButton(tester, const Key('anonymous_submit_button'));
       await tester.pumpAndSettle();
 
       expect(
@@ -302,73 +330,68 @@ void main() {
           find.byKey(const Key('anonymous_name_input')),
           'Gil',
         );
-        await tester.enterText(
-          find.byKey(const Key('anonymous_pin_input')),
-          '1234',
-        );
+        await _enterPin(tester, '1234');
 
-        await tester.tap(find.byKey(const Key('anonymous_submit_button')));
+        await _tapDialogButton(tester, const Key('anonymous_submit_button'));
         await tester.pumpAndSettle();
 
         expect(find.text('El evento no está disponible.'), findsOneWidget);
       },
     );
 
-    testWidgets('envía el nombre y PIN normalizados con trim al backend', (
-      tester,
-    ) async {
-      RequestOptions? capturedRequest;
-      final dio = Dio();
-      dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            capturedRequest = options;
-            handler.resolve(
-              Response<dynamic>(
-                requestOptions: options,
-                statusCode: 201,
-                data: {
-                  'participant': {
-                    'id': 'part-1',
-                    'eventId': 'event-trim-test',
-                    'username': 'Lucas',
-                    'isAnonymous': true,
+    testWidgets(
+      'envía el nombre normalizado y el PIN de los casilleros al backend',
+      (tester) async {
+        RequestOptions? capturedRequest;
+        final dio = Dio();
+        dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              capturedRequest = options;
+              handler.resolve(
+                Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 201,
+                  data: {
+                    'participant': {
+                      'id': 'part-1',
+                      'eventId': 'event-trim-test',
+                      'username': 'Lucas',
+                      'isAnonymous': true,
+                    },
+                    'token': 'fake-token',
                   },
-                  'token': 'fake-token',
-                },
-              ),
-            );
-          },
-        ),
-      );
-
-      await tester.pumpWidget(
-        _buildDialogTestApp(
-          eventId: 'event-trim-test',
-          authRepository: HttpAuthRepository(
-            dio: dio,
-            storage: FakeSecureStorage(),
+                ),
+              );
+            },
           ),
-        ),
-      );
-      await tester.pumpAndSettle();
+        );
 
-      await tester.tap(find.byKey(const Key('open_dialog_button')));
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(
+          _buildDialogTestApp(
+            eventId: 'event-trim-test',
+            authRepository: HttpAuthRepository(
+              dio: dio,
+              storage: FakeSecureStorage(),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
 
-      await tester.enterText(
-        find.byKey(const Key('anonymous_name_input')),
-        '  Lucas  ',
-      );
-      await tester.enterText(
-        find.byKey(const Key('anonymous_pin_input')),
-        '  1234  ',
-      );
+        await tester.tap(find.byKey(const Key('open_dialog_button')));
+        await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('anonymous_submit_button')));
-      await tester.pumpAndSettle();
+        await tester.enterText(
+          find.byKey(const Key('anonymous_name_input')),
+          '  Lucas  ',
+        );
+        await _enterPin(tester, '1234');
 
-      expect(capturedRequest?.data, {'name': 'Lucas', 'pin': '1234'});
-    });
+        await _tapDialogButton(tester, const Key('anonymous_submit_button'));
+        await tester.pumpAndSettle();
+
+        expect(capturedRequest?.data, {'name': 'Lucas', 'pin': '1234'});
+      },
+    );
   });
 }
