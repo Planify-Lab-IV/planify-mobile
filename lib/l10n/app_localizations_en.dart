@@ -728,4 +728,50 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get eventDebtsLoadError =>
       'Could not load this event\'s debts. Please try again.';
+
+  @override
+  String get navigationHome => 'Home';
+
+  @override
+  String get navigationBalances => 'Balances';
+
+  @override
+  String get balancesTitle => 'Balances';
+
+  @override
+  String get balancesOwedToMe => 'Owed to me';
+
+  @override
+  String get balancesIOwe => 'I owe';
+
+  @override
+  String get balancesPeopleTitle => 'Balances by person';
+
+  @override
+  String get balancesLoading => 'Loading balances...';
+
+  @override
+  String get balancesEmpty => 'You have no pending balances.';
+
+  @override
+  String get balancesLoadError =>
+      'Could not load your balances. Please try again.';
+
+  @override
+  String get balanceStatusPay => 'To pay';
+
+  @override
+  String get balanceStatusPending => 'Pending';
+
+  @override
+  String get balanceStatusSettled => 'Settled';
+
+  @override
+  String get balancesNetLabel => 'Net balance';
+
+  @override
+  String get balancesFilterAll => 'All';
+
+  @override
+  String get balancesFilterEmpty => 'There are no balances in this category.';
 }

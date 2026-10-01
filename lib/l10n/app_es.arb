@@ -320,5 +320,20 @@
       "eventDebtSettled": "Saldada",
       "eventDebtsAllSettled": "Todo saldado",
       "eventDebtsEmpty": "Todavía no hay deudas en este evento.",
-      "eventDebtsLoadError": "No se pudieron cargar las deudas del evento. Intentá nuevamente."
+      "eventDebtsLoadError": "No se pudieron cargar las deudas del evento. Intentá nuevamente.",
+      "navigationHome": "Inicio",
+      "navigationBalances": "Balances",
+      "balancesTitle": "Balances",
+      "balancesOwedToMe": "Me deben",
+      "balancesIOwe": "Debo",
+      "balancesPeopleTitle": "Saldos por persona",
+      "balancesLoading": "Cargando balances...",
+      "balancesEmpty": "No tenés saldos pendientes.",
+      "balancesLoadError": "No se pudieron cargar tus balances. Intentá nuevamente.",
+      "balanceStatusPay": "A pagar",
+      "balanceStatusPending": "Pendiente",
+      "balanceStatusSettled": "Saldado",
+      "balancesNetLabel": "Balance neto",
+      "balancesFilterAll": "Todo",
+      "balancesFilterEmpty": "No hay saldos en esta categoría."
 }
