@@ -133,4 +133,40 @@ void main() {
     await tester.pump();
     expect(didSplitEvenly, isTrue);
   });
+
+  testWidgets('un importe vacío o cero se informa como inválido', (
+    tester,
+  ) async {
+    final changedAmounts = <int?>[];
+
+    await tester.pumpWidget(
+      buildSubject(
+        payerDrafts: const [
+          ExpensePayerDraft(
+            participantId: 'participant-lucia',
+            amountCents: 400,
+          ),
+          ExpensePayerDraft(
+            participantId: 'participant-juan',
+            amountCents: 600,
+          ),
+        ],
+        differenceCents: 0,
+        onPayerAmountChanged: (_, amountCents) =>
+            changedAmounts.add(amountCents),
+        onSplitEvenly: () {},
+      ),
+    );
+
+    final field = find.byKey(
+      const Key('expense_payer_amount_participant-lucia'),
+    );
+    await tester.enterText(field, '');
+    await tester.pump();
+    expect(changedAmounts.last, isNull);
+
+    await tester.enterText(field, '0');
+    await tester.pump();
+    expect(changedAmounts.last, isNull);
+  });
 }

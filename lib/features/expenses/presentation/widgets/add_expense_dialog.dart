@@ -162,12 +162,10 @@ class AddExpenseDialog extends ConsumerWidget {
                               differenceCents: state.differenceCents,
                               onPayerAmountChanged:
                                   (participantId, amountCents) {
-                                    if (amountCents != null) {
-                                      notifier.setPayerAmount(
-                                        participantId,
-                                        amountCents,
-                                      );
-                                    }
+                                    notifier.setPayerAmount(
+                                      participantId,
+                                      amountCents ?? 0,
+                                    );
                                   },
                               onSplitEvenly: notifier.splitPayersEvenly,
                             ),
@@ -178,12 +176,10 @@ class AddExpenseDialog extends ConsumerWidget {
                               differenceCents: state.debtorDifferenceCents,
                               onDebtorAmountChanged:
                                   (participantId, amountCents) {
-                                    if (amountCents != null) {
-                                      notifier.setDebtorAmount(
-                                        participantId,
-                                        amountCents,
-                                      );
-                                    }
+                                    notifier.setDebtorAmount(
+                                      participantId,
+                                      amountCents ?? 0,
+                                    );
                                   },
                               onSplitEvenly: notifier.splitDebtorsEvenly,
                             ),

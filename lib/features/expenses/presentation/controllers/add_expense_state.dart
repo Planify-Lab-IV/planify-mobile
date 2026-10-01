@@ -35,9 +35,15 @@ class AddExpenseState {
   bool get hasDescription => description.trim().isNotEmpty;
   bool get hasValidTotal => totalAmountCents > 0;
   bool get hasPayers => payerDrafts.isNotEmpty;
-  bool get hasBalancedPayers => hasPayers && differenceCents == 0;
+  bool get hasPositivePayerAmounts =>
+      payerDrafts.every((payer) => payer.amountCents > 0);
+  bool get hasBalancedPayers =>
+      hasPayers && hasPositivePayerAmounts && differenceCents == 0;
   bool get hasDebtors => debtorDrafts.isNotEmpty;
-  bool get hasBalancedDebtors => hasDebtors && debtorDifferenceCents == 0;
+  bool get hasPositiveDebtorAmounts =>
+      debtorDrafts.every((debtor) => debtor.amountCents > 0);
+  bool get hasBalancedDebtors =>
+      hasDebtors && hasPositiveDebtorAmounts && debtorDifferenceCents == 0;
 
   bool get isReadyForSubmission =>
       hasDescription &&
