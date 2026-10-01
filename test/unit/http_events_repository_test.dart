@@ -103,6 +103,7 @@ void main() {
       expect(event.participants.first.username, 'dev1');
       expect(event.participants.last.userId, isNull);
       expect(event.participants.last.isAnonymous, isTrue);
+      expect(event.expensesClosed, isFalse);
     });
 
     test('sends the new group payload without an organizer ID', () async {
@@ -170,6 +171,27 @@ void main() {
     });
 
     group('getEvent', () {
+      test('maps expensesClosed when the backend sends it', () async {
+        final repository = HttpEventsRepository(
+          dio: dioResolving({...eventResponse, 'expensesClosed': true}, null),
+        );
+
+        final event = await repository.getEvent('evt-1');
+
+        expect(event?.expensesClosed, isTrue);
+      });
+
+      test('rejects a non-boolean expensesClosed value', () async {
+        final repository = HttpEventsRepository(
+          dio: dioResolving({...eventResponse, 'expensesClosed': 'true'}, null),
+        );
+
+        expect(
+          () => repository.getEvent('evt-1'),
+          throwsA(isA<InvalidEventResponseException>()),
+        );
+      });
+
       test(
         'executes GET /events/:eventId and maps the full event with participants',
         () async {

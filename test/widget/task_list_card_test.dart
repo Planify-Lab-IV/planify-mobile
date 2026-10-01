@@ -10,6 +10,7 @@ import 'package:planify/features/events/detail/controllers/events_providers.dart
 import 'package:planify/features/events/domain/event.dart';
 import 'package:planify/features/events/domain/event_participant.dart';
 import 'package:planify/features/events/domain/event_status.dart';
+import 'package:planify/features/expenses/data/fake_expenses_repository.dart';
 import 'package:planify/features/tasks/data/fake_tasks_repository.dart';
 import 'package:planify/features/tasks/domain/task.dart';
 import 'package:planify/features/tasks/domain/task_status.dart';
@@ -91,6 +92,7 @@ void main() {
         eventDetailNotifierProvider(eventId).overrideWith(
           (ref) => EventDetailNotifier(
             repository: repository,
+            expensesRepository: FakeExpensesRepository(delay: Duration.zero),
             currentSession: session,
             eventId: eventId,
             initialEvent: event,

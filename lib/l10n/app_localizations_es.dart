@@ -381,6 +381,29 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo cancelar el evento. Intenta nuevamente.';
 
   @override
+  String get closeExpensesAction => 'Cerrar gastos';
+
+  @override
+  String get closeExpensesDialogTitle => '¿Cerrar gastos?';
+
+  @override
+  String get closeExpensesDialogMessage =>
+      'Ya no se podrán cargar gastos nuevos en este evento, pero se podrá seguir saldando.';
+
+  @override
+  String get closeExpensesConfirm => 'Sí, cerrar gastos';
+
+  @override
+  String get closeExpensesDismiss => 'Volver';
+
+  @override
+  String get closeExpensesSuccess => 'Los gastos se cerraron correctamente.';
+
+  @override
+  String get closeExpensesError =>
+      'No se pudieron cerrar los gastos. Intentá nuevamente.';
+
+  @override
   String get eventNotFound => 'Evento no encontrado';
 
   @override
@@ -390,6 +413,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get eventCancelledNotice =>
       'Este evento ha sido cancelado y ya no acepta nuevas acciones.';
+
+  @override
+  String get expensesClosedNotice =>
+      'Los gastos están cerrados. Ya no se pueden cargar gastos nuevos.';
 
   @override
   String get eventActionsTooltip => 'Opciones del evento';

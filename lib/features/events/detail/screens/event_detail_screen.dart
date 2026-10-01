@@ -7,6 +7,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../debts/presentation/widgets/event_debts_card.dart';
 import '../controllers/events_providers.dart';
 import '../widgets/cancel_event_dialog.dart';
+import '../widgets/close_expenses_dialog.dart';
 import '../widgets/event_header_card.dart';
 import '../widgets/event_quick_actions_card.dart';
 import '../widgets/event_section_placeholder_card.dart';
@@ -68,6 +69,46 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
     }
   }
 
+  Future<void> _confirmAndCloseExpenses(BuildContext context) async {
+    final i18n = AppLocalizations.of(context)!;
+    final confirmed = await CloseExpensesDialog.show(context);
+    if (!context.mounted || confirmed != true) return;
+
+    final notifier = ref.read(
+      eventDetailNotifierProvider(widget.eventId).notifier,
+    );
+    final success = await notifier.closeExpenses();
+    if (!context.mounted) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+
+    if (success) {
+      messenger.showSnackBar(
+        SnackBar(
+          key: const Key('close_expenses_success_snackbar'),
+          content: Text(i18n.closeExpensesSuccess),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: AppColors.success,
+        ),
+      );
+    } else {
+      messenger.showSnackBar(
+        SnackBar(
+          key: const Key('close_expenses_error_snackbar'),
+          content: Text(i18n.closeExpensesError),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: AppColors.error,
+          action: SnackBarAction(
+            label: i18n.retryButton,
+            textColor: Colors.white,
+            onPressed: () => _confirmAndCloseExpenses(context),
+          ),
+        ),
+      );
+    }
+  }
+
   void _scrollToEventDebts() {
     final debtsContext = _eventDebtsSectionKey.currentContext;
     if (debtsContext == null) return;
@@ -90,6 +131,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
 
     final event = state.event;
     final canCancel = notifier.canCancelEvent;
+    final canCloseExpenses = notifier.canCloseExpenses;
     final hasCurrentSession = notifier.hasCurrentSession;
     final tasksContext = event == null
         ? null
@@ -132,7 +174,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                 );
               },
             ),
-          if (canCancel)
+          if (canCancel || canCloseExpenses)
             PopupMenuButton<String>(
               key: const Key('event_actions_menu_button'),
               tooltip: i18n.eventActionsTooltip,
@@ -140,30 +182,55 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
               onSelected: (value) {
                 if (value == 'cancel') {
                   _confirmAndCancel(context);
+                } else if (value == 'close_expenses') {
+                  _confirmAndCloseExpenses(context);
                 }
               },
               itemBuilder: (context) => [
-                PopupMenuItem<String>(
-                  key: const Key('cancel_event_menu_item'),
-                  value: 'cancel',
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.cancel_outlined,
-                        color: AppColors.error,
-                        size: 20,
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      Text(
-                        i18n.cancelEventAction,
-                        style: const TextStyle(
+                if (canCancel)
+                  PopupMenuItem<String>(
+                    key: const Key('cancel_event_menu_item'),
+                    value: 'cancel',
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.cancel_outlined,
                           color: AppColors.error,
-                          fontWeight: FontWeight.w600,
+                          size: 20,
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: AppSpacing.sm),
+                        Text(
+                          i18n.cancelEventAction,
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: AppColors.error,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                if (canCloseExpenses)
+                  PopupMenuItem<String>(
+                    key: const Key('close_expenses_menu_item'),
+                    value: 'close_expenses',
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.lock_outline_rounded,
+                          color: AppColors.warning,
+                          size: 20,
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Text(
+                          i18n.closeExpensesAction,
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: AppColors.warning,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
               ],
             ),
         ],
@@ -249,10 +316,42 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                       ),
                       const SizedBox(height: AppSpacing.md),
                     ],
+                    if (event.expensesClosed) ...[
+                      Container(
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        decoration: BoxDecoration(
+                          color: AppColors.warning.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(AppRadius.card),
+                          border: Border.all(
+                            color: AppColors.warning.withValues(alpha: 0.4),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.info_outline_rounded,
+                              color: AppColors.warning,
+                            ),
+                            const SizedBox(width: AppSpacing.sm),
+                            Expanded(
+                              child: Text(
+                                i18n.expensesClosedNotice,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: AppColors.warning,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                    ],
                     EventHeaderCard(event: event),
                     const SizedBox(height: AppSpacing.lg),
                     EventQuickActionsCard(
                       isCancelled: event.isCancelled,
+                      expensesClosed: event.expensesClosed,
                       participants: event.participants,
                       onAddTask: () {
                         CreateTaskDialog.show(

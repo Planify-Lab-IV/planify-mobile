@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/expenses/data/fake_expenses_repository.dart';
 import 'package:planify/features/events/detail/controllers/event_detail_notifier.dart';
 import 'package:planify/features/events/detail/controllers/events_providers.dart';
 import 'package:planify/features/events/detail/screens/event_detail_screen.dart';
@@ -24,6 +25,7 @@ void main() {
           eventDetailNotifierProvider('evt-1').overrideWith((ref) {
             return EventDetailNotifier(
               repository: repository,
+              expensesRepository: FakeExpensesRepository(delay: Duration.zero),
               currentSession: const OrganizerSession(
                 userId: 'org-1',
                 email: 'organizer@planify.com',

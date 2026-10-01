@@ -42,6 +42,7 @@ class FakeEventsRepository implements EventsRepository {
         createdAt: DateTime(2026, 1, 1),
         updatedAt: DateTime(2026, 1, 1),
         participants: _defaultParticipants('evt-123', _organizerId),
+        expensesClosed: false,
       ),
       Event(
         id: 'evt-cumple-lucas',
@@ -53,6 +54,7 @@ class FakeEventsRepository implements EventsRepository {
         createdAt: DateTime(2026, 1, 1),
         updatedAt: DateTime(2026, 1, 1),
         participants: _defaultParticipants('evt-cumple-lucas', _organizerId),
+        expensesClosed: false,
       ),
       Event(
         id: 'evt-asado-amigos',
@@ -64,6 +66,7 @@ class FakeEventsRepository implements EventsRepository {
         createdAt: DateTime(2026, 1, 1),
         updatedAt: DateTime(2026, 1, 1),
         participants: _defaultParticipants('evt-asado-amigos', _organizerId),
+        expensesClosed: false,
       ),
       Event(
         id: 'evt-fake-demo',
@@ -75,6 +78,7 @@ class FakeEventsRepository implements EventsRepository {
         createdAt: DateTime(2026, 1, 1),
         updatedAt: DateTime(2026, 1, 1),
         participants: _defaultParticipants('evt-fake-demo', _organizerId),
+        expensesClosed: false,
       ),
     ];
 
@@ -110,6 +114,7 @@ class FakeEventsRepository implements EventsRepository {
       createdAt: now,
       updatedAt: now,
       participants: _defaultParticipants(eventId, _organizerId),
+      expensesClosed: false,
     );
 
     _events[eventId] = event;
