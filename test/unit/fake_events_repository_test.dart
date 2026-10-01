@@ -63,6 +63,32 @@ void main() {
     );
 
     test(
+      'createEvent usa al organizador configurado como participante del evento',
+      () async {
+        const currentUserId = 'user-from-current-session';
+        final repositoryForCurrentUser = FakeEventsRepository(
+          delay: Duration.zero,
+          organizerId: currentUserId,
+        );
+
+        final event = await repositoryForCurrentUser.createEvent(
+          const EventDraft(
+            name: 'Evento de prueba',
+            location: 'Casa',
+            selectedGroupId: 'grp-1',
+          ),
+        );
+        final organizerParticipant = event.participants.singleWhere(
+          (participant) => participant.isOrganizer,
+        );
+
+        expect(event.organizerId, currentUserId);
+        expect(organizerParticipant.userId, currentUserId);
+        expect(organizerParticipant.eventId, event.id);
+      },
+    );
+
+    test(
       'createEvent arroja excepción cuando shouldThrowError es true',
       () async {
         final errorRepo = FakeEventsRepository(

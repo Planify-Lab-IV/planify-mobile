@@ -602,6 +602,23 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get tasksLoadError => 'Tasks could not be loaded.';
+
+  @override
+  String get taskStatusUnassigned => 'Unassigned';
+
+  @override
+  String get taskStatusPending => 'Pending';
+
+  @override
+  String get taskStatusCompleted => 'Completed';
+
+  @override
+  String taskAssignedTo(String name) {
+    return 'Assigned to $name';
+  }
+
+  @override
   String get addExpenseDebtorsTitle => 'Who owes?';
 
   @override
@@ -615,6 +632,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String addExpenseDebtorAmountLabel(String name) {
     return '$name\'s amount';
   }
+
+  @override
+  String get taskClaimAction => 'Claim';
+
+  @override
+  String get taskCompleteAction => 'Complete';
+
+  @override
+  String get taskReassignAction => 'Reassign';
+
+  @override
+  String get tasksOperationError =>
+      'The task could not be updated. Please try again.';
+
+  @override
+  String get createTaskDialogTitle => 'Add task';
+
+  @override
+  String get createTaskTitleLabel => 'What needs to be done?';
+
+  @override
+  String get createTaskTitleHint => 'e.g. Buy ice';
+
+  @override
+  String get createTaskTitleRequired => 'Enter a task title.';
+
+  @override
+  String get createTaskSubmit => 'Create task';
+
+  @override
+  String get reassignTaskDialogTitle => 'Reassign task';
+
+  @override
+  String get reassignTaskParticipantLabel => 'Choose who will take care of it.';
+
+  @override
+  String get reassignTaskParticipantRequired => 'Choose a person to continue.';
+
+  @override
+  String get reassignTaskConfirm => 'Reassign';
 
   @override
   String get addExpenseDebtorAmountInvalid => 'Enter a valid amount.';
