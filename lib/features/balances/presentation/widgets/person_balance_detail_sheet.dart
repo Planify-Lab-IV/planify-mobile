@@ -191,18 +191,12 @@ class _NetHeader extends StatelessWidget {
     final header = switch (detail.status) {
       PersonBalanceStatus.pay => (
         color: AppColors.danger,
-        text: i18n.personBalanceDetailYouOwe(
-          amount,
-          detail.displayName,
-        ),
+        text: i18n.personBalanceDetailYouOwe(amount, detail.displayName),
         icon: Icons.arrow_downward_rounded,
       ),
       PersonBalanceStatus.pending => (
         color: AppColors.success,
-        text: i18n.personBalanceDetailOwedToYou(
-          detail.displayName,
-          amount,
-        ),
+        text: i18n.personBalanceDetailOwedToYou(detail.displayName, amount),
         icon: Icons.arrow_upward_rounded,
       ),
       PersonBalanceStatus.settled => (

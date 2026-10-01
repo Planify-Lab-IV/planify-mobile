@@ -118,7 +118,9 @@ void main() {
       expect(find.text('Ana te debe'), findsOneWidget);
     });
 
-    testWidgets('muestra todos los textos de detalle en inglés', (tester) async {
+    testWidgets('muestra todos los textos de detalle en inglés', (
+      tester,
+    ) async {
       await openSheet(
         tester,
         repository: FakeBalancesRepository(delay: Duration.zero),
@@ -180,7 +182,9 @@ void main() {
       expect(find.byType(EventDetailScreen), findsOneWidget);
     });
 
-    testWidgets('muestra el error y permite reintentar en inglés', (tester) async {
+    testWidgets('muestra el error y permite reintentar en inglés', (
+      tester,
+    ) async {
       final repository = FakeBalancesRepository(
         delay: Duration.zero,
         shouldThrowError: true,
