@@ -103,7 +103,6 @@ class EventQuickActionsCard extends StatelessWidget {
                   label: i18n.quickActionAddTask,
                   isAddTask: true,
                   isEnabled: !isCancelled,
-                  isAddTask: true,
                 ),
                 _buildActionButton(
                   context,
