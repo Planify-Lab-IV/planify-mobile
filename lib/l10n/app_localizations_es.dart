@@ -724,4 +724,37 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get balancesFilterEmpty => 'No hay saldos en esta categoría.';
+
+  @override
+  String get personBalanceDetailLoading => 'Cargando detalle de saldo';
+
+  @override
+  String get personBalanceDetailLoadError =>
+      'No se pudo cargar el detalle del saldo.';
+
+  @override
+  String get personBalanceDetailBreakdownTitle => 'Desglose por evento';
+
+  @override
+  String personBalanceDetailYouOwe(String amount, String name) {
+    return 'Le debés $amount a $name';
+  }
+
+  @override
+  String personBalanceDetailOwedToYou(String name, String amount) {
+    return '$name te debe $amount';
+  }
+
+  @override
+  String get personBalanceDetailSettled => 'Están a mano';
+
+  @override
+  String personBalanceDetailLineYouOwe(String name) {
+    return 'Le debés a $name';
+  }
+
+  @override
+  String personBalanceDetailLineOwedToYou(String name) {
+    return '$name te debe';
+  }
 }

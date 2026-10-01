@@ -5,6 +5,7 @@ import '../../../../core/formatting/money_formatter.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../events/detail/screens/event_detail_screen.dart';
 import '../../domain/balance_direction.dart';
 import '../../domain/event_balance_line.dart';
@@ -70,10 +71,12 @@ class _LoadingContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
+
     return Center(
       child: Semantics(
         key: const Key('person_balance_detail_loading'),
-        label: 'Cargando detalle de saldo',
+        label: i18n.personBalanceDetailLoading,
         child: const CircularProgressIndicator(),
       ),
     );
@@ -88,6 +91,7 @@ class _ErrorContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final i18n = AppLocalizations.of(context)!;
 
     return Center(
       child: Padding(
@@ -102,7 +106,7 @@ class _ErrorContent extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'No se pudo cargar el detalle del saldo.',
+              i18n.personBalanceDetailLoadError,
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: AppColors.onSurfaceVariant,
               ),
@@ -112,7 +116,7 @@ class _ErrorContent extends StatelessWidget {
             FilledButton(
               key: const Key('person_balance_detail_retry_button'),
               onPressed: onRetry,
-              child: const Text('Reintentar'),
+              child: Text(i18n.retryButton),
             ),
           ],
         ),
@@ -129,6 +133,7 @@ class _DetailContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final i18n = AppLocalizations.of(context)!;
 
     return ColoredBox(
       key: const Key('person_balance_detail_background'),
@@ -151,7 +156,7 @@ class _DetailContent extends StatelessWidget {
                 _NetHeader(detail: detail),
                 const SizedBox(height: AppSpacing.xxl),
                 Text(
-                  'Desglose por evento',
+                  i18n.personBalanceDetailBreakdownTitle,
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: AppColors.onSurface,
                     fontWeight: FontWeight.bold,
@@ -180,22 +185,29 @@ class _NetHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final i18n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).toString();
     final amount = formatCents(detail.netCents.abs(), locale: locale);
     final header = switch (detail.status) {
       PersonBalanceStatus.pay => (
         color: AppColors.danger,
-        text: 'Le debés \$ $amount a ${detail.displayName}',
+        text: i18n.personBalanceDetailYouOwe(
+          amount,
+          detail.displayName,
+        ),
         icon: Icons.arrow_downward_rounded,
       ),
       PersonBalanceStatus.pending => (
         color: AppColors.success,
-        text: '${detail.displayName} te debe \$ $amount',
+        text: i18n.personBalanceDetailOwedToYou(
+          detail.displayName,
+          amount,
+        ),
         icon: Icons.arrow_upward_rounded,
       ),
       PersonBalanceStatus.settled => (
         color: AppColors.onSurfaceVariant,
-        text: 'Están a mano',
+        text: i18n.personBalanceDetailSettled,
         icon: Icons.handshake_outlined,
       ),
     };
@@ -236,17 +248,18 @@ class _EventBalanceLineRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final i18n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).toString();
     final direction = switch (line.direction) {
       BalanceDirection.iOwe => (
         color: AppColors.danger,
         icon: Icons.arrow_downward_rounded,
-        text: 'Le debés a ${detail.displayName}',
+        text: i18n.personBalanceDetailLineYouOwe(detail.displayName),
       ),
       BalanceDirection.owedToMe => (
         color: AppColors.success,
         icon: Icons.arrow_upward_rounded,
-        text: '${detail.displayName} te debe',
+        text: i18n.personBalanceDetailLineOwedToYou(detail.displayName),
       ),
     };
 

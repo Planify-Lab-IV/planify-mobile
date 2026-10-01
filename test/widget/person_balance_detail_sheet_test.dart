@@ -15,6 +15,7 @@ void main() {
   Widget buildApp({
     required BalancesRepository repository,
     required String personKey,
+    Locale locale = const Locale('es'),
   }) {
     return ProviderScope(
       overrides: [balancesRepositoryProvider.overrideWithValue(repository)],
@@ -27,7 +28,7 @@ void main() {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: AppLocalizations.supportedLocales,
-        locale: const Locale('es'),
+        locale: locale,
         home: Scaffold(
           body: Builder(
             builder: (context) => Center(
@@ -47,9 +48,10 @@ void main() {
     WidgetTester tester, {
     required BalancesRepository repository,
     required String personKey,
+    Locale locale = const Locale('es'),
   }) async {
     await tester.pumpWidget(
-      buildApp(repository: repository, personKey: personKey),
+      buildApp(repository: repository, personKey: personKey, locale: locale),
     );
     await tester.tap(find.text('Abrir detalle'));
     await tester.pumpAndSettle();
@@ -116,6 +118,22 @@ void main() {
       expect(find.text('Ana te debe'), findsOneWidget);
     });
 
+    testWidgets('muestra todos los textos de detalle en inglés', (tester) async {
+      await openSheet(
+        tester,
+        repository: FakeBalancesRepository(delay: Duration.zero),
+        personKey: 'user:ana',
+        locale: const Locale('en'),
+      );
+
+      expect(find.text(r'You owe $ 243.00 to Ana'), findsOneWidget);
+      expect(find.text('Breakdown by event'), findsOneWidget);
+      expect(find.text('You owe Ana'), findsOneWidget);
+      expect(find.text('Ana owes you'), findsOneWidget);
+      expect(find.text('Desglose por evento'), findsNothing);
+      expect(find.text('Le debés a Ana'), findsNothing);
+    });
+
     testWidgets('usa fondo cian y una tarjeta contrastada para cada evento', (
       tester,
     ) async {
@@ -162,17 +180,20 @@ void main() {
       expect(find.byType(EventDetailScreen), findsOneWidget);
     });
 
-    testWidgets('muestra error y permite reintentar', (tester) async {
+    testWidgets('muestra el error y permite reintentar en inglés', (tester) async {
       final repository = FakeBalancesRepository(
         delay: Duration.zero,
         shouldThrowError: true,
       );
-      await openSheet(tester, repository: repository, personKey: 'user:ana');
-
-      expect(
-        find.text('No se pudo cargar el detalle del saldo.'),
-        findsOneWidget,
+      await openSheet(
+        tester,
+        repository: repository,
+        personKey: 'user:ana',
+        locale: const Locale('en'),
       );
+
+      expect(find.text('Could not load the balance details.'), findsOneWidget);
+      expect(find.text('Retry'), findsOneWidget);
       repository.shouldThrowError = false;
 
       await tester.tap(

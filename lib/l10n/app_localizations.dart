@@ -1409,6 +1409,54 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No hay saldos en esta categoría.'**
   String get balancesFilterEmpty;
+
+  /// No description provided for @personBalanceDetailLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando detalle de saldo'**
+  String get personBalanceDetailLoading;
+
+  /// No description provided for @personBalanceDetailLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cargar el detalle del saldo.'**
+  String get personBalanceDetailLoadError;
+
+  /// No description provided for @personBalanceDetailBreakdownTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Desglose por evento'**
+  String get personBalanceDetailBreakdownTitle;
+
+  /// No description provided for @personBalanceDetailYouOwe.
+  ///
+  /// In es, this message translates to:
+  /// **'Le debés {amount} a {name}'**
+  String personBalanceDetailYouOwe(String amount, String name);
+
+  /// No description provided for @personBalanceDetailOwedToYou.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} te debe {amount}'**
+  String personBalanceDetailOwedToYou(String name, String amount);
+
+  /// No description provided for @personBalanceDetailSettled.
+  ///
+  /// In es, this message translates to:
+  /// **'Están a mano'**
+  String get personBalanceDetailSettled;
+
+  /// No description provided for @personBalanceDetailLineYouOwe.
+  ///
+  /// In es, this message translates to:
+  /// **'Le debés a {name}'**
+  String personBalanceDetailLineYouOwe(String name);
+
+  /// No description provided for @personBalanceDetailLineOwedToYou.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} te debe'**
+  String personBalanceDetailLineOwedToYou(String name);
 }
 
 class _AppLocalizationsDelegate
