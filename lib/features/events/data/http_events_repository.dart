@@ -182,6 +182,7 @@ class HttpEventsRepository implements EventsRepository {
       updatedAt: _requiredDateTime(data, 'updatedAt'),
       startDateTime: _nullableDateTime(data, 'startDateTime'),
       participants: _participantsFromResponse(data['participants']),
+      expensesClosed: _optionalBool(data, 'expensesClosed'),
     );
   }
 
@@ -238,6 +239,13 @@ class HttpEventsRepository implements EventsRepository {
     final dateTime = DateTime.tryParse(value);
     if (dateTime == null) throw const InvalidEventResponseException();
     return dateTime;
+  }
+
+  bool _optionalBool(Map<dynamic, dynamic> data, String key) {
+    final value = data[key];
+    if (value == null) return false;
+    if (value is! bool) throw const InvalidEventResponseException();
+    return value;
   }
 
   EventStatus _eventStatus(dynamic value) {

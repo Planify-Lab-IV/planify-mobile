@@ -51,6 +51,7 @@ void main() {
       expect(defaultEvent.status, EventStatus.active);
       expect(defaultEvent.isActive, isTrue);
       expect(defaultEvent.isCancelled, isFalse);
+      expect(defaultEvent.expensesClosed, isFalse);
       expect(defaultEvent.createdAt, fixedCreatedAt);
       expect(defaultEvent.updatedAt, fixedUpdatedAt);
       expect(defaultEvent.startDateTime, isNull);
@@ -91,6 +92,7 @@ void main() {
       expect(updated.updatedAt, testEvent.updatedAt);
       expect(updated.startDateTime, testEvent.startDateTime);
       expect(updated.participants, testEvent.participants);
+      expect(updated.expensesClosed, isFalse);
     });
 
     test('copyWith sobreescribe todos los campos cuando se proveen', () {
@@ -118,6 +120,7 @@ void main() {
         updatedAt: newUpdatedAt,
         startDateTime: newDate,
         participants: newParticipants,
+        expensesClosed: true,
       );
 
       expect(updated.id, 'evt-999');
@@ -130,6 +133,7 @@ void main() {
       expect(updated.updatedAt, newUpdatedAt);
       expect(updated.startDateTime, newDate);
       expect(updated.participants, newParticipants);
+      expect(updated.expensesClosed, isTrue);
     });
 
     test('igualdad estructural por valor (==) y hashCode', () {
@@ -159,18 +163,7 @@ void main() {
         participants: testParticipants,
       );
 
-      final differentEvent = Event(
-        id: 'evt-001',
-        name: 'Asado Fin de Año',
-        location: 'Parque Sarmiento',
-        organizerId: 'usr-org-1',
-        groupId: 'grp-001',
-        status: EventStatus.active,
-        createdAt: fixedCreatedAt,
-        updatedAt: fixedUpdatedAt,
-        startDateTime: DateTime(2026, 12, 25),
-        participants: testParticipants,
-      );
+      final differentEvent = event1.copyWith(expensesClosed: true);
 
       expect(event1, equals(event2));
       expect(event1.hashCode, equals(event2.hashCode));
@@ -185,6 +178,7 @@ void main() {
       expect(str, contains('usr-org-1'));
       expect(str, contains('grp-001'));
       expect(str, contains('EventStatus.active'));
+      expect(str, contains('expensesClosed: false'));
     });
 
     test('EventParticipant distingue participantes por su id', () {

@@ -4,22 +4,32 @@ import '../../data/event_exceptions.dart';
 import '../../domain/event.dart';
 import '../../domain/event_status.dart';
 import '../../domain/events_repository.dart';
+import '../../../expenses/domain/expenses_repository.dart';
 import 'event_detail_state.dart';
 
 class EventDetailNotifier extends StateNotifier<EventDetailState> {
   final EventsRepository _repository;
+  final ExpensesRepository _expensesRepository;
   final UserSession? _currentSession;
   final String _eventId;
 
   EventDetailNotifier({
     required EventsRepository repository,
+    required ExpensesRepository expensesRepository,
     required UserSession? currentSession,
     required String eventId,
     Event? initialEvent,
-  }) : this._(repository, currentSession, eventId, initialEvent);
+  }) : this._(
+         repository,
+         expensesRepository,
+         currentSession,
+         eventId,
+         initialEvent,
+       );
 
   EventDetailNotifier._(
     this._repository,
+    this._expensesRepository,
     this._currentSession,
     this._eventId,
     Event? initialEvent,
@@ -92,6 +102,15 @@ class EventDetailNotifier extends StateNotifier<EventDetailState> {
     return isOrganizer && !event.isCancelled && !state.isCancelling;
   }
 
+  bool get canCloseExpenses {
+    final event = state.event;
+    if (event == null) return false;
+    return isOrganizer &&
+        !event.isCancelled &&
+        !event.expensesClosed &&
+        !state.isClosingExpenses;
+  }
+
   Future<void> loadEvent() async {
     state = state.copyWith(loadStatus: EventDetailLoadStatus.loading);
 
@@ -162,5 +181,46 @@ class EventDetailNotifier extends StateNotifier<EventDetailState> {
 
   void resetCancellationStatus() {
     state = state.copyWith(cancellationStatus: EventCancellationStatus.idle);
+  }
+
+  Future<bool> closeExpenses() async {
+    final currentEvent = state.event;
+    if (currentEvent == null ||
+        !isOrganizer ||
+        currentEvent.isCancelled ||
+        currentEvent.expensesClosed) {
+      state = state.copyWith(
+        expensesClosureStatus: EventExpensesClosureStatus.failure,
+      );
+      return false;
+    }
+    if (state.isClosingExpenses) return false;
+
+    state = state.copyWith(
+      expensesClosureStatus: EventExpensesClosureStatus.inProgress,
+    );
+
+    try {
+      await _expensesRepository.closeExpenses(currentEvent.id);
+      if (!mounted) return false;
+
+      state = state.copyWith(
+        event: currentEvent.copyWith(expensesClosed: true),
+        expensesClosureStatus: EventExpensesClosureStatus.success,
+      );
+      return true;
+    } catch (_) {
+      if (!mounted) return false;
+      state = state.copyWith(
+        expensesClosureStatus: EventExpensesClosureStatus.failure,
+      );
+      return false;
+    }
+  }
+
+  void resetExpensesClosureStatus() {
+    state = state.copyWith(
+      expensesClosureStatus: EventExpensesClosureStatus.idle,
+    );
   }
 }

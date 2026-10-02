@@ -800,6 +800,48 @@ abstract class AppLocalizations {
   /// **'No se pudo cancelar el evento. Intenta nuevamente.'**
   String get cancelEventError;
 
+  /// No description provided for @closeExpensesAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar gastos'**
+  String get closeExpensesAction;
+
+  /// No description provided for @closeExpensesDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cerrar gastos?'**
+  String get closeExpensesDialogTitle;
+
+  /// No description provided for @closeExpensesDialogMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya no se podrán cargar gastos nuevos en este evento, pero se podrá seguir saldando.'**
+  String get closeExpensesDialogMessage;
+
+  /// No description provided for @closeExpensesConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Sí, cerrar gastos'**
+  String get closeExpensesConfirm;
+
+  /// No description provided for @closeExpensesDismiss.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver'**
+  String get closeExpensesDismiss;
+
+  /// No description provided for @closeExpensesSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Los gastos se cerraron correctamente.'**
+  String get closeExpensesSuccess;
+
+  /// No description provided for @closeExpensesError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron cerrar los gastos. Intentá nuevamente.'**
+  String get closeExpensesError;
+
   /// No description provided for @eventNotFound.
   ///
   /// In es, this message translates to:
@@ -817,6 +859,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Este evento ha sido cancelado y ya no acepta nuevas acciones.'**
   String get eventCancelledNotice;
+
+  /// No description provided for @expensesClosedNotice.
+  ///
+  /// In es, this message translates to:
+  /// **'Los gastos están cerrados. Ya no se pueden cargar gastos nuevos.'**
+  String get expensesClosedNotice;
 
   /// No description provided for @eventActionsTooltip.
   ///

@@ -13,6 +13,7 @@ class Event {
   final DateTime updatedAt;
   final DateTime? startDateTime;
   final List<EventParticipant> participants;
+  final bool expensesClosed;
 
   const Event({
     required this.id,
@@ -25,6 +26,7 @@ class Event {
     required this.updatedAt,
     this.startDateTime,
     this.participants = const [],
+    this.expensesClosed = false,
   });
 
   bool get isCancelled => status.isCancelled;
@@ -42,6 +44,7 @@ class Event {
     DateTime? updatedAt,
     DateTime? startDateTime,
     List<EventParticipant>? participants,
+    bool? expensesClosed,
   }) {
     return Event(
       id: id ?? this.id,
@@ -54,6 +57,7 @@ class Event {
       updatedAt: updatedAt ?? this.updatedAt,
       startDateTime: startDateTime ?? this.startDateTime,
       participants: participants ?? this.participants,
+      expensesClosed: expensesClosed ?? this.expensesClosed,
     );
   }
 
@@ -71,7 +75,8 @@ class Event {
           createdAt == other.createdAt &&
           updatedAt == other.updatedAt &&
           startDateTime == other.startDateTime &&
-          listEquals(participants, other.participants);
+          listEquals(participants, other.participants) &&
+          expensesClosed == other.expensesClosed;
 
   @override
   int get hashCode =>
@@ -84,10 +89,11 @@ class Event {
       createdAt.hashCode ^
       updatedAt.hashCode ^
       startDateTime.hashCode ^
-      Object.hashAll(participants);
+      Object.hashAll(participants) ^
+      expensesClosed.hashCode;
 
   @override
   String toString() {
-    return 'Event(id: $id, name: $name, location: $location, organizerId: $organizerId, groupId: $groupId, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, startDateTime: $startDateTime, participants: $participants)';
+    return 'Event(id: $id, name: $name, location: $location, organizerId: $organizerId, groupId: $groupId, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, startDateTime: $startDateTime, participants: $participants, expensesClosed: $expensesClosed)';
   }
 }
