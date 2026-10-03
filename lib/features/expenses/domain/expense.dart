@@ -1,7 +1,6 @@
 import 'expense_debtor_draft.dart';
 import 'expense_payer_draft.dart';
 
-/// A persisted expense; identity and creator are assigned by the backend.
 class Expense {
   final String id;
   final String eventId;
