@@ -49,18 +49,25 @@ class HttpTasksRepository implements TasksRepository {
   }
 
   @override
-  Future<void> claimTask(String taskId) {
-    throw UnimplementedError('claimTask se implementa en el paso 2.');
+  Future<void> claimTask(String taskId) async {
+    final normalizedTaskId = _normalizedRequiredValue(taskId);
+    await _postTaskAction('/tasks/$normalizedTaskId/claim');
   }
 
   @override
-  Future<void> assignTask(String taskId, String participantId) {
-    throw UnimplementedError('assignTask se implementa en el paso 2.');
+  Future<void> assignTask(String taskId, String participantId) async {
+    final normalizedTaskId = _normalizedRequiredValue(taskId);
+    final normalizedParticipantId = _normalizedRequiredValue(participantId);
+    await _postTaskAction(
+      '/tasks/$normalizedTaskId/assign',
+      data: {'participantId': normalizedParticipantId},
+    );
   }
 
   @override
-  Future<void> completeTask(String taskId) {
-    throw UnimplementedError('completeTask se implementa en el paso 2.');
+  Future<void> completeTask(String taskId) async {
+    final normalizedTaskId = _normalizedRequiredValue(taskId);
+    await _postTaskAction('/tasks/$normalizedTaskId/complete');
   }
 
   String _normalizedRequiredValue(String value) {
@@ -79,6 +86,19 @@ class HttpTasksRepository implements TasksRepository {
     return (data['tasks'] as List<dynamic>)
         .map(_taskFromResponse)
         .toList(growable: false);
+  }
+
+  Future<void> _postTaskAction(String path, {Object? data}) async {
+    try {
+      final response = await dio.post<dynamic>(path, data: data);
+      _taskFromResponse(response.data);
+    } on TasksException {
+      rethrow;
+    } on DioException {
+      throw const TaskOperationException();
+    } catch (_) {
+      throw const TaskOperationException();
+    }
   }
 
   Task _taskFromResponse(dynamic data) {

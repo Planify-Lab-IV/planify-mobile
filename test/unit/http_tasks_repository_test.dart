@@ -146,4 +146,80 @@ void main() {
       expect(requestCount, 0);
     });
   });
+
+  group('HttpTasksRepository.claimTask', () {
+    test(
+      'executes POST without a body and validates the updated task',
+      () async {
+        RequestOptions? request;
+        final repository = HttpTasksRepository(
+          dio: dioResolving({
+            ...taskResponse,
+            'status': 'pending',
+            'assignedToParticipantId': 'participant-ana',
+          }, (options) => request = options),
+        );
+
+        await repository.claimTask(' task-1 ');
+
+        expect(request?.method, 'POST');
+        expect(request?.path, '/tasks/task-1/claim');
+        expect(request?.data, isNull);
+      },
+    );
+  });
+
+  group('HttpTasksRepository.assignTask', () {
+    test('executes POST with the normalized participant ID', () async {
+      RequestOptions? request;
+      final repository = HttpTasksRepository(
+        dio: dioResolving({
+          ...taskResponse,
+          'status': 'pending',
+          'assignedToParticipantId': 'participant-beto',
+        }, (options) => request = options),
+      );
+
+      await repository.assignTask(' task-1 ', ' participant-beto ');
+
+      expect(request?.method, 'POST');
+      expect(request?.path, '/tasks/task-1/assign');
+      expect(request?.data, {'participantId': 'participant-beto'});
+    });
+
+    test('rejects a blank participant ID before sending a request', () async {
+      var requestCount = 0;
+      final repository = HttpTasksRepository(
+        dio: dioResolving(taskResponse, (_) => requestCount++),
+      );
+
+      await expectLater(
+        repository.assignTask('task-1', '   '),
+        throwsA(isA<TaskValidationException>()),
+      );
+      expect(requestCount, 0);
+    });
+  });
+
+  group('HttpTasksRepository.completeTask', () {
+    test(
+      'executes POST without a body and validates the updated task',
+      () async {
+        RequestOptions? request;
+        final repository = HttpTasksRepository(
+          dio: dioResolving({
+            ...taskResponse,
+            'status': 'completed',
+            'assignedToParticipantId': 'participant-beto',
+          }, (options) => request = options),
+        );
+
+        await repository.completeTask(' task-1 ');
+
+        expect(request?.method, 'POST');
+        expect(request?.path, '/tasks/task-1/complete');
+        expect(request?.data, isNull);
+      },
+    );
+  });
 }
