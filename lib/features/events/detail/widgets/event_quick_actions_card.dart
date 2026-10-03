@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -7,6 +8,7 @@ import '../../domain/event_participant.dart';
 import '../../../expenses/presentation/widgets/add_expense_dialog.dart';
 
 class EventQuickActionsCard extends StatelessWidget {
+  final String eventId;
   final bool isCancelled;
   final bool expensesClosed;
   final List<EventParticipant> participants;
@@ -15,6 +17,7 @@ class EventQuickActionsCard extends StatelessWidget {
 
   const EventQuickActionsCard({
     super.key,
+    required this.eventId,
     required this.participants,
     this.onAddTask,
     required this.onSettleTap,
@@ -31,7 +34,11 @@ class EventQuickActionsCard extends StatelessWidget {
     if (isCancelled || (isAddExpense && expensesClosed)) return;
 
     if (isAddExpense) {
-      AddExpenseDialog.show(context, participants: participants);
+      AddExpenseDialog.show(
+        context,
+        eventId: eventId,
+        participants: participants,
+      );
       return;
     }
 

@@ -1409,7 +1409,7 @@ abstract class AppLocalizations {
   /// No description provided for @addExpenseSave.
   ///
   /// In es, this message translates to:
-  /// **'Guardar gasto'**
+  /// **'Confirmar'**
   String get addExpenseSave;
 
   /// No description provided for @addExpenseSaving.
@@ -1421,8 +1421,56 @@ abstract class AppLocalizations {
   /// No description provided for @addExpenseSaveSuccess.
   ///
   /// In es, this message translates to:
-  /// **'Gasto guardado (simulado).'**
+  /// **'El gasto se guardó correctamente.'**
   String get addExpenseSaveSuccess;
+
+  /// No description provided for @addExpenseValidationError.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisá los datos del gasto, los participantes y que los montos coincidan con el total.'**
+  String get addExpenseValidationError;
+
+  /// No description provided for @addExpenseAuthenticationError.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu sesión no es válida. Volvé a iniciar sesión.'**
+  String get addExpenseAuthenticationError;
+
+  /// No description provided for @addExpenseForbiddenError.
+  ///
+  /// In es, this message translates to:
+  /// **'No tenés permiso para cargar gastos en este evento.'**
+  String get addExpenseForbiddenError;
+
+  /// No description provided for @addExpenseNotFoundError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontró el evento.'**
+  String get addExpenseNotFoundError;
+
+  /// No description provided for @addExpenseEventUnavailableError.
+  ///
+  /// In es, this message translates to:
+  /// **'El evento fue cancelado y no acepta gastos.'**
+  String get addExpenseEventUnavailableError;
+
+  /// No description provided for @addExpenseClosedError.
+  ///
+  /// In es, this message translates to:
+  /// **'Los gastos de este evento ya están cerrados.'**
+  String get addExpenseClosedError;
+
+  /// No description provided for @addExpenseNetworkError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo guardar el gasto por un problema de conexión.'**
+  String get addExpenseNetworkError;
+
+  /// No description provided for @addExpenseSaveError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo confirmar el guardado del gasto. Intentá nuevamente.'**
+  String get addExpenseSaveError;
 
   /// No description provided for @eventDebtsTitle.
   ///
@@ -1587,13 +1635,13 @@ abstract class AppLocalizations {
   /// No description provided for @personBalanceDetailYouOwe.
   ///
   /// In es, this message translates to:
-  /// **'Le debés $ {amount} a {name}'**
+  /// **'Le debés \$ {amount} a {name}'**
   String personBalanceDetailYouOwe(String amount, String name);
 
   /// No description provided for @personBalanceDetailOwedToYou.
   ///
   /// In es, this message translates to:
-  /// **'{name} te debe $ {amount}'**
+  /// **'{name} te debe \$ {amount}'**
   String personBalanceDetailOwedToYou(String name, String amount);
 
   /// No description provided for @personBalanceDetailSettled.

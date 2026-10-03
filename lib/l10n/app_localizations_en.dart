@@ -717,13 +717,44 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get addExpenseSave => 'Save expense';
+  String get addExpenseSave => 'Confirm';
 
   @override
   String get addExpenseSaving => 'Saving expense...';
 
   @override
-  String get addExpenseSaveSuccess => 'Expense saved (simulated).';
+  String get addExpenseSaveSuccess => 'The expense was saved successfully.';
+
+  @override
+  String get addExpenseValidationError =>
+      'Check the expense data, participants and that the amounts match the total.';
+
+  @override
+  String get addExpenseAuthenticationError =>
+      'Your session is invalid. Please sign in again.';
+
+  @override
+  String get addExpenseForbiddenError =>
+      'You do not have permission to add expenses to this event.';
+
+  @override
+  String get addExpenseNotFoundError => 'The event was not found.';
+
+  @override
+  String get addExpenseEventUnavailableError =>
+      'The event was cancelled and no longer accepts expenses.';
+
+  @override
+  String get addExpenseClosedError =>
+      'Expenses for this event are already closed.';
+
+  @override
+  String get addExpenseNetworkError =>
+      'The expense could not be saved because of a connection problem.';
+
+  @override
+  String get addExpenseSaveError =>
+      'We could not confirm that the expense was saved. Please try again.';
 
   @override
   String get eventDebtsTitle => 'Event debts';
