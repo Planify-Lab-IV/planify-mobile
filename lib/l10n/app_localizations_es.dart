@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -7,6 +8,48 @@ import 'app_localizations.dart';
 /// The translations for Spanish Castilian (`es`).
 class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
+
+  @override
+  String get settleDebtAction => 'Saldar';
+
+  @override
+  String get settleAllAction => 'Saldar todo';
+
+  @override
+  String get settleInProgress => 'Saldando…';
+
+  @override
+  String get settleDebtDialogTitle => '¿Saldar esta deuda?';
+
+  @override
+  String settleDebtDialogMessage(String name, String amount, String eventName) {
+    return 'Vas a saldar la deuda con $name por $amount en el evento «$eventName». Esta acción no se puede deshacer.';
+  }
+
+  @override
+  String get settleAllDialogTitle => '¿Saldar todo con esta persona?';
+
+  @override
+  String settleAllDialogMessage(String name) {
+    return 'Vas a saldar todas las deudas con $name. Esta acción afecta todos los eventos en común y no se puede deshacer.';
+  }
+
+  @override
+  String get settleSuccess => 'La deuda se saldó correctamente.';
+
+  @override
+  String get settleForbidden => 'No tenés permiso para saldar esta deuda.';
+
+  @override
+  String get settleNotFound =>
+      'La deuda o la persona ya no está disponible. Actualizá los datos.';
+
+  @override
+  String get settleNetworkError =>
+      'No se pudo saldar por un problema de conexión. Intentá nuevamente.';
+
+  @override
+  String get settleError => 'No se pudo saldar. Intentá nuevamente.';
 
   @override
   String get helloTest => 'Hola, esta es una prueba de i18n';

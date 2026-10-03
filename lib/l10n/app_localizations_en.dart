@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -7,6 +8,49 @@ import 'app_localizations.dart';
 /// The translations for English (`en`).
 class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
+
+  @override
+  String get settleDebtAction => 'Settle up';
+
+  @override
+  String get settleAllAction => 'Settle all';
+
+  @override
+  String get settleInProgress => 'Settling…';
+
+  @override
+  String get settleDebtDialogTitle => 'Settle this debt?';
+
+  @override
+  String settleDebtDialogMessage(String name, String amount, String eventName) {
+    return 'You are about to settle the debt with $name for $amount in the event “$eventName”. This action cannot be undone.';
+  }
+
+  @override
+  String get settleAllDialogTitle => 'Settle everything with this person?';
+
+  @override
+  String settleAllDialogMessage(String name) {
+    return 'You are about to settle all debts with $name. This affects all events you share and cannot be undone.';
+  }
+
+  @override
+  String get settleSuccess => 'The debt was settled successfully.';
+
+  @override
+  String get settleForbidden =>
+      'You do not have permission to settle this debt.';
+
+  @override
+  String get settleNotFound =>
+      'The debt or person is no longer available. Refresh the data.';
+
+  @override
+  String get settleNetworkError =>
+      'Could not settle because of a connection problem. Please try again.';
+
+  @override
+  String get settleError => 'Could not settle. Please try again.';
 
   @override
   String get helloTest => 'Hello, this is an i18n test';
