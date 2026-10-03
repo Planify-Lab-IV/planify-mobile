@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -22,8 +21,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settleDebtDialogTitle => 'Settle this debt?';
 
   @override
-  String settleDebtDialogMessage(String name, String amount, String eventName) {
-    return 'You are about to settle the debt with $name for $amount in the event “$eventName”. This action cannot be undone.';
+  String settleOwnDebtDialogMessage(
+    String name,
+    String amount,
+    String eventName,
+  ) {
+    return 'You are about to settle your debt with $name for $amount in the event “$eventName”. This action cannot be undone.';
+  }
+
+  @override
+  String settleOwedDebtDialogMessage(
+    String name,
+    String amount,
+    String eventName,
+  ) {
+    return 'You are about to mark the $amount debt from $name as settled in the event “$eventName”. This action cannot be undone.';
   }
 
   @override
@@ -782,6 +794,16 @@ class AppLocalizationsEn extends AppLocalizations {
     String creditorName,
   ) {
     return '$debtorName owes $amount to $creditorName';
+  }
+
+  @override
+  String eventDebtIOweDescription(String name, String amount) {
+    return 'You owe $name $amount';
+  }
+
+  @override
+  String eventDebtOwedToMeDescription(String name, String amount) {
+    return '$name owes you $amount';
   }
 
   @override

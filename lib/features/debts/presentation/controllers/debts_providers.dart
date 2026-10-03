@@ -16,10 +16,14 @@ final settlementRevisionProvider = StateProvider<int>((ref) => 0);
 
 final eventDebtsNotifierProvider = StateNotifierProvider.autoDispose
     .family<EventDebtsNotifier, EventDebtsState, String>((ref, eventId) {
+      final repository = ref.watch(debtsRepositoryProvider);
       final notifier = EventDebtsNotifier(
-        repository: ref.watch(debtsRepositoryProvider),
+        repository: repository,
         eventId: eventId,
         onSettled: () => ref.read(settlementRevisionProvider.notifier).state++,
+        prepareFixture: repository is FakeDebtsRepository
+            ? repository.ensureEventFixture
+            : null,
       );
       void Function()? releaseOperation;
       ref.onDispose(

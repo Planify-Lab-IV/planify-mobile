@@ -15,6 +15,73 @@ class FakeSettlementStore {
   relations = {};
   final Map<String, String> eventNames = {};
 
+  bool seedEventFixture({
+    required String eventId,
+    required String eventName,
+    required String currentParticipantId,
+    required String counterpartyParticipantId,
+    required String counterpartyPersonKey,
+    required String counterpartyName,
+  }) {
+    final normalizedEventId = eventId.trim();
+    final normalizedCurrentParticipantId = currentParticipantId.trim();
+    final normalizedCounterpartyId = counterpartyParticipantId.trim();
+    final normalizedPersonKey = counterpartyPersonKey.trim();
+    final normalizedName = counterpartyName.trim();
+    if (normalizedEventId.isEmpty ||
+        normalizedCurrentParticipantId.isEmpty ||
+        normalizedCounterpartyId.isEmpty ||
+        normalizedPersonKey.isEmpty ||
+        normalizedName.isEmpty ||
+        normalizedCurrentParticipantId == normalizedCounterpartyId) {
+      return false;
+    }
+
+    final previous = events[normalizedEventId]?.debts ?? const <EventDebt>[];
+    final viewerAlreadyHasDebt = previous.any(
+      (debt) =>
+          debt.debtorParticipantId == normalizedCurrentParticipantId ||
+          debt.creditorParticipantId == normalizedCurrentParticipantId,
+    );
+    if (viewerAlreadyHasDebt) return false;
+
+    people.putIfAbsent(
+      normalizedPersonKey,
+      () => PersonBalanceDetail(
+        personKey: normalizedPersonKey,
+        displayName: normalizedName,
+        status: PersonBalanceStatus.settled,
+        netCents: 0,
+        breakdown: const [],
+      ),
+    );
+    eventNames[normalizedEventId] = eventName.trim().isEmpty
+        ? normalizedEventId
+        : eventName.trim();
+
+    final debtId = 'fixture-$normalizedEventId-$normalizedCurrentParticipantId';
+    final debt = EventDebt(
+      id: debtId,
+      eventId: normalizedEventId,
+      debtorParticipantId: normalizedCounterpartyId,
+      debtorName: normalizedName,
+      creditorParticipantId: normalizedCurrentParticipantId,
+      creditorName: 'Vos',
+      amountCents: 50000,
+      status: DebtStatus.pending,
+    );
+    final debts = List<EventDebt>.unmodifiable([...previous, debt]);
+    events[normalizedEventId] = EventDebts(
+      debts: debts,
+      allSettled: debts.every((item) => item.status.isSettled),
+    );
+    relations[debtId] = (
+      personKey: normalizedPersonKey,
+      direction: BalanceDirection.owedToMe,
+    );
+    return true;
+  }
+
   void seedPerson(PersonBalanceDetail detail) {
     if (people.containsKey(detail.personKey)) return;
     people[detail.personKey] = detail;

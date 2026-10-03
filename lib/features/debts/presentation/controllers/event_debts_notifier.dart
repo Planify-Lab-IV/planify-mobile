@@ -5,16 +5,29 @@ import '../../domain/debt_settlement.dart';
 import '../../domain/debt_status.dart';
 import 'event_debts_state.dart';
 
+typedef EventDebtFixturePreparer =
+    bool Function({
+      required String eventId,
+      required String eventName,
+      required String currentParticipantId,
+      required String counterpartyParticipantId,
+      required String counterpartyPersonKey,
+      required String counterpartyName,
+    });
+
 class EventDebtsNotifier extends StateNotifier<EventDebtsState> {
   final DebtsRepository repository;
   final String eventId;
   final void Function()? onSettled;
+  final EventDebtFixturePreparer? prepareFixture;
   int _loadVersion = 0;
+  String? _preparedFixtureKey;
 
   EventDebtsNotifier({
     required this.repository,
     required this.eventId,
     this.onSettled,
+    this.prepareFixture,
   }) : super(const EventDebtsState()) {
     load();
   }
@@ -47,6 +60,31 @@ class EventDebtsNotifier extends StateNotifier<EventDebtsState> {
   }
 
   Future<void> reload({bool silent = false}) => load(silent: silent);
+
+  Future<void> prepareEventFixture({
+    required String eventName,
+    required String currentParticipantId,
+    required String counterpartyParticipantId,
+    required String counterpartyPersonKey,
+    required String counterpartyName,
+  }) async {
+    final fixtureKey = [
+      eventId,
+      currentParticipantId,
+      counterpartyParticipantId,
+    ].join('|');
+    if (_preparedFixtureKey == fixtureKey || prepareFixture == null) return;
+    _preparedFixtureKey = fixtureKey;
+    final changed = prepareFixture!(
+      eventId: eventId,
+      eventName: eventName,
+      currentParticipantId: currentParticipantId,
+      counterpartyParticipantId: counterpartyParticipantId,
+      counterpartyPersonKey: counterpartyPersonKey,
+      counterpartyName: counterpartyName,
+    );
+    if (changed) await reload(silent: state.isSuccess);
+  }
 
   Future<DebtSettlementResult> settleDebt(
     String debtId,

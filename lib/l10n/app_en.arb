@@ -4,8 +4,10 @@
   "settleAllAction": "Settle all",
   "settleInProgress": "Settling…",
   "settleDebtDialogTitle": "Settle this debt?",
-  "settleDebtDialogMessage": "You are about to settle the debt with {name} for {amount} in the event “{eventName}”. This action cannot be undone.",
-  "@settleDebtDialogMessage": {"placeholders": {"name": {"type": "String"}, "amount": {"type": "String"}, "eventName": {"type": "String"}}},
+  "settleOwnDebtDialogMessage": "You are about to settle your debt with {name} for {amount} in the event “{eventName}”. This action cannot be undone.",
+  "@settleOwnDebtDialogMessage": {"placeholders": {"name": {"type": "String"}, "amount": {"type": "String"}, "eventName": {"type": "String"}}},
+  "settleOwedDebtDialogMessage": "You are about to mark the {amount} debt from {name} as settled in the event “{eventName}”. This action cannot be undone.",
+  "@settleOwedDebtDialogMessage": {"placeholders": {"name": {"type": "String"}, "amount": {"type": "String"}, "eventName": {"type": "String"}}},
   "settleAllDialogTitle": "Settle everything with this person?",
   "settleAllDialogMessage": "You are about to settle all debts with {name}. This affects all events you share and cannot be undone.",
   "@settleAllDialogMessage": {"placeholders": {"name": {"type": "String"}}},
@@ -332,6 +334,20 @@
           "type": "String",
           "example": "Marcos"
         }
+      }
+    },
+    "eventDebtIOweDescription": "You owe {name} {amount}",
+    "@eventDebtIOweDescription": {
+      "placeholders": {
+        "name": {"type": "String"},
+        "amount": {"type": "String"}
+      }
+    },
+    "eventDebtOwedToMeDescription": "{name} owes you {amount}",
+    "@eventDebtOwedToMeDescription": {
+      "placeholders": {
+        "name": {"type": "String"},
+        "amount": {"type": "String"}
       }
     },
     "eventDebtPending": "Pending",

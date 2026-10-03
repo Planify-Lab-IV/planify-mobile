@@ -53,6 +53,7 @@ class FakeBalancesRepository implements BalancesRepository {
   @override
   Future<List<PersonBalance>> listPeople() async {
     await _waitOrThrow();
+    final knownKeys = _people.map((person) => person.personKey).toSet();
     return List<PersonBalance>.unmodifiable([
       for (final person in _people)
         if (store != null && store!.people.containsKey(person.personKey))
@@ -62,17 +63,29 @@ class FakeBalancesRepository implements BalancesRepository {
           )
         else
           person,
+      if (store != null)
+        for (final entry in store!.people.entries)
+          if (!knownKeys.contains(entry.key))
+            PersonBalance(
+              personKey: entry.key,
+              displayName: entry.value.displayName,
+              status: store!.detail(entry.key).status,
+              netCents: store!.detail(entry.key).netCents,
+            ),
     ]);
   }
 
   @override
   Future<PersonBalanceDetail> getPersonDetail(String personKey) async {
     await _waitOrThrow();
+    if (store?.people.containsKey(personKey) ?? false) {
+      return store!.detail(personKey);
+    }
     final detail = _personDetails[personKey];
     if (detail == null) {
       throw Exception('Could not find balance detail for $personKey');
     }
-    return store?.detail(personKey) ?? detail;
+    return detail;
   }
 
   Future<void> _waitOrThrow() async {

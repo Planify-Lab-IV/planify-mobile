@@ -34,6 +34,24 @@ class FakeDebtsRepository implements DebtsRepository {
     if (shouldThrowError) throw const DebtNetworkException();
   }
 
+  bool ensureEventFixture({
+    required String eventId,
+    required String eventName,
+    required String currentParticipantId,
+    required String counterpartyParticipantId,
+    required String counterpartyPersonKey,
+    required String counterpartyName,
+  }) {
+    return store.seedEventFixture(
+      eventId: eventId,
+      eventName: eventName,
+      currentParticipantId: currentParticipantId,
+      counterpartyParticipantId: counterpartyParticipantId,
+      counterpartyPersonKey: counterpartyPersonKey,
+      counterpartyName: counterpartyName,
+    );
+  }
+
   @override
   Future<void> settleDebt(String eventId, String debtId) async {
     await _waitToSettle();

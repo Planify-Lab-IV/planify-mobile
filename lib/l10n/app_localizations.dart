@@ -122,11 +122,25 @@ abstract class AppLocalizations {
   /// **'¿Saldar esta deuda?'**
   String get settleDebtDialogTitle;
 
-  /// No description provided for @settleDebtDialogMessage.
+  /// No description provided for @settleOwnDebtDialogMessage.
   ///
   /// In es, this message translates to:
-  /// **'Vas a saldar la deuda con {name} por {amount} en el evento «{eventName}». Esta acción no se puede deshacer.'**
-  String settleDebtDialogMessage(String name, String amount, String eventName);
+  /// **'Vas a saldar tu deuda con {name} por {amount} en el evento «{eventName}». Esta acción no se puede deshacer.'**
+  String settleOwnDebtDialogMessage(
+    String name,
+    String amount,
+    String eventName,
+  );
+
+  /// No description provided for @settleOwedDebtDialogMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Vas a marcar como saldada la deuda de {name} por {amount} en el evento «{eventName}». Esta acción no se puede deshacer.'**
+  String settleOwedDebtDialogMessage(
+    String name,
+    String amount,
+    String eventName,
+  );
 
   /// No description provided for @settleAllDialogTitle.
   ///
@@ -1517,6 +1531,18 @@ abstract class AppLocalizations {
     String amount,
     String creditorName,
   );
+
+  /// No description provided for @eventDebtIOweDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Le debés {amount} a {name}'**
+  String eventDebtIOweDescription(String name, String amount);
+
+  /// No description provided for @eventDebtOwedToMeDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} te debe {amount}'**
+  String eventDebtOwedToMeDescription(String name, String amount);
 
   /// No description provided for @eventDebtPending.
   ///
