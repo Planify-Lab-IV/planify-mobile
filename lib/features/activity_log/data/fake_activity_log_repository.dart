@@ -24,9 +24,11 @@ class FakeActivityLogRepository implements ActivityLogRepository {
       throw Exception('Could not load event activity');
     }
 
-    return List<ActivityEntry>.unmodifiable(
-      _activityByEventId[eventId] ?? const <ActivityEntry>[],
-    );
+    // Permite ver el feed mientras se prueba un evento recién creado, cuyo ID
+    // no existe todavía en los datos semilla. `evt-fake-demo` sigue teniendo
+    // una entrada explícita vacía para cubrir ese estado de la interfaz.
+    final entries = _activityByEventId[eventId] ?? _defaultActivity['evt-123']!;
+    return List<ActivityEntry>.unmodifiable(entries);
   }
 
   static final Map<String, List<ActivityEntry>> _defaultActivity = {
