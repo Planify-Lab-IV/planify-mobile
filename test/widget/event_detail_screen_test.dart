@@ -3,6 +3,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
+import 'package:planify/features/activity_log/data/fake_activity_log_repository.dart';
+import 'package:planify/features/activity_log/presentation/controllers/activity_log_providers.dart';
 import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/availability/data/fake_availability_repository.dart';
 import 'package:planify/features/availability/presentation/controllers/availability_providers.dart';
@@ -91,6 +93,9 @@ void main() {
           debtsRepositoryProvider.overrideWithValue(
             FakeDebtsRepository(delay: Duration.zero),
           ),
+          activityLogRepositoryProvider.overrideWithValue(
+            FakeActivityLogRepository(delay: Duration.zero),
+          ),
         ],
         child: MaterialApp(
           theme: AppTheme.light,
@@ -150,6 +155,11 @@ void main() {
         expect(find.text('Tareas'), findsOneWidget);
         expect(find.text('No hay tareas asignadas todavía.'), findsOneWidget);
         expect(find.text('Actividad reciente'), findsOneWidget);
+        expect(find.byKey(const Key('event_activity_card')), findsOneWidget);
+        expect(
+          find.byKey(const Key('activity_placeholder_card')),
+          findsNothing,
+        );
         expect(
           find.text('Sin actividad registrada en este evento.'),
           findsOneWidget,
