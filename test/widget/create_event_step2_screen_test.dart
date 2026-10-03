@@ -12,6 +12,8 @@ import 'package:planify/features/events/creation/screens/create_event_step2_scre
 import 'package:planify/features/groups/data/fake_groups_repository.dart';
 import 'package:planify/features/groups/domain/group.dart';
 import 'package:planify/features/groups/presentation/controllers/groups_providers.dart';
+import 'package:planify/features/tasks/data/fake_tasks_repository.dart';
+import 'package:planify/features/tasks/presentation/controllers/tasks_providers.dart';
 import 'package:planify/l10n/app_localizations.dart';
 
 import 'package:planify/features/events/detail/screens/event_detail_screen.dart';
@@ -34,6 +36,9 @@ Widget _buildTestApp({
       ),
       createEventsRepositoryProvider.overrideWithValue(eventsRepo),
       eventsRepositoryProvider.overrideWithValue(eventsRepo),
+      tasksRepositoryProvider.overrideWithValue(
+        FakeTasksRepository(delay: Duration.zero),
+      ),
     ],
     child: MaterialApp(
       theme: AppTheme.light,

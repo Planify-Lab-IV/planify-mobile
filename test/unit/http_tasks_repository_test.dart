@@ -267,16 +267,38 @@ void main() {
       );
     });
 
-    test('maps 401 and 403 to TaskAuthorizationException', () async {
-      for (final statusCode in [401, 403]) {
-        final repository = HttpTasksRepository(dio: dioRejecting(statusCode));
+    test('maps 401 to TaskAuthorizationException', () async {
+      final repository = HttpTasksRepository(dio: dioRejecting(401));
+
+      await expectLater(
+        repository.completeTask('task-1'),
+        throwsA(isA<TaskAuthorizationException>()),
+      );
+    });
+
+    test(
+      'rejects completion when the backend denies a participant without the task',
+      () async {
+        final repository = HttpTasksRepository(dio: dioRejecting(403));
 
         await expectLater(
-          repository.completeTask('task-1'),
+          repository.completeTask('task-assigned-to-another-participant'),
           throwsA(isA<TaskAuthorizationException>()),
         );
-      }
-    });
+      },
+    );
+
+    test(
+      'rejects reassignment when the backend denies a non-organizer',
+      () async {
+        final repository = HttpTasksRepository(dio: dioRejecting(403));
+
+        await expectLater(
+          repository.assignTask('task-1', 'participant-beto'),
+          throwsA(isA<TaskAuthorizationException>()),
+        );
+      },
+    );
 
     test('maps 404 to TaskNotFoundException', () async {
       final repository = HttpTasksRepository(dio: dioRejecting(404));

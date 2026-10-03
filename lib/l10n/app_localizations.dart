@@ -1587,13 +1587,13 @@ abstract class AppLocalizations {
   /// No description provided for @personBalanceDetailYouOwe.
   ///
   /// In es, this message translates to:
-  /// **'Le debés $ {amount} a {name}'**
+  /// **'Le debés \$ {amount} a {name}'**
   String personBalanceDetailYouOwe(String amount, String name);
 
   /// No description provided for @personBalanceDetailOwedToYou.
   ///
   /// In es, this message translates to:
-  /// **'{name} te debe $ {amount}'**
+  /// **'{name} te debe \$ {amount}'**
   String personBalanceDetailOwedToYou(String name, String amount);
 
   /// No description provided for @personBalanceDetailSettled.
