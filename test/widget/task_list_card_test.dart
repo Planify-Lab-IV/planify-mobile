@@ -98,7 +98,7 @@ void main() {
             initialEvent: event,
           ),
         ),
-        tasksRepositoryProvider(actorId).overrideWithValue(tasksRepository),
+        tasksRepositoryProvider.overrideWithValue(tasksRepository),
       ],
       child: MaterialApp(
         theme: AppTheme.light,

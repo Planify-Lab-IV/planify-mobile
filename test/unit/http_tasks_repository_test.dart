@@ -34,6 +34,40 @@ void main() {
     return dio;
   }
 
+  Dio dioRejecting(int statusCode) {
+    final dio = Dio();
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) => handler.reject(
+          DioException(
+            requestOptions: options,
+            response: Response<dynamic>(
+              requestOptions: options,
+              statusCode: statusCode,
+            ),
+            type: DioExceptionType.badResponse,
+          ),
+        ),
+      ),
+    );
+    return dio;
+  }
+
+  Dio dioWithNetworkError() {
+    final dio = Dio();
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) => handler.reject(
+          DioException(
+            requestOptions: options,
+            type: DioExceptionType.connectionError,
+          ),
+        ),
+      ),
+    );
+    return dio;
+  }
+
   group('HttpTasksRepository.listTasks', () {
     test('executes GET and maps the tasks response', () async {
       RequestOptions? request;
@@ -90,7 +124,7 @@ void main() {
 
       await expectLater(
         repository.listTasks('event-1'),
-        throwsA(isA<TaskOperationException>()),
+        throwsA(isA<InvalidTaskResponseException>()),
       );
     });
 
@@ -105,7 +139,7 @@ void main() {
 
       await expectLater(
         repository.listTasks('event-1'),
-        throwsA(isA<TaskOperationException>()),
+        throwsA(isA<InvalidTaskResponseException>()),
       );
     });
   });
@@ -221,5 +255,54 @@ void main() {
         expect(request?.data, isNull);
       },
     );
+  });
+
+  group('HttpTasksRepository HTTP errors', () {
+    test('maps 400 to TaskValidationException', () async {
+      final repository = HttpTasksRepository(dio: dioRejecting(400));
+
+      await expectLater(
+        repository.createTask('event-1', 'Comprar carne'),
+        throwsA(isA<TaskValidationException>()),
+      );
+    });
+
+    test('maps 401 and 403 to TaskAuthorizationException', () async {
+      for (final statusCode in [401, 403]) {
+        final repository = HttpTasksRepository(dio: dioRejecting(statusCode));
+
+        await expectLater(
+          repository.completeTask('task-1'),
+          throwsA(isA<TaskAuthorizationException>()),
+        );
+      }
+    });
+
+    test('maps 404 to TaskNotFoundException', () async {
+      final repository = HttpTasksRepository(dio: dioRejecting(404));
+
+      await expectLater(
+        repository.claimTask('task-missing'),
+        throwsA(isA<TaskNotFoundException>()),
+      );
+    });
+
+    test('maps a network failure to NetworkTaskException', () async {
+      final repository = HttpTasksRepository(dio: dioWithNetworkError());
+
+      await expectLater(
+        repository.listTasks('event-1'),
+        throwsA(isA<NetworkTaskException>()),
+      );
+    });
+
+    test('maps other HTTP errors to TaskOperationException', () async {
+      final repository = HttpTasksRepository(dio: dioRejecting(500));
+
+      await expectLater(
+        repository.assignTask('task-1', 'participant-beto'),
+        throwsA(isA<TaskOperationException>()),
+      );
+    });
   });
 }

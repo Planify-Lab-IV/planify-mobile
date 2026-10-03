@@ -17,3 +17,11 @@ class TaskValidationException extends TasksException {
 class TaskOperationException extends TasksException {
   const TaskOperationException();
 }
+
+class NetworkTaskException extends TasksException {
+  const NetworkTaskException();
+}
+
+class InvalidTaskResponseException extends TasksException {
+  const InvalidTaskResponseException();
+}

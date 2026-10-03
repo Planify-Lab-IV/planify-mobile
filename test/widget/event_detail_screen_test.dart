@@ -21,6 +21,8 @@ import 'package:planify/features/events/detail/widgets/cancel_event_dialog.dart'
 import 'package:planify/features/events/detail/widgets/close_expenses_dialog.dart';
 import 'package:planify/features/expenses/presentation/widgets/add_expense_dialog.dart';
 import 'package:planify/features/tasks/presentation/widgets/create_task_dialog.dart';
+import 'package:planify/features/tasks/data/fake_tasks_repository.dart';
+import 'package:planify/features/tasks/presentation/controllers/tasks_providers.dart';
 import 'package:planify/l10n/app_localizations.dart';
 
 void main() {
@@ -90,6 +92,9 @@ void main() {
           ),
           debtsRepositoryProvider.overrideWithValue(
             FakeDebtsRepository(delay: Duration.zero),
+          ),
+          tasksRepositoryProvider.overrideWithValue(
+            FakeTasksRepository(delay: Duration.zero),
           ),
         ],
         child: MaterialApp(

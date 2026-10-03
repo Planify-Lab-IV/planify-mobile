@@ -21,10 +21,10 @@ class HttpTasksRepository implements TasksRepository {
       return _tasksFromResponse(response.data);
     } on TasksException {
       rethrow;
-    } on DioException {
-      throw const TaskOperationException();
+    } on DioException catch (error) {
+      _throwForDioError(error);
     } catch (_) {
-      throw const TaskOperationException();
+      throw const InvalidTaskResponseException();
     }
   }
 
@@ -41,10 +41,10 @@ class HttpTasksRepository implements TasksRepository {
       return _taskFromResponse(response.data);
     } on TasksException {
       rethrow;
-    } on DioException {
-      throw const TaskOperationException();
+    } on DioException catch (error) {
+      _throwForDioError(error);
     } catch (_) {
-      throw const TaskOperationException();
+      throw const InvalidTaskResponseException();
     }
   }
 
@@ -80,7 +80,7 @@ class HttpTasksRepository implements TasksRepository {
 
   List<Task> _tasksFromResponse(dynamic data) {
     if (data is! Map || data['tasks'] is! List) {
-      throw const TaskOperationException();
+      throw const InvalidTaskResponseException();
     }
 
     return (data['tasks'] as List<dynamic>)
@@ -94,21 +94,21 @@ class HttpTasksRepository implements TasksRepository {
       _taskFromResponse(response.data);
     } on TasksException {
       rethrow;
-    } on DioException {
-      throw const TaskOperationException();
+    } on DioException catch (error) {
+      _throwForDioError(error);
     } catch (_) {
-      throw const TaskOperationException();
+      throw const InvalidTaskResponseException();
     }
   }
 
   Task _taskFromResponse(dynamic data) {
-    if (data is! Map) throw const TaskOperationException();
+    if (data is! Map) throw const InvalidTaskResponseException();
 
     final assignedToParticipantId = data['assignedToParticipantId'];
     if (assignedToParticipantId != null &&
         (assignedToParticipantId is! String ||
             assignedToParticipantId.trim().isEmpty)) {
-      throw const TaskOperationException();
+      throw const InvalidTaskResponseException();
     }
 
     return Task(
@@ -124,7 +124,7 @@ class HttpTasksRepository implements TasksRepository {
   String _requiredString(Map<dynamic, dynamic> data, String key) {
     final value = data[key];
     if (value is! String || value.trim().isEmpty) {
-      throw const TaskOperationException();
+      throw const InvalidTaskResponseException();
     }
     return value;
   }
@@ -134,7 +134,35 @@ class HttpTasksRepository implements TasksRepository {
       'unassigned' => TaskStatus.unassigned,
       'pending' => TaskStatus.pending,
       'completed' => TaskStatus.completed,
-      _ => throw const TaskOperationException(),
+      _ => throw const InvalidTaskResponseException(),
+    };
+  }
+
+  Never _throwForDioError(DioException error) {
+    switch (error.response?.statusCode) {
+      case 400:
+        throw const TaskValidationException();
+      case 401:
+      case 403:
+        throw const TaskAuthorizationException();
+      case 404:
+        throw const TaskNotFoundException();
+    }
+
+    if (_isNetworkError(error)) {
+      throw const NetworkTaskException();
+    }
+
+    throw const TaskOperationException();
+  }
+
+  bool _isNetworkError(DioException error) {
+    return switch (error.type) {
+      DioExceptionType.connectionTimeout ||
+      DioExceptionType.sendTimeout ||
+      DioExceptionType.receiveTimeout ||
+      DioExceptionType.connectionError => true,
+      _ => false,
     };
   }
 }
