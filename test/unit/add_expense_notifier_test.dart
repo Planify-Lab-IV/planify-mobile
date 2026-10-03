@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/events/domain/event_participant.dart';
 import 'package:planify/features/expenses/presentation/controllers/add_expense_notifier.dart';
+import 'package:planify/features/expenses/data/fake_expenses_repository.dart';
 
 void main() {
   const participants = [
@@ -31,7 +32,11 @@ void main() {
   ];
 
   AddExpenseNotifier buildNotifier() {
-    return AddExpenseNotifier(participants: participants);
+    return AddExpenseNotifier(
+      participants: participants,
+      eventId: 'event-1',
+      repository: FakeExpensesRepository(delay: Duration.zero),
+    );
   }
 
   group('AddExpenseNotifier', () {
@@ -258,7 +263,7 @@ void main() {
       notifier.setTotalAmountCents(1000);
       notifier.togglePayer('participant-1');
 
-      final wasSaved = await notifier.save();
+      final wasSaved = await notifier.submit();
 
       expect(notifier.state.hasBalancedPayers, isTrue);
       expect(notifier.state.hasDebtors, isFalse);
@@ -267,7 +272,7 @@ void main() {
       expect(notifier.state.isSaving, isFalse);
     });
 
-    test('saves the combined payer and debtor draft locally', () async {
+    test('submits the combined payer and debtor draft', () async {
       final notifier = buildNotifier();
 
       notifier.setDescription('Cena');
@@ -275,7 +280,7 @@ void main() {
       notifier.togglePayer('participant-1');
       notifier.toggleDebtor('participant-2');
 
-      final saveFuture = notifier.save();
+      final saveFuture = notifier.submit();
 
       expect(notifier.state.isSaving, isTrue);
       expect(await saveFuture, isTrue);

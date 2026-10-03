@@ -40,7 +40,10 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
         locale: const Locale('es'),
         home: const Scaffold(
-          body: AddExpenseDialog(participants: participants),
+          body: AddExpenseDialog(
+            eventId: 'event-1',
+            participants: participants,
+          ),
         ),
       ),
     );
