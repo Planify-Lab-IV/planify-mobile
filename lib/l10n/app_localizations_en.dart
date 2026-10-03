@@ -9,6 +9,62 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get settleDebtAction => 'Settle up';
+
+  @override
+  String get settleAllAction => 'Settle all';
+
+  @override
+  String get settleInProgress => 'Settling…';
+
+  @override
+  String get settleDebtDialogTitle => 'Settle this debt?';
+
+  @override
+  String settleOwnDebtDialogMessage(
+    String name,
+    String amount,
+    String eventName,
+  ) {
+    return 'You are about to settle your debt with $name for $amount in the event “$eventName”. This action cannot be undone.';
+  }
+
+  @override
+  String settleOwedDebtDialogMessage(
+    String name,
+    String amount,
+    String eventName,
+  ) {
+    return 'You are about to mark the $amount debt from $name as settled in the event “$eventName”. This action cannot be undone.';
+  }
+
+  @override
+  String get settleAllDialogTitle => 'Settle everything with this person?';
+
+  @override
+  String settleAllDialogMessage(String name) {
+    return 'You are about to settle all debts with $name. This affects all events you share and cannot be undone.';
+  }
+
+  @override
+  String get settleSuccess => 'The debt was settled successfully.';
+
+  @override
+  String get settleForbidden =>
+      'You do not have permission to settle this debt.';
+
+  @override
+  String get settleNotFound =>
+      'The debt or person is no longer available. Refresh the data.';
+
+  @override
+  String get settleNetworkError =>
+      'Could not settle because of a connection problem. Please try again.';
+
+  @override
+  String get settleError => 'Could not settle. Please try again.';
+
+  @override
   String get helloTest => 'Hello, this is an i18n test';
 
   @override
@@ -738,6 +794,16 @@ class AppLocalizationsEn extends AppLocalizations {
     String creditorName,
   ) {
     return '$debtorName owes $amount to $creditorName';
+  }
+
+  @override
+  String eventDebtIOweDescription(String name, String amount) {
+    return 'You owe $name $amount';
+  }
+
+  @override
+  String eventDebtOwedToMeDescription(String name, String amount) {
+    return '$name owes you $amount';
   }
 
   @override

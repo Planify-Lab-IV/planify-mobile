@@ -98,6 +98,92 @@ abstract class AppLocalizations {
     Locale('es'),
   ];
 
+  /// No description provided for @settleDebtAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldar'**
+  String get settleDebtAction;
+
+  /// No description provided for @settleAllAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldar todo'**
+  String get settleAllAction;
+
+  /// No description provided for @settleInProgress.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldando…'**
+  String get settleInProgress;
+
+  /// No description provided for @settleDebtDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Saldar esta deuda?'**
+  String get settleDebtDialogTitle;
+
+  /// No description provided for @settleOwnDebtDialogMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Vas a saldar tu deuda con {name} por {amount} en el evento «{eventName}». Esta acción no se puede deshacer.'**
+  String settleOwnDebtDialogMessage(
+    String name,
+    String amount,
+    String eventName,
+  );
+
+  /// No description provided for @settleOwedDebtDialogMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Vas a marcar como saldada la deuda de {name} por {amount} en el evento «{eventName}». Esta acción no se puede deshacer.'**
+  String settleOwedDebtDialogMessage(
+    String name,
+    String amount,
+    String eventName,
+  );
+
+  /// No description provided for @settleAllDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Saldar todo con esta persona?'**
+  String get settleAllDialogTitle;
+
+  /// No description provided for @settleAllDialogMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Vas a saldar todas las deudas con {name}. Esta acción afecta todos los eventos en común y no se puede deshacer.'**
+  String settleAllDialogMessage(String name);
+
+  /// No description provided for @settleSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'La deuda se saldó correctamente.'**
+  String get settleSuccess;
+
+  /// No description provided for @settleForbidden.
+  ///
+  /// In es, this message translates to:
+  /// **'No tenés permiso para saldar esta deuda.'**
+  String get settleForbidden;
+
+  /// No description provided for @settleNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'La deuda o la persona ya no está disponible. Actualizá los datos.'**
+  String get settleNotFound;
+
+  /// No description provided for @settleNetworkError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo saldar por un problema de conexión. Intentá nuevamente.'**
+  String get settleNetworkError;
+
+  /// No description provided for @settleError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo saldar. Intentá nuevamente.'**
+  String get settleError;
+
   /// No description provided for @helloTest.
   ///
   /// In es, this message translates to:
@@ -1446,6 +1532,18 @@ abstract class AppLocalizations {
     String creditorName,
   );
 
+  /// No description provided for @eventDebtIOweDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Le debés {amount} a {name}'**
+  String eventDebtIOweDescription(String name, String amount);
+
+  /// No description provided for @eventDebtOwedToMeDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} te debe {amount}'**
+  String eventDebtOwedToMeDescription(String name, String amount);
+
   /// No description provided for @eventDebtPending.
   ///
   /// In es, this message translates to:
@@ -1587,13 +1685,13 @@ abstract class AppLocalizations {
   /// No description provided for @personBalanceDetailYouOwe.
   ///
   /// In es, this message translates to:
-  /// **'Le debés $ {amount} a {name}'**
+  /// **'Le debés \$ {amount} a {name}'**
   String personBalanceDetailYouOwe(String amount, String name);
 
   /// No description provided for @personBalanceDetailOwedToYou.
   ///
   /// In es, this message translates to:
-  /// **'{name} te debe $ {amount}'**
+  /// **'{name} te debe \$ {amount}'**
   String personBalanceDetailOwedToYou(String name, String amount);
 
   /// No description provided for @personBalanceDetailSettled.
