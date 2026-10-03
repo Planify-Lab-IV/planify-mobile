@@ -125,6 +125,42 @@
     "noTasksPlaceholder": "No hay tareas asignadas todavía.",
     "activityLogSectionTitle": "Actividad reciente",
     "noActivityPlaceholder": "Sin actividad registrada en este evento.",
+    "activityLoading": "Cargando actividad del evento...",
+    "activityLoadError": "No se pudo cargar la actividad del evento. Intentá nuevamente.",
+    "activityTaskCreated": "{actor} creó la tarea {title}",
+    "@activityTaskCreated": {
+      "placeholders": {
+        "actor": {"type": "String", "example": "Juli"},
+        "title": {"type": "String", "example": "Comprar carne"}
+      }
+    },
+    "activityAvailabilityUpdated": "{actor} actualizó su disponibilidad",
+    "@activityAvailabilityUpdated": {
+      "placeholders": {
+        "actor": {"type": "String", "example": "Juli"}
+      }
+    },
+    "activityExpenseCreated": "{actor} agregó el gasto {description} por {amount}",
+    "@activityExpenseCreated": {
+      "placeholders": {
+        "actor": {"type": "String", "example": "Juli"},
+        "description": {"type": "String", "example": "Bebidas"},
+        "amount": {"type": "String", "example": "$ 245,00"}
+      }
+    },
+    "activityScheduleConfirmed": "{actor} confirmó el horario para {dateTime}",
+    "@activityScheduleConfirmed": {
+      "placeholders": {
+        "actor": {"type": "String", "example": "Juli"},
+        "dateTime": {"type": "String", "example": "10/1/2026 21:00"}
+      }
+    },
+    "activityUnknown": "{actor} hizo un cambio en el evento",
+    "@activityUnknown": {
+      "placeholders": {
+        "actor": {"type": "String", "example": "Juli"}
+      }
+    },
     "featureUnderDevelopment": "Esta funcionalidad estará disponible próximamente.",
     "cancelEventAction": "Cancelar evento",
     "cancelEventDialogTitle": "¿Cancelar evento?",

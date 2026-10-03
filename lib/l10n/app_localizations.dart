@@ -752,6 +752,52 @@ abstract class AppLocalizations {
   /// **'Sin actividad registrada en este evento.'**
   String get noActivityPlaceholder;
 
+  /// No description provided for @activityLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando actividad del evento...'**
+  String get activityLoading;
+
+  /// No description provided for @activityLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cargar la actividad del evento. Intentá nuevamente.'**
+  String get activityLoadError;
+
+  /// No description provided for @activityTaskCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'{actor} creó la tarea {title}'**
+  String activityTaskCreated(String actor, String title);
+
+  /// No description provided for @activityAvailabilityUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'{actor} actualizó su disponibilidad'**
+  String activityAvailabilityUpdated(String actor);
+
+  /// No description provided for @activityExpenseCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'{actor} agregó el gasto {description} por {amount}'**
+  String activityExpenseCreated(
+    String actor,
+    String description,
+    String amount,
+  );
+
+  /// No description provided for @activityScheduleConfirmed.
+  ///
+  /// In es, this message translates to:
+  /// **'{actor} confirmó el horario para {dateTime}'**
+  String activityScheduleConfirmed(String actor, String dateTime);
+
+  /// No description provided for @activityUnknown.
+  ///
+  /// In es, this message translates to:
+  /// **'{actor} hizo un cambio en el evento'**
+  String activityUnknown(String actor);
+
   /// No description provided for @featureUnderDevelopment.
   ///
   /// In es, this message translates to:
@@ -1587,13 +1633,13 @@ abstract class AppLocalizations {
   /// No description provided for @personBalanceDetailYouOwe.
   ///
   /// In es, this message translates to:
-  /// **'Le debés $ {amount} a {name}'**
+  /// **'Le debés \$ {amount} a {name}'**
   String personBalanceDetailYouOwe(String amount, String name);
 
   /// No description provided for @personBalanceDetailOwedToYou.
   ///
   /// In es, this message translates to:
-  /// **'{name} te debe $ {amount}'**
+  /// **'{name} te debe \$ {amount}'**
   String personBalanceDetailOwedToYou(String name, String amount);
 
   /// No description provided for @personBalanceDetailSettled.
