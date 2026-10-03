@@ -13,8 +13,10 @@ import '../../domain/person_balance_detail.dart';
 import '../../domain/person_balance_status.dart';
 import '../controllers/balances_providers.dart';
 import '../controllers/person_balance_detail_state.dart';
+import '../../../debts/presentation/widgets/settle_debt_dialog.dart';
+import '../../../debts/presentation/widgets/settlement_feedback.dart';
 
-class PersonBalanceDetailSheet extends ConsumerWidget {
+class PersonBalanceDetailSheet extends ConsumerStatefulWidget {
   final String personKey;
 
   const PersonBalanceDetailSheet({super.key, required this.personKey});
@@ -40,10 +42,53 @@ class PersonBalanceDetailSheet extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(personBalanceDetailNotifierProvider(personKey));
+  ConsumerState<PersonBalanceDetailSheet> createState() =>
+      _PersonBalanceDetailSheetState();
+}
+
+class _PersonBalanceDetailSheetState
+    extends ConsumerState<PersonBalanceDetailSheet> {
+  bool _confirming = false;
+
+  Future<void> _confirmAndSettle() async {
+    final provider = personBalanceDetailNotifierProvider(widget.personKey);
+    final state = ref.read(provider);
+    if (_confirming ||
+        state.isSettling ||
+        state.detail == null ||
+        state.detail!.status.isSettled) {
+      return;
+    }
+    setState(() => _confirming = true);
+    final i18n = AppLocalizations.of(context)!;
+    try {
+      final confirmed = await SettleDebtDialog.show(
+        context,
+        personName: state.detail!.displayName,
+      );
+      if (!mounted || confirmed != true) return;
+      final messenger = ScaffoldMessenger.of(context);
+      final result = await ref.read(provider.notifier).settleWithPerson();
+      if (!mounted) return;
+      final settled =
+          result.succeeded &&
+          ref.read(provider).detail?.status.isSettled == true;
+      showSettlementFeedback(messenger, i18n, result, () {
+        if (mounted) _confirmAndSettle();
+      });
+      if (settled) Navigator.of(context).pop();
+    } finally {
+      if (mounted) setState(() => _confirming = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(
+      personBalanceDetailNotifierProvider(widget.personKey),
+    );
     final notifier = ref.read(
-      personBalanceDetailNotifierProvider(personKey).notifier,
+      personBalanceDetailNotifierProvider(widget.personKey).notifier,
     );
 
     return SafeArea(
@@ -59,6 +104,10 @@ class PersonBalanceDetailSheet extends ConsumerWidget {
           ),
           PersonBalanceDetailLoadStatus.success => _DetailContent(
             detail: state.detail!,
+            onSettle: _confirming || state.isSettling
+                ? null
+                : _confirmAndSettle,
+            isSettling: state.isSettling,
           ),
         },
       ),
@@ -127,8 +176,14 @@ class _ErrorContent extends StatelessWidget {
 
 class _DetailContent extends StatelessWidget {
   final PersonBalanceDetail detail;
+  final VoidCallback? onSettle;
+  final bool isSettling;
 
-  const _DetailContent({required this.detail});
+  const _DetailContent({
+    required this.detail,
+    required this.onSettle,
+    required this.isSettling,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +222,16 @@ class _DetailContent extends StatelessWidget {
                   _EventBalanceLineRow(detail: detail, line: line),
                   const SizedBox(height: AppSpacing.sm),
                 ],
-                // PLANIFY-76: insertar aquí la acción “Saldar todo”.
+                if (!detail.status.isSettled) ...[
+                  const SizedBox(height: AppSpacing.lg),
+                  FilledButton(
+                    key: const Key('settle_all_button'),
+                    onPressed: onSettle,
+                    child: Text(
+                      isSettling ? i18n.settleInProgress : i18n.settleAllAction,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
