@@ -725,13 +725,44 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get addExpenseSave => 'Guardar gasto';
+  String get addExpenseSave => 'Confirmar';
 
   @override
   String get addExpenseSaving => 'Guardando gasto...';
 
   @override
-  String get addExpenseSaveSuccess => 'Gasto guardado (simulado).';
+  String get addExpenseSaveSuccess => 'El gasto se guardó correctamente.';
+
+  @override
+  String get addExpenseValidationError =>
+      'Revisá los datos del gasto, los participantes y que los montos coincidan con el total.';
+
+  @override
+  String get addExpenseAuthenticationError =>
+      'Tu sesión no es válida. Volvé a iniciar sesión.';
+
+  @override
+  String get addExpenseForbiddenError =>
+      'No tenés permiso para cargar gastos en este evento.';
+
+  @override
+  String get addExpenseNotFoundError => 'No se encontró el evento.';
+
+  @override
+  String get addExpenseEventUnavailableError =>
+      'El evento fue cancelado y no acepta gastos.';
+
+  @override
+  String get addExpenseClosedError =>
+      'Los gastos de este evento ya están cerrados.';
+
+  @override
+  String get addExpenseNetworkError =>
+      'No se pudo guardar el gasto por un problema de conexión.';
+
+  @override
+  String get addExpenseSaveError =>
+      'No se pudo confirmar el guardado del gasto. Intentá nuevamente.';
 
   @override
   String get eventDebtsTitle => 'Deudas del evento';
