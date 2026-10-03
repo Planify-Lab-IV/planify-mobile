@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/activity_log/data/fake_activity_log_repository.dart';
+import 'package:planify/features/activity_log/domain/activity_entry.dart';
 import 'package:planify/features/activity_log/presentation/controllers/activity_log_providers.dart';
 import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/availability/data/fake_availability_repository.dart';
@@ -94,7 +95,10 @@ void main() {
             FakeDebtsRepository(delay: Duration.zero),
           ),
           activityLogRepositoryProvider.overrideWithValue(
-            FakeActivityLogRepository(delay: Duration.zero),
+            FakeActivityLogRepository(
+              delay: Duration.zero,
+              initialActivity: const {testEventId: <ActivityEntry>[]},
+            ),
           ),
         ],
         child: MaterialApp(
