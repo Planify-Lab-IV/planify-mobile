@@ -147,7 +147,8 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
                   hintText: i18n.registrationNameLabel,
                   prefixIcon: const Icon(Icons.person_outline_rounded),
                 ),
-                validator: (value) => isValidRegistrationName(value?.trim() ?? '')
+                validator: (value) =>
+                    isValidRegistrationName(value?.trim() ?? '')
                     ? null
                     : i18n.registrationNameInvalid,
                 onChanged: (_) => setState(() {}),
@@ -195,9 +196,8 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
                 enabled: !isLoading,
                 obscureText: _obscurePassword,
                 textInputAction: TextInputAction.done,
-                onFieldSubmitted: (_) => _isFormValid && !isLoading
-                    ? _submit()
-                    : null,
+                onFieldSubmitted: (_) =>
+                    _isFormValid && !isLoading ? _submit() : null,
                 decoration: InputDecoration(
                   hintText: i18n.passwordLabel,
                   prefixIcon: const Icon(Icons.lock_outline_rounded),

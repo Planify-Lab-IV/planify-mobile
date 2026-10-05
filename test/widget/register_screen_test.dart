@@ -108,10 +108,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Create account'), findsNWidgets(2));
-      expect(
-        find.text('Use lowercase letters, numbers and _'),
-        findsOneWidget,
-      );
+      expect(find.text('Use lowercase letters, numbers and _'), findsOneWidget);
     });
 
     testWidgets('muestra conflicto genérico sin marcar ningún campo', (
@@ -140,7 +137,10 @@ void main() {
         ),
         findsOneWidget,
       );
-      expect(find.text('El nombre debe tener entre 1 y 80 caracteres'), findsNothing);
+      expect(
+        find.text('El nombre debe tener entre 1 y 80 caracteres'),
+        findsNothing,
+      );
       expect(
         find.text(
           'El usuario debe tener entre 3 y 30 caracteres y usar solo minúsculas, números o _',
@@ -154,7 +154,9 @@ void main() {
       );
     });
 
-    testWidgets('cierra la ruta de registro después de registrarse', (tester) async {
+    testWidgets('cierra la ruta de registro después de registrarse', (
+      tester,
+    ) async {
       final storage = FakeSecureStorage();
       final repository = FakeAuthRepository(
         storage: storage,
@@ -190,7 +192,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(RegisterScreen), findsNothing);
-      expect(find.byKey(const Key('open_register_screen_button')), findsOneWidget);
+      expect(
+        find.byKey(const Key('open_register_screen_button')),
+        findsOneWidget,
+      );
     });
   });
 }

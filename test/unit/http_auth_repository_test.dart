@@ -72,32 +72,39 @@ void main() {
       return dio;
     }
 
-    test('register sends the expected request and maps an organizer session', () async {
-      RequestOptions? request;
-      final repository = repositoryWith(
-        dioResolvingWithStatus(201, responseData, (options) => request = options),
-      );
+    test(
+      'register sends the expected request and maps an organizer session',
+      () async {
+        RequestOptions? request;
+        final repository = repositoryWith(
+          dioResolvingWithStatus(
+            201,
+            responseData,
+            (options) => request = options,
+          ),
+        );
 
-      final session = await repository.register(
-        name: 'Dev One',
-        username: 'dev1',
-        email: 'dev1@planify.dev',
-        password: 'DevPass123!',
-      );
+        final session = await repository.register(
+          name: 'Dev One',
+          username: 'dev1',
+          email: 'dev1@planify.dev',
+          password: 'DevPass123!',
+        );
 
-      expect(request?.method, 'POST');
-      expect(request?.path, '/auth/register');
-      expect(request?.data, {
-        'name': 'Dev One',
-        'username': 'dev1',
-        'email': 'dev1@planify.dev',
-        'password': 'DevPass123!',
-      });
-      expect(session, isA<OrganizerSession>());
-      final organizer = session as OrganizerSession;
-      expect(organizer.userId, 'uuid-organizer-1');
-      expect(organizer.token, 'backend-jwt-token');
-    });
+        expect(request?.method, 'POST');
+        expect(request?.path, '/auth/register');
+        expect(request?.data, {
+          'name': 'Dev One',
+          'username': 'dev1',
+          'email': 'dev1@planify.dev',
+          'password': 'DevPass123!',
+        });
+        expect(session, isA<OrganizerSession>());
+        final organizer = session as OrganizerSession;
+        expect(organizer.userId, 'uuid-organizer-1');
+        expect(organizer.token, 'backend-jwt-token');
+      },
+    );
 
     test('register maps a 409 response to a registration conflict', () async {
       expect(

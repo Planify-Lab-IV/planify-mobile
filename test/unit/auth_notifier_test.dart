@@ -143,20 +143,23 @@ void main() {
       },
     );
 
-    test('register con datos inválidos cambia a AuthError específico', () async {
-      await notifier.register(
-        name: '',
-        username: 'lucia',
-        email: 'lucia@planify.com',
-        password: 'password123',
-      );
+    test(
+      'register con datos inválidos cambia a AuthError específico',
+      () async {
+        await notifier.register(
+          name: '',
+          username: 'lucia',
+          email: 'lucia@planify.com',
+          password: 'password123',
+        );
 
-      expect(
-        notifier.state,
-        const AuthError(AuthFailureReason.invalidRegistrationData),
-      );
-      expect(await storage.getToken(), isNull);
-    });
+        expect(
+          notifier.state,
+          const AuthError(AuthFailureReason.invalidRegistrationData),
+        );
+        expect(await storage.getToken(), isNull);
+      },
+    );
 
     test('register con error de red cambia a AuthError de red', () async {
       await notifier.register(
@@ -166,32 +169,32 @@ void main() {
         password: 'password123',
       );
 
-      expect(
-        notifier.state,
-        const AuthError(AuthFailureReason.networkError),
-      );
+      expect(notifier.state, const AuthError(AuthFailureReason.networkError));
       expect(await storage.getToken(), isNull);
     });
 
-    test('register con error desconocido cambia a AuthError desconocido', () async {
-      notifier = AuthNotifier(
-        _ThrowingRegisterRepository(
-          storage: storage,
-          exception: const UnknownAuthException(),
-        ),
-        storage,
-      );
+    test(
+      'register con error desconocido cambia a AuthError desconocido',
+      () async {
+        notifier = AuthNotifier(
+          _ThrowingRegisterRepository(
+            storage: storage,
+            exception: const UnknownAuthException(),
+          ),
+          storage,
+        );
 
-      await notifier.register(
-        name: 'Lucía',
-        username: 'lucia',
-        email: 'lucia@planify.com',
-        password: 'password123',
-      );
+        await notifier.register(
+          name: 'Lucía',
+          username: 'lucia',
+          email: 'lucia@planify.com',
+          password: 'password123',
+        );
 
-      expect(notifier.state, const AuthError(AuthFailureReason.unknown));
-      expect(await storage.getToken(), isNull);
-    });
+        expect(notifier.state, const AuthError(AuthFailureReason.unknown));
+        expect(await storage.getToken(), isNull);
+      },
+    );
 
     test('logout elimina token y cambia a AuthUnauthenticated', () async {
       await notifier.login(

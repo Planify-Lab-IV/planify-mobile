@@ -17,7 +17,9 @@ class FakeAuthRepository implements AuthRepository {
     Iterable<String> usedUsernames = const [],
     Iterable<String> usedEmails = const [],
   }) : _storage = storage ?? FakeSecureStorage(),
-       _usedUsernames = usedUsernames.map((username) => username.trim()).toSet(),
+       _usedUsernames = usedUsernames
+           .map((username) => username.trim())
+           .toSet(),
        _usedEmails = usedEmails
            .map((email) => email.trim().toLowerCase())
            .toSet();

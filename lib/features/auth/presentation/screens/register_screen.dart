@@ -31,7 +31,9 @@ class RegisterScreen extends StatelessWidget {
                     child: IconButton(
                       key: const Key('register_back_button'),
                       icon: const Icon(Icons.arrow_back_rounded),
-                      tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                      tooltip: MaterialLocalizations.of(
+                        context,
+                      ).backButtonTooltip,
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ),

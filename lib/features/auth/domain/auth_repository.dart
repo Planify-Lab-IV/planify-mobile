@@ -12,7 +12,9 @@ abstract class AuthRepository {
     required String email,
     required String password,
   }) async {
-    throw UnsupportedError('Registration is not implemented by this repository.');
+    throw UnsupportedError(
+      'Registration is not implemented by this repository.',
+    );
   }
 
   Future<UserSession> loginAnonymously({

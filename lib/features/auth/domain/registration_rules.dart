@@ -2,7 +2,7 @@ final RegExp _usernamePattern = RegExp(r'^[a-z0-9_]{3,30}$');
 final RegExp _emailPattern = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
 
 bool isValidRegistrationName(String value) {
-  return value.length >= 1 && value.length <= 80;
+  return value.isNotEmpty && value.length <= 80;
 }
 
 bool isValidRegistrationUsername(String value) {
