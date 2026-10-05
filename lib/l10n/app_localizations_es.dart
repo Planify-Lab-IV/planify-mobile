@@ -33,8 +33,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get passwordRequired => 'Por favor ingresa tu contraseña';
 
   @override
-  String get passwordMinLength =>
-      'La contraseña debe tener al menos 6 caracteres';
+  String get passwordMinLength => 'La contraseña debe tener al menos 6 caracteres';
 
   @override
   String get loginButton => 'Iniciar Sesión';
@@ -43,12 +42,58 @@ class AppLocalizationsEs extends AppLocalizations {
   String get loggingIn => 'Iniciando sesión...';
 
   @override
-  String get loginErrorGeneric =>
-      'No se pudo iniciar sesión. Intenta nuevamente.';
+  String get loginErrorGeneric => 'No se pudo iniciar sesión. Intenta nuevamente.';
 
   @override
-  String get loginErrorInvalidCredentials =>
-      'Credenciales inválidas. Verifica tu correo y contraseña.';
+  String get loginErrorInvalidCredentials => 'Credenciales inválidas. Verifica tu correo y contraseña.';
+
+  @override
+  String get registrationTitle => 'Crear cuenta';
+
+  @override
+  String get registrationCreateAccountLink => '¿No tenés cuenta? Crear cuenta';
+
+  @override
+  String get registrationNameLabel => 'Nombre';
+
+  @override
+  String get registrationUsernameLabel => 'Usuario';
+
+  @override
+  String get registrationUsernameHelp => 'Usá minúsculas, números y _';
+
+  @override
+  String get registrationEmailLabel => 'Correo electrónico';
+
+  @override
+  String get registrationNameInvalid => 'El nombre debe tener entre 1 y 80 caracteres';
+
+  @override
+  String get registrationUsernameInvalid => 'El usuario debe tener entre 3 y 30 caracteres y usar solo minúsculas, números o _';
+
+  @override
+  String get registrationEmailInvalid => 'Ingresá un correo electrónico válido';
+
+  @override
+  String get registrationPasswordInvalid => 'La contraseña debe tener entre 8 y 72 caracteres';
+
+  @override
+  String get registrationSubmitButton => 'Registrarme';
+
+  @override
+  String get registrationErrorConflict => 'No pudimos crear la cuenta con esos datos. Si ya tenés una cuenta, iniciá sesión.';
+
+  @override
+  String get registrationErrorInvalidData => 'Revisá los datos ingresados e intentá nuevamente.';
+
+  @override
+  String get registrationErrorNetwork => 'No pudimos crear la cuenta por un problema de conexión. Intentá nuevamente.';
+
+  @override
+  String get registrationErrorGeneric => 'No pudimos crear la cuenta. Intentá nuevamente.';
+
+  @override
+  String get registrationBackToLogin => '¿Ya tenés cuenta? Iniciá sesión';
 
   @override
   String get logoutButton => 'Cerrar Sesión';
@@ -65,8 +110,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get organizerPanelTitle => 'Panel de Organizador';
 
   @override
-  String get sessionActiveDescription =>
-      'Has iniciado sesión correctamente como organizador de eventos en Planify.';
+  String get sessionActiveDescription => 'Has iniciado sesión correctamente como organizador de eventos en Planify.';
 
   @override
   String get tokenLabel => 'Token de Sesión';
@@ -123,12 +167,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get cancelButton => 'Cancelar';
 
   @override
-  String get loginErrorInvalidPin =>
-      'PIN incorrecto. Verifica el código e intenta nuevamente.';
+  String get loginErrorInvalidPin => 'PIN incorrecto. Verifica el código e intenta nuevamente.';
 
   @override
-  String get loginErrorEventNotFound =>
-      'El evento ya no existe o no está disponible.';
+  String get loginErrorEventNotFound => 'El evento ya no existe o no está disponible.';
 
   @override
   String get loginErrorEventUnavailable => 'El evento no está disponible.';
@@ -140,8 +182,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get participantPanelTitle => 'Panel de Participante';
 
   @override
-  String get sessionActiveParticipantDescription =>
-      'Has ingresado correctamente como participante del evento.';
+  String get sessionActiveParticipantDescription => 'Has ingresado correctamente como participante del evento.';
 
   @override
   String get guestRole => 'Invitado';
@@ -198,15 +239,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get step2Title => 'Grupo y participantes';
 
   @override
-  String get step2Subtitle =>
-      'Elegí un grupo existente o creá uno nuevo con sus miembros.';
+  String get step2Subtitle => 'Elegí un grupo existente o creá uno nuevo con sus miembros.';
 
   @override
   String get existingGroupOption => 'Grupo existente';
 
   @override
-  String get existingGroupSubtitle =>
-      'Seleccioná un grupo que ya tengas creado';
+  String get existingGroupSubtitle => 'Seleccioná un grupo que ya tengas creado';
 
   @override
   String get newGroupOption => 'Crear grupo nuevo';
@@ -233,8 +272,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get retryButton => 'Reintentar';
 
   @override
-  String get noGroupsAvailable =>
-      'No tenés grupos creados. Podés crear uno nuevo.';
+  String get noGroupsAvailable => 'No tenés grupos creados. Podés crear uno nuevo.';
 
   @override
   String get newGroupNameLabel => 'Nombre del nuevo grupo';
@@ -272,15 +310,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get creatingEventLoading => 'Creando evento...';
 
   @override
-  String get createEventErrorGeneric =>
-      'No se pudo crear el evento. Intenta nuevamente.';
+  String get createEventErrorGeneric => 'No se pudo crear el evento. Intenta nuevamente.';
 
   @override
   String get createEventSuccessTitle => '¡Evento creado con éxito!';
 
   @override
-  String get createEventSuccessSubtitle =>
-      'Tu evento ya está listo y asignado a su grupo.';
+  String get createEventSuccessSubtitle => 'Tu evento ya está listo y asignado a su grupo.';
 
   @override
   String get createdEventIdLabel => 'ID del Evento';
@@ -307,8 +343,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get generateWithAi => 'Generar con IA';
 
   @override
-  String get generateWithAiComingSoon =>
-      'Generación de eventos con IA disponible próximamente';
+  String get generateWithAiComingSoon => 'Generación de eventos con IA disponible próximamente';
 
   @override
   String get eventDetailTitle => 'Detalle del evento';
@@ -350,12 +385,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get activityLogSectionTitle => 'Actividad reciente';
 
   @override
-  String get noActivityPlaceholder =>
-      'Sin actividad registrada en este evento.';
+  String get noActivityPlaceholder => 'Sin actividad registrada en este evento.';
 
   @override
-  String get featureUnderDevelopment =>
-      'Esta funcionalidad estará disponible próximamente.';
+  String get featureUnderDevelopment => 'Esta funcionalidad estará disponible próximamente.';
 
   @override
   String get cancelEventAction => 'Cancelar evento';
@@ -364,8 +397,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get cancelEventDialogTitle => '¿Cancelar evento?';
 
   @override
-  String get cancelEventDialogMessage =>
-      '¿Estás seguro de que querés cancelar este evento? Esta acción no se puede deshacer.';
+  String get cancelEventDialogMessage => '¿Estás seguro de que querés cancelar este evento? Esta acción no se puede deshacer.';
 
   @override
   String get cancelEventConfirm => 'Sí, cancelar evento';
@@ -377,8 +409,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get cancelEventSuccess => 'El evento fue cancelado correctamente.';
 
   @override
-  String get cancelEventError =>
-      'No se pudo cancelar el evento. Intenta nuevamente.';
+  String get cancelEventError => 'No se pudo cancelar el evento. Intenta nuevamente.';
 
   @override
   String get closeExpensesAction => 'Cerrar gastos';
@@ -387,8 +418,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get closeExpensesDialogTitle => '¿Cerrar gastos?';
 
   @override
-  String get closeExpensesDialogMessage =>
-      'Ya no se podrán cargar gastos nuevos en este evento, pero se podrá seguir saldando.';
+  String get closeExpensesDialogMessage => 'Ya no se podrán cargar gastos nuevos en este evento, pero se podrá seguir saldando.';
 
   @override
   String get closeExpensesConfirm => 'Sí, cerrar gastos';
@@ -400,23 +430,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get closeExpensesSuccess => 'Los gastos se cerraron correctamente.';
 
   @override
-  String get closeExpensesError =>
-      'No se pudieron cerrar los gastos. Intentá nuevamente.';
+  String get closeExpensesError => 'No se pudieron cerrar los gastos. Intentá nuevamente.';
 
   @override
   String get eventNotFound => 'Evento no encontrado';
 
   @override
-  String get eventLoadError =>
-      'No se pudo cargar el evento. Verificá tu conexión e intentá nuevamente.';
+  String get eventLoadError => 'No se pudo cargar el evento. Verificá tu conexión e intentá nuevamente.';
 
   @override
-  String get eventCancelledNotice =>
-      'Este evento ha sido cancelado y ya no acepta nuevas acciones.';
+  String get eventCancelledNotice => 'Este evento ha sido cancelado y ya no acepta nuevas acciones.';
 
   @override
-  String get expensesClosedNotice =>
-      'Los gastos están cerrados. Ya no se pueden cargar gastos nuevos.';
+  String get expensesClosedNotice => 'Los gastos están cerrados. Ya no se pueden cargar gastos nuevos.';
 
   @override
   String get eventActionsTooltip => 'Opciones del evento';
@@ -428,20 +454,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get invitationErrorInvalid => 'El enlace de invitación no es válido.';
 
   @override
-  String get invitationErrorNotFound =>
-      'No se encontró el evento correspondiente a la invitación.';
+  String get invitationErrorNotFound => 'No se encontró el evento correspondiente a la invitación.';
 
   @override
-  String get invitationErrorExpired =>
-      'La invitación ha expirado o ya no está disponible.';
+  String get invitationErrorExpired => 'La invitación ha expirado o ya no está disponible.';
 
   @override
-  String get invitationErrorNetwork =>
-      'Error de conexión al validar la invitación. Verifica tu red.';
+  String get invitationErrorNetwork => 'Error de conexión al validar la invitación. Verifica tu red.';
 
   @override
-  String get invitationErrorGeneric =>
-      'No se pudo procesar la invitación. Intenta nuevamente.';
+  String get invitationErrorGeneric => 'No se pudo procesar la invitación. Intenta nuevamente.';
 
   @override
   String get invitationBannerEvent => '¡Tenés una invitación a un evento!';
@@ -468,8 +490,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get attendancePending => 'Sin respuesta';
 
   @override
-  String get attendanceUpdateError =>
-      'No se pudo actualizar tu asistencia. Intenta nuevamente.';
+  String get attendanceUpdateError => 'No se pudo actualizar tu asistencia. Intenta nuevamente.';
 
   @override
   String get eventConfigTitle => 'Configuración del evento';
@@ -481,8 +502,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get availabilityTitle => 'Disponibilidad semanal';
 
   @override
-  String get availabilitySubtitle =>
-      'Marcá los horarios en los que estás disponible.';
+  String get availabilitySubtitle => 'Marcá los horarios en los que estás disponible.';
 
   @override
   String get availabilitySave => 'Guardar disponibilidad';
@@ -494,19 +514,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get availabilitySaveSuccess => 'Tu disponibilidad fue guardada.';
 
   @override
-  String get availabilitySaveError =>
-      'No se pudo guardar tu disponibilidad. Intenta nuevamente.';
+  String get availabilitySaveError => 'No se pudo guardar tu disponibilidad. Intenta nuevamente.';
 
   @override
   String get availabilityHeatmapTitle => 'Disponibilidad combinada';
 
   @override
-  String get availabilityHeatmapSubtitle =>
-      'Consultá cuántas personas están disponibles en cada horario.';
+  String get availabilityHeatmapSubtitle => 'Consultá cuántas personas están disponibles en cada horario.';
 
   @override
-  String get availabilityHeatmapLoadError =>
-      'No se pudo cargar la disponibilidad combinada.';
+  String get availabilityHeatmapLoadError => 'No se pudo cargar la disponibilidad combinada.';
 
   @override
   String availabilityHeatmapAvailableCount(int count) {
@@ -541,8 +558,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get scheduleConfirmationTitle => 'Confirmar horario';
 
   @override
-  String get scheduleConfirmationSubtitle =>
-      'Elegí la fecha y la hora de inicio del evento.';
+  String get scheduleConfirmationSubtitle => 'Elegí la fecha y la hora de inicio del evento.';
 
   @override
   String get scheduleSelectDate => 'Elegir fecha';
@@ -554,27 +570,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get scheduleConfirm => 'Confirmar horario';
 
   @override
-  String get scheduleConfirmationValidationError =>
-      'Elegí una fecha y hora futuras para confirmar el evento.';
+  String get scheduleConfirmationValidationError => 'Elegí una fecha y hora futuras para confirmar el evento.';
 
   @override
-  String get scheduleConfirmationAuthorizationError =>
-      'Solo el organizador puede confirmar el horario.';
+  String get scheduleConfirmationAuthorizationError => 'Solo el organizador puede confirmar el horario.';
 
   @override
   String get scheduleConfirmationNotFoundError => 'No se encontró el evento.';
 
   @override
-  String get scheduleConfirmationNetworkError =>
-      'No se pudo confirmar el horario por un problema de conexión.';
+  String get scheduleConfirmationNetworkError => 'No se pudo confirmar el horario por un problema de conexión.';
 
   @override
-  String get scheduleConfirmationGenericError =>
-      'No se pudo confirmar el horario. Intentá nuevamente.';
+  String get scheduleConfirmationGenericError => 'No se pudo confirmar el horario. Intentá nuevamente.';
 
   @override
-  String get scheduleConfirmationSuccess =>
-      'El horario del evento fue confirmado.';
+  String get scheduleConfirmationSuccess => 'El horario del evento fue confirmado.';
 
   @override
   String get addExpenseDescriptionLabel => 'Descripción del gasto';
@@ -583,8 +594,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get addExpenseDescriptionHint => 'Ej. Cena de fin de año';
 
   @override
-  String get addExpenseDescriptionRequired =>
-      'Ingresá una descripción para el gasto.';
+  String get addExpenseDescriptionRequired => 'Ingresá una descripción para el gasto.';
 
   @override
   String get addExpenseTotalLabel => 'Total del gasto';
@@ -602,8 +612,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get addExpensePayersTitle => '¿Quiénes pagaron?';
 
   @override
-  String get addExpensePayersSubtitle =>
-      'Seleccioná una o más personas que hicieron el pago.';
+  String get addExpensePayersSubtitle => 'Seleccioná una o más personas que hicieron el pago.';
 
   @override
   String get addExpenseDialogTitle => 'Agregar gasto';
@@ -656,8 +665,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get addExpenseDebtorsTitle => '¿Quiénes deben?';
 
   @override
-  String get addExpenseDebtorsSubtitle =>
-      'Seleccioná una o más personas que deben asumir el gasto.';
+  String get addExpenseDebtorsSubtitle => 'Seleccioná una o más personas que deben asumir el gasto.';
 
   @override
   String get addExpenseDebtorAmountsTitle => 'Montos adeudados';
@@ -677,8 +685,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get taskReassignAction => 'Reasignar';
 
   @override
-  String get tasksOperationError =>
-      'No se pudo actualizar la tarea. Intentá nuevamente.';
+  String get tasksOperationError => 'No se pudo actualizar la tarea. Intentá nuevamente.';
 
   @override
   String get createTaskDialogTitle => 'Agregar tarea';
@@ -702,8 +709,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get reassignTaskParticipantLabel => 'Elegí quién se hará cargo.';
 
   @override
-  String get reassignTaskParticipantRequired =>
-      'Elegí una persona para continuar.';
+  String get reassignTaskParticipantRequired => 'Elegí una persona para continuar.';
 
   @override
   String get reassignTaskConfirm => 'Reasignar';
@@ -740,11 +746,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get eventDebtsLoading => 'Cargando deudas del evento...';
 
   @override
-  String eventDebtDescription(
-    String debtorName,
-    String amount,
-    String creditorName,
-  ) {
+  String eventDebtDescription(String debtorName, String amount, String creditorName) {
     return '$debtorName le debe $amount a $creditorName';
   }
 
@@ -761,8 +763,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get eventDebtsEmpty => 'Todavía no hay deudas en este evento.';
 
   @override
-  String get eventDebtsLoadError =>
-      'No se pudieron cargar las deudas del evento. Intentá nuevamente.';
+  String get eventDebtsLoadError => 'No se pudieron cargar las deudas del evento. Intentá nuevamente.';
 
   @override
   String get navigationHome => 'Inicio';
@@ -789,8 +790,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get balancesEmpty => 'No tenés saldos pendientes.';
 
   @override
-  String get balancesLoadError =>
-      'No se pudieron cargar tus balances. Intentá nuevamente.';
+  String get balancesLoadError => 'No se pudieron cargar tus balances. Intentá nuevamente.';
 
   @override
   String get balanceStatusPay => 'A pagar';
@@ -814,8 +814,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get personBalanceDetailLoading => 'Cargando detalle de saldo';
 
   @override
-  String get personBalanceDetailLoadError =>
-      'No se pudo cargar el detalle del saldo.';
+  String get personBalanceDetailLoadError => 'No se pudo cargar el detalle del saldo.';
 
   @override
   String get personBalanceDetailBreakdownTitle => 'Desglose por evento';

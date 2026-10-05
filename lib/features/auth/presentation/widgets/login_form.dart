@@ -7,6 +7,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../controllers/auth_providers.dart';
 import '../controllers/auth_state.dart';
 import 'anonymous_login_dialog.dart';
+import '../screens/register_screen.dart';
 
 class LoginForm extends ConsumerStatefulWidget {
   final String? eventId;
@@ -48,6 +49,18 @@ class _LoginFormState extends ConsumerState<LoginForm> {
     }
   }
 
+  Future<void> _openRegistration() async {
+    ref.read(authNotifierProvider.notifier).clearError();
+
+    await Navigator.of(
+      context,
+    ).push<void>(MaterialPageRoute(builder: (_) => const RegisterScreen()));
+
+    if (mounted) {
+      ref.read(authNotifierProvider.notifier).clearError();
+    }
+  }
+
   String _getErrorMessage(AuthFailureReason reason, AppLocalizations i18n) {
     switch (reason) {
       case AuthFailureReason.invalidPin:
@@ -58,6 +71,8 @@ class _LoginFormState extends ConsumerState<LoginForm> {
         return i18n.loginErrorEventNotFound;
       case AuthFailureReason.eventUnavailable:
         return i18n.loginErrorEventUnavailable;
+      case AuthFailureReason.registrationConflict:
+      case AuthFailureReason.invalidRegistrationData:
       case AuthFailureReason.networkError:
       case AuthFailureReason.unknown:
         return i18n.loginErrorGeneric;
@@ -175,6 +190,12 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                         ),
                       )
                     : Text(i18n.loginButton),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              TextButton(
+                key: const Key('go_to_register_button'),
+                onPressed: isLoading ? null : _openRegistration,
+                child: Text(i18n.registrationCreateAccountLink),
               ),
               // Separador "o" y Botón Continuar como Invitado (solo si hay un eventId de invitación)
               if (widget.eventId != null &&

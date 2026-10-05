@@ -62,8 +62,7 @@ import 'app_localizations_es.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,8 +70,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -84,18 +82,17 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('es'),
+    Locale('es')
   ];
 
   /// No description provided for @helloTest.
@@ -175,6 +172,102 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Credenciales inválidas. Verifica tu correo y contraseña.'**
   String get loginErrorInvalidCredentials;
+
+  /// No description provided for @registrationTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear cuenta'**
+  String get registrationTitle;
+
+  /// No description provided for @registrationCreateAccountLink.
+  ///
+  /// In es, this message translates to:
+  /// **'¿No tenés cuenta? Crear cuenta'**
+  String get registrationCreateAccountLink;
+
+  /// No description provided for @registrationNameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get registrationNameLabel;
+
+  /// No description provided for @registrationUsernameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Usuario'**
+  String get registrationUsernameLabel;
+
+  /// No description provided for @registrationUsernameHelp.
+  ///
+  /// In es, this message translates to:
+  /// **'Usá minúsculas, números y _'**
+  String get registrationUsernameHelp;
+
+  /// No description provided for @registrationEmailLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo electrónico'**
+  String get registrationEmailLabel;
+
+  /// No description provided for @registrationNameInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'El nombre debe tener entre 1 y 80 caracteres'**
+  String get registrationNameInvalid;
+
+  /// No description provided for @registrationUsernameInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'El usuario debe tener entre 3 y 30 caracteres y usar solo minúsculas, números o _'**
+  String get registrationUsernameInvalid;
+
+  /// No description provided for @registrationEmailInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá un correo electrónico válido'**
+  String get registrationEmailInvalid;
+
+  /// No description provided for @registrationPasswordInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'La contraseña debe tener entre 8 y 72 caracteres'**
+  String get registrationPasswordInvalid;
+
+  /// No description provided for @registrationSubmitButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Registrarme'**
+  String get registrationSubmitButton;
+
+  /// No description provided for @registrationErrorConflict.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos crear la cuenta con esos datos. Si ya tenés una cuenta, iniciá sesión.'**
+  String get registrationErrorConflict;
+
+  /// No description provided for @registrationErrorInvalidData.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisá los datos ingresados e intentá nuevamente.'**
+  String get registrationErrorInvalidData;
+
+  /// No description provided for @registrationErrorNetwork.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos crear la cuenta por un problema de conexión. Intentá nuevamente.'**
+  String get registrationErrorNetwork;
+
+  /// No description provided for @registrationErrorGeneric.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos crear la cuenta. Intentá nuevamente.'**
+  String get registrationErrorGeneric;
+
+  /// No description provided for @registrationBackToLogin.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Ya tenés cuenta? Iniciá sesión'**
+  String get registrationBackToLogin;
 
   /// No description provided for @logoutButton.
   ///
@@ -1440,11 +1533,7 @@ abstract class AppLocalizations {
   ///
   /// In es, this message translates to:
   /// **'{debtorName} le debe {amount} a {creditorName}'**
-  String eventDebtDescription(
-    String debtorName,
-    String amount,
-    String creditorName,
-  );
+  String eventDebtDescription(String debtorName, String amount, String creditorName);
 
   /// No description provided for @eventDebtPending.
   ///
@@ -1587,13 +1676,13 @@ abstract class AppLocalizations {
   /// No description provided for @personBalanceDetailYouOwe.
   ///
   /// In es, this message translates to:
-  /// **'Le debés $ {amount} a {name}'**
+  /// **'Le debés \$ {amount} a {name}'**
   String personBalanceDetailYouOwe(String amount, String name);
 
   /// No description provided for @personBalanceDetailOwedToYou.
   ///
   /// In es, this message translates to:
-  /// **'{name} te debe $ {amount}'**
+  /// **'{name} te debe \$ {amount}'**
   String personBalanceDetailOwedToYou(String name, String amount);
 
   /// No description provided for @personBalanceDetailSettled.
@@ -1615,8 +1704,7 @@ abstract class AppLocalizations {
   String personBalanceDetailLineOwedToYou(String name);
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -1625,26 +1713,25 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'es'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'es'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en':
-      return AppLocalizationsEn();
-    case 'es':
-      return AppLocalizationsEs();
+    case 'en': return AppLocalizationsEn();
+    case 'es': return AppLocalizationsEs();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
+    'that was used.'
   );
 }

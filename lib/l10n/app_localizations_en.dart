@@ -49,6 +49,62 @@ class AppLocalizationsEn extends AppLocalizations {
       'Invalid credentials. Please verify your email and password.';
 
   @override
+  String get registrationTitle => 'Create account';
+
+  @override
+  String get registrationCreateAccountLink =>
+      'Don\'t have an account? Create one';
+
+  @override
+  String get registrationNameLabel => 'Name';
+
+  @override
+  String get registrationUsernameLabel => 'Username';
+
+  @override
+  String get registrationUsernameHelp => 'Use lowercase letters, numbers and _';
+
+  @override
+  String get registrationEmailLabel => 'Email';
+
+  @override
+  String get registrationNameInvalid =>
+      'Name must be between 1 and 80 characters';
+
+  @override
+  String get registrationUsernameInvalid =>
+      'Username must be between 3 and 30 characters and use only lowercase letters, numbers or _';
+
+  @override
+  String get registrationEmailInvalid => 'Enter a valid email address';
+
+  @override
+  String get registrationPasswordInvalid =>
+      'Password must be between 8 and 72 characters';
+
+  @override
+  String get registrationSubmitButton => 'Create account';
+
+  @override
+  String get registrationErrorConflict =>
+      'We could not create an account with those details. If you already have an account, sign in.';
+
+  @override
+  String get registrationErrorInvalidData =>
+      'Review the information entered and try again.';
+
+  @override
+  String get registrationErrorNetwork =>
+      'We could not create the account because of a connection problem. Please try again.';
+
+  @override
+  String get registrationErrorGeneric =>
+      'We could not create the account. Please try again.';
+
+  @override
+  String get registrationBackToLogin => 'Already have an account? Sign in';
+
+  @override
   String get logoutButton => 'Sign Out';
 
   @override
