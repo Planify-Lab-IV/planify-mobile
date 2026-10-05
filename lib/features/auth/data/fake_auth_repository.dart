@@ -1,17 +1,26 @@
 import '../../../data/secure_storage.dart';
 import '../domain/auth_repository.dart';
+import '../domain/registration_rules.dart';
 import '../domain/user_session.dart';
 import 'auth_exceptions.dart';
 
 class FakeAuthRepository implements AuthRepository {
   final SecureStorage _storage;
   final Duration delay;
+  final Set<String> _usedUsernames;
+  final Set<String> _usedEmails;
   UserSession? _currentSession;
 
   FakeAuthRepository({
     SecureStorage? storage,
     this.delay = const Duration(milliseconds: 800),
-  }) : _storage = storage ?? FakeSecureStorage();
+    Iterable<String> usedUsernames = const [],
+    Iterable<String> usedEmails = const [],
+  }) : _storage = storage ?? FakeSecureStorage(),
+       _usedUsernames = usedUsernames.map((username) => username.trim()).toSet(),
+       _usedEmails = usedEmails
+           .map((email) => email.trim().toLowerCase())
+           .toSet();
 
   @override
   Future<UserSession> login({
@@ -48,6 +57,50 @@ class FakeAuthRepository implements AuthRepository {
           : trimmedIdentifier,
       token:
           'fake-org-token:$trimmedIdentifier:${DateTime.now().millisecondsSinceEpoch}',
+    );
+
+    _currentSession = session;
+    return session;
+  }
+
+  @override
+  Future<UserSession> register({
+    required String name,
+    required String username,
+    required String email,
+    required String password,
+  }) async {
+    if (delay > Duration.zero) {
+      await Future.delayed(delay);
+    }
+
+    final normalizedName = name.trim();
+    final normalizedUsername = username.trim();
+    final normalizedEmail = email.trim().toLowerCase();
+
+    if (normalizedEmail == 'network.error@planify.com') {
+      throw const NetworkAuthException();
+    }
+
+    if (!isValidRegistrationName(normalizedName) ||
+        !isValidRegistrationUsername(normalizedUsername) ||
+        !isValidRegistrationEmail(normalizedEmail) ||
+        !isValidRegistrationPassword(password)) {
+      throw const InvalidRegistrationDataException();
+    }
+
+    if (_usedUsernames.contains(normalizedUsername) ||
+        _usedEmails.contains(normalizedEmail)) {
+      throw const RegistrationConflictException();
+    }
+
+    final session = OrganizerSession(
+      userId: 'org-${normalizedUsername.hashCode.abs()}',
+      name: normalizedName,
+      username: normalizedUsername,
+      email: normalizedEmail,
+      token:
+          'fake-org-token:$normalizedUsername:${DateTime.now().millisecondsSinceEpoch}',
     );
 
     _currentSession = session;

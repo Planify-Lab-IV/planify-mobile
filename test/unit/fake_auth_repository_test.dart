@@ -131,6 +131,72 @@ void main() {
       );
     });
 
+    test('register devuelve OrganizerSession y conserva la sesión actual', () async {
+      final session = await repository.register(
+        name: 'Lucía Planes',
+        username: 'lucia_planes',
+        email: 'lucia@planify.com',
+        password: 'password123',
+      );
+
+      expect(session, isA<OrganizerSession>());
+      final organizer = session as OrganizerSession;
+      expect(organizer.name, 'Lucía Planes');
+      expect(organizer.username, 'lucia_planes');
+      expect(organizer.email, 'lucia@planify.com');
+      expect(organizer.token, isNotEmpty);
+      expect(await repository.getCurrentSession(), same(session));
+    });
+
+    test('register rechaza un username o email ya usado', () async {
+      final repositoryWithConflicts = FakeAuthRepository(
+        storage: storage,
+        delay: Duration.zero,
+        usedUsernames: const ['usuario_ocupado'],
+        usedEmails: const ['ocupado@planify.com'],
+      );
+
+      expect(
+        () => repositoryWithConflicts.register(
+          name: 'Lucía',
+          username: 'usuario_ocupado',
+          email: 'lucia@planify.com',
+          password: 'password123',
+        ),
+        throwsA(isA<RegistrationConflictException>()),
+      );
+      expect(
+        () => repositoryWithConflicts.register(
+          name: 'Lucía',
+          username: 'lucia',
+          email: 'OCUPADO@PLANIFY.COM',
+          password: 'password123',
+        ),
+        throwsA(isA<RegistrationConflictException>()),
+      );
+    });
+
+    test('register rechaza datos inválidos y errores de red simulados', () async {
+      expect(
+        () => repository.register(
+          name: '',
+          username: 'lucia',
+          email: 'lucia@planify.com',
+          password: 'password123',
+        ),
+        throwsA(isA<InvalidRegistrationDataException>()),
+      );
+      expect(
+        () => repository.register(
+          name: 'Lucía',
+          username: 'lucia',
+          email: 'network.error@planify.com',
+          password: 'password123',
+        ),
+        throwsA(isA<NetworkAuthException>()),
+      );
+    });
+
     test('logout limpia la sesión actual', () async {
       await repository.login(
         identifier: 'lucas@gmail.com',

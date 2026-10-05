@@ -54,6 +54,75 @@ void main() {
       return dioResolvingWithStatus(200, body, inspect);
     }
 
+    Dio dioRejectingWithStatus(int statusCode) {
+      final dio = Dio();
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) => handler.reject(
+            DioException(
+              requestOptions: options,
+              response: Response<dynamic>(
+                requestOptions: options,
+                statusCode: statusCode,
+              ),
+            ),
+          ),
+        ),
+      );
+      return dio;
+    }
+
+    test('register sends the expected request and maps an organizer session', () async {
+      RequestOptions? request;
+      final repository = repositoryWith(
+        dioResolvingWithStatus(201, responseData, (options) => request = options),
+      );
+
+      final session = await repository.register(
+        name: 'Dev One',
+        username: 'dev1',
+        email: 'dev1@planify.dev',
+        password: 'DevPass123!',
+      );
+
+      expect(request?.method, 'POST');
+      expect(request?.path, '/auth/register');
+      expect(request?.data, {
+        'name': 'Dev One',
+        'username': 'dev1',
+        'email': 'dev1@planify.dev',
+        'password': 'DevPass123!',
+      });
+      expect(session, isA<OrganizerSession>());
+      final organizer = session as OrganizerSession;
+      expect(organizer.userId, 'uuid-organizer-1');
+      expect(organizer.token, 'backend-jwt-token');
+    });
+
+    test('register maps a 409 response to a registration conflict', () async {
+      expect(
+        () => repositoryWith(dioRejectingWithStatus(409)).register(
+          name: 'Dev One',
+          username: 'dev1',
+          email: 'dev1@planify.dev',
+          password: 'DevPass123!',
+        ),
+        throwsA(isA<RegistrationConflictException>()),
+      );
+    });
+
+    test('register maps a 400 response to invalid registration data', () async {
+      expect(
+        () => repositoryWith(dioRejectingWithStatus(400)).register(
+          name: 'Dev One',
+          username: 'dev1',
+          email: 'dev1@planify.dev',
+          password: 'DevPass123!',
+        ),
+        throwsA(isA<InvalidRegistrationDataException>()),
+      );
+    });
+
     test(
       'returns null without a stored token and does not call /auth/me',
       () async {
