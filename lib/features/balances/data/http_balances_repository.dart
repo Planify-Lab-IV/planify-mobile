@@ -20,10 +20,7 @@ class HttpBalancesRepository implements BalancesRepository {
       final response = await dio.get<dynamic>('/me/balance');
       return _summaryFromResponse(response.data);
     } on DioException catch (error) {
-      if (_isNetworkError(error)) {
-        throw const NetworkBalancesException();
-      }
-      throw const InvalidBalancesResponseException();
+      throw _mapError(error);
     } on BalancesException {
       rethrow;
     } catch (_) {
@@ -37,10 +34,7 @@ class HttpBalancesRepository implements BalancesRepository {
       final response = await dio.get<dynamic>('/me/balance/people');
       return _peopleFromResponse(response.data);
     } on DioException catch (error) {
-      if (_isNetworkError(error)) {
-        throw const NetworkBalancesException();
-      }
-      throw const InvalidBalancesResponseException();
+      throw _mapError(error);
     } on BalancesException {
       rethrow;
     } catch (_) {
@@ -61,10 +55,7 @@ class HttpBalancesRepository implements BalancesRepository {
       );
       return _personDetailFromResponse(response.data);
     } on DioException catch (error) {
-      if (_isNetworkError(error)) {
-        throw const NetworkBalancesException();
-      }
-      throw const InvalidBalancesResponseException();
+      throw _mapError(error);
     } on BalancesException {
       rethrow;
     } catch (_) {
@@ -156,6 +147,16 @@ class HttpBalancesRepository implements BalancesRepository {
       'owed_to_me' => BalanceDirection.owedToMe,
       _ => throw const InvalidBalancesResponseException(),
     };
+  }
+
+  BalancesException _mapError(DioException error) {
+    if (error.response?.statusCode == 401) {
+      return const AuthenticationBalancesException();
+    }
+    if (_isNetworkError(error)) {
+      return const NetworkBalancesException();
+    }
+    return const InvalidBalancesResponseException();
   }
 
   bool _isNetworkError(DioException error) {

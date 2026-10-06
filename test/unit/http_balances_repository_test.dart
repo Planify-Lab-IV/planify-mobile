@@ -168,12 +168,12 @@ void main() {
       );
     });
 
-    test('maps HTTP errors to an invalid response exception', () async {
+    test('maps an unauthorized response to an authentication exception', () async {
       final repository = HttpBalancesRepository(dio: dioRejecting(statusCode: 401));
 
       expect(
         repository.listPeople,
-        throwsA(isA<InvalidBalancesResponseException>()),
+        throwsA(isA<AuthenticationBalancesException>()),
       );
     });
 
