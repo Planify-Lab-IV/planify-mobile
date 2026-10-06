@@ -30,7 +30,8 @@ class ProfileState {
     final savedProfile = profile;
     if (savedProfile == null) return false;
 
-    return trimmedDraftName != savedProfile.name || pendingAvatarFilePath != null;
+    return trimmedDraftName != savedProfile.name ||
+        pendingAvatarFilePath != null;
   }
 
   bool get canSave =>
@@ -49,7 +50,8 @@ class ProfileState {
     return ProfileState(
       profile: profile ?? this.profile,
       draftName: draftName ?? this.draftName,
-      pendingAvatarFilePath: pendingAvatarFilePath ?? this.pendingAvatarFilePath,
+      pendingAvatarFilePath:
+          pendingAvatarFilePath ?? this.pendingAvatarFilePath,
       loadStatus: loadStatus ?? this.loadStatus,
       saveStatus: saveStatus ?? this.saveStatus,
     );

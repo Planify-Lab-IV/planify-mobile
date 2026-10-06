@@ -18,7 +18,8 @@ void main() {
       expect(await repository.getMyProfile(), profile);
     });
 
-    test('actualiza el nombre en memoria y conserva los datos no enviados', (
+    test(
+      'actualiza el nombre en memoria y conserva los datos no enviados',
       () async {
         final repository = FakeProfileRepository(delay: Duration.zero);
 
@@ -31,17 +32,20 @@ void main() {
       },
     );
 
-    test('guarda la ruta local de avatar y conserva el nombre actual', () async {
-      final repository = FakeProfileRepository(delay: Duration.zero);
+    test(
+      'guarda la ruta local de avatar y conserva el nombre actual',
+      () async {
+        final repository = FakeProfileRepository(delay: Duration.zero);
 
-      final updated = await repository.updateProfile(
-        avatarFilePath: '/tmp/profile.webp',
-      );
+        final updated = await repository.updateProfile(
+          avatarFilePath: '/tmp/profile.webp',
+        );
 
-      expect(updated.name, 'Juan Pérez');
-      expect(updated.avatarUrl, '/tmp/profile.webp');
-      expect(await repository.getMyProfile(), updated);
-    });
+        expect(updated.name, 'Juan Pérez');
+        expect(updated.avatarUrl, '/tmp/profile.webp');
+        expect(await repository.getMyProfile(), updated);
+      },
+    );
 
     test('simula errores tanto al cargar como al guardar', () async {
       final repository = FakeProfileRepository(

@@ -1488,6 +1488,21 @@ abstract class AppLocalizations {
   /// **'Balances'**
   String get navigationBalances;
 
+  /// No description provided for @navigationProfile.
+  ///
+  /// In es, this message translates to:
+  /// **'Perfil'**
+  String get navigationProfile;
+
+  String get profileTitle;
+  String get profileNameLabel;
+  String get profileUsernameLabel;
+  String get profileEmailLabel;
+  String get profileChangeAvatar;
+  String get profileSaveButton;
+  String get profileLoadError;
+  String get profileSaveError;
+
   /// No description provided for @balancesTitle.
   ///
   /// In es, this message translates to:

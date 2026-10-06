@@ -763,6 +763,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navigationBalances => 'Balances';
 
   @override
+  String get navigationProfile => 'Profile';
+
+  @override
+  String get profileTitle => 'Profile';
+
+  @override
+  String get profileNameLabel => 'Name';
+
+  @override
+  String get profileUsernameLabel => 'Username';
+
+  @override
+  String get profileEmailLabel => 'Email';
+
+  @override
+  String get profileChangeAvatar => 'Change profile picture';
+
+  @override
+  String get profileSaveButton => 'Save';
+
+  @override
+  String get profileLoadError => 'Could not load profile.';
+
+  @override
+  String get profileSaveError => 'Could not save changes. Please try again.';
+
+  @override
   String get balancesTitle => 'Balances';
 
   @override

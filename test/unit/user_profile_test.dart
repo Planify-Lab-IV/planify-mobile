@@ -16,14 +16,17 @@ void main() {
       expect(profile.avatarUrl, isNull);
     });
 
-    test('copyWith actualiza el avatar sin alterar los datos de solo lectura', () {
-      final updated = profile.copyWith(avatarUrl: '/tmp/avatar.jpg');
+    test(
+      'copyWith actualiza el avatar sin alterar los datos de solo lectura',
+      () {
+        final updated = profile.copyWith(avatarUrl: '/tmp/avatar.jpg');
 
-      expect(updated.name, 'Juan Pérez');
-      expect(updated.username, 'juan.perez');
-      expect(updated.email, 'juan@example.com');
-      expect(updated.avatarUrl, '/tmp/avatar.jpg');
-    });
+        expect(updated.name, 'Juan Pérez');
+        expect(updated.username, 'juan.perez');
+        expect(updated.email, 'juan@example.com');
+        expect(updated.avatarUrl, '/tmp/avatar.jpg');
+      },
+    );
 
     test('compara perfiles por valor, incluido el avatar opcional', () {
       expect(

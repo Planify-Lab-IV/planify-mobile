@@ -362,7 +362,16 @@
   ,"@personBalanceDetailLineYouOwe": {
     "placeholders": {"name": {"type": "String", "example": "Ana"}}
   }
-  ,"personBalanceDetailLineOwedToYou": "{name} owes you"
+  ,"personBalanceDetailLineOwedToYou": "{name} owes you",
+  "navigationProfile": "Profile",
+  "profileTitle": "Profile",
+  "profileNameLabel": "Name",
+  "profileUsernameLabel": "Username",
+  "profileEmailLabel": "Email",
+  "profileChangeAvatar": "Change profile picture",
+  "profileSaveButton": "Save",
+  "profileLoadError": "Could not load profile.",
+  "profileSaveError": "Could not save changes. Please try again."
   ,"@personBalanceDetailLineOwedToYou": {
     "placeholders": {"name": {"type": "String", "example": "Ana"}}
   }

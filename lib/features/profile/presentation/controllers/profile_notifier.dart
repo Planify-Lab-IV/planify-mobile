@@ -34,10 +34,7 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
   void updateDraftName(String name) {
     if (state.profile == null) return;
 
-    state = state.copyWith(
-      draftName: name,
-      saveStatus: ProfileSaveStatus.idle,
-    );
+    state = state.copyWith(draftName: name, saveStatus: ProfileSaveStatus.idle);
   }
 
   void selectAvatar(String avatarFilePath) {
