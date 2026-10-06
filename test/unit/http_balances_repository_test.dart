@@ -33,7 +33,7 @@ void main() {
           onRequest: (options, handler) => handler.reject(
             DioException(
               requestOptions: options,
-              type: type,
+              type: type ?? DioExceptionType.unknown,
               response: statusCode == null
                   ? null
                   : Response<dynamic>(
@@ -47,13 +47,31 @@ void main() {
       return dio;
     }
 
+    Dio dioRespondingByPath(Map<String, dynamic> responses) {
+      final dio = Dio();
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            handler.resolve(
+              Response<dynamic>(
+                requestOptions: options,
+                statusCode: 200,
+                data: responses[options.path],
+              ),
+            );
+          },
+        ),
+      );
+      return dio;
+    }
+
     test('gets and maps the balance summary', () async {
       RequestOptions? request;
       final repository = HttpBalancesRepository(
-        dio: dioResolving(
-          {'owedToMeCents': 70000, 'iOweCents': 30000},
-          (options) => request = options,
-        ),
+        dio: dioResolving({
+          'owedToMeCents': 70000,
+          'iOweCents': 30000,
+        }, (options) => request = options),
       );
 
       final summary = await repository.getSummary();
@@ -128,6 +146,115 @@ void main() {
       expect(detail.breakdown.last.direction, BalanceDirection.iOwe);
     });
 
+    test(
+      'preserves compensation per person and uncompensated event breakdowns',
+      () async {
+        final repository = HttpBalancesRepository(
+          dio: dioRespondingByPath({
+            '/me/balance': {'owedToMeCents': 70000, 'iOweCents': 30000},
+            '/me/balance/people': [
+              {
+                'personKey': 'user:dev2',
+                'displayName': 'dev2',
+                'status': 'pending',
+                'netCents': 20000,
+              },
+              {
+                'personKey': 'user:dev3',
+                'displayName': 'dev3',
+                'status': 'pending',
+                'netCents': 20000,
+              },
+              {
+                'personKey': 'participant:guest-1',
+                'displayName': 'Invitado',
+                'status': 'pay',
+                'netCents': 4000,
+              },
+            ],
+            '/me/balance/people/user%3Adev2': {
+              'personKey': 'user:dev2',
+              'displayName': 'dev2',
+              'status': 'pending',
+              'netCents': 20000,
+              'breakdown': [
+                {
+                  'eventId': 'event-1',
+                  'eventName': 'Evento 1',
+                  'amountCents': 50000,
+                  'direction': 'owed_to_me',
+                },
+                {
+                  'eventId': 'event-2',
+                  'eventName': 'Evento 2',
+                  'amountCents': 30000,
+                  'direction': 'i_owe',
+                },
+              ],
+            },
+            '/me/balance/people/participant%3Aguest-1': {
+              'personKey': 'participant:guest-1',
+              'displayName': 'Invitado',
+              'status': 'pay',
+              'netCents': 4000,
+              'breakdown': [
+                {
+                  'eventId': 'event-3',
+                  'eventName': 'Evento 3',
+                  'amountCents': 4000,
+                  'direction': 'i_owe',
+                },
+              ],
+            },
+          }),
+        );
+
+        final summary = await repository.getSummary();
+        final people = await repository.listPeople();
+        final dev2Detail = await repository.getPersonDetail('user:dev2');
+        final anonymousDetail = await repository.getPersonDetail(
+          'participant:guest-1',
+        );
+
+        expect(summary.owedToMeCents, 70000);
+        expect(summary.iOweCents, 30000);
+        expect(people, hasLength(3));
+        expect(
+          people
+              .singleWhere((person) => person.personKey == 'user:dev2')
+              .netCents,
+          20000,
+        );
+        expect(
+          people
+              .singleWhere((person) => person.personKey == 'user:dev3')
+              .netCents,
+          20000,
+        );
+        expect(
+          people
+              .singleWhere(
+                (person) => person.personKey == 'participant:guest-1',
+              )
+              .netCents,
+          4000,
+        );
+        expect(dev2Detail.breakdown.map((line) => line.amountCents), [
+          50000,
+          30000,
+        ]);
+        expect(dev2Detail.breakdown.map((line) => line.direction), [
+          BalanceDirection.owedToMe,
+          BalanceDirection.iOwe,
+        ]);
+        expect(anonymousDetail.breakdown.single.amountCents, 4000);
+        expect(
+          anonymousDetail.breakdown.single.direction,
+          BalanceDirection.iOwe,
+        );
+      },
+    );
+
     test('rejects malformed responses', () async {
       final repository = HttpBalancesRepository(
         dio: dioResolving({'owedToMeCents': 70000}, null),
@@ -162,20 +289,22 @@ void main() {
         dio: dioRejecting(type: DioExceptionType.connectionError),
       );
 
-      expect(
-        repository.getSummary,
-        throwsA(isA<NetworkBalancesException>()),
-      );
+      expect(repository.getSummary, throwsA(isA<NetworkBalancesException>()));
     });
 
-    test('maps an unauthorized response to an authentication exception', () async {
-      final repository = HttpBalancesRepository(dio: dioRejecting(statusCode: 401));
+    test(
+      'maps an unauthorized response to an authentication exception',
+      () async {
+        final repository = HttpBalancesRepository(
+          dio: dioRejecting(statusCode: 401),
+        );
 
-      expect(
-        repository.listPeople,
-        throwsA(isA<AuthenticationBalancesException>()),
-      );
-    });
+        expect(
+          repository.listPeople,
+          throwsA(isA<AuthenticationBalancesException>()),
+        );
+      },
+    );
 
     test('rejects a blank person key before sending a request', () async {
       final repository = HttpBalancesRepository(dio: Dio());

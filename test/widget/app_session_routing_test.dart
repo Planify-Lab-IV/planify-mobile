@@ -16,19 +16,24 @@ import 'package:planify/main.dart';
 void main() {
   Future<AuthNotifier> authenticatedNotifier(UserSession session) async {
     final storage = FakeSecureStorage();
-    final repository = FakeAuthRepository(storage: storage, delay: Duration.zero);
+    final repository = FakeAuthRepository(
+      storage: storage,
+      delay: Duration.zero,
+    );
     final notifier = AuthNotifier(repository, storage);
 
     switch (session) {
-      OrganizerSession() => await notifier.login(
-        identifier: session.email,
-        password: 'password123',
-      ),
-      AnonymousSession() => await notifier.loginAnonymously(
-        name: session.name,
-        pin: '1234',
-        eventId: session.eventId,
-      ),
+      case OrganizerSession():
+        await notifier.login(
+          identifier: session.email,
+          password: 'password123',
+        );
+      case AnonymousSession():
+        await notifier.loginAnonymously(
+          name: session.name,
+          pin: '1234',
+          eventId: session.eventId,
+        );
     }
 
     return notifier;
@@ -90,6 +95,9 @@ void main() {
     expect(find.byType(ParticipantHomeScreen), findsOneWidget);
     expect(find.byType(RegisteredHomeShell), findsNothing);
     expect(find.byKey(const Key('registered_navigation_bar')), findsNothing);
-    expect(find.byKey(const Key('registered_navigation_balances')), findsNothing);
+    expect(
+      find.byKey(const Key('registered_navigation_balances')),
+      findsNothing,
+    );
   });
 }
