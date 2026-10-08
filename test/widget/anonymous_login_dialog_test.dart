@@ -246,7 +246,9 @@ void main() {
       );
     });
 
-    testWidgets('distribuye un PIN pegado entre los casilleros', (tester) async {
+    testWidgets('distribuye un PIN pegado entre los casilleros', (
+      tester,
+    ) async {
       await tester.pumpWidget(_buildDialogTestApp());
       await tester.pumpAndSettle();
 

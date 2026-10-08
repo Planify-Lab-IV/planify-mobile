@@ -33,9 +33,8 @@ class _AnonymousLoginDialogState extends ConsumerState<AnonymousLoginDialog> {
     super.initState();
     _pinFocusNodes = List.generate(
       _pinControllers.length,
-      (index) => FocusNode(
-        onKeyEvent: (_, event) => _onPinKeyEvent(index, event),
-      ),
+      (index) =>
+          FocusNode(onKeyEvent: (_, event) => _onPinKeyEvent(index, event)),
     );
   }
 
@@ -82,7 +81,8 @@ class _AnonymousLoginDialogState extends ConsumerState<AnonymousLoginDialog> {
 
   KeyEventResult _onPinKeyEvent(int index, KeyEvent event) {
     final isBackspace =
-        event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.backspace;
+        event is KeyDownEvent &&
+        event.logicalKey == LogicalKeyboardKey.backspace;
     if (!isBackspace || index == 0 || _pinControllers[index].text.isNotEmpty) {
       return KeyEventResult.ignored;
     }
