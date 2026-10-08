@@ -103,10 +103,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nameMaxLength => 'Name cannot be longer than 80 characters';
 
   @override
-  String get pinLabel => 'Event PIN';
+  String get pinLabel =>
+      'Choose a 4-digit PIN to identify yourself for this event.';
 
   @override
-  String get pinRequired => 'Please enter the event PIN';
+  String get pinRecoveryTitle =>
+      'Have you already joined this event with this name?';
+
+  @override
+  String get pinRecoveryMessage => 'Use the same PIN to restore your access.';
+
+  @override
+  String get pinRequired => 'Please enter your access PIN';
 
   @override
   String get pinMinLength => 'PIN must be at least 4 characters';
