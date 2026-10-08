@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/providers/core_providers.dart';
 import 'package:planify/core/theme/app_theme.dart';
@@ -206,6 +207,70 @@ void main() {
       expect(
         tester
             .widget<TextField>(find.byKey(const Key('anonymous_pin_digit_1')))
+            .focusNode
+            ?.hasFocus,
+        isTrue,
+      );
+    });
+
+    testWidgets('vuelve y borra el dígito anterior con Backspace', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_buildDialogTestApp());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('open_dialog_button')));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byKey(const Key('anonymous_pin_digit_0')),
+        '1',
+      );
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.backspace);
+      await tester.pump();
+
+      expect(
+        tester
+            .widget<TextField>(find.byKey(const Key('anonymous_pin_digit_0')))
+            .controller
+            ?.text,
+        isEmpty,
+      );
+      expect(
+        tester
+            .widget<TextField>(find.byKey(const Key('anonymous_pin_digit_0')))
+            .focusNode
+            ?.hasFocus,
+        isTrue,
+      );
+    });
+
+    testWidgets('distribuye un PIN pegado entre los casilleros', (tester) async {
+      await tester.pumpWidget(_buildDialogTestApp());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('open_dialog_button')));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byKey(const Key('anonymous_pin_digit_0')),
+        '1234',
+      );
+      await tester.pump();
+
+      for (var index = 0; index < 4; index++) {
+        expect(
+          tester
+              .widget<TextField>(find.byKey(Key('anonymous_pin_digit_$index')))
+              .controller
+              ?.text,
+          '${index + 1}',
+        );
+      }
+      expect(
+        tester
+            .widget<TextField>(find.byKey(const Key('anonymous_pin_digit_3')))
             .focusNode
             ?.hasFocus,
         isTrue,

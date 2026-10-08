@@ -23,10 +23,21 @@ class _AnonymousLoginDialogState extends ConsumerState<AnonymousLoginDialog> {
   final _pinFieldKey = GlobalKey<FormFieldState<String>>();
   final _nameController = TextEditingController();
   final _pinControllers = List.generate(4, (_) => TextEditingController());
-  final _pinFocusNodes = List.generate(4, (_) => FocusNode());
+  late final List<FocusNode> _pinFocusNodes;
 
   String get _pin =>
       _pinControllers.map((controller) => controller.text).join();
+
+  @override
+  void initState() {
+    super.initState();
+    _pinFocusNodes = List.generate(
+      _pinControllers.length,
+      (index) => FocusNode(
+        onKeyEvent: (_, event) => _onPinKeyEvent(index, event),
+      ),
+    );
+  }
 
   @override
   void dispose() {
@@ -41,11 +52,45 @@ class _AnonymousLoginDialogState extends ConsumerState<AnonymousLoginDialog> {
   }
 
   void _onPinChanged(int index, String value) {
+    if (value.length > 1) {
+      final digits = value.substring(0, _pinControllers.length - index);
+      for (var offset = 0; offset < digits.length; offset++) {
+        _pinControllers[index + offset].value = TextEditingValue(
+          text: digits[offset],
+          selection: const TextSelection.collapsed(offset: 1),
+        );
+      }
+
+      _pinFieldKey.currentState?.didChange(_pin);
+
+      final lastFilledIndex = index + digits.length - 1;
+      final nextFocusIndex = lastFilledIndex < _pinFocusNodes.length - 1
+          ? lastFilledIndex + 1
+          : lastFilledIndex;
+      _pinFocusNodes[nextFocusIndex].requestFocus();
+      return;
+    }
+
     _pinFieldKey.currentState?.didChange(_pin);
 
     if (value.isNotEmpty && index < _pinFocusNodes.length - 1) {
       _pinFocusNodes[index + 1].requestFocus();
+    } else if (value.isEmpty && index > 0) {
+      _pinFocusNodes[index - 1].requestFocus();
     }
+  }
+
+  KeyEventResult _onPinKeyEvent(int index, KeyEvent event) {
+    final isBackspace =
+        event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.backspace;
+    if (!isBackspace || index == 0 || _pinControllers[index].text.isNotEmpty) {
+      return KeyEventResult.ignored;
+    }
+
+    _pinControllers[index - 1].clear();
+    _pinFocusNodes[index - 1].requestFocus();
+    _pinFieldKey.currentState?.didChange(_pin);
+    return KeyEventResult.handled;
   }
 
   void _submit() async {
@@ -219,7 +264,6 @@ class _AnonymousLoginDialogState extends ConsumerState<AnonymousLoginDialog> {
                                   style: theme.textTheme.titleLarge,
                                   inputFormatters: [
                                     FilteringTextInputFormatter.digitsOnly,
-                                    LengthLimitingTextInputFormatter(1),
                                   ],
                                   decoration: InputDecoration(
                                     counterText: '',
