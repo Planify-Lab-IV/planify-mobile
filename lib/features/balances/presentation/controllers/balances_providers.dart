@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../data/fake_balances_repository.dart';
+import '../../../../core/providers/core_providers.dart';
+import '../../data/http_balances_repository.dart';
 import '../../domain/balances_repository.dart';
 import 'balances_notifier.dart';
 import 'balances_state.dart';
@@ -8,7 +9,7 @@ import 'person_balance_detail_notifier.dart';
 import 'person_balance_detail_state.dart';
 
 final balancesRepositoryProvider = Provider<BalancesRepository>((ref) {
-  return FakeBalancesRepository();
+  return HttpBalancesRepository(dio: ref.watch(dioClientProvider));
 });
 
 final balancesNotifierProvider =
