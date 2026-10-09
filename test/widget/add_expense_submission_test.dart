@@ -16,11 +16,13 @@ import 'package:planify/l10n/app_localizations.dart';
 class PendingRepository extends FakeExpensesRepository {
   final pending = Completer<void>();
   final ExpensesException? failure;
+  final submittedExpenses = <NewExpense>[];
   int calls = 0;
   PendingRepository({this.failure}) : super(delay: Duration.zero);
   @override
   Future<Expense> createExpense(String eventId, NewExpense expense) async {
     calls++;
+    submittedExpenses.add(expense);
     if (calls == 1) {
       await pending.future;
       if (failure != null) throw failure!;
@@ -154,6 +156,71 @@ void main() {
     expect(find.byType(AddExpenseDialog), findsNothing);
     expect(find.text('El gasto se guardó correctamente.'), findsOneWidget);
   });
+
+  testWidgets('dragging while saving does not dismiss the sheet', (
+    tester,
+  ) async {
+    final repository = PendingRepository(
+      failure: const NetworkExpenseException(),
+    );
+    await open(tester, repository);
+    await fill(tester);
+    await tester.tap(confirm);
+    await tester.pump();
+
+    await tester.drag(find.byType(AddExpenseDialog), const Offset(0, 700));
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(find.byType(AddExpenseDialog), findsOneWidget);
+    repository.pending.complete();
+    await tester.pumpAndSettle();
+    expect(find.byType(AddExpenseDialog), findsOneWidget);
+    expect(find.text('Reintentar'), findsOneWidget);
+  });
+
+  testWidgets(
+    'disables focused fields while saving and Retry uses visible data',
+    (tester) async {
+      final repository = PendingRepository(
+        failure: const NetworkExpenseException(),
+      );
+      await open(tester, repository);
+      await fill(tester);
+      final description = find.byKey(const Key('expense_description_field'));
+      final descriptionEditable = find.descendant(
+        of: description,
+        matching: find.byType(EditableText),
+      );
+      await tester.showKeyboard(description);
+      expect(
+        tester.widget<EditableText>(descriptionEditable).focusNode.hasFocus,
+        isTrue,
+      );
+
+      await tester.tap(confirm);
+      await tester.pump();
+
+      expect(tester.widget<TextFormField>(description).enabled, isFalse);
+      expect(
+        tester.widget<EditableText>(descriptionEditable).focusNode.hasFocus,
+        isFalse,
+      );
+      repository.pending.complete();
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<TextFormField>(description).controller!.text,
+        'Cena',
+      );
+
+      await tester.tap(find.text('Reintentar'));
+      await tester.pumpAndSettle();
+      expect(repository.submittedExpenses, hasLength(2));
+      expect(
+        repository.submittedExpenses.map((expense) => expense.description),
+        everyElement('Cena'),
+      );
+    },
+  );
 
   testWidgets('closing a failed form removes its Retry action', (tester) async {
     final repository = PendingRepository(

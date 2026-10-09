@@ -13,11 +13,13 @@ import 'expense_payer_selector.dart';
 class AddExpenseForm extends StatelessWidget {
   final AddExpenseState state;
   final AddExpenseNotifier notifier;
+  final bool enabled;
 
   const AddExpenseForm({
     super.key,
     required this.state,
     required this.notifier,
+    this.enabled = true,
   });
 
   @override
@@ -31,6 +33,7 @@ class AddExpenseForm extends StatelessWidget {
           initialTotalAmount: state.totalAmountCents > 0
               ? formatCents(state.totalAmountCents, locale: locale)
               : '',
+          enabled: enabled,
           onDescriptionChanged: notifier.setDescription,
           onTotalAmountChanged: (amount) =>
               notifier.setTotalAmountCents(amount ?? 0),
@@ -56,6 +59,7 @@ class AddExpenseForm extends StatelessWidget {
           participants: state.participants,
           payerDrafts: state.payerDrafts,
           differenceCents: state.differenceCents,
+          enabled: enabled,
           onPayerAmountChanged: (id, amount) =>
               notifier.setPayerAmount(id, amount ?? 0),
           onSplitEvenly: notifier.splitPayersEvenly,
@@ -65,6 +69,7 @@ class AddExpenseForm extends StatelessWidget {
           participants: state.participants,
           debtorDrafts: state.debtorDrafts,
           differenceCents: state.debtorDifferenceCents,
+          enabled: enabled,
           onDebtorAmountChanged: (id, amount) =>
               notifier.setDebtorAmount(id, amount ?? 0),
           onSplitEvenly: notifier.splitDebtorsEvenly,
