@@ -404,7 +404,16 @@
   ,"@personBalanceDetailLineYouOwe": {
     "placeholders": {"name": {"type": "String", "example": "Ana"}}
   }
-  ,"personBalanceDetailLineOwedToYou": "{name} te debe"
+  ,"personBalanceDetailLineOwedToYou": "{name} te debe",
+  "navigationProfile": "Perfil",
+  "profileTitle": "Perfil",
+  "profileNameLabel": "Nombre",
+  "profileUsernameLabel": "Usuario",
+  "profileEmailLabel": "Correo electrónico",
+  "profileChangeAvatar": "Cambiar foto de perfil",
+  "profileSaveButton": "Guardar",
+  "profileLoadError": "No se pudo cargar el perfil.",
+  "profileSaveError": "No se pudieron guardar los cambios. Intentá nuevamente."
   ,"@personBalanceDetailLineOwedToYou": {
     "placeholders": {"name": {"type": "String", "example": "Ana"}}
   }
