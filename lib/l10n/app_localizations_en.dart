@@ -358,6 +358,42 @@ class AppLocalizationsEn extends AppLocalizations {
       'No activity recorded for this event yet.';
 
   @override
+  String get activityLoading => 'Loading event activity...';
+
+  @override
+  String get activityLoadError =>
+      'Could not load this event\'s activity. Please try again.';
+
+  @override
+  String activityTaskCreated(String actor, String title) {
+    return '$actor created the task $title';
+  }
+
+  @override
+  String activityAvailabilityUpdated(String actor) {
+    return '$actor updated their availability';
+  }
+
+  @override
+  String activityExpenseCreated(
+    String actor,
+    String description,
+    String amount,
+  ) {
+    return '$actor added the expense $description for $amount';
+  }
+
+  @override
+  String activityScheduleConfirmed(String actor, String dateTime) {
+    return '$actor confirmed the schedule for $dateTime';
+  }
+
+  @override
+  String activityUnknown(String actor) {
+    return '$actor made a change to the event';
+  }
+
+  @override
   String get featureUnderDevelopment => 'This feature will be available soon.';
 
   @override
