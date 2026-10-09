@@ -54,6 +54,8 @@ Future<void> _completeValidRegistration(WidgetTester tester) async {
     'password123',
   );
   await tester.pump();
+  await tester.ensureVisible(find.byKey(const Key('register_submit_button')));
+  await tester.pumpAndSettle();
 }
 
 void main() {

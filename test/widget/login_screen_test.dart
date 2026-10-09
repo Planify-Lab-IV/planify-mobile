@@ -318,6 +318,11 @@ void main() {
           find.byKey(const Key('registration_password_input')),
           'password123',
         );
+        await tester.pump();
+        await tester.ensureVisible(
+          find.byKey(const Key('register_submit_button')),
+        );
+        await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('register_submit_button')));
         await tester.pumpAndSettle();
 
