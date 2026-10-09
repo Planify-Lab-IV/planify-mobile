@@ -116,7 +116,7 @@ class TasksNotifier extends StateNotifier<TasksState> {
   Future<bool> _runTaskOperation({
     required String taskId,
     required TaskAction expectedAction,
-    required Future<void> Function() operation,
+    required Future<Task> Function() operation,
   }) async {
     if (state.isOperating) return false;
 
@@ -128,13 +128,23 @@ class TasksNotifier extends StateNotifier<TasksState> {
       activeTaskId: taskId,
     );
     try {
-      await operation();
-      final tasks = await _repository.listTasks(_eventId);
+      final updatedTask = await operation();
       if (!mounted) return false;
       state = state.copyWith(
-        tasks: tasks,
+        tasks: [
+          for (final currentTask in state.tasks)
+            if (currentTask.id == updatedTask.id) updatedTask else currentTask,
+        ],
         operationStatus: TasksOperationStatus.success,
       );
+
+      try {
+        final tasks = await _repository.listTasks(_eventId);
+        if (!mounted) return true;
+        state = state.copyWith(tasks: tasks);
+      } catch (_) {
+        // La mutación ya fue confirmada; se conserva su resultado local.
+      }
       return true;
     } catch (_) {
       if (!mounted) return false;

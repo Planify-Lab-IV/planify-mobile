@@ -281,13 +281,25 @@ abstract class AppLocalizations {
   /// No description provided for @pinLabel.
   ///
   /// In es, this message translates to:
-  /// **'PIN del evento'**
+  /// **'Elegí un PIN de 4 dígitos para identificarte en este evento.'**
   String get pinLabel;
+
+  /// No description provided for @pinRecoveryTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Ya ingresaste a este evento con este nombre?'**
+  String get pinRecoveryTitle;
+
+  /// No description provided for @pinRecoveryMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Usá el mismo PIN para recuperar tu acceso.'**
+  String get pinRecoveryMessage;
 
   /// No description provided for @pinRequired.
   ///
   /// In es, this message translates to:
-  /// **'Por favor ingresa el PIN del evento'**
+  /// **'Por favor ingresá tu PIN de acceso'**
   String get pinRequired;
 
   /// No description provided for @pinMinLength.
@@ -751,6 +763,52 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Sin actividad registrada en este evento.'**
   String get noActivityPlaceholder;
+
+  /// No description provided for @activityLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando actividad del evento...'**
+  String get activityLoading;
+
+  /// No description provided for @activityLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cargar la actividad del evento. Intentá nuevamente.'**
+  String get activityLoadError;
+
+  /// No description provided for @activityTaskCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'{actor} creó la tarea {title}'**
+  String activityTaskCreated(String actor, String title);
+
+  /// No description provided for @activityAvailabilityUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'{actor} actualizó su disponibilidad'**
+  String activityAvailabilityUpdated(String actor);
+
+  /// No description provided for @activityExpenseCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'{actor} agregó el gasto {description} por {amount}'**
+  String activityExpenseCreated(
+    String actor,
+    String description,
+    String amount,
+  );
+
+  /// No description provided for @activityScheduleConfirmed.
+  ///
+  /// In es, this message translates to:
+  /// **'{actor} confirmó el horario para {dateTime}'**
+  String activityScheduleConfirmed(String actor, String dateTime);
+
+  /// No description provided for @activityUnknown.
+  ///
+  /// In es, this message translates to:
+  /// **'{actor} hizo un cambio en el evento'**
+  String activityUnknown(String actor);
 
   /// No description provided for @featureUnderDevelopment.
   ///

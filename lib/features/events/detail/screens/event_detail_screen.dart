@@ -4,13 +4,13 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../activity_log/presentation/widgets/event_activity_card.dart';
 import '../../../debts/presentation/widgets/event_debts_card.dart';
 import '../controllers/events_providers.dart';
 import '../widgets/cancel_event_dialog.dart';
 import '../widgets/close_expenses_dialog.dart';
 import '../widgets/event_header_card.dart';
 import '../widgets/event_quick_actions_card.dart';
-import '../widgets/event_section_placeholder_card.dart';
 import '../../config/presentation/screens/event_config_screen.dart';
 import '../../../tasks/presentation/controllers/tasks_providers.dart';
 import '../../../tasks/presentation/controllers/tasks_context.dart';
@@ -376,12 +376,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                       tasksContext: tasksContext!,
                     ),
                     const SizedBox(height: AppSpacing.lg),
-                    EventSectionPlaceholderCard(
-                      cardKey: const Key('activity_placeholder_card'),
-                      title: i18n.activityLogSectionTitle,
-                      placeholderText: i18n.noActivityPlaceholder,
-                      icon: Icons.history_rounded,
-                    ),
+                    EventActivityCard(eventId: event.id),
                   ],
                 ),
               ),

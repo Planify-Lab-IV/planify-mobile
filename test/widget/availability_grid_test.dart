@@ -40,7 +40,8 @@ void main() {
       buildGrid(onToggleSlot: toggledSlots.add, onMarkSlot: (_) {}),
     );
 
-    await tester.tap(find.byKey(const Key('availability_slot_3_0')));
+    final cell = find.byKey(const Key('availability_slot_3_0'));
+    await tester.tapAt(tester.getCenter(cell));
 
     expect(toggledSlots, [Slot(weekDay: 3, hourBlock: 0)]);
   });
@@ -61,7 +62,7 @@ void main() {
 
     final firstCell = find.byKey(const Key('availability_slot_3_0'));
     final secondCell = find.byKey(const Key('availability_slot_4_0'));
-    await tester.tap(firstCell);
+    await tester.tapAt(tester.getCenter(firstCell));
     final gesture = await tester.startGesture(tester.getCenter(firstCell));
     await tester.pump(kLongPressTimeout);
     await gesture.moveTo(tester.getCenter(secondCell));

@@ -49,25 +49,25 @@ class HttpTasksRepository implements TasksRepository {
   }
 
   @override
-  Future<void> claimTask(String taskId) async {
+  Future<Task> claimTask(String taskId) async {
     final normalizedTaskId = _normalizedRequiredValue(taskId);
-    await _postTaskAction('/tasks/$normalizedTaskId/claim');
+    return _postTaskAction('/tasks/$normalizedTaskId/claim');
   }
 
   @override
-  Future<void> assignTask(String taskId, String participantId) async {
+  Future<Task> assignTask(String taskId, String participantId) async {
     final normalizedTaskId = _normalizedRequiredValue(taskId);
     final normalizedParticipantId = _normalizedRequiredValue(participantId);
-    await _postTaskAction(
+    return _postTaskAction(
       '/tasks/$normalizedTaskId/assign',
       data: {'participantId': normalizedParticipantId},
     );
   }
 
   @override
-  Future<void> completeTask(String taskId) async {
+  Future<Task> completeTask(String taskId) async {
     final normalizedTaskId = _normalizedRequiredValue(taskId);
-    await _postTaskAction('/tasks/$normalizedTaskId/complete');
+    return _postTaskAction('/tasks/$normalizedTaskId/complete');
   }
 
   String _normalizedRequiredValue(String value) {
@@ -88,10 +88,10 @@ class HttpTasksRepository implements TasksRepository {
         .toList(growable: false);
   }
 
-  Future<void> _postTaskAction(String path, {Object? data}) async {
+  Future<Task> _postTaskAction(String path, {Object? data}) async {
     try {
       final response = await dio.post<dynamic>(path, data: data);
-      _taskFromResponse(response.data);
+      return _taskFromResponse(response.data);
     } on TasksException {
       rethrow;
     } on DioException catch (error) {

@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:planify/features/events/domain/event_participant.dart';
 import 'package:planify/features/tasks/data/http_tasks_repository.dart';
 import 'package:planify/features/tasks/data/task_exceptions.dart';
 import 'package:planify/features/tasks/domain/task_status.dart';
+import 'package:planify/features/tasks/presentation/controllers/tasks_notifier.dart';
 
 void main() {
   const taskResponse = <String, dynamic>{
@@ -326,5 +328,80 @@ void main() {
         throwsA(isA<TaskOperationException>()),
       );
     });
+  });
+
+  group('HttpTasksRepository with TasksNotifier', () {
+    test(
+      'keeps the claimed task when the refresh after a successful POST fails',
+      () async {
+        var claimSucceeded = false;
+        final dio = Dio()
+          ..interceptors.add(
+            InterceptorsWrapper(
+              onRequest: (options, handler) {
+                if (options.method == 'GET' && claimSucceeded) {
+                  handler.reject(
+                    DioException(
+                      requestOptions: options,
+                      type: DioExceptionType.connectionError,
+                    ),
+                  );
+                  return;
+                }
+
+                if (options.method == 'POST') {
+                  claimSucceeded = true;
+                  handler.resolve(
+                    Response<dynamic>(
+                      requestOptions: options,
+                      data: {
+                        ...taskResponse,
+                        'status': 'pending',
+                        'assignedToParticipantId': 'participant-ana',
+                      },
+                    ),
+                  );
+                  return;
+                }
+
+                handler.resolve(
+                  Response<dynamic>(
+                    requestOptions: options,
+                    data: {
+                      'tasks': [taskResponse],
+                    },
+                  ),
+                );
+              },
+            ),
+          );
+        final notifier = TasksNotifier(
+          repository: HttpTasksRepository(dio: dio),
+          eventId: 'event-1',
+          currentParticipantId: 'participant-ana',
+          isOrganizer: false,
+          participants: const [
+            EventParticipant(
+              id: 'participant-ana',
+              eventId: 'event-1',
+              userId: 'user-ana',
+              username: 'Ana',
+              isAnonymous: false,
+              isOrganizer: false,
+            ),
+          ],
+        );
+        await notifier.load();
+
+        final claimed = await notifier.claim('task-1');
+
+        expect(claimed, isTrue);
+        expect(notifier.state.tasks.single.status, TaskStatus.pending);
+        expect(
+          notifier.state.tasks.single.assignedToParticipantId,
+          'participant-ana',
+        );
+      },
+    );
   });
 }
