@@ -21,6 +21,8 @@ final eventDebtsNotifierProvider = StateNotifierProvider.autoDispose
         repository: repository,
         eventId: eventId,
         onSettled: () => ref.read(settlementRevisionProvider.notifier).state++,
+        onFixturePrepared: () =>
+            ref.read(settlementRevisionProvider.notifier).state++,
         prepareFixture: repository is FakeDebtsRepository
             ? repository.ensureEventFixture
             : null,

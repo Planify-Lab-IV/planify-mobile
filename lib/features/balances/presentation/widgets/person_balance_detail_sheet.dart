@@ -30,7 +30,12 @@ class PersonBalanceDetailSheet extends ConsumerStatefulWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
-      builder: (_) => PersonBalanceDetailSheet(personKey: personKey),
+      builder: (_) => ScaffoldMessenger(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: PersonBalanceDetailSheet(personKey: personKey),
+        ),
+      ),
     );
 
     if (eventId == null || !context.mounted) return;

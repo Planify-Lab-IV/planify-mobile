@@ -19,6 +19,7 @@ class EventDebtsNotifier extends StateNotifier<EventDebtsState> {
   final DebtsRepository repository;
   final String eventId;
   final void Function()? onSettled;
+  final void Function()? onFixturePrepared;
   final EventDebtFixturePreparer? prepareFixture;
   int _loadVersion = 0;
   String? _preparedFixtureKey;
@@ -27,6 +28,7 @@ class EventDebtsNotifier extends StateNotifier<EventDebtsState> {
     required this.repository,
     required this.eventId,
     this.onSettled,
+    this.onFixturePrepared,
     this.prepareFixture,
   }) : super(const EventDebtsState()) {
     load();
@@ -83,7 +85,10 @@ class EventDebtsNotifier extends StateNotifier<EventDebtsState> {
       counterpartyPersonKey: counterpartyPersonKey,
       counterpartyName: counterpartyName,
     );
-    if (changed) await reload(silent: state.isSuccess);
+    if (changed) {
+      onFixturePrepared?.call();
+      await reload(silent: state.isSuccess);
+    }
   }
 
   Future<DebtSettlementResult> settleDebt(

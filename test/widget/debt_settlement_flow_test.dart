@@ -175,6 +175,83 @@ void main() {
       },
     );
 
+    testWidgets('creating a fixture refreshes subscribed balances', (
+      tester,
+    ) async {
+      final store = FakeSettlementStore();
+      final balances = FakeBalancesRepository(
+        delay: Duration.zero,
+        store: store,
+      );
+      final debts = FakeDebtsRepository(
+        delay: Duration.zero,
+        store: store,
+        initialEventDebts: const {},
+      );
+      var showFixture = false;
+
+      await tester.pumpWidget(
+        app(
+          Scaffold(
+            body: StatefulBuilder(
+              builder: (context, setState) => Column(
+                children: [
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final people = ref.watch(balancesNotifierProvider).people;
+                      return Text(
+                        '${people.length}:${people.map((person) => person.displayName).join(',')}',
+                        key: const Key('fixture_balance_observer'),
+                      );
+                    },
+                  ),
+                  TextButton(
+                    onPressed: () => setState(() => showFixture = true),
+                    child: const Text('Prepare fixture'),
+                  ),
+                  if (showFixture)
+                    Expanded(
+                      child: EventDebtsCard(
+                        eventId: 'created-event',
+                        eventName: 'Evento creado',
+                        currentParticipantId: 'participant-me',
+                        participants: const [
+                          EventParticipant(
+                            id: 'participant-me',
+                            eventId: 'created-event',
+                            userId: 'user-me',
+                            username: 'Lucía',
+                            isAnonymous: false,
+                            isOrganizer: true,
+                          ),
+                          EventParticipant(
+                            id: 'participant-renata',
+                            eventId: 'created-event',
+                            userId: 'renata-created',
+                            username: 'Renata',
+                            isAnonymous: false,
+                            isOrganizer: false,
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+          debts: debts,
+          balances: balances,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('3:Ana,Martín,Sol'), findsOneWidget);
+
+      await tester.tap(find.text('Prepare fixture'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('4:Ana,Martín,Sol,Renata'), findsOneWidget);
+    });
+
     testWidgets('an event with one participant keeps the empty state', (
       tester,
     ) async {
@@ -596,6 +673,35 @@ void main() {
         );
       });
     }
+
+    testWidgets('network errors expose a tappable Retry above the sheet', (
+      tester,
+    ) async {
+      final repos = await open(tester, error: const DebtNetworkException());
+      await tester.tap(find.byKey(const Key('settle_all_button')));
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.byKey(const Key('settle_all_dialog_confirm_button')),
+      );
+      await tester.pumpAndSettle();
+
+      final retry = find.text('Reintentar').hitTestable();
+      expect(retry, findsOneWidget);
+
+      repos.debts.settlementError = null;
+      await tester.tap(retry);
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const Key('settle_all_dialog_confirm_button')),
+        findsOneWidget,
+      );
+
+      await tester.tap(
+        find.byKey(const Key('settle_all_dialog_confirm_button')),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(PersonBalanceDetailSheet), findsNothing);
+    });
   });
 
   testWidgets('both confirmations have English messages and return bool', (
