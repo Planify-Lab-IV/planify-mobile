@@ -82,7 +82,7 @@ void main() {
       expect(summary.iOweCents, 30000);
     });
 
-    test('gets and maps balances for each person', () async {
+    test('gets and maps signed net balances for each person', () async {
       RequestOptions? request;
       final repository = HttpBalancesRepository(
         dio: dioResolving([
@@ -96,7 +96,7 @@ void main() {
             'personKey': 'participant:guest',
             'displayName': 'Invitado',
             'status': 'pay',
-            'netCents': 5000,
+            'netCents': -5000,
           },
         ], (options) => request = options),
       );
@@ -109,6 +109,7 @@ void main() {
       expect(people.first.personKey, 'user:dev2');
       expect(people.first.status, PersonBalanceStatus.pending);
       expect(people.last.status, PersonBalanceStatus.pay);
+      expect(people.last.netCents, -5000);
     });
 
     test('encodes the person key and maps the event breakdown', () async {
@@ -144,6 +145,23 @@ void main() {
       expect(detail.breakdown, hasLength(2));
       expect(detail.breakdown.first.direction, BalanceDirection.owedToMe);
       expect(detail.breakdown.last.direction, BalanceDirection.iOwe);
+    });
+
+    test('preserves a signed net balance in a person detail', () async {
+      final repository = HttpBalancesRepository(
+        dio: dioResolving({
+          'personKey': 'participant:guest',
+          'displayName': 'Invitado',
+          'status': 'pay',
+          'netCents': -5000,
+          'breakdown': <dynamic>[],
+        }, null),
+      );
+
+      final detail = await repository.getPersonDetail('participant:guest');
+
+      expect(detail.status, PersonBalanceStatus.pay);
+      expect(detail.netCents, -5000);
     });
 
     test(

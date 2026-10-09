@@ -188,6 +188,41 @@ void main() {
       expect(find.text('No tenés saldos pendientes.'), findsOneWidget);
     });
 
+    testWidgets('muestra una persona que debe con netCents negativo', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildScreen(
+          repository: FakeBalancesRepository(
+            delay: Duration.zero,
+            initialSummary: const BalanceSummary(
+              owedToMeCents: 0,
+              iOweCents: 5000,
+            ),
+            initialPeople: const [
+              PersonBalance(
+                personKey: 'user:ana',
+                displayName: 'Ana',
+                status: PersonBalanceStatus.pay,
+                netCents: -5000,
+              ),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('balances_error')), findsNothing);
+      expect(find.byKey(const Key('balance_person_user:ana')), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('balance_person_user:ana')),
+          matching: find.text(r'$ 50,00'),
+        ),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('muestra error y permite reintentar', (tester) async {
       final repository = FakeBalancesRepository(
         delay: Duration.zero,

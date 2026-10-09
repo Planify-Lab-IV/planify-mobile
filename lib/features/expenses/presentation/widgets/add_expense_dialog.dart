@@ -34,6 +34,7 @@ class AddExpenseDialog extends ConsumerWidget {
     final saved = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
+      enableDrag: false,
       backgroundColor: Colors.transparent,
       // Keep the error and Retry above the modal barrier.
       builder: (_) => ScaffoldMessenger(
@@ -66,6 +67,7 @@ class AddExpenseDialog extends ConsumerWidget {
     AppLocalizations i18n,
   ) async {
     if (!context.mounted) return;
+    FocusScope.of(context).unfocus();
     final wasSaved = await notifier.submit();
     if (!context.mounted) return;
 
@@ -184,6 +186,7 @@ class AddExpenseDialog extends ConsumerWidget {
                             child: AddExpenseForm(
                               state: state,
                               notifier: notifier,
+                              enabled: !state.isSaving,
                             ),
                           ),
                         ),

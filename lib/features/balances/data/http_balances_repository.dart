@@ -85,7 +85,7 @@ class HttpBalancesRepository implements BalancesRepository {
       personKey: _requiredString(data, 'personKey'),
       displayName: _requiredString(data, 'displayName'),
       status: _personBalanceStatus(data['status']),
-      netCents: _nonNegativeInt(data, 'netCents'),
+      netCents: _signedInt(data, 'netCents'),
     );
   }
 
@@ -98,7 +98,7 @@ class HttpBalancesRepository implements BalancesRepository {
       personKey: _requiredString(data, 'personKey'),
       displayName: _requiredString(data, 'displayName'),
       status: _personBalanceStatus(data['status']),
-      netCents: _nonNegativeInt(data, 'netCents'),
+      netCents: _signedInt(data, 'netCents'),
       breakdown: (data['breakdown'] as List<dynamic>)
           .map(_eventBalanceLineFromResponse)
           .toList(growable: false),
@@ -129,6 +129,12 @@ class HttpBalancesRepository implements BalancesRepository {
     if (value is! int || value < 0) {
       throw const InvalidBalancesResponseException();
     }
+    return value;
+  }
+
+  int _signedInt(Map<dynamic, dynamic> data, String key) {
+    final value = data[key];
+    if (value is! int) throw const InvalidBalancesResponseException();
     return value;
   }
 

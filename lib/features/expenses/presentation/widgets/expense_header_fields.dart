@@ -10,6 +10,7 @@ class ExpenseHeaderFields extends StatefulWidget {
   final String initialTotalAmount;
   final ValueChanged<String> onDescriptionChanged;
   final ValueChanged<int?> onTotalAmountChanged;
+  final bool enabled;
 
   const ExpenseHeaderFields({
     super.key,
@@ -17,6 +18,7 @@ class ExpenseHeaderFields extends StatefulWidget {
     this.initialTotalAmount = '',
     required this.onDescriptionChanged,
     required this.onTotalAmountChanged,
+    this.enabled = true,
   });
 
   @override
@@ -78,6 +80,7 @@ class _ExpenseHeaderFieldsState extends State<ExpenseHeaderFields> {
         TextFormField(
           key: const Key('expense_description_field'),
           controller: _descriptionController,
+          enabled: widget.enabled,
           textCapitalization: TextCapitalization.sentences,
           decoration: InputDecoration(
             labelText: i18n.addExpenseDescriptionLabel,
@@ -89,6 +92,7 @@ class _ExpenseHeaderFieldsState extends State<ExpenseHeaderFields> {
         TextFormField(
           key: const Key('expense_total_field'),
           controller: _totalAmountController,
+          enabled: widget.enabled,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(
             labelText: i18n.addExpenseTotalLabel,

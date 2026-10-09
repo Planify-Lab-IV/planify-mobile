@@ -13,11 +13,13 @@ import 'expense_payer_selector.dart';
 class AddExpenseForm extends StatelessWidget {
   final AddExpenseState state;
   final AddExpenseNotifier notifier;
+  final bool enabled;
 
   const AddExpenseForm({
     super.key,
     required this.state,
     required this.notifier,
+    this.enabled = true,
   });
 
   @override
@@ -34,6 +36,7 @@ class AddExpenseForm extends StatelessWidget {
           onDescriptionChanged: notifier.setDescription,
           onTotalAmountChanged: (amount) =>
               notifier.setTotalAmountCents(amount ?? 0),
+          enabled: enabled,
         ),
         const SizedBox(height: AppSpacing.lg),
         ExpensePayerSelector(
