@@ -11,6 +11,15 @@ import '../../../auth/presentation/controllers/auth_providers.dart';
 import '../controllers/profile_providers.dart';
 import '../controllers/profile_state.dart';
 
+ImageProvider<Object> profileAvatarImageProvider(String path) {
+  final scheme = Uri.tryParse(path)?.scheme.toLowerCase();
+  if (scheme == 'blob' || scheme == 'http' || scheme == 'https') {
+    return NetworkImage(path);
+  }
+
+  return FileImage(File(path));
+}
+
 class ProfileScreen extends ConsumerStatefulWidget {
   final ImageProvider<Object>? Function(String filePath)? avatarImageProvider;
 
@@ -83,19 +92,45 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Future<void> _pickAvatar() async {
-    final path = await ref.read(avatarPickerProvider).pickAvatar();
+    final i18n = AppLocalizations.of(context)!;
+    String? path;
+    try {
+      path = await ref.read(avatarPickerProvider).pickAvatar();
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            key: const Key('profile_avatar_picker_error_snackbar'),
+            content: Text(i18n.profileSaveError),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      return;
+    }
+
     if (path == null || !mounted) return;
 
     ref.read(profileNotifierProvider.notifier).selectAvatar(path);
   }
 
   Future<void> _save() async {
+    final previousState = ref.read(profileNotifierProvider);
+    final previousName = previousState.profile?.name;
+    final requestedName = previousState.trimmedDraftName;
+    final shouldUpdateSessionName =
+        previousName != null && requestedName != previousName;
+
     await ref.read(profileNotifierProvider.notifier).save();
     if (!mounted) return;
 
     final state = ref.read(profileNotifierProvider);
     final profile = state.profile;
-    if (!state.hasPendingChanges && !state.hasSaveError && profile != null) {
+    if (shouldUpdateSessionName &&
+        !state.hasPendingChanges &&
+        !state.hasSaveError &&
+        profile != null) {
       ref.read(authNotifierProvider.notifier).updateSessionName(profile.name);
     }
   }
@@ -126,7 +161,8 @@ class _ProfileContent extends StatelessWidget {
     final imagePath = state.pendingAvatarFilePath ?? profile.avatarUrl;
     final imageProvider = imagePath == null
         ? null
-        : avatarImageProvider?.call(imagePath) ?? FileImage(File(imagePath));
+        : avatarImageProvider?.call(imagePath) ??
+              profileAvatarImageProvider(imagePath);
 
     return Center(
       child: SingleChildScrollView(
