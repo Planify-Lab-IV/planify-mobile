@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -30,6 +28,21 @@ void main() {
     await tester.pumpWidget(_buildScreen(container));
     await tester.pump();
     await tester.pump();
+
+    expect(find.byKey(const Key('profile_identity_header')), findsOneWidget);
+    expect(find.byKey(const Key('profile_content_card')), findsOneWidget);
+    expect(find.byKey(const Key('profile_username_field')), findsOneWidget);
+    expect(find.byKey(const Key('profile_email_field')), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('profile_identity_header')),
+        matching: find.byKey(const Key('profile_name_field')),
+      ),
+      findsOneWidget,
+    );
+
+    final appBar = tester.widget<AppBar>(find.byType(AppBar));
+    expect(appBar.backgroundColor, AppTheme.light.colorScheme.primaryContainer);
 
     ElevatedButton saveButton() => tester.widget<ElevatedButton>(
       find.byKey(const Key('profile_save_button')),
@@ -73,8 +86,7 @@ void main() {
 
     await tester.ensureVisible(find.byKey(const Key('profile_save_button')));
     await tester.tap(find.byKey(const Key('profile_save_button')));
-    await tester.pump();
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     avatar = tester.widget<CircleAvatar>(find.byType(CircleAvatar));
     expect(avatar.foregroundImage, isA<MemoryImage>());
@@ -139,6 +151,7 @@ void main() {
       find.byKey(const Key('profile_name_field')),
       'Alice Personal',
     );
+    await tester.pump();
     repository.shouldThrowError = true;
 
     await tester.ensureVisible(find.byKey(const Key('profile_save_button')));
@@ -185,7 +198,7 @@ Future<ProviderContainer> _buildContainer({
   required AvatarPicker avatarPicker,
   FakeProfileRepository? profileRepository,
 }) async {
-  final storage = FakeSecureStorage();
+  final storage = _ImmediateSecureStorage();
   final authRepository = FakeAuthRepository(
     storage: storage,
     delay: Duration.zero,
@@ -241,6 +254,23 @@ class _FailingAvatarPicker implements AvatarPicker {
   @override
   Future<String?> pickAvatar() {
     throw PlatformException(code: 'photo_access_denied');
+  }
+}
+
+class _ImmediateSecureStorage implements SecureStorage {
+  String? _token;
+
+  @override
+  Future<void> deleteToken() async {
+    _token = null;
+  }
+
+  @override
+  Future<String?> getToken() async => _token;
+
+  @override
+  Future<void> saveToken(String token) async {
+    _token = token;
   }
 }
 

@@ -60,7 +60,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(i18n.profileTitle),
+        title: Text(
+          i18n.profileTitle,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            color: Theme.of(context).colorScheme.onPrimaryContainer,
+          ),
+        ),
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
@@ -170,70 +175,100 @@ class _ProfileContent extends StatelessWidget {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 560),
           child: Card(
+            key: const Key('profile_content_card'),
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.xl),
               child: Column(
+                key: const Key('profile_content'),
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Center(
-                    child: Semantics(
-                      button: true,
-                      label: i18n.profileChangeAvatar,
-                      child: InkWell(
-                        key: const Key('profile_avatar_button'),
-                        borderRadius: BorderRadius.circular(AppRadius.pill),
-                        onTap: state.isSaving ? null : onAvatarPressed,
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            InitialsAvatar(
-                              name: state.draftName,
-                              imageProvider: imageProvider,
-                              radius: 52,
-                            ),
-                            Positioned(
-                              right: -2,
-                              bottom: -2,
-                              child: DecoratedBox(
-                                decoration: BoxDecoration(
-                                  color: theme.colorScheme.primary,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(AppSpacing.sm),
-                                  child: Icon(
-                                    Icons.photo_camera_outlined,
-                                    color: theme.colorScheme.onPrimary,
-                                    size: 18,
+                  Column(
+                    key: const Key('profile_identity_header'),
+                    children: [
+                      Semantics(
+                        button: true,
+                        label: i18n.profileChangeAvatar,
+                        child: InkWell(
+                          key: const Key('profile_avatar_button'),
+                          borderRadius: BorderRadius.circular(AppRadius.pill),
+                          onTap: state.isSaving ? null : onAvatarPressed,
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              InitialsAvatar(
+                                name: state.draftName,
+                                imageProvider: imageProvider,
+                                radius: 48,
+                              ),
+                              Positioned(
+                                right: -2,
+                                bottom: -2,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: theme.colorScheme.primary,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: theme.colorScheme.surface,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(
+                                      AppSpacing.sm,
+                                    ),
+                                    child: Icon(
+                                      Icons.photo_camera_outlined,
+                                      color: theme.colorScheme.onPrimary,
+                                      size: 18,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
+                      const SizedBox(height: AppSpacing.md),
+                      SizedBox(
+                        width: 280,
+                        child: TextField(
+                          key: const Key('profile_name_field'),
+                          controller: nameController,
+                          enabled: !state.isSaving,
+                          maxLength: 80,
+                          textAlign: TextAlign.center,
+                          textCapitalization: TextCapitalization.words,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: theme.colorScheme.onSurface,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          decoration: InputDecoration(
+                            isDense: true,
+                            filled: false,
+                            counterText: '',
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.md,
+                              vertical: AppSpacing.sm,
+                            ),
+                            border: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                          ),
+                          onChanged: onNameChanged,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: AppSpacing.xl),
-                  TextField(
-                    key: const Key('profile_name_field'),
-                    controller: nameController,
-                    enabled: !state.isSaving,
-                    maxLength: 80,
-                    textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
-                      labelText: i18n.profileNameLabel,
-                    ),
-                    onChanged: onNameChanged,
-                  ),
-                  const SizedBox(height: AppSpacing.md),
                   _ReadOnlyProfileField(
+                    key: const Key('profile_username_field'),
                     label: i18n.profileUsernameLabel,
                     value: profile.username,
                     icon: Icons.alternate_email_rounded,
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   _ReadOnlyProfileField(
+                    key: const Key('profile_email_field'),
                     label: i18n.profileEmailLabel,
                     value: profile.email,
                     icon: Icons.email_outlined,
@@ -245,6 +280,7 @@ class _ProfileContent extends StatelessWidget {
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.colorScheme.error,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                   ],
                   const SizedBox(height: AppSpacing.xl),
@@ -278,6 +314,7 @@ class _ReadOnlyProfileField extends StatelessWidget {
   final IconData icon;
 
   const _ReadOnlyProfileField({
+    super.key,
     required this.label,
     required this.value,
     required this.icon,
@@ -290,10 +327,14 @@ class _ReadOnlyProfileField extends StatelessWidget {
     return Semantics(
       readOnly: true,
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerHighest,
+          color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(AppRadius.card),
+          border: Border.all(color: theme.colorScheme.outline),
         ),
         child: Row(
           children: [
@@ -305,7 +346,12 @@ class _ReadOnlyProfileField extends StatelessWidget {
                 children: [
                   Text(label, style: theme.textTheme.labelMedium),
                   const SizedBox(height: AppSpacing.xs),
-                  Text(value, style: theme.textTheme.bodyLarge),
+                  Text(
+                    value,
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
                 ],
               ),
             ),

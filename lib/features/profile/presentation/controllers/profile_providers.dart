@@ -37,6 +37,7 @@ final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
   };
 
   return FakeProfileRepository(
+    delay: Duration.zero,
     initialProfile: session == null
         ? null
         : UserProfile(
