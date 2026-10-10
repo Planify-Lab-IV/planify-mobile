@@ -149,7 +149,13 @@ void main() {
         expect(find.text('Invitar'), findsOneWidget);
         expect(find.text('Agregar gasto'), findsOneWidget);
         expect(find.text('Agregar tarea'), findsOneWidget);
-        expect(find.text('Saldar'), findsOneWidget);
+        expect(
+          find.descendant(
+            of: find.byKey(const Key('quick_action_settle')),
+            matching: find.text('Saldar'),
+          ),
+          findsOneWidget,
+        );
 
         // Deudas
         expect(find.text('Deudas del evento'), findsOneWidget);

@@ -54,6 +54,10 @@ void main() {
 }
 
 class _CountingDebtsRepository implements DebtsRepository {
+  @override
+  Future<void> settleDebt(String eventId, String debtId) async {}
+  @override
+  Future<void> settleWithPerson(String personKey) async {}
   int callCount = 0;
 
   @override
