@@ -178,15 +178,18 @@ class AddExpenseDialog extends ConsumerWidget {
                       ),
                       const Divider(height: 1),
                       Expanded(
-                        child: AbsorbPointer(
-                          absorbing: state.isSaving,
-                          child: SingleChildScrollView(
-                            key: const Key('add_expense_dialog_scroll_view'),
-                            padding: const EdgeInsets.all(AppSpacing.lg),
-                            child: AddExpenseForm(
-                              state: state,
-                              notifier: notifier,
-                              enabled: !state.isSaving,
+                        child: FocusScope(
+                          canRequestFocus: !state.isSaving,
+                          child: AbsorbPointer(
+                            absorbing: state.isSaving,
+                            child: SingleChildScrollView(
+                              key: const Key('add_expense_dialog_scroll_view'),
+                              padding: const EdgeInsets.all(AppSpacing.lg),
+                              child: AddExpenseForm(
+                                state: state,
+                                notifier: notifier,
+                                enabled: !state.isSaving,
+                              ),
                             ),
                           ),
                         ),

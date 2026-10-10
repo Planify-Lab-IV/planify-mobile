@@ -5,9 +5,11 @@ import '../domain/event_balance_line.dart';
 import '../domain/person_balance.dart';
 import '../domain/person_balance_detail.dart';
 import '../domain/person_balance_status.dart';
+import '../../../core/data/fake_settlement_store.dart';
 
 // Repositorio temporal
 class FakeBalancesRepository implements BalancesRepository {
+  final FakeSettlementStore? store;
   final Duration delay;
   bool shouldThrowError;
   final BalanceSummary _summary;
@@ -20,29 +22,65 @@ class FakeBalancesRepository implements BalancesRepository {
     BalanceSummary? initialSummary,
     List<PersonBalance>? initialPeople,
     Map<String, PersonBalanceDetail>? initialPersonDetails,
+    this.store,
   }) : _summary = initialSummary ?? _defaultSummary,
        _people = List<PersonBalance>.unmodifiable(
          initialPeople ?? _defaultPeople,
        ),
        _personDetails = Map<String, PersonBalanceDetail>.unmodifiable(
          initialPersonDetails ?? _defaultPersonDetails,
-       );
+       ) {
+    for (final detail in _personDetails.values) {
+      store?.seedPerson(detail);
+    }
+  }
 
   @override
   Future<BalanceSummary> getSummary() async {
     await _waitOrThrow();
-    return _summary;
+    if (store == null) return _summary;
+    final people = await listPeople();
+    return BalanceSummary(
+      owedToMeCents: people
+          .where((p) => p.status == PersonBalanceStatus.pending)
+          .fold(0, (sum, p) => sum + p.netCents),
+      iOweCents: people
+          .where((p) => p.status == PersonBalanceStatus.pay)
+          .fold(0, (sum, p) => sum + p.netCents),
+    );
   }
 
   @override
   Future<List<PersonBalance>> listPeople() async {
     await _waitOrThrow();
-    return List<PersonBalance>.unmodifiable(_people);
+    final knownKeys = _people.map((person) => person.personKey).toSet();
+    return List<PersonBalance>.unmodifiable([
+      for (final person in _people)
+        if (store != null && store!.people.containsKey(person.personKey))
+          person.copyWith(
+            status: store!.detail(person.personKey).status,
+            netCents: store!.detail(person.personKey).netCents,
+          )
+        else
+          person,
+      if (store != null)
+        for (final entry in store!.people.entries)
+          if (!knownKeys.contains(entry.key))
+            PersonBalance(
+              personKey: entry.key,
+              displayName: entry.value.displayName,
+              status: store!.detail(entry.key).status,
+              netCents: store!.detail(entry.key).netCents,
+            ),
+    ]);
   }
 
   @override
   Future<PersonBalanceDetail> getPersonDetail(String personKey) async {
     await _waitOrThrow();
+    if (store?.people.containsKey(personKey) ?? false) {
+      return store!.detail(personKey);
+    }
     final detail = _personDetails[personKey];
     if (detail == null) {
       throw Exception('Could not find balance detail for $personKey');

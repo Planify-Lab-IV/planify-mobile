@@ -371,6 +371,9 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                     EventDebtsCard(
                       key: _eventDebtsSectionKey,
                       eventId: event.id,
+                      eventName: event.name,
+                      currentParticipantId: notifier.currentParticipantId,
+                      participants: event.participants,
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     TaskListCard(

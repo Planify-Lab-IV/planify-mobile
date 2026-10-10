@@ -12,19 +12,19 @@ class ExpenseDebtorAmounts extends StatefulWidget {
   final List<EventParticipant> participants;
   final List<ExpenseDebtorDraft> debtorDrafts;
   final int differenceCents;
+  final bool enabled;
   final void Function(String participantId, int? amountCents)
   onDebtorAmountChanged;
   final VoidCallback onSplitEvenly;
-  final bool enabled;
 
   const ExpenseDebtorAmounts({
     super.key,
     required this.participants,
     required this.debtorDrafts,
     required this.differenceCents,
+    this.enabled = true,
     required this.onDebtorAmountChanged,
     required this.onSplitEvenly,
-    this.enabled = true,
   });
 
   @override
@@ -113,8 +113,8 @@ class _ExpenseDebtorAmountField extends StatefulWidget {
   final String participantName;
   final int amountCents;
   final String locale;
-  final bool readOnly;
   final bool enabled;
+  final bool readOnly;
   final ValueChanged<int?> onAmountChanged;
 
   const _ExpenseDebtorAmountField({
@@ -123,8 +123,8 @@ class _ExpenseDebtorAmountField extends StatefulWidget {
     required this.participantName,
     required this.amountCents,
     required this.locale,
-    required this.readOnly,
     required this.enabled,
+    required this.readOnly,
     required this.onAmountChanged,
   });
 

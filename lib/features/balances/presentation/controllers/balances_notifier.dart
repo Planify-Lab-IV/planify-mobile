@@ -7,20 +7,25 @@ import 'balances_state.dart';
 
 class BalancesNotifier extends StateNotifier<BalancesState> {
   final BalancesRepository repository;
+  int _loadVersion = 0;
 
   BalancesNotifier({required this.repository}) : super(const BalancesState()) {
     load();
   }
 
-  Future<void> load() async {
-    state = state.copyWith(loadStatus: BalancesLoadStatus.loading);
+  Future<void> load({bool silent = false}) async {
+    final version = ++_loadVersion;
+    final preserve = silent && state.isSuccess;
+    if (!preserve) {
+      state = state.copyWith(loadStatus: BalancesLoadStatus.loading);
+    }
 
     try {
       final results = await Future.wait<Object>([
         repository.getSummary(),
         repository.listPeople(),
       ]);
-      if (!mounted) return;
+      if (!mounted || version != _loadVersion) return;
 
       state = state.copyWith(
         summary: results[0] as BalanceSummary,
@@ -28,10 +33,12 @@ class BalancesNotifier extends StateNotifier<BalancesState> {
         loadStatus: BalancesLoadStatus.success,
       );
     } catch (_) {
-      if (!mounted) return;
-      state = state.copyWith(loadStatus: BalancesLoadStatus.error);
+      if (!mounted || version != _loadVersion) return;
+      if (!preserve) {
+        state = state.copyWith(loadStatus: BalancesLoadStatus.error);
+      }
     }
   }
 
-  Future<void> reload() => load();
+  Future<void> reload({bool silent = false}) => load(silent: silent);
 }

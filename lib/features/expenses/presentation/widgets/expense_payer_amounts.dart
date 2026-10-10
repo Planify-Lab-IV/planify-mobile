@@ -14,19 +14,19 @@ class ExpensePayerAmounts extends StatefulWidget {
   final List<EventParticipant> participants;
   final List<ExpensePayerDraft> payerDrafts;
   final int differenceCents;
+  final bool enabled;
   final void Function(String participantId, int? amountCents)
   onPayerAmountChanged;
   final VoidCallback onSplitEvenly;
-  final bool enabled;
 
   const ExpensePayerAmounts({
     super.key,
     required this.participants,
     required this.payerDrafts,
     required this.differenceCents,
+    this.enabled = true,
     required this.onPayerAmountChanged,
     required this.onSplitEvenly,
-    this.enabled = true,
   });
 
   @override
@@ -115,8 +115,8 @@ class _ExpensePayerAmountField extends StatefulWidget {
   final String participantName;
   final int amountCents;
   final String locale;
-  final bool readOnly;
   final bool enabled;
+  final bool readOnly;
   final ValueChanged<int?> onAmountChanged;
 
   const _ExpensePayerAmountField({
@@ -125,8 +125,8 @@ class _ExpensePayerAmountField extends StatefulWidget {
     required this.participantName,
     required this.amountCents,
     required this.locale,
-    required this.readOnly,
     required this.enabled,
+    required this.readOnly,
     required this.onAmountChanged,
   });
 

@@ -2,20 +2,67 @@ import '../domain/debt_status.dart';
 import '../domain/debts_repository.dart';
 import '../domain/event_debt.dart';
 import '../domain/event_debts.dart';
+import '../../../core/data/fake_settlement_store.dart';
+import '../domain/debt_settlement.dart';
+import '../../balances/data/fake_balances_repository.dart';
 
 // Simula la respuesta de deudas calculadas
 class FakeDebtsRepository implements DebtsRepository {
   final Duration delay;
   bool shouldThrowError;
-  final Map<String, EventDebts> _debtsByEventId;
+  final FakeSettlementStore store;
+  DebtException? settlementError;
+  int settlementCalls = 0;
 
   FakeDebtsRepository({
     this.delay = const Duration(milliseconds: 300),
     this.shouldThrowError = false,
     Map<String, EventDebts>? initialEventDebts,
-  }) : _debtsByEventId = Map<String, EventDebts>.from(
-         initialEventDebts ?? _defaultEventDebts,
-       );
+    FakeSettlementStore? store,
+    this.settlementError,
+  }) : store = store ?? FakeSettlementStore() {
+    if (store == null) FakeBalancesRepository(store: this.store);
+    for (final entry in (initialEventDebts ?? _defaultEventDebts).entries) {
+      this.store.events.putIfAbsent(entry.key, () => entry.value);
+    }
+  }
+
+  Future<void> _waitToSettle() async {
+    settlementCalls++;
+    if (delay > Duration.zero) await Future<void>.delayed(delay);
+    if (settlementError != null) throw settlementError!;
+    if (shouldThrowError) throw const DebtNetworkException();
+  }
+
+  bool ensureEventFixture({
+    required String eventId,
+    required String eventName,
+    required String currentParticipantId,
+    required String counterpartyParticipantId,
+    required String counterpartyPersonKey,
+    required String counterpartyName,
+  }) {
+    return store.seedEventFixture(
+      eventId: eventId,
+      eventName: eventName,
+      currentParticipantId: currentParticipantId,
+      counterpartyParticipantId: counterpartyParticipantId,
+      counterpartyPersonKey: counterpartyPersonKey,
+      counterpartyName: counterpartyName,
+    );
+  }
+
+  @override
+  Future<void> settleDebt(String eventId, String debtId) async {
+    await _waitToSettle();
+    store.settleDebt(eventId, debtId);
+  }
+
+  @override
+  Future<void> settleWithPerson(String personKey) async {
+    await _waitToSettle();
+    store.settleWithPerson(personKey);
+  }
 
   @override
   Future<EventDebts> listEventDebts(String eventId) async {
@@ -26,7 +73,7 @@ class FakeDebtsRepository implements DebtsRepository {
       throw Exception('Could not load event debts');
     }
 
-    return _debtsByEventId[eventId] ??
+    return store.events[eventId] ??
         const EventDebts(debts: [], allSettled: false);
   }
 

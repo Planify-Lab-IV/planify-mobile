@@ -17,13 +17,13 @@ import 'package:planify/l10n/app_localizations.dart';
 class PendingRepository extends FakeExpensesRepository {
   final pending = Completer<void>();
   final ExpensesException? failure;
-  final requests = <NewExpense>[];
+  final submittedExpenses = <NewExpense>[];
   int calls = 0;
   PendingRepository({this.failure}) : super(delay: Duration.zero);
   @override
   Future<Expense> createExpense(String eventId, NewExpense expense) async {
     calls++;
-    requests.add(expense);
+    submittedExpenses.add(expense);
     if (calls == 1) {
       await pending.future;
       if (failure != null) throw failure!;
@@ -230,21 +230,16 @@ void main() {
       final repository = PendingRepository(
         failure: const NetworkExpenseException(),
       );
-      final description = find.byKey(const Key('expense_description_field'));
       await open(tester, repository);
       await fill(tester);
-      await tester.tap(description);
-      await tester.pump();
+      final description = find.byKey(const Key('expense_description_field'));
+      final descriptionEditable = find.descendant(
+        of: description,
+        matching: find.byType(EditableText),
+      );
+      await tester.showKeyboard(description);
       expect(
-        tester
-            .widget<EditableText>(
-              find.descendant(
-                of: description,
-                matching: find.byType(EditableText),
-              ),
-            )
-            .focusNode
-            .hasFocus,
+        tester.widget<EditableText>(descriptionEditable).focusNode.hasFocus,
         isTrue,
       );
 
@@ -252,28 +247,23 @@ void main() {
       await tester.pump();
       expect(tester.widget<TextFormField>(description).enabled, isFalse);
       expect(
-        tester
-            .widget<EditableText>(
-              find.descendant(
-                of: description,
-                matching: find.byType(EditableText),
-              ),
-            )
-            .focusNode
-            .hasFocus,
+        tester.widget<EditableText>(descriptionEditable).focusNode.hasFocus,
         isFalse,
       );
-
       repository.pending.complete();
       await tester.pumpAndSettle();
       expect(
-        tester.widget<TextFormField>(description).controller?.text,
+        tester.widget<TextFormField>(description).controller!.text,
         'Cena',
       );
 
       await tester.tap(find.text('Reintentar'));
       await tester.pumpAndSettle();
-      expect(repository.requests.last.description, 'Cena');
+      expect(repository.submittedExpenses, hasLength(2));
+      expect(
+        repository.submittedExpenses.map((expense) => expense.description),
+        everyElement('Cena'),
+      );
     },
   );
 
@@ -324,7 +314,7 @@ void main() {
 
       await tester.tap(find.text('Reintentar'));
       await tester.pumpAndSettle();
-      expect(repository.requests.last.payers.first.amountCents, 5000);
+      expect(repository.submittedExpenses.last.payers.first.amountCents, 5000);
     },
   );
 

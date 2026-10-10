@@ -1,5 +1,21 @@
 {
   "@@locale": "en",
+  "settleDebtAction": "Settle up",
+  "settleAllAction": "Settle all",
+  "settleInProgress": "Settling…",
+  "settleDebtDialogTitle": "Settle this debt?",
+  "settleOwnDebtDialogMessage": "You are about to settle your debt with {name} for {amount} in the event “{eventName}”. This action cannot be undone.",
+  "@settleOwnDebtDialogMessage": {"placeholders": {"name": {"type": "String"}, "amount": {"type": "String"}, "eventName": {"type": "String"}}},
+  "settleOwedDebtDialogMessage": "You are about to mark the {amount} debt from {name} as settled in the event “{eventName}”. This action cannot be undone.",
+  "@settleOwedDebtDialogMessage": {"placeholders": {"name": {"type": "String"}, "amount": {"type": "String"}, "eventName": {"type": "String"}}},
+  "settleAllDialogTitle": "Settle everything with this person?",
+  "settleAllDialogMessage": "You are about to settle all debts with {name}. This affects all events you share and cannot be undone.",
+  "@settleAllDialogMessage": {"placeholders": {"name": {"type": "String"}}},
+  "settleSuccess": "The debt was settled successfully.",
+  "settleForbidden": "You do not have permission to settle this debt.",
+  "settleNotFound": "The debt or person is no longer available. Refresh the data.",
+  "settleNetworkError": "Could not settle because of a connection problem. Please try again.",
+  "settleError": "Could not settle. Please try again.",
   "helloTest": "Hello, this is an i18n test",
   "identifierLabel": "Email or username",
   "identifierHint": "organizer@planify.com",
@@ -380,6 +396,20 @@
           "type": "String",
           "example": "Marcos"
         }
+      }
+    },
+    "eventDebtIOweDescription": "You owe {name} {amount}",
+    "@eventDebtIOweDescription": {
+      "placeholders": {
+        "name": {"type": "String"},
+        "amount": {"type": "String"}
+      }
+    },
+    "eventDebtOwedToMeDescription": "{name} owes you {amount}",
+    "@eventDebtOwedToMeDescription": {
+      "placeholders": {
+        "name": {"type": "String"},
+        "amount": {"type": "String"}
       }
     },
     "eventDebtPending": "Pending",
