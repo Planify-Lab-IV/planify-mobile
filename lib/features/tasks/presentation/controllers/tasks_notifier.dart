@@ -12,6 +12,7 @@ class TasksNotifier extends StateNotifier<TasksState> {
   final String? _currentParticipantId;
   final bool _isOrganizer;
   final List<EventParticipant> _participants;
+  int _taskListRequestVersion = 0;
 
   TasksNotifier({
     required TasksRepository repository,
@@ -50,14 +51,15 @@ class TasksNotifier extends StateNotifier<TasksState> {
   }
 
   Future<void> load() async {
+    final requestVersion = ++_taskListRequestVersion;
     state = state.copyWith(loadStatus: TasksLoadStatus.loading);
 
     try {
       final tasks = await _repository.listTasks(_eventId);
-      if (!mounted) return;
+      if (!mounted || requestVersion != _taskListRequestVersion) return;
       state = state.copyWith(tasks: tasks, loadStatus: TasksLoadStatus.success);
     } catch (_) {
-      if (!mounted) return;
+      if (!mounted || requestVersion != _taskListRequestVersion) return;
       state = state.copyWith(loadStatus: TasksLoadStatus.error);
     }
   }
@@ -138,13 +140,7 @@ class TasksNotifier extends StateNotifier<TasksState> {
         operationStatus: TasksOperationStatus.success,
       );
 
-      try {
-        final tasks = await _repository.listTasks(_eventId);
-        if (!mounted) return true;
-        state = state.copyWith(tasks: tasks);
-      } catch (_) {
-        // La mutación ya fue confirmada; se conserva su resultado local.
-      }
+      await _refreshTasks();
       return true;
     } catch (_) {
       if (!mounted) return false;
@@ -158,5 +154,16 @@ class TasksNotifier extends StateNotifier<TasksState> {
       if (task.id == taskId) return task;
     }
     return null;
+  }
+
+  Future<void> _refreshTasks() async {
+    final requestVersion = ++_taskListRequestVersion;
+    try {
+      final tasks = await _repository.listTasks(_eventId);
+      if (!mounted || requestVersion != _taskListRequestVersion) return;
+      state = state.copyWith(tasks: tasks);
+    } catch (_) {
+      // La mutación ya fue confirmada; se conserva su resultado local.
+    }
   }
 }
