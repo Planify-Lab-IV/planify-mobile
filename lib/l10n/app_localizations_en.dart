@@ -159,10 +159,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nameMaxLength => 'Name cannot be longer than 80 characters';
 
   @override
-  String get pinLabel => 'Event PIN';
+  String get pinLabel =>
+      'Choose a 4-digit PIN to identify yourself for this event.';
 
   @override
-  String get pinRequired => 'Please enter the event PIN';
+  String get pinRecoveryTitle =>
+      'Have you already joined this event with this name?';
+
+  @override
+  String get pinRecoveryMessage => 'Use the same PIN to restore your access.';
+
+  @override
+  String get pinRequired => 'Please enter your access PIN';
 
   @override
   String get pinMinLength => 'PIN must be at least 4 characters';
@@ -404,6 +412,42 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get noActivityPlaceholder =>
       'No activity recorded for this event yet.';
+
+  @override
+  String get activityLoading => 'Loading event activity...';
+
+  @override
+  String get activityLoadError =>
+      'Could not load this event\'s activity. Please try again.';
+
+  @override
+  String activityTaskCreated(String actor, String title) {
+    return '$actor created the task $title';
+  }
+
+  @override
+  String activityAvailabilityUpdated(String actor) {
+    return '$actor updated their availability';
+  }
+
+  @override
+  String activityExpenseCreated(
+    String actor,
+    String description,
+    String amount,
+  ) {
+    return '$actor added the expense $description for $amount';
+  }
+
+  @override
+  String activityScheduleConfirmed(String actor, String dateTime) {
+    return '$actor confirmed the schedule for $dateTime';
+  }
+
+  @override
+  String activityUnknown(String actor) {
+    return '$actor made a change to the event';
+  }
 
   @override
   String get featureUnderDevelopment => 'This feature will be available soon.';
