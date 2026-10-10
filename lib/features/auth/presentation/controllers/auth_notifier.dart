@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../data/secure_storage.dart';
 import '../../data/auth_exceptions.dart';
 import '../../domain/auth_repository.dart';
+import '../../domain/user_session.dart';
 import 'auth_state.dart';
 
 // en base a una accion, cambia el estado de la pantalla 'login'
@@ -145,5 +146,24 @@ class AuthNotifier extends StateNotifier<AuthState> {
     if (state is AuthError) {
       state = const AuthInitial();
     }
+  }
+
+  void updateSessionName(String name) {
+    final currentState = state;
+    if (currentState is! AuthAuthenticated ||
+        currentState.session is! OrganizerSession) {
+      return;
+    }
+
+    final session = currentState.session as OrganizerSession;
+    state = AuthAuthenticated(
+      OrganizerSession(
+        userId: session.userId,
+        name: name,
+        email: session.email,
+        username: session.username,
+        token: session.token,
+      ),
+    );
   }
 }
