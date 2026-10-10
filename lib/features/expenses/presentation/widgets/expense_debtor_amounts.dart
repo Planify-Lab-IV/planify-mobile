@@ -15,6 +15,7 @@ class ExpenseDebtorAmounts extends StatefulWidget {
   final void Function(String participantId, int? amountCents)
   onDebtorAmountChanged;
   final VoidCallback onSplitEvenly;
+  final bool enabled;
 
   const ExpenseDebtorAmounts({
     super.key,
@@ -23,6 +24,7 @@ class ExpenseDebtorAmounts extends StatefulWidget {
     required this.differenceCents,
     required this.onDebtorAmountChanged,
     required this.onSplitEvenly,
+    this.enabled = true,
   });
 
   @override
@@ -70,6 +72,7 @@ class _ExpenseDebtorAmountsState extends State<ExpenseDebtorAmounts> {
                 debtor.participantId,
             amountCents: debtor.amountCents,
             locale: locale,
+            enabled: widget.enabled,
             readOnly: isSingleDebtor,
             onAmountChanged: (amountCents) =>
                 widget.onDebtorAmountChanged(debtor.participantId, amountCents),
@@ -79,7 +82,7 @@ class _ExpenseDebtorAmountsState extends State<ExpenseDebtorAmounts> {
         if (!isSingleDebtor) ...[
           OutlinedButton.icon(
             key: const Key('expense_debtor_split_evenly_button'),
-            onPressed: _handleSplitEvenly,
+            onPressed: widget.enabled ? _handleSplitEvenly : null,
             icon: const Icon(Icons.pie_chart_outline_rounded),
             label: Text(i18n.addExpenseSplitDebtorsEvenly),
           ),
@@ -111,6 +114,7 @@ class _ExpenseDebtorAmountField extends StatefulWidget {
   final int amountCents;
   final String locale;
   final bool readOnly;
+  final bool enabled;
   final ValueChanged<int?> onAmountChanged;
 
   const _ExpenseDebtorAmountField({
@@ -120,6 +124,7 @@ class _ExpenseDebtorAmountField extends StatefulWidget {
     required this.amountCents,
     required this.locale,
     required this.readOnly,
+    required this.enabled,
     required this.onAmountChanged,
   });
 
@@ -188,6 +193,7 @@ class _ExpenseDebtorAmountFieldState extends State<_ExpenseDebtorAmountField> {
     return TextFormField(
       key: Key('expense_debtor_amount_${widget.participantId}'),
       controller: _controller,
+      enabled: widget.enabled,
       readOnly: widget.readOnly,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       decoration: InputDecoration(
@@ -195,7 +201,7 @@ class _ExpenseDebtorAmountFieldState extends State<_ExpenseDebtorAmountField> {
         prefixText: r'$ ',
         errorText: _errorText,
       ),
-      onChanged: widget.readOnly
+      onChanged: !widget.enabled || widget.readOnly
           ? null
           : (value) => _handleChanged(value, i18n),
     );

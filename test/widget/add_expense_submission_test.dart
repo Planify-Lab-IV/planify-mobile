@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
@@ -43,10 +44,30 @@ void main() {
     ),
   ];
 
+  const multiplePayerParticipants = [
+    EventParticipant(
+      id: 'p1',
+      eventId: 'event-1',
+      userId: 'u1',
+      username: 'Lucía',
+      isAnonymous: false,
+      isOrganizer: true,
+    ),
+    EventParticipant(
+      id: 'p2',
+      eventId: 'event-1',
+      userId: 'u2',
+      username: 'Juan',
+      isAnonymous: false,
+      isOrganizer: false,
+    ),
+  ];
+
   Future<void> open(
     WidgetTester tester,
-    FakeExpensesRepository repository,
-  ) async {
+    FakeExpensesRepository repository, {
+    List<EventParticipant> dialogParticipants = participants,
+  }) async {
     await tester.binding.setSurfaceSize(const Size(800, 1000));
     addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(
@@ -68,7 +89,7 @@ void main() {
                 onPressed: () => AddExpenseDialog.show(
                   context,
                   eventId: 'event-1',
-                  participants: participants,
+                  participants: dialogParticipants,
                 ),
                 child: const Text('Abrir'),
               ),
@@ -98,6 +119,31 @@ void main() {
       await tester.tap(find.byKey(Key(key)));
       await tester.pump();
     }
+  }
+
+  Future<void> fillWithMultiplePayers(WidgetTester tester) async {
+    await tester.enterText(
+      find.byKey(const Key('expense_description_field')),
+      'Cena',
+    );
+    await tester.enterText(
+      find.byKey(const Key('expense_total_field')),
+      '100,00',
+    );
+    for (final key in [
+      'expense_payer_selector_p1',
+      'expense_payer_selector_p2',
+      'expense_debtor_selector_p1',
+    ]) {
+      await tester.ensureVisible(find.byKey(Key(key)));
+      await tester.tap(find.byKey(Key(key)));
+      await tester.pump();
+    }
+    await tester.ensureVisible(
+      find.byKey(const Key('expense_split_evenly_button')),
+    );
+    await tester.tap(find.byKey(const Key('expense_split_evenly_button')));
+    await tester.pump();
   }
 
   final confirm = find.byKey(const Key('add_expense_save_button'));
@@ -228,6 +274,57 @@ void main() {
       await tester.tap(find.text('Reintentar'));
       await tester.pumpAndSettle();
       expect(repository.requests.last.description, 'Cena');
+    },
+  );
+
+  testWidgets(
+    'saving blocks Tab edits to payer amounts and retries the displayed split',
+    (tester) async {
+      final repository = PendingRepository(
+        failure: const NetworkExpenseException(),
+      );
+      final firstPayerAmount = find.byKey(const Key('expense_payer_amount_p1'));
+      await open(
+        tester,
+        repository,
+        dialogParticipants: multiplePayerParticipants,
+      );
+      await fillWithMultiplePayers(tester);
+      await tester.ensureVisible(firstPayerAmount);
+      await tester.tap(firstPayerAmount);
+      await tester.pump();
+
+      final editable = tester.widget<EditableText>(
+        find.descendant(
+          of: firstPayerAmount,
+          matching: find.byType(EditableText),
+        ),
+      );
+      expect(editable.focusNode.hasFocus, isTrue);
+      expect(
+        tester.widget<TextFormField>(firstPayerAmount).controller?.text,
+        '50,00',
+      );
+
+      await tester.tap(confirm);
+      await tester.pump();
+      expect(tester.widget<TextFormField>(firstPayerAmount).enabled, isFalse);
+      expect(editable.focusNode.hasFocus, isFalse);
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      expect(editable.focusNode.hasFocus, isFalse);
+
+      repository.pending.complete();
+      await tester.pumpAndSettle();
+      expect(
+        tester.widget<TextFormField>(firstPayerAmount).controller?.text,
+        '50,00',
+      );
+
+      await tester.tap(find.text('Reintentar'));
+      await tester.pumpAndSettle();
+      expect(repository.requests.last.payers.first.amountCents, 5000);
     },
   );
 
