@@ -14,6 +14,7 @@ class ExpensePayerAmounts extends StatefulWidget {
   final List<EventParticipant> participants;
   final List<ExpensePayerDraft> payerDrafts;
   final int differenceCents;
+  final bool enabled;
   final void Function(String participantId, int? amountCents)
   onPayerAmountChanged;
   final VoidCallback onSplitEvenly;
@@ -23,6 +24,7 @@ class ExpensePayerAmounts extends StatefulWidget {
     required this.participants,
     required this.payerDrafts,
     required this.differenceCents,
+    this.enabled = true,
     required this.onPayerAmountChanged,
     required this.onSplitEvenly,
   });
@@ -72,6 +74,7 @@ class _ExpensePayerAmountsState extends State<ExpensePayerAmounts> {
                 payer.participantId,
             amountCents: payer.amountCents,
             locale: locale,
+            enabled: widget.enabled,
             readOnly: isSinglePayer,
             onAmountChanged: (amountCents) =>
                 widget.onPayerAmountChanged(payer.participantId, amountCents),
@@ -81,7 +84,7 @@ class _ExpensePayerAmountsState extends State<ExpensePayerAmounts> {
         if (!isSinglePayer) ...[
           OutlinedButton.icon(
             key: const Key('expense_split_evenly_button'),
-            onPressed: _handleSplitEvenly,
+            onPressed: widget.enabled ? _handleSplitEvenly : null,
             icon: const Icon(Icons.pie_chart_outline_rounded),
             label: Text(i18n.addExpenseSplitEvenly),
           ),
@@ -112,6 +115,7 @@ class _ExpensePayerAmountField extends StatefulWidget {
   final String participantName;
   final int amountCents;
   final String locale;
+  final bool enabled;
   final bool readOnly;
   final ValueChanged<int?> onAmountChanged;
 
@@ -121,6 +125,7 @@ class _ExpensePayerAmountField extends StatefulWidget {
     required this.participantName,
     required this.amountCents,
     required this.locale,
+    required this.enabled,
     required this.readOnly,
     required this.onAmountChanged,
   });
@@ -190,6 +195,7 @@ class _ExpensePayerAmountFieldState extends State<_ExpensePayerAmountField> {
     return TextFormField(
       key: Key('expense_payer_amount_${widget.participantId}'),
       controller: _controller,
+      enabled: widget.enabled,
       readOnly: widget.readOnly,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       decoration: InputDecoration(
@@ -197,7 +203,7 @@ class _ExpensePayerAmountFieldState extends State<_ExpensePayerAmountField> {
         prefixText: r'$ ',
         errorText: _errorText,
       ),
-      onChanged: widget.readOnly
+      onChanged: widget.readOnly || !widget.enabled
           ? null
           : (value) => _handleChanged(value, i18n),
     );

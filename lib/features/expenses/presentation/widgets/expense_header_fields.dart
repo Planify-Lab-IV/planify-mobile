@@ -8,6 +8,7 @@ import '../../../../l10n/app_localizations.dart';
 class ExpenseHeaderFields extends StatefulWidget {
   final String initialDescription;
   final String initialTotalAmount;
+  final bool enabled;
   final ValueChanged<String> onDescriptionChanged;
   final ValueChanged<int?> onTotalAmountChanged;
 
@@ -15,6 +16,7 @@ class ExpenseHeaderFields extends StatefulWidget {
     super.key,
     this.initialDescription = '',
     this.initialTotalAmount = '',
+    this.enabled = true,
     required this.onDescriptionChanged,
     required this.onTotalAmountChanged,
   });
@@ -26,6 +28,8 @@ class ExpenseHeaderFields extends StatefulWidget {
 class _ExpenseHeaderFieldsState extends State<ExpenseHeaderFields> {
   late final TextEditingController _descriptionController;
   late final TextEditingController _totalAmountController;
+  late final FocusNode _descriptionFocusNode;
+  late final FocusNode _totalAmountFocusNode;
   String? _totalAmountError;
 
   @override
@@ -37,12 +41,25 @@ class _ExpenseHeaderFieldsState extends State<ExpenseHeaderFields> {
     _totalAmountController = TextEditingController(
       text: widget.initialTotalAmount,
     );
+    _descriptionFocusNode = FocusNode();
+    _totalAmountFocusNode = FocusNode();
+  }
+
+  @override
+  void didUpdateWidget(ExpenseHeaderFields oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.enabled && !widget.enabled) {
+      _descriptionFocusNode.unfocus();
+      _totalAmountFocusNode.unfocus();
+    }
   }
 
   @override
   void dispose() {
     _descriptionController.dispose();
     _totalAmountController.dispose();
+    _descriptionFocusNode.dispose();
+    _totalAmountFocusNode.dispose();
     super.dispose();
   }
 
@@ -78,6 +95,8 @@ class _ExpenseHeaderFieldsState extends State<ExpenseHeaderFields> {
         TextFormField(
           key: const Key('expense_description_field'),
           controller: _descriptionController,
+          focusNode: _descriptionFocusNode,
+          enabled: widget.enabled,
           textCapitalization: TextCapitalization.sentences,
           decoration: InputDecoration(
             labelText: i18n.addExpenseDescriptionLabel,
@@ -89,6 +108,8 @@ class _ExpenseHeaderFieldsState extends State<ExpenseHeaderFields> {
         TextFormField(
           key: const Key('expense_total_field'),
           controller: _totalAmountController,
+          focusNode: _totalAmountFocusNode,
+          enabled: widget.enabled,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(
             labelText: i18n.addExpenseTotalLabel,

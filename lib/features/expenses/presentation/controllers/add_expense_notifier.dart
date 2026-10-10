@@ -4,15 +4,24 @@ import '../../../events/domain/event_participant.dart';
 import '../../domain/expense_debtor_draft.dart';
 import '../../domain/expense_payer_draft.dart';
 import '../../domain/split_evenly.dart';
+import '../../domain/expenses_repository.dart';
+import '../../domain/new_expense.dart';
+import '../../data/expenses_exceptions.dart';
 import 'add_expense_state.dart';
 
 // Maneja el borrador del gasto mientras el dialogo está abierto
 class AddExpenseNotifier extends StateNotifier<AddExpenseState> {
   final List<EventParticipant> _participants;
+  final String eventId;
+  final ExpensesRepository repository;
+  ExpensesException? get submissionError => state.submissionError;
 
-  AddExpenseNotifier({required List<EventParticipant> participants})
-    : _participants = List<EventParticipant>.unmodifiable(participants),
-      super(AddExpenseState(participants: participants));
+  AddExpenseNotifier({
+    required List<EventParticipant> participants,
+    required this.eventId,
+    required this.repository,
+  }) : _participants = List<EventParticipant>.unmodifiable(participants),
+       super(AddExpenseState(participants: participants));
 
   void setDescription(String description) {
     _replaceState(description: description.trim());
@@ -176,14 +185,44 @@ class AddExpenseNotifier extends StateNotifier<AddExpenseState> {
     _replaceState(debtorDrafts: debtorDrafts);
   }
 
-  /// Simula el guardado hasta que exista la persistencia real de gastos.
-  Future<bool> save() async {
-    if (!state.isReadyForSubmission || state.isSaving) return false;
-
-    state = state.copyWith(saveStatus: ExpenseSaveStatus.saving);
-    await Future<void>.delayed(const Duration(milliseconds: 500));
-    state = state.copyWith(saveStatus: ExpenseSaveStatus.success);
-    return true;
+  Future<bool> submit() async {
+    if (!state.isReadyForSubmission ||
+        state.isSaving ||
+        state.saveStatus == ExpenseSaveStatus.success) {
+      return false;
+    }
+    final expense = NewExpense(
+      description: state.description,
+      totalAmountCents: state.totalAmountCents,
+      payers: state.payerDrafts,
+      debtors: state.debtorDrafts,
+    );
+    state = state.copyWith(
+      saveStatus: ExpenseSaveStatus.submitting,
+      clearError: true,
+    );
+    try {
+      final created = await repository.createExpense(eventId, expense);
+      if (!mounted) return false;
+      state = state.copyWith(
+        saveStatus: ExpenseSaveStatus.success,
+        createdExpense: created,
+      );
+      return true;
+    } on ExpensesException catch (error) {
+      if (!mounted) return false;
+      state = state.copyWith(
+        saveStatus: ExpenseSaveStatus.failure,
+        submissionError: error,
+      );
+    } catch (_) {
+      if (!mounted) return false;
+      state = state.copyWith(
+        saveStatus: ExpenseSaveStatus.failure,
+        submissionError: const ExpenseOperationException(),
+      );
+    }
+    return false;
   }
 
   void _ensureKnownParticipant(String participantId) {
@@ -222,6 +261,7 @@ class AddExpenseNotifier extends StateNotifier<AddExpenseState> {
     List<ExpensePayerDraft>? payerDrafts,
     List<ExpenseDebtorDraft>? debtorDrafts,
   }) {
+    if (state.isSaving || state.saveStatus == ExpenseSaveStatus.success) return;
     final resolvedPayerDrafts = payerDrafts ?? state.payerDrafts;
     final payersTotalCents = resolvedPayerDrafts.fold<int>(
       0,
@@ -244,7 +284,7 @@ class AddExpenseNotifier extends StateNotifier<AddExpenseState> {
       debtorDrafts: resolvedDebtorDrafts,
       debtorsTotalCents: debtorsTotalCents,
       debtorDifferenceCents: resolvedTotalAmountCents - debtorsTotalCents,
-      saveStatus: state.saveStatus,
+      saveStatus: ExpenseSaveStatus.idle,
     );
   }
 }
