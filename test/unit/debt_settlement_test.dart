@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:planify/core/data/fake_settlement_store.dart';
+import 'package:planify/core/providers/fake_settlement_provider.dart';
 import 'package:planify/features/debts/data/fake_debts_repository.dart';
 import 'package:planify/features/debts/domain/debt_settlement.dart';
 import 'package:planify/features/debts/domain/debt_status.dart';
@@ -413,8 +414,24 @@ void main() {
   test(
     'subscribed provider views refresh together and containers stay isolated',
     () async {
-      final container = ProviderContainer();
-      final other = ProviderContainer();
+      final container = ProviderContainer(
+        overrides: [
+          balancesRepositoryProvider.overrideWith(
+            (ref) => FakeBalancesRepository(
+              store: ref.watch(fakeSettlementStoreProvider),
+            ),
+          ),
+        ],
+      );
+      final other = ProviderContainer(
+        overrides: [
+          balancesRepositoryProvider.overrideWith(
+            (ref) => FakeBalancesRepository(
+              store: ref.watch(fakeSettlementStoreProvider),
+            ),
+          ),
+        ],
+      );
       addTearDown(container.dispose);
       addTearDown(other.dispose);
       container.listen(balancesNotifierProvider, (_, _) {});

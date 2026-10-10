@@ -10,12 +10,14 @@ class ExpenseDebtorSelector extends StatelessWidget {
   final List<EventParticipant> participants;
   final Set<String> selectedParticipantIds;
   final ValueChanged<String> onParticipantToggled;
+  final bool enabled;
 
   const ExpenseDebtorSelector({
     super.key,
     required this.participants,
     required this.selectedParticipantIds,
     required this.onParticipantToggled,
+    this.enabled = true,
   });
 
   @override
@@ -53,7 +55,9 @@ class ExpenseDebtorSelector extends StatelessWidget {
                 color: AppColors.onSurface,
               ),
             ),
-            onChanged: (_) => onParticipantToggled(participant.id),
+            onChanged: enabled
+                ? (_) => onParticipantToggled(participant.id)
+                : null,
           ),
       ],
     );

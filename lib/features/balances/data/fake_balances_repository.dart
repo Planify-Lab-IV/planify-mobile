@@ -107,7 +107,7 @@ class FakeBalancesRepository implements BalancesRepository {
       personKey: 'user:ana',
       displayName: 'Ana',
       status: PersonBalanceStatus.pay,
-      netCents: 24300,
+      netCents: -24300,
     ),
     PersonBalance(
       personKey: 'participant:martin',
@@ -128,7 +128,7 @@ class FakeBalancesRepository implements BalancesRepository {
       personKey: 'user:ana',
       displayName: 'Ana',
       status: PersonBalanceStatus.pay,
-      netCents: 24300,
+      netCents: -24300,
       breakdown: const [
         EventBalanceLine(
           eventId: 'event:asado',

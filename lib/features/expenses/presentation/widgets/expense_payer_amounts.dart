@@ -203,7 +203,7 @@ class _ExpensePayerAmountFieldState extends State<_ExpensePayerAmountField> {
         prefixText: r'$ ',
         errorText: _errorText,
       ),
-      onChanged: widget.readOnly || !widget.enabled
+      onChanged: !widget.enabled || widget.readOnly
           ? null
           : (value) => _handleChanged(value, i18n),
     );
