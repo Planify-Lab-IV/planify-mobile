@@ -106,6 +106,61 @@ class AppLocalizationsEs extends AppLocalizations {
       'Credenciales inválidas. Verifica tu correo y contraseña.';
 
   @override
+  String get registrationTitle => 'Crear cuenta';
+
+  @override
+  String get registrationCreateAccountLink => '¿No tenés cuenta? Crear cuenta';
+
+  @override
+  String get registrationNameLabel => 'Nombre';
+
+  @override
+  String get registrationUsernameLabel => 'Usuario';
+
+  @override
+  String get registrationUsernameHelp => 'Usá minúsculas, números y _';
+
+  @override
+  String get registrationEmailLabel => 'Correo electrónico';
+
+  @override
+  String get registrationNameInvalid =>
+      'El nombre debe tener entre 1 y 80 caracteres';
+
+  @override
+  String get registrationUsernameInvalid =>
+      'El usuario debe tener entre 3 y 30 caracteres y usar solo minúsculas, números o _';
+
+  @override
+  String get registrationEmailInvalid => 'Ingresá un correo electrónico válido';
+
+  @override
+  String get registrationPasswordInvalid =>
+      'La contraseña debe tener entre 8 y 72 caracteres';
+
+  @override
+  String get registrationSubmitButton => 'Registrarme';
+
+  @override
+  String get registrationErrorConflict =>
+      'No pudimos crear la cuenta con esos datos. Si ya tenés una cuenta, iniciá sesión.';
+
+  @override
+  String get registrationErrorInvalidData =>
+      'Revisá los datos ingresados e intentá nuevamente.';
+
+  @override
+  String get registrationErrorNetwork =>
+      'No pudimos crear la cuenta por un problema de conexión. Intentá nuevamente.';
+
+  @override
+  String get registrationErrorGeneric =>
+      'No pudimos crear la cuenta. Intentá nuevamente.';
+
+  @override
+  String get registrationBackToLogin => '¿Ya tenés cuenta? Iniciá sesión';
+
+  @override
   String get logoutButton => 'Cerrar Sesión';
 
   @override

@@ -262,6 +262,102 @@ abstract class AppLocalizations {
   /// **'Credenciales inválidas. Verifica tu correo y contraseña.'**
   String get loginErrorInvalidCredentials;
 
+  /// No description provided for @registrationTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear cuenta'**
+  String get registrationTitle;
+
+  /// No description provided for @registrationCreateAccountLink.
+  ///
+  /// In es, this message translates to:
+  /// **'¿No tenés cuenta? Crear cuenta'**
+  String get registrationCreateAccountLink;
+
+  /// No description provided for @registrationNameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get registrationNameLabel;
+
+  /// No description provided for @registrationUsernameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Usuario'**
+  String get registrationUsernameLabel;
+
+  /// No description provided for @registrationUsernameHelp.
+  ///
+  /// In es, this message translates to:
+  /// **'Usá minúsculas, números y _'**
+  String get registrationUsernameHelp;
+
+  /// No description provided for @registrationEmailLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo electrónico'**
+  String get registrationEmailLabel;
+
+  /// No description provided for @registrationNameInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'El nombre debe tener entre 1 y 80 caracteres'**
+  String get registrationNameInvalid;
+
+  /// No description provided for @registrationUsernameInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'El usuario debe tener entre 3 y 30 caracteres y usar solo minúsculas, números o _'**
+  String get registrationUsernameInvalid;
+
+  /// No description provided for @registrationEmailInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá un correo electrónico válido'**
+  String get registrationEmailInvalid;
+
+  /// No description provided for @registrationPasswordInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'La contraseña debe tener entre 8 y 72 caracteres'**
+  String get registrationPasswordInvalid;
+
+  /// No description provided for @registrationSubmitButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Registrarme'**
+  String get registrationSubmitButton;
+
+  /// No description provided for @registrationErrorConflict.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos crear la cuenta con esos datos. Si ya tenés una cuenta, iniciá sesión.'**
+  String get registrationErrorConflict;
+
+  /// No description provided for @registrationErrorInvalidData.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisá los datos ingresados e intentá nuevamente.'**
+  String get registrationErrorInvalidData;
+
+  /// No description provided for @registrationErrorNetwork.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos crear la cuenta por un problema de conexión. Intentá nuevamente.'**
+  String get registrationErrorNetwork;
+
+  /// No description provided for @registrationErrorGeneric.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos crear la cuenta. Intentá nuevamente.'**
+  String get registrationErrorGeneric;
+
+  /// No description provided for @registrationBackToLogin.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Ya tenés cuenta? Iniciá sesión'**
+  String get registrationBackToLogin;
+
   /// No description provided for @logoutButton.
   ///
   /// In es, this message translates to:

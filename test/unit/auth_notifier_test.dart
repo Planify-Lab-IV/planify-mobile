@@ -94,6 +94,108 @@ void main() {
       },
     );
 
+    test(
+      'register exitoso guarda token y cambia a AuthAuthenticated con OrganizerSession',
+      () async {
+        await notifier.register(
+          name: 'Lucía Planes',
+          username: 'lucia_planes',
+          email: 'lucia@planify.com',
+          password: 'password123',
+        );
+
+        expect(notifier.state, isA<AuthAuthenticated>());
+        final authState = notifier.state as AuthAuthenticated;
+        expect(authState.session, isA<OrganizerSession>());
+        final session = authState.session as OrganizerSession;
+        expect(session.name, 'Lucía Planes');
+        expect(session.username, 'lucia_planes');
+        expect(session.email, 'lucia@planify.com');
+        expect(await storage.getToken(), session.token);
+      },
+    );
+
+    test(
+      'register con conflicto conserva el token y cambia a AuthError específico',
+      () async {
+        await storage.saveToken('existing-token');
+        notifier = AuthNotifier(
+          FakeAuthRepository(
+            storage: storage,
+            delay: Duration.zero,
+            usedUsernames: const ['usuario_ocupado'],
+          ),
+          storage,
+        );
+
+        await notifier.register(
+          name: 'Lucía',
+          username: 'usuario_ocupado',
+          email: 'lucia@planify.com',
+          password: 'password123',
+        );
+
+        expect(
+          notifier.state,
+          const AuthError(AuthFailureReason.registrationConflict),
+        );
+        expect(await storage.getToken(), 'existing-token');
+      },
+    );
+
+    test(
+      'register con datos inválidos cambia a AuthError específico',
+      () async {
+        await notifier.register(
+          name: '',
+          username: 'lucia',
+          email: 'lucia@planify.com',
+          password: 'password123',
+        );
+
+        expect(
+          notifier.state,
+          const AuthError(AuthFailureReason.invalidRegistrationData),
+        );
+        expect(await storage.getToken(), isNull);
+      },
+    );
+
+    test('register con error de red cambia a AuthError de red', () async {
+      await notifier.register(
+        name: 'Lucía',
+        username: 'lucia',
+        email: 'network.error@planify.com',
+        password: 'password123',
+      );
+
+      expect(notifier.state, const AuthError(AuthFailureReason.networkError));
+      expect(await storage.getToken(), isNull);
+    });
+
+    test(
+      'register con error desconocido cambia a AuthError desconocido',
+      () async {
+        notifier = AuthNotifier(
+          _ThrowingRegisterRepository(
+            storage: storage,
+            exception: const UnknownAuthException(),
+          ),
+          storage,
+        );
+
+        await notifier.register(
+          name: 'Lucía',
+          username: 'lucia',
+          email: 'lucia@planify.com',
+          password: 'password123',
+        );
+
+        expect(notifier.state, const AuthError(AuthFailureReason.unknown));
+        expect(await storage.getToken(), isNull);
+      },
+    );
+
     test('logout elimina token y cambia a AuthUnauthenticated', () async {
       await notifier.login(
         identifier: 'lucas@gmail.com',
@@ -323,6 +425,25 @@ class _ThrowingCurrentSessionRepository extends FakeAuthRepository {
 
   @override
   Future<UserSession?> getCurrentSession() async {
+    throw exception;
+  }
+}
+
+class _ThrowingRegisterRepository extends FakeAuthRepository {
+  final AuthException exception;
+
+  _ThrowingRegisterRepository({
+    required SecureStorage storage,
+    required this.exception,
+  }) : super(storage: storage, delay: Duration.zero);
+
+  @override
+  Future<UserSession> register({
+    required String name,
+    required String username,
+    required String email,
+    required String password,
+  }) async {
     throw exception;
   }
 }

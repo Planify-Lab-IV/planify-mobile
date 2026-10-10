@@ -37,6 +37,36 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  Future<void> register({
+    required String name,
+    required String username,
+    required String email,
+    required String password,
+  }) async {
+    state = const AuthLoading();
+
+    try {
+      final session = await _repository.register(
+        name: name,
+        username: username,
+        email: email,
+        password: password,
+      );
+
+      await _storage.saveToken(session.token);
+
+      state = AuthAuthenticated(session);
+    } on RegistrationConflictException {
+      state = const AuthError(AuthFailureReason.registrationConflict);
+    } on InvalidRegistrationDataException {
+      state = const AuthError(AuthFailureReason.invalidRegistrationData);
+    } on NetworkAuthException {
+      state = const AuthError(AuthFailureReason.networkError);
+    } catch (_) {
+      state = const AuthError(AuthFailureReason.unknown);
+    }
+  }
+
   Future<void> loginAnonymously({
     required String name,
     required String pin,
