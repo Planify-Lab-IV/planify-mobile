@@ -25,12 +25,16 @@ class OrganizerHomeScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          i18n.organizerPanelTitle,
-          style: theme.textTheme.titleLarge?.copyWith(
+          i18n.organizerGreeting(session.name),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: theme.textTheme.headlineSmall?.copyWith(
             color: theme.colorScheme.onPrimaryContainer,
+            fontWeight: FontWeight.w700,
           ),
         ),
-        backgroundColor: theme.colorScheme.primaryContainer,
+        backgroundColor: theme.scaffoldBackgroundColor,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
         actions: [
           IconButton(
@@ -42,7 +46,8 @@ class OrganizerHomeScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: Center(
+      body: Align(
+        alignment: Alignment.topCenter,
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: ConstrainedBox(
@@ -54,26 +59,12 @@ class OrganizerHomeScreen extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Center(
-                      child: Container(
-                        width: 72,
-                        height: 72,
-                        decoration: BoxDecoration(
-                          color: AppColors.lightBlue,
-                          borderRadius: BorderRadius.circular(AppRadius.card),
-                        ),
-                        child: Icon(
-                          Icons.verified_user_rounded,
-                          size: 40,
-                          color: theme.colorScheme.primary,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.md),
                     Text(
-                      i18n.welcomeOrganizer(session.name),
-                      style: theme.textTheme.headlineSmall,
-                      textAlign: TextAlign.center,
+                      i18n.createEventTitle,
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        color: theme.colorScheme.onPrimaryContainer,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
@@ -81,7 +72,6 @@ class OrganizerHomeScreen extends ConsumerWidget {
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: AppColors.onSurfaceVariant,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     const Divider(color: AppColors.outline),

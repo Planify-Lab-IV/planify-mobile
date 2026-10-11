@@ -248,7 +248,7 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.byType(OrganizerHomeScreen), findsOneWidget);
-        expect(find.text('¡Bienvenido, lucas!'), findsOneWidget);
+        expect(find.text('Hola, lucas'), findsOneWidget);
 
         await tester.ensureVisible(find.byKey(const Key('logout_button')));
         await tester.tap(find.byKey(const Key('logout_button')));
