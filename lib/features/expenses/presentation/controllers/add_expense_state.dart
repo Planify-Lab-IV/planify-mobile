@@ -1,8 +1,10 @@
 import '../../../events/domain/event_participant.dart';
 import '../../domain/expense_debtor_draft.dart';
 import '../../domain/expense_payer_draft.dart';
+import '../../domain/expense.dart';
+import '../../data/expenses_exceptions.dart';
 
-enum ExpenseSaveStatus { idle, saving, success }
+enum ExpenseSaveStatus { idle, submitting, success, failure }
 
 // Foto actual del formulario de gastos
 class AddExpenseState {
@@ -16,6 +18,8 @@ class AddExpenseState {
   final int debtorsTotalCents;
   final int debtorDifferenceCents;
   final ExpenseSaveStatus saveStatus;
+  final ExpensesException? submissionError;
+  final Expense? createdExpense;
 
   AddExpenseState({
     required List<EventParticipant> participants,
@@ -28,6 +32,8 @@ class AddExpenseState {
     this.debtorsTotalCents = 0,
     this.debtorDifferenceCents = 0,
     this.saveStatus = ExpenseSaveStatus.idle,
+    this.submissionError,
+    this.createdExpense,
   }) : participants = List<EventParticipant>.unmodifiable(participants),
        payerDrafts = List<ExpensePayerDraft>.unmodifiable(payerDrafts),
        debtorDrafts = List<ExpenseDebtorDraft>.unmodifiable(debtorDrafts);
@@ -50,9 +56,14 @@ class AddExpenseState {
       hasValidTotal &&
       hasBalancedPayers &&
       hasBalancedDebtors;
-  bool get isSaving => saveStatus == ExpenseSaveStatus.saving;
+  bool get isSaving => saveStatus == ExpenseSaveStatus.submitting;
 
-  AddExpenseState copyWith({ExpenseSaveStatus? saveStatus}) {
+  AddExpenseState copyWith({
+    ExpenseSaveStatus? saveStatus,
+    ExpensesException? submissionError,
+    Expense? createdExpense,
+    bool clearError = false,
+  }) {
     return AddExpenseState(
       participants: participants,
       description: description,
@@ -64,6 +75,10 @@ class AddExpenseState {
       debtorsTotalCents: debtorsTotalCents,
       debtorDifferenceCents: debtorDifferenceCents,
       saveStatus: saveStatus ?? this.saveStatus,
+      submissionError: clearError
+          ? null
+          : submissionError ?? this.submissionError,
+      createdExpense: createdExpense ?? this.createdExpense,
     );
   }
 

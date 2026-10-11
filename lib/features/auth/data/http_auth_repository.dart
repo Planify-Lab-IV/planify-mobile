@@ -43,6 +43,45 @@ class HttpAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<UserSession> register({
+    required String name,
+    required String username,
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final response = await dio.post<dynamic>(
+        '/auth/register',
+        data: {
+          'name': name,
+          'username': username,
+          'email': email,
+          'password': password,
+        },
+      );
+
+      final session = _organizerSessionFromResponse(response.data);
+      _currentSession = session;
+      return session;
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 409) {
+        throw const RegistrationConflictException();
+      }
+      if (error.response?.statusCode == 400) {
+        throw const InvalidRegistrationDataException();
+      }
+      if (_isNetworkError(error)) {
+        throw const NetworkAuthException();
+      }
+      throw const UnknownAuthException();
+    } on AuthException {
+      rethrow;
+    } catch (_) {
+      throw const UnknownAuthException();
+    }
+  }
+
+  @override
   Future<UserSession> loginAnonymously({
     required String name,
     required String pin,

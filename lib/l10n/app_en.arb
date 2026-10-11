@@ -9,6 +9,22 @@
   "groupsEventActive": "Active",
   "groupsMembers": "{count, plural, =1{1 member} other{{count} members}}",
   "@groupsMembers": {"placeholders": {"count": {"type": "int"}}},
+  "settleDebtAction": "Settle up",
+  "settleAllAction": "Settle all",
+  "settleInProgress": "Settling…",
+  "settleDebtDialogTitle": "Settle this debt?",
+  "settleOwnDebtDialogMessage": "You are about to settle your debt with {name} for {amount} in the event “{eventName}”. This action cannot be undone.",
+  "@settleOwnDebtDialogMessage": {"placeholders": {"name": {"type": "String"}, "amount": {"type": "String"}, "eventName": {"type": "String"}}},
+  "settleOwedDebtDialogMessage": "You are about to mark the {amount} debt from {name} as settled in the event “{eventName}”. This action cannot be undone.",
+  "@settleOwedDebtDialogMessage": {"placeholders": {"name": {"type": "String"}, "amount": {"type": "String"}, "eventName": {"type": "String"}}},
+  "settleAllDialogTitle": "Settle everything with this person?",
+  "settleAllDialogMessage": "You are about to settle all debts with {name}. This affects all events you share and cannot be undone.",
+  "@settleAllDialogMessage": {"placeholders": {"name": {"type": "String"}}},
+  "settleSuccess": "The debt was settled successfully.",
+  "settleForbidden": "You do not have permission to settle this debt.",
+  "settleNotFound": "The debt or person is no longer available. Refresh the data.",
+  "settleNetworkError": "Could not settle because of a connection problem. Please try again.",
+  "settleError": "Could not settle. Please try again.",
   "helloTest": "Hello, this is an i18n test",
   "identifierLabel": "Email or username",
   "identifierHint": "organizer@planify.com",
@@ -22,6 +38,22 @@
   "loggingIn": "Signing in...",
   "loginErrorGeneric": "Could not sign in. Please try again.",
   "loginErrorInvalidCredentials": "Invalid credentials. Please verify your email and password.",
+  "registrationTitle": "Create account",
+  "registrationCreateAccountLink": "Don't have an account? Create one",
+  "registrationNameLabel": "Name",
+  "registrationUsernameLabel": "Username",
+  "registrationUsernameHelp": "Use lowercase letters, numbers and _",
+  "registrationEmailLabel": "Email",
+  "registrationNameInvalid": "Name must be between 1 and 80 characters",
+  "registrationUsernameInvalid": "Username must be between 3 and 30 characters and use only lowercase letters, numbers or _",
+  "registrationEmailInvalid": "Enter a valid email address",
+  "registrationPasswordInvalid": "Password must be between 8 and 72 characters",
+  "registrationSubmitButton": "Create account",
+  "registrationErrorConflict": "We could not create an account with those details. If you already have an account, sign in.",
+  "registrationErrorInvalidData": "Review the information entered and try again.",
+  "registrationErrorNetwork": "We could not create the account because of a connection problem. Please try again.",
+  "registrationErrorGeneric": "We could not create the account. Please try again.",
+  "registrationBackToLogin": "Already have an account? Sign in",
   "logoutButton": "Sign Out",
   "welcomeOrganizer": "Welcome, {name}!",
   "@welcomeOrganizer": {
@@ -345,9 +377,17 @@
         }
       }
     },
-    "addExpenseSave": "Save expense",
+    "addExpenseSave": "Confirm",
     "addExpenseSaving": "Saving expense...",
-    "addExpenseSaveSuccess": "Expense saved (simulated).",
+    "addExpenseSaveSuccess": "The expense was saved successfully.",
+    "addExpenseValidationError": "Check the expense data, participants and that the amounts match the total.",
+    "addExpenseAuthenticationError": "Your session is invalid. Please sign in again.",
+    "addExpenseForbiddenError": "You do not have permission to add expenses to this event.",
+    "addExpenseNotFoundError": "The event was not found.",
+    "addExpenseEventUnavailableError": "The event was cancelled and no longer accepts expenses.",
+    "addExpenseClosedError": "Expenses for this event are already closed.",
+    "addExpenseNetworkError": "The expense could not be saved because of a connection problem.",
+    "addExpenseSaveError": "We could not confirm that the expense was saved. Please try again.",
     "eventDebtsTitle": "Event debts",
     "eventDebtsLoading": "Loading event debts...",
     "eventDebtDescription": "{debtorName} owes {amount} to {creditorName}",
@@ -365,6 +405,20 @@
           "type": "String",
           "example": "Marcos"
         }
+      }
+    },
+    "eventDebtIOweDescription": "You owe {name} {amount}",
+    "@eventDebtIOweDescription": {
+      "placeholders": {
+        "name": {"type": "String"},
+        "amount": {"type": "String"}
+      }
+    },
+    "eventDebtOwedToMeDescription": "{name} owes you {amount}",
+    "@eventDebtOwedToMeDescription": {
+      "placeholders": {
+        "name": {"type": "String"},
+        "amount": {"type": "String"}
       }
     },
     "eventDebtPending": "Pending",

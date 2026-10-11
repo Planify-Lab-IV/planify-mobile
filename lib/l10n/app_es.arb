@@ -9,6 +9,22 @@
   "groupsEventActive": "Activo",
   "groupsMembers": "{count, plural, =1{1 miembro} other{{count} miembros}}",
   "@groupsMembers": {"placeholders": {"count": {"type": "int"}}},
+  "settleDebtAction": "Saldar",
+  "settleAllAction": "Saldar todo",
+  "settleInProgress": "Saldando…",
+  "settleDebtDialogTitle": "¿Saldar esta deuda?",
+  "settleOwnDebtDialogMessage": "Vas a saldar tu deuda con {name} por {amount} en el evento «{eventName}». Esta acción no se puede deshacer.",
+  "@settleOwnDebtDialogMessage": {"placeholders": {"name": {"type": "String"}, "amount": {"type": "String"}, "eventName": {"type": "String"}}},
+  "settleOwedDebtDialogMessage": "Vas a marcar como saldada la deuda de {name} por {amount} en el evento «{eventName}». Esta acción no se puede deshacer.",
+  "@settleOwedDebtDialogMessage": {"placeholders": {"name": {"type": "String"}, "amount": {"type": "String"}, "eventName": {"type": "String"}}},
+  "settleAllDialogTitle": "¿Saldar todo con esta persona?",
+  "settleAllDialogMessage": "Vas a saldar todas las deudas con {name}. Esta acción afecta todos los eventos en común y no se puede deshacer.",
+  "@settleAllDialogMessage": {"placeholders": {"name": {"type": "String"}}},
+  "settleSuccess": "La deuda se saldó correctamente.",
+  "settleForbidden": "No tenés permiso para saldar esta deuda.",
+  "settleNotFound": "La deuda o la persona ya no está disponible. Actualizá los datos.",
+  "settleNetworkError": "No se pudo saldar por un problema de conexión. Intentá nuevamente.",
+  "settleError": "No se pudo saldar. Intentá nuevamente.",
   "helloTest": "Hola, esta es una prueba de i18n",
   "identifierLabel": "Correo o usuario",
   "identifierHint": "organizador@planify.com",
@@ -22,6 +38,22 @@
   "loggingIn": "Iniciando sesión...",
   "loginErrorGeneric": "No se pudo iniciar sesión. Intenta nuevamente.",
   "loginErrorInvalidCredentials": "Credenciales inválidas. Verifica tu correo y contraseña.",
+  "registrationTitle": "Crear cuenta",
+  "registrationCreateAccountLink": "¿No tenés cuenta? Crear cuenta",
+  "registrationNameLabel": "Nombre",
+  "registrationUsernameLabel": "Usuario",
+  "registrationUsernameHelp": "Usá minúsculas, números y _",
+  "registrationEmailLabel": "Correo electrónico",
+  "registrationNameInvalid": "El nombre debe tener entre 1 y 80 caracteres",
+  "registrationUsernameInvalid": "El usuario debe tener entre 3 y 30 caracteres y usar solo minúsculas, números o _",
+  "registrationEmailInvalid": "Ingresá un correo electrónico válido",
+  "registrationPasswordInvalid": "La contraseña debe tener entre 8 y 72 caracteres",
+  "registrationSubmitButton": "Registrarme",
+  "registrationErrorConflict": "No pudimos crear la cuenta con esos datos. Si ya tenés una cuenta, iniciá sesión.",
+  "registrationErrorInvalidData": "Revisá los datos ingresados e intentá nuevamente.",
+  "registrationErrorNetwork": "No pudimos crear la cuenta por un problema de conexión. Intentá nuevamente.",
+  "registrationErrorGeneric": "No pudimos crear la cuenta. Intentá nuevamente.",
+  "registrationBackToLogin": "¿Ya tenés cuenta? Iniciá sesión",
   "logoutButton": "Cerrar Sesión",
   "welcomeOrganizer": "¡Bienvenido, {name}!",
   "@welcomeOrganizer": {
@@ -345,9 +377,17 @@
           }
         }
       },
-      "addExpenseSave": "Guardar gasto",
+      "addExpenseSave": "Confirmar",
       "addExpenseSaving": "Guardando gasto...",
-      "addExpenseSaveSuccess": "Gasto guardado (simulado).",
+      "addExpenseSaveSuccess": "El gasto se guardó correctamente.",
+      "addExpenseValidationError": "Revisá los datos del gasto, los participantes y que los montos coincidan con el total.",
+      "addExpenseAuthenticationError": "Tu sesión no es válida. Volvé a iniciar sesión.",
+      "addExpenseForbiddenError": "No tenés permiso para cargar gastos en este evento.",
+      "addExpenseNotFoundError": "No se encontró el evento.",
+      "addExpenseEventUnavailableError": "El evento fue cancelado y no acepta gastos.",
+      "addExpenseClosedError": "Los gastos de este evento ya están cerrados.",
+      "addExpenseNetworkError": "No se pudo guardar el gasto por un problema de conexión.",
+      "addExpenseSaveError": "No se pudo confirmar el guardado del gasto. Intentá nuevamente.",
       "scheduleConfirmationNotFoundError": "No se encontró el evento.",
       "scheduleConfirmationNetworkError": "No se pudo confirmar el horario por un problema de conexión.",
       "scheduleConfirmationGenericError": "No se pudo confirmar el horario. Intentá nuevamente.",
@@ -369,6 +409,20 @@
             "type": "String",
             "example": "Marcos"
           }
+        }
+      },
+      "eventDebtIOweDescription": "Le debés {amount} a {name}",
+      "@eventDebtIOweDescription": {
+        "placeholders": {
+          "name": {"type": "String"},
+          "amount": {"type": "String"}
+        }
+      },
+      "eventDebtOwedToMeDescription": "{name} te debe {amount}",
+      "@eventDebtOwedToMeDescription": {
+        "placeholders": {
+          "name": {"type": "String"},
+          "amount": {"type": "String"}
         }
       },
       "eventDebtPending": "Pendiente",
