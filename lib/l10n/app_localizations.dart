@@ -98,6 +98,60 @@ abstract class AppLocalizations {
     Locale('es'),
   ];
 
+  /// No description provided for @navigationGroups.
+  ///
+  /// In es, this message translates to:
+  /// **'Grupos'**
+  String get navigationGroups;
+
+  /// No description provided for @organizerGreeting.
+  ///
+  /// In es, this message translates to:
+  /// **'Hola, {name}'**
+  String organizerGreeting(String name);
+
+  /// No description provided for @groupsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no tenés grupos. Creá un evento para armar tu primer grupo.'**
+  String get groupsEmpty;
+
+  /// No description provided for @groupEventsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Este grupo todavía no tiene eventos activos.'**
+  String get groupEventsEmpty;
+
+  /// No description provided for @groupsLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tus grupos. Intentá de nuevo.'**
+  String get groupsLoadError;
+
+  /// No description provided for @groupsDateTbd.
+  ///
+  /// In es, this message translates to:
+  /// **'A definir'**
+  String get groupsDateTbd;
+
+  /// No description provided for @groupsEventConfirmed.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmado'**
+  String get groupsEventConfirmed;
+
+  /// No description provided for @groupsEventActive.
+  ///
+  /// In es, this message translates to:
+  /// **'Activo'**
+  String get groupsEventActive;
+
+  /// No description provided for @groupsMembers.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 miembro} other{{count} miembros}}'**
+  String groupsMembers(int count);
+
   /// No description provided for @helloTest.
   ///
   /// In es, this message translates to:
@@ -1546,21 +1600,6 @@ abstract class AppLocalizations {
   /// **'Balances'**
   String get navigationBalances;
 
-  /// No description provided for @navigationProfile.
-  ///
-  /// In es, this message translates to:
-  /// **'Perfil'**
-  String get navigationProfile;
-
-  String get profileTitle;
-  String get profileNameLabel;
-  String get profileUsernameLabel;
-  String get profileEmailLabel;
-  String get profileChangeAvatar;
-  String get profileSaveButton;
-  String get profileLoadError;
-  String get profileSaveError;
-
   /// No description provided for @balancesTitle.
   ///
   /// In es, this message translates to:
@@ -1686,6 +1725,60 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'{name} te debe'**
   String personBalanceDetailLineOwedToYou(String name);
+
+  /// No description provided for @navigationProfile.
+  ///
+  /// In es, this message translates to:
+  /// **'Perfil'**
+  String get navigationProfile;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Perfil'**
+  String get profileTitle;
+
+  /// No description provided for @profileNameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get profileNameLabel;
+
+  /// No description provided for @profileUsernameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Usuario'**
+  String get profileUsernameLabel;
+
+  /// No description provided for @profileEmailLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo electrónico'**
+  String get profileEmailLabel;
+
+  /// No description provided for @profileChangeAvatar.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar foto de perfil'**
+  String get profileChangeAvatar;
+
+  /// No description provided for @profileSaveButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar'**
+  String get profileSaveButton;
+
+  /// No description provided for @profileLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cargar el perfil.'**
+  String get profileLoadError;
+
+  /// No description provided for @profileSaveError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron guardar los cambios. Intentá nuevamente.'**
+  String get profileSaveError;
 }
 
 class _AppLocalizationsDelegate

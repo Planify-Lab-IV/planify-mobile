@@ -9,6 +9,45 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get navigationGroups => 'Grupos';
+
+  @override
+  String organizerGreeting(String name) {
+    return 'Hola, $name';
+  }
+
+  @override
+  String get groupsEmpty =>
+      'Todavía no tenés grupos. Creá un evento para armar tu primer grupo.';
+
+  @override
+  String get groupEventsEmpty => 'Este grupo todavía no tiene eventos activos.';
+
+  @override
+  String get groupsLoadError =>
+      'No pudimos cargar tus grupos. Intentá de nuevo.';
+
+  @override
+  String get groupsDateTbd => 'A definir';
+
+  @override
+  String get groupsEventConfirmed => 'Confirmado';
+
+  @override
+  String get groupsEventActive => 'Activo';
+
+  @override
+  String groupsMembers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count miembros',
+      one: '1 miembro',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get helloTest => 'Hola, esta es una prueba de i18n';
 
   @override
@@ -815,34 +854,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get navigationBalances => 'Balances';
 
   @override
-  String get navigationProfile => 'Perfil';
-
-  @override
-  String get profileTitle => 'Perfil';
-
-  @override
-  String get profileNameLabel => 'Nombre';
-
-  @override
-  String get profileUsernameLabel => 'Usuario';
-
-  @override
-  String get profileEmailLabel => 'Correo electrónico';
-
-  @override
-  String get profileChangeAvatar => 'Cambiar foto de perfil';
-
-  @override
-  String get profileSaveButton => 'Guardar';
-
-  @override
-  String get profileLoadError => 'No se pudo cargar el perfil.';
-
-  @override
-  String get profileSaveError =>
-      'No se pudieron guardar los cambios. Intentá nuevamente.';
-
-  @override
   String get balancesTitle => 'Balances';
 
   @override
@@ -914,4 +925,32 @@ class AppLocalizationsEs extends AppLocalizations {
   String personBalanceDetailLineOwedToYou(String name) {
     return '$name te debe';
   }
+
+  @override
+  String get navigationProfile => 'Perfil';
+
+  @override
+  String get profileTitle => 'Perfil';
+
+  @override
+  String get profileNameLabel => 'Nombre';
+
+  @override
+  String get profileUsernameLabel => 'Usuario';
+
+  @override
+  String get profileEmailLabel => 'Correo electrónico';
+
+  @override
+  String get profileChangeAvatar => 'Cambiar foto de perfil';
+
+  @override
+  String get profileSaveButton => 'Guardar';
+
+  @override
+  String get profileLoadError => 'No se pudo cargar el perfil.';
+
+  @override
+  String get profileSaveError =>
+      'No se pudieron guardar los cambios. Intentá nuevamente.';
 }
