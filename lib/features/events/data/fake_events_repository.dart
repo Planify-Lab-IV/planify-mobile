@@ -33,6 +33,21 @@ class FakeEventsRepository implements EventsRepository {
            : organizerId.trim() {
     final defaults = [
       Event(
+        id: 'evt-almuerzo-familia',
+        name: 'Almuerzo familiar',
+        location: 'Casa de la abuela',
+        organizerId: _organizerId,
+        groupId: 'grp-familia',
+        status: EventStatus.confirmed,
+        startDateTime: DateTime(2026, 12, 20, 13),
+        createdAt: DateTime(2026, 1, 1),
+        updatedAt: DateTime(2026, 1, 1),
+        participants: _defaultParticipants(
+          'evt-almuerzo-familia',
+          _organizerId,
+        ),
+      ),
+      Event(
         id: 'evt-123',
         name: 'Cumpleaños de Lucas',
         location: 'Casa de Lucas',
