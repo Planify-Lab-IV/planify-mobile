@@ -12,11 +12,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get navigationGroups => 'Grupos';
 
   @override
-  String organizerGreeting(String name) {
-    return 'Hola, $name';
-  }
-
-  @override
   String get groupsEmpty =>
       'Todavía no tenés grupos. Creá un evento para armar tu primer grupo.';
 

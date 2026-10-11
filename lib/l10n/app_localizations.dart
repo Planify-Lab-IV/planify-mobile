@@ -104,12 +104,6 @@ abstract class AppLocalizations {
   /// **'Grupos'**
   String get navigationGroups;
 
-  /// No description provided for @organizerGreeting.
-  ///
-  /// In es, this message translates to:
-  /// **'Hola, {name}'**
-  String organizerGreeting(String name);
-
   /// No description provided for @groupsEmpty.
   ///
   /// In es, this message translates to:

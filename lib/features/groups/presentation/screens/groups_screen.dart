@@ -21,13 +21,13 @@ class GroupsScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(
           i18n.navigationGroups,
-          style: theme.textTheme.headlineSmall?.copyWith(
+          style: theme.textTheme.titleLarge?.copyWith(
             color: theme.colorScheme.onPrimaryContainer,
-            fontWeight: FontWeight.w700,
           ),
         ),
-        backgroundColor: theme.scaffoldBackgroundColor,
+        backgroundColor: theme.colorScheme.primaryContainer,
         surfaceTintColor: Colors.transparent,
+        elevation: 0,
       ),
       body: RefreshIndicator(
         onRefresh: () async {

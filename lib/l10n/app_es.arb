@@ -1,8 +1,6 @@
 {
   "@@locale": "es",
   "navigationGroups": "Grupos",
-  "organizerGreeting": "Hola, {name}",
-  "@organizerGreeting": {"placeholders": {"name": {"type": "String"}}},
   "groupsEmpty": "Todavía no tenés grupos. Creá un evento para armar tu primer grupo.",
   "groupEventsEmpty": "Este grupo todavía no tiene eventos activos.",
   "groupsLoadError": "No pudimos cargar tus grupos. Intentá de nuevo.",
