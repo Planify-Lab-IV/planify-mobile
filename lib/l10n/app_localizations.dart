@@ -145,6 +145,7 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'{count, plural, =1{1 miembro} other{{count} miembros}}'**
   String groupsMembers(int count);
+
   /// No description provided for @settleDebtAction.
   ///
   /// In es, this message translates to:
