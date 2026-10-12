@@ -75,6 +75,7 @@ class TasksNotifier extends StateNotifier<TasksState> {
     try {
       final task = await _repository.createTask(_eventId, title);
       if (!mounted) return false;
+      _taskListRequestVersion++;
       state = state.copyWith(
         tasks: [...state.tasks, task],
         operationStatus: TasksOperationStatus.success,
