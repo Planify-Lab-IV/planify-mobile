@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../events/domain/event_participant.dart';
@@ -78,8 +80,10 @@ class TasksNotifier extends StateNotifier<TasksState> {
       _taskListRequestVersion++;
       state = state.copyWith(
         tasks: [...state.tasks, task],
+        loadStatus: TasksLoadStatus.success,
         operationStatus: TasksOperationStatus.success,
       );
+      unawaited(_refreshTasks(preservedTasks: [task]));
       return true;
     } catch (_) {
       if (!mounted) return false;
@@ -157,12 +161,19 @@ class TasksNotifier extends StateNotifier<TasksState> {
     return null;
   }
 
-  Future<void> _refreshTasks() async {
+  Future<void> _refreshTasks({List<Task> preservedTasks = const []}) async {
     final requestVersion = ++_taskListRequestVersion;
     try {
       final tasks = await _repository.listTasks(_eventId);
       if (!mounted || requestVersion != _taskListRequestVersion) return;
-      state = state.copyWith(tasks: tasks);
+      final taskIds = tasks.map((task) => task.id).toSet();
+      state = state.copyWith(
+        tasks: [
+          ...tasks,
+          for (final task in preservedTasks)
+            if (!taskIds.contains(task.id)) task,
+        ],
+      );
     } catch (_) {
       // La mutación ya fue confirmada; se conserva su resultado local.
     }
