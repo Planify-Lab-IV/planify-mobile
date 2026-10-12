@@ -14,6 +14,8 @@ import 'package:planify/features/groups/domain/group_overview.dart';
 import 'package:planify/features/groups/domain/groups_overview_repository.dart';
 import 'package:planify/features/groups/presentation/controllers/groups_providers.dart';
 import 'package:planify/features/groups/presentation/screens/groups_screen.dart';
+import 'package:planify/features/tasks/data/fake_tasks_repository.dart';
+import 'package:planify/features/tasks/presentation/controllers/tasks_providers.dart';
 import 'package:planify/l10n/app_localizations.dart';
 
 class MutableOverviewRepository implements GroupsOverviewRepository {
@@ -37,6 +39,9 @@ Widget app(GroupsOverviewRepository repository, {String language = 'es'}) =>
         groupsOverviewRepositoryProvider.overrideWithValue(repository),
         eventsRepositoryProvider.overrideWithValue(
           FakeEventsRepository(delay: Duration.zero),
+        ),
+        tasksRepositoryProvider.overrideWithValue(
+          FakeTasksRepository(delay: Duration.zero),
         ),
       ],
       child: MaterialApp(

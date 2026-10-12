@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/events/domain/event_participant.dart';
 import 'package:planify/features/tasks/data/fake_tasks_repository.dart';
 import 'package:planify/features/tasks/domain/task.dart';
+import 'package:planify/features/tasks/domain/tasks_repository.dart';
 import 'package:planify/features/tasks/domain/task_status.dart';
 import 'package:planify/features/tasks/presentation/controllers/tasks_notifier.dart';
+import 'package:planify/features/tasks/presentation/controllers/tasks_state.dart';
 
 void main() {
   const eventId = 'event-1';
@@ -138,5 +142,245 @@ void main() {
         );
       },
     );
+
+    test(
+      'ignora el refresco de Tomar que llega después de Completar',
+      () async {
+        const unassigned = Task(
+          id: 'task-1',
+          eventId: eventId,
+          title: 'Comprar hielo',
+          status: TaskStatus.unassigned,
+          assignedToParticipantId: null,
+          createdByParticipantId: luciaId,
+        );
+        final claimed = unassigned.copyWith(
+          status: TaskStatus.pending,
+          assignedToParticipantId: luciaId,
+        );
+        final completed = claimed.copyWith(status: TaskStatus.completed);
+        final repository = _OutOfOrderTasksRepository(
+          initial: unassigned,
+          claimed: claimed,
+          completed: completed,
+        );
+        final tasksNotifier = TasksNotifier(
+          repository: repository,
+          eventId: eventId,
+          currentParticipantId: luciaId,
+          isOrganizer: true,
+          participants: const [lucia, juan],
+        );
+        repository.initialLoad.complete([unassigned]);
+        await Future<void>.delayed(Duration.zero);
+
+        final claim = tasksNotifier.claim(unassigned.id);
+        await Future<void>.delayed(Duration.zero);
+        expect(repository.listCalls, 2);
+
+        final complete = tasksNotifier.complete(unassigned.id);
+        await Future<void>.delayed(Duration.zero);
+        expect(repository.listCalls, 3);
+
+        repository.completeRefresh.complete([completed]);
+        expect(await complete, isTrue);
+        expect(tasksNotifier.state.tasks.single.status, TaskStatus.completed);
+
+        repository.claimRefresh.complete([claimed]);
+        expect(await claim, isTrue);
+        expect(tasksNotifier.state.tasks.single.status, TaskStatus.completed);
+      },
+    );
+
+    test('ignora el refresco de Tomar que llega después de Crear', () async {
+      const unassigned = Task(
+        id: 'task-1',
+        eventId: eventId,
+        title: 'Comprar hielo',
+        status: TaskStatus.unassigned,
+        assignedToParticipantId: null,
+        createdByParticipantId: luciaId,
+      );
+      final claimed = unassigned.copyWith(
+        status: TaskStatus.pending,
+        assignedToParticipantId: luciaId,
+      );
+      const created = Task(
+        id: 'task-2',
+        eventId: eventId,
+        title: 'Comprar carbón',
+        status: TaskStatus.unassigned,
+        assignedToParticipantId: null,
+        createdByParticipantId: luciaId,
+      );
+      final repository = _ClaimThenCreateTasksRepository(
+        claimed: claimed,
+        created: created,
+      );
+      final tasksNotifier = TasksNotifier(
+        repository: repository,
+        eventId: eventId,
+        currentParticipantId: luciaId,
+        isOrganizer: true,
+        participants: const [lucia, juan],
+      );
+      repository.initialLoad.complete([unassigned]);
+      await Future<void>.delayed(Duration.zero);
+
+      final claim = tasksNotifier.claim(unassigned.id);
+      await Future<void>.delayed(Duration.zero);
+      expect(repository.listCalls, 2);
+
+      expect(await tasksNotifier.create(created.title), isTrue);
+      expect(tasksNotifier.state.tasks, [claimed, created]);
+
+      repository.claimRefresh.complete([claimed]);
+      expect(await claim, isTrue);
+      expect(tasksNotifier.state.tasks, [claimed, created]);
+    });
+
+    test(
+      'sale de la carga inicial al crear antes de que llegue su respuesta',
+      () async {
+        const created = Task(
+          id: 'task-2',
+          eventId: eventId,
+          title: 'Comprar carbón',
+          status: TaskStatus.unassigned,
+          assignedToParticipantId: null,
+          createdByParticipantId: luciaId,
+        );
+        final repository = _CreateDuringInitialLoadTasksRepository(
+          created: created,
+        );
+        final tasksNotifier = TasksNotifier(
+          repository: repository,
+          eventId: eventId,
+          currentParticipantId: luciaId,
+          isOrganizer: true,
+          participants: const [lucia, juan],
+        );
+
+        expect(tasksNotifier.state.loadStatus, TasksLoadStatus.loading);
+        expect(await tasksNotifier.create(created.title), isTrue);
+        expect(tasksNotifier.state.loadStatus, TasksLoadStatus.success);
+        expect(tasksNotifier.state.tasks, [created]);
+
+        repository.initialLoad.complete(const []);
+        await Future<void>.delayed(Duration.zero);
+        expect(tasksNotifier.state.loadStatus, TasksLoadStatus.success);
+        expect(tasksNotifier.state.tasks, [created]);
+
+        repository.refresh.complete([created]);
+        await Future<void>.delayed(Duration.zero);
+        expect(tasksNotifier.state.tasks, [created]);
+      },
+    );
   });
+}
+
+class _OutOfOrderTasksRepository implements TasksRepository {
+  final Task initial;
+  final Task claimed;
+  final Task completed;
+  final initialLoad = Completer<List<Task>>();
+  final claimRefresh = Completer<List<Task>>();
+  final completeRefresh = Completer<List<Task>>();
+  var listCalls = 0;
+
+  _OutOfOrderTasksRepository({
+    required this.initial,
+    required this.claimed,
+    required this.completed,
+  });
+
+  @override
+  Future<List<Task>> listTasks(String eventId) {
+    return switch (listCalls++) {
+      0 => initialLoad.future,
+      1 => claimRefresh.future,
+      2 => completeRefresh.future,
+      _ => Future.error(StateError('Unexpected task refresh')),
+    };
+  }
+
+  @override
+  Future<Task> claimTask(String taskId) async => claimed;
+
+  @override
+  Future<Task> completeTask(String taskId) async => completed;
+
+  @override
+  Future<Task> assignTask(String taskId, String participantId) =>
+      throw UnimplementedError();
+
+  @override
+  Future<Task> createTask(String eventId, String title) =>
+      throw UnimplementedError();
+}
+
+class _ClaimThenCreateTasksRepository implements TasksRepository {
+  final Task claimed;
+  final Task created;
+  final initialLoad = Completer<List<Task>>();
+  final claimRefresh = Completer<List<Task>>();
+  var listCalls = 0;
+
+  _ClaimThenCreateTasksRepository({
+    required this.claimed,
+    required this.created,
+  });
+
+  @override
+  Future<List<Task>> listTasks(String eventId) {
+    return switch (listCalls++) {
+      0 => initialLoad.future,
+      1 => claimRefresh.future,
+      _ => Future.error(StateError('Unexpected task refresh')),
+    };
+  }
+
+  @override
+  Future<Task> claimTask(String taskId) async => claimed;
+
+  @override
+  Future<Task> createTask(String eventId, String title) async => created;
+
+  @override
+  Future<Task> assignTask(String taskId, String participantId) =>
+      throw UnimplementedError();
+
+  @override
+  Future<Task> completeTask(String taskId) => throw UnimplementedError();
+}
+
+class _CreateDuringInitialLoadTasksRepository implements TasksRepository {
+  final Task created;
+  final initialLoad = Completer<List<Task>>();
+  final refresh = Completer<List<Task>>();
+  var listCalls = 0;
+
+  _CreateDuringInitialLoadTasksRepository({required this.created});
+
+  @override
+  Future<List<Task>> listTasks(String eventId) {
+    return switch (listCalls++) {
+      0 => initialLoad.future,
+      1 => refresh.future,
+      _ => Future.error(StateError('Unexpected task refresh')),
+    };
+  }
+
+  @override
+  Future<Task> createTask(String eventId, String title) async => created;
+
+  @override
+  Future<Task> assignTask(String taskId, String participantId) =>
+      throw UnimplementedError();
+
+  @override
+  Future<Task> claimTask(String taskId) => throw UnimplementedError();
+
+  @override
+  Future<Task> completeTask(String taskId) => throw UnimplementedError();
 }

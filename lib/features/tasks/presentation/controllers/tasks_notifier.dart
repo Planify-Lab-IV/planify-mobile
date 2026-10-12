@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../events/domain/event_participant.dart';
@@ -12,6 +14,7 @@ class TasksNotifier extends StateNotifier<TasksState> {
   final String? _currentParticipantId;
   final bool _isOrganizer;
   final List<EventParticipant> _participants;
+  int _taskListRequestVersion = 0;
 
   TasksNotifier({
     required TasksRepository repository,
@@ -50,14 +53,15 @@ class TasksNotifier extends StateNotifier<TasksState> {
   }
 
   Future<void> load() async {
+    final requestVersion = ++_taskListRequestVersion;
     state = state.copyWith(loadStatus: TasksLoadStatus.loading);
 
     try {
       final tasks = await _repository.listTasks(_eventId);
-      if (!mounted) return;
+      if (!mounted || requestVersion != _taskListRequestVersion) return;
       state = state.copyWith(tasks: tasks, loadStatus: TasksLoadStatus.success);
     } catch (_) {
-      if (!mounted) return;
+      if (!mounted || requestVersion != _taskListRequestVersion) return;
       state = state.copyWith(loadStatus: TasksLoadStatus.error);
     }
   }
@@ -73,10 +77,13 @@ class TasksNotifier extends StateNotifier<TasksState> {
     try {
       final task = await _repository.createTask(_eventId, title);
       if (!mounted) return false;
+      _taskListRequestVersion++;
       state = state.copyWith(
         tasks: [...state.tasks, task],
+        loadStatus: TasksLoadStatus.success,
         operationStatus: TasksOperationStatus.success,
       );
+      unawaited(_refreshTasks(preservedTasks: [task]));
       return true;
     } catch (_) {
       if (!mounted) return false;
@@ -116,7 +123,7 @@ class TasksNotifier extends StateNotifier<TasksState> {
   Future<bool> _runTaskOperation({
     required String taskId,
     required TaskAction expectedAction,
-    required Future<void> Function() operation,
+    required Future<Task> Function() operation,
   }) async {
     if (state.isOperating) return false;
 
@@ -128,13 +135,17 @@ class TasksNotifier extends StateNotifier<TasksState> {
       activeTaskId: taskId,
     );
     try {
-      await operation();
-      final tasks = await _repository.listTasks(_eventId);
+      final updatedTask = await operation();
       if (!mounted) return false;
       state = state.copyWith(
-        tasks: tasks,
+        tasks: [
+          for (final currentTask in state.tasks)
+            if (currentTask.id == updatedTask.id) updatedTask else currentTask,
+        ],
         operationStatus: TasksOperationStatus.success,
       );
+
+      await _refreshTasks();
       return true;
     } catch (_) {
       if (!mounted) return false;
@@ -148,5 +159,23 @@ class TasksNotifier extends StateNotifier<TasksState> {
       if (task.id == taskId) return task;
     }
     return null;
+  }
+
+  Future<void> _refreshTasks({List<Task> preservedTasks = const []}) async {
+    final requestVersion = ++_taskListRequestVersion;
+    try {
+      final tasks = await _repository.listTasks(_eventId);
+      if (!mounted || requestVersion != _taskListRequestVersion) return;
+      final taskIds = tasks.map((task) => task.id).toSet();
+      state = state.copyWith(
+        tasks: [
+          ...tasks,
+          for (final task in preservedTasks)
+            if (!taskIds.contains(task.id)) task,
+        ],
+      );
+    } catch (_) {
+      // La mutación ya fue confirmada; se conserva su resultado local.
+    }
   }
 }

@@ -57,7 +57,7 @@ class FakeTasksRepository implements TasksRepository {
   }
 
   @override
-  Future<void> claimTask(String taskId) async {
+  Future<Task> claimTask(String taskId) async {
     await _waitOrThrow();
     final task = _taskById(taskId);
     if (task.status != TaskStatus.unassigned) {
@@ -65,25 +65,29 @@ class FakeTasksRepository implements TasksRepository {
     }
 
     final participantId = _requiredCurrentParticipantId(task.eventId);
-    _tasksById[task.id] = task.copyWith(
+    final claimedTask = task.copyWith(
       status: TaskStatus.pending,
       assignedToParticipantId: participantId,
     );
+    _tasksById[task.id] = claimedTask;
+    return claimedTask;
   }
 
   @override
-  Future<void> assignTask(String taskId, String participantId) async {
+  Future<Task> assignTask(String taskId, String participantId) async {
     await _waitOrThrow();
     final task = _taskById(taskId);
     if (task.status != TaskStatus.pending || participantId.trim().isEmpty) {
       throw const TaskValidationException();
     }
 
-    _tasksById[task.id] = task.copyWith(assignedToParticipantId: participantId);
+    final assignedTask = task.copyWith(assignedToParticipantId: participantId);
+    _tasksById[task.id] = assignedTask;
+    return assignedTask;
   }
 
   @override
-  Future<void> completeTask(String taskId) async {
+  Future<Task> completeTask(String taskId) async {
     await _waitOrThrow();
     final task = _taskById(taskId);
     final participantId = _requiredCurrentParticipantId(task.eventId);
@@ -92,7 +96,9 @@ class FakeTasksRepository implements TasksRepository {
       throw const TaskAuthorizationException();
     }
 
-    _tasksById[task.id] = task.copyWith(status: TaskStatus.completed);
+    final completedTask = task.copyWith(status: TaskStatus.completed);
+    _tasksById[task.id] = completedTask;
+    return completedTask;
   }
 
   Future<void> _waitOrThrow() async {
