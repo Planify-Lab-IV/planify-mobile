@@ -8,17 +8,17 @@ import '../../../../l10n/app_localizations.dart';
 class ExpenseHeaderFields extends StatefulWidget {
   final String initialDescription;
   final String initialTotalAmount;
-  final bool enabled;
   final ValueChanged<String> onDescriptionChanged;
   final ValueChanged<int?> onTotalAmountChanged;
+  final bool enabled;
 
   const ExpenseHeaderFields({
     super.key,
     this.initialDescription = '',
     this.initialTotalAmount = '',
-    this.enabled = true,
     required this.onDescriptionChanged,
     required this.onTotalAmountChanged,
+    this.enabled = true,
   });
 
   @override

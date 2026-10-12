@@ -67,6 +67,7 @@ class AddExpenseDialog extends ConsumerWidget {
     AppLocalizations i18n,
   ) async {
     if (!context.mounted) return;
+    FocusScope.of(context).unfocus();
     final wasSaved = await notifier.submit();
     if (!context.mounted) return;
 

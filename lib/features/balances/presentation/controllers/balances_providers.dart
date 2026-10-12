@@ -1,16 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../data/fake_balances_repository.dart';
+import '../../../../core/providers/core_providers.dart';
+import '../../data/http_balances_repository.dart';
 import '../../domain/balances_repository.dart';
 import 'balances_notifier.dart';
 import 'balances_state.dart';
 import 'person_balance_detail_notifier.dart';
 import 'person_balance_detail_state.dart';
-import '../../../../core/providers/fake_settlement_provider.dart';
 import '../../../debts/presentation/controllers/debts_providers.dart';
 
 final balancesRepositoryProvider = Provider<BalancesRepository>((ref) {
-  return FakeBalancesRepository(store: ref.watch(fakeSettlementStoreProvider));
+  return HttpBalancesRepository(dio: ref.watch(dioClientProvider));
 });
 
 final balancesNotifierProvider =
