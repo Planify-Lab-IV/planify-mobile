@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../data/secure_storage.dart';
 import '../../data/auth_exceptions.dart';
 import '../../domain/auth_repository.dart';
+import '../../domain/user_session.dart';
 import 'auth_state.dart';
 
 // en base a una accion, cambia el estado de la pantalla 'login'
@@ -30,6 +31,36 @@ class AuthNotifier extends StateNotifier<AuthState> {
       state = AuthAuthenticated(session);
     } on InvalidCredentialsException {
       state = const AuthError(AuthFailureReason.invalidCredentials);
+    } on NetworkAuthException {
+      state = const AuthError(AuthFailureReason.networkError);
+    } catch (_) {
+      state = const AuthError(AuthFailureReason.unknown);
+    }
+  }
+
+  Future<void> register({
+    required String name,
+    required String username,
+    required String email,
+    required String password,
+  }) async {
+    state = const AuthLoading();
+
+    try {
+      final session = await _repository.register(
+        name: name,
+        username: username,
+        email: email,
+        password: password,
+      );
+
+      await _storage.saveToken(session.token);
+
+      state = AuthAuthenticated(session);
+    } on RegistrationConflictException {
+      state = const AuthError(AuthFailureReason.registrationConflict);
+    } on InvalidRegistrationDataException {
+      state = const AuthError(AuthFailureReason.invalidRegistrationData);
     } on NetworkAuthException {
       state = const AuthError(AuthFailureReason.networkError);
     } catch (_) {
@@ -115,5 +146,24 @@ class AuthNotifier extends StateNotifier<AuthState> {
     if (state is AuthError) {
       state = const AuthInitial();
     }
+  }
+
+  void updateSessionName(String name) {
+    final currentState = state;
+    if (currentState is! AuthAuthenticated ||
+        currentState.session is! OrganizerSession) {
+      return;
+    }
+
+    final session = currentState.session as OrganizerSession;
+    state = AuthAuthenticated(
+      OrganizerSession(
+        userId: session.userId,
+        name: name,
+        email: session.email,
+        username: session.username,
+        token: session.token,
+      ),
+    );
   }
 }

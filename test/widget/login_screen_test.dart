@@ -9,6 +9,7 @@ import 'package:planify/data/secure_storage.dart';
 import 'package:planify/features/auth/data/fake_auth_repository.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
 import 'package:planify/features/auth/presentation/screens/login_screen.dart';
+import 'package:planify/features/auth/presentation/screens/register_screen.dart';
 import 'package:planify/features/home/presentation/screens/organizer_home_screen.dart';
 import 'package:planify/l10n/app_localizations.dart';
 import 'package:planify/main.dart';
@@ -68,9 +69,22 @@ void main() {
         expect(find.byKey(const Key('identifier_input')), findsOneWidget);
         expect(find.byKey(const Key('password_input')), findsOneWidget);
         expect(find.byKey(const Key('login_submit_button')), findsOneWidget);
+        expect(find.byKey(const Key('go_to_register_button')), findsOneWidget);
         expect(find.byKey(const Key('guest_login_button')), findsNothing);
       },
     );
+
+    testWidgets('abre RegisterScreen desde el enlace Crear cuenta', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_buildTestApp());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('go_to_register_button')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(RegisterScreen), findsOneWidget);
+    });
 
     testWidgets(
       'renderiza botón de invitado y separador cuando eventId está presente',
@@ -255,6 +269,80 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.byType(LoginScreen), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'registro exitoso muestra el Home de organizador y limpia la invitación pendiente',
+      (tester) async {
+        final fakeStorage = FakeSecureStorage();
+        final fakeRepo = FakeAuthRepository(
+          storage: fakeStorage,
+          delay: Duration.zero,
+        );
+        final fakeAppLinks = FakeAppLinks();
+
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              appLinksProvider.overrideWithValue(fakeAppLinks),
+              authRepositoryProvider.overrideWithValue(fakeRepo),
+              invitationsRepositoryProvider.overrideWithValue(
+                FakeInvitationsRepository(delay: Duration.zero),
+              ),
+              eventsRepositoryProvider.overrideWithValue(
+                FakeEventsRepository(delay: Duration.zero),
+              ),
+              secureStorageProvider.overrideWithValue(fakeStorage),
+              localeNotifierProvider.overrideWith(
+                (ref) => LocaleNotifier()..setLocale(const Locale('es')),
+              ),
+            ],
+            child: const MyApp(),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        fakeAppLinks.emitUri(Uri.parse('planify://invite/token-valid-123'));
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('invitation_event_badge')), findsOneWidget);
+
+        await tester.tap(find.byKey(const Key('go_to_register_button')));
+        await tester.pumpAndSettle();
+        await tester.enterText(
+          find.byKey(const Key('registration_name_input')),
+          'Lucía Planes',
+        );
+        await tester.enterText(
+          find.byKey(const Key('registration_username_input')),
+          'lucia_planes',
+        );
+        await tester.enterText(
+          find.byKey(const Key('registration_email_input')),
+          'lucia@planify.com',
+        );
+        await tester.enterText(
+          find.byKey(const Key('registration_password_input')),
+          'password123',
+        );
+        await tester.pump();
+        await tester.ensureVisible(
+          find.byKey(const Key('register_submit_button')),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('register_submit_button')));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(OrganizerHomeScreen), findsOneWidget);
+        expect(find.text('¡Bienvenido, Lucía Planes!'), findsOneWidget);
+
+        await tester.ensureVisible(find.byKey(const Key('logout_button')));
+        await tester.tap(find.byKey(const Key('logout_button')));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(LoginScreen), findsOneWidget);
+        expect(find.byKey(const Key('invitation_event_badge')), findsNothing);
+        expect(find.byKey(const Key('guest_login_button')), findsNothing);
       },
     );
   });

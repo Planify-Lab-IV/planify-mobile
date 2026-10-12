@@ -9,6 +9,95 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get navigationGroups => 'Grupos';
+
+  @override
+  String get groupsEmpty =>
+      'Todavía no tenés grupos. Creá un evento para armar tu primer grupo.';
+
+  @override
+  String get groupEventsEmpty => 'Este grupo todavía no tiene eventos activos.';
+
+  @override
+  String get groupsLoadError =>
+      'No pudimos cargar tus grupos. Intentá de nuevo.';
+
+  @override
+  String get groupsDateTbd => 'A definir';
+
+  @override
+  String get groupsEventConfirmed => 'Confirmado';
+
+  @override
+  String get groupsEventActive => 'Activo';
+
+  @override
+  String groupsMembers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count miembros',
+      one: '1 miembro',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settleDebtAction => 'Saldar';
+
+  @override
+  String get settleAllAction => 'Saldar todo';
+
+  @override
+  String get settleInProgress => 'Saldando…';
+
+  @override
+  String get settleDebtDialogTitle => '¿Saldar esta deuda?';
+
+  @override
+  String settleOwnDebtDialogMessage(
+    String name,
+    String amount,
+    String eventName,
+  ) {
+    return 'Vas a saldar tu deuda con $name por $amount en el evento «$eventName». Esta acción no se puede deshacer.';
+  }
+
+  @override
+  String settleOwedDebtDialogMessage(
+    String name,
+    String amount,
+    String eventName,
+  ) {
+    return 'Vas a marcar como saldada la deuda de $name por $amount en el evento «$eventName». Esta acción no se puede deshacer.';
+  }
+
+  @override
+  String get settleAllDialogTitle => '¿Saldar todo con esta persona?';
+
+  @override
+  String settleAllDialogMessage(String name) {
+    return 'Vas a saldar todas las deudas con $name. Esta acción afecta todos los eventos en común y no se puede deshacer.';
+  }
+
+  @override
+  String get settleSuccess => 'La deuda se saldó correctamente.';
+
+  @override
+  String get settleForbidden => 'No tenés permiso para saldar esta deuda.';
+
+  @override
+  String get settleNotFound =>
+      'La deuda o la persona ya no está disponible. Actualizá los datos.';
+
+  @override
+  String get settleNetworkError =>
+      'No se pudo saldar por un problema de conexión. Intentá nuevamente.';
+
+  @override
+  String get settleError => 'No se pudo saldar. Intentá nuevamente.';
+
+  @override
   String get helloTest => 'Hola, esta es una prueba de i18n';
 
   @override
@@ -49,6 +138,61 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get loginErrorInvalidCredentials =>
       'Credenciales inválidas. Verifica tu correo y contraseña.';
+
+  @override
+  String get registrationTitle => 'Crear cuenta';
+
+  @override
+  String get registrationCreateAccountLink => '¿No tenés cuenta? Crear cuenta';
+
+  @override
+  String get registrationNameLabel => 'Nombre';
+
+  @override
+  String get registrationUsernameLabel => 'Usuario';
+
+  @override
+  String get registrationUsernameHelp => 'Usá minúsculas, números y _';
+
+  @override
+  String get registrationEmailLabel => 'Correo electrónico';
+
+  @override
+  String get registrationNameInvalid =>
+      'El nombre debe tener entre 1 y 80 caracteres';
+
+  @override
+  String get registrationUsernameInvalid =>
+      'El usuario debe tener entre 3 y 30 caracteres y usar solo minúsculas, números o _';
+
+  @override
+  String get registrationEmailInvalid => 'Ingresá un correo electrónico válido';
+
+  @override
+  String get registrationPasswordInvalid =>
+      'La contraseña debe tener entre 8 y 72 caracteres';
+
+  @override
+  String get registrationSubmitButton => 'Registrarme';
+
+  @override
+  String get registrationErrorConflict =>
+      'No pudimos crear la cuenta con esos datos. Si ya tenés una cuenta, iniciá sesión.';
+
+  @override
+  String get registrationErrorInvalidData =>
+      'Revisá los datos ingresados e intentá nuevamente.';
+
+  @override
+  String get registrationErrorNetwork =>
+      'No pudimos crear la cuenta por un problema de conexión. Intentá nuevamente.';
+
+  @override
+  String get registrationErrorGeneric =>
+      'No pudimos crear la cuenta. Intentá nuevamente.';
+
+  @override
+  String get registrationBackToLogin => '¿Ya tenés cuenta? Iniciá sesión';
 
   @override
   String get logoutButton => 'Cerrar Sesión';
@@ -769,13 +913,44 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get addExpenseSave => 'Guardar gasto';
+  String get addExpenseSave => 'Confirmar';
 
   @override
   String get addExpenseSaving => 'Guardando gasto...';
 
   @override
-  String get addExpenseSaveSuccess => 'Gasto guardado (simulado).';
+  String get addExpenseSaveSuccess => 'El gasto se guardó correctamente.';
+
+  @override
+  String get addExpenseValidationError =>
+      'Revisá los datos del gasto, los participantes y que los montos coincidan con el total.';
+
+  @override
+  String get addExpenseAuthenticationError =>
+      'Tu sesión no es válida. Volvé a iniciar sesión.';
+
+  @override
+  String get addExpenseForbiddenError =>
+      'No tenés permiso para cargar gastos en este evento.';
+
+  @override
+  String get addExpenseNotFoundError => 'No se encontró el evento.';
+
+  @override
+  String get addExpenseEventUnavailableError =>
+      'El evento fue cancelado y no acepta gastos.';
+
+  @override
+  String get addExpenseClosedError =>
+      'Los gastos de este evento ya están cerrados.';
+
+  @override
+  String get addExpenseNetworkError =>
+      'No se pudo guardar el gasto por un problema de conexión.';
+
+  @override
+  String get addExpenseSaveError =>
+      'No se pudo confirmar el guardado del gasto. Intentá nuevamente.';
 
   @override
   String get eventDebtsTitle => 'Deudas del evento';
@@ -790,6 +965,16 @@ class AppLocalizationsEs extends AppLocalizations {
     String creditorName,
   ) {
     return '$debtorName le debe $amount a $creditorName';
+  }
+
+  @override
+  String eventDebtIOweDescription(String name, String amount) {
+    return 'Le debés $amount a $name';
+  }
+
+  @override
+  String eventDebtOwedToMeDescription(String name, String amount) {
+    return '$name te debe $amount';
   }
 
   @override
@@ -886,4 +1071,32 @@ class AppLocalizationsEs extends AppLocalizations {
   String personBalanceDetailLineOwedToYou(String name) {
     return '$name te debe';
   }
+
+  @override
+  String get navigationProfile => 'Perfil';
+
+  @override
+  String get profileTitle => 'Perfil';
+
+  @override
+  String get profileNameLabel => 'Nombre';
+
+  @override
+  String get profileUsernameLabel => 'Usuario';
+
+  @override
+  String get profileEmailLabel => 'Correo electrónico';
+
+  @override
+  String get profileChangeAvatar => 'Cambiar foto de perfil';
+
+  @override
+  String get profileSaveButton => 'Guardar';
+
+  @override
+  String get profileLoadError => 'No se pudo cargar el perfil.';
+
+  @override
+  String get profileSaveError =>
+      'No se pudieron guardar los cambios. Intentá nuevamente.';
 }
