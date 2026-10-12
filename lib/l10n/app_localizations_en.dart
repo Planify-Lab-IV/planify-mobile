@@ -9,6 +9,40 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get navigationGroups => 'Groups';
+
+  @override
+  String get groupsEmpty =>
+      'You don\'t have any groups yet. Create an event to start your first group.';
+
+  @override
+  String get groupEventsEmpty => 'This group has no active events yet.';
+
+  @override
+  String get groupsLoadError =>
+      'We couldn\'t load your groups. Please try again.';
+
+  @override
+  String get groupsDateTbd => 'TBD';
+
+  @override
+  String get groupsEventConfirmed => 'Confirmed';
+
+  @override
+  String get groupsEventActive => 'Active';
+
+  @override
+  String groupsMembers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count members',
+      one: '1 member',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get settleDebtAction => 'Settle up';
 
   @override
@@ -960,33 +994,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navigationBalances => 'Balances';
 
   @override
-  String get navigationProfile => 'Profile';
-
-  @override
-  String get profileTitle => 'Profile';
-
-  @override
-  String get profileNameLabel => 'Name';
-
-  @override
-  String get profileUsernameLabel => 'Username';
-
-  @override
-  String get profileEmailLabel => 'Email';
-
-  @override
-  String get profileChangeAvatar => 'Change profile picture';
-
-  @override
-  String get profileSaveButton => 'Save';
-
-  @override
-  String get profileLoadError => 'Could not load profile.';
-
-  @override
-  String get profileSaveError => 'Could not save changes. Please try again.';
-
-  @override
   String get balancesTitle => 'Balances';
 
   @override
@@ -1058,4 +1065,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String personBalanceDetailLineOwedToYou(String name) {
     return '$name owes you';
   }
+
+  @override
+  String get navigationProfile => 'Profile';
+
+  @override
+  String get profileTitle => 'Profile';
+
+  @override
+  String get profileNameLabel => 'Name';
+
+  @override
+  String get profileUsernameLabel => 'Username';
+
+  @override
+  String get profileEmailLabel => 'Email';
+
+  @override
+  String get profileChangeAvatar => 'Change profile picture';
+
+  @override
+  String get profileSaveButton => 'Save';
+
+  @override
+  String get profileLoadError => 'Could not load profile.';
+
+  @override
+  String get profileSaveError => 'Could not save changes. Please try again.';
 }

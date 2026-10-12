@@ -7,8 +7,58 @@ import 'package:planify/data/secure_storage.dart';
 import 'package:planify/features/auth/data/fake_auth_repository.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
 import 'package:planify/main.dart';
+import 'package:planify/features/events/data/events_repository_provider.dart';
+import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/home/presentation/screens/registered_home_shell.dart';
+import 'package:planify/features/home/presentation/screens/participant_home_screen.dart';
 
 void main() {
+  for (final anonymous in [false, true]) {
+    testWidgets(
+      anonymous
+          ? 'anonymous session has no bottom navigation'
+          : 'registered session has all four destinations',
+      (tester) async {
+        final storage = FakeSecureStorage();
+        final repository = FakeAuthRepository(
+          storage: storage,
+          delay: Duration.zero,
+        );
+        if (anonymous) {
+          await repository.loginAnonymously(
+            name: 'Guest',
+            pin: '1234',
+            eventId: 'evt-123',
+          );
+        } else {
+          await repository.login(
+            identifier: 'lucas@example.com',
+            password: '123456',
+          );
+        }
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              authRepositoryProvider.overrideWithValue(repository),
+              secureStorageProvider.overrideWithValue(storage),
+              eventsRepositoryProvider.overrideWithValue(
+                FakeEventsRepository(delay: Duration.zero),
+              ),
+            ],
+            child: const MyApp(),
+          ),
+        );
+        await tester.pumpAndSettle();
+        if (anonymous) {
+          expect(find.byType(ParticipantHomeScreen), findsOneWidget);
+          expect(find.byType(NavigationBar), findsNothing);
+        } else {
+          expect(find.byType(RegisteredHomeShell), findsOneWidget);
+          expect(find.byType(NavigationDestination), findsNWidgets(4));
+        }
+      },
+    );
+  }
   testWidgets('Smoke test de inicio de la aplicación Planify', (
     WidgetTester tester,
   ) async {

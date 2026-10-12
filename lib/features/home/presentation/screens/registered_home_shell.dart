@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../groups/presentation/screens/groups_screen.dart';
 import '../../../balances/presentation/screens/balances_screen.dart';
 import '../../../profile/presentation/screens/profile_screen.dart';
 
@@ -25,7 +26,12 @@ class _RegisteredHomeShellState extends State<RegisteredHomeShell> {
     return Scaffold(
       body: IndexedStack(
         index: _selectedIndex,
-        children: [widget.home, const BalancesScreen(), const ProfileScreen()],
+        children: [
+          widget.home,
+          const GroupsScreen(),
+          const BalancesScreen(),
+          const ProfileScreen(),
+        ],
       ),
       bottomNavigationBar: NavigationBar(
         key: const Key('registered_navigation_bar'),
@@ -39,6 +45,12 @@ class _RegisteredHomeShellState extends State<RegisteredHomeShell> {
             icon: const Icon(Icons.home_outlined),
             selectedIcon: const Icon(Icons.home_rounded),
             label: i18n.navigationHome,
+          ),
+          NavigationDestination(
+            key: const Key('registered_navigation_groups'),
+            icon: const Icon(Icons.group_outlined),
+            selectedIcon: const Icon(Icons.group_rounded),
+            label: i18n.navigationGroups,
           ),
           NavigationDestination(
             key: const Key('registered_navigation_balances'),
