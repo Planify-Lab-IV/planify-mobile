@@ -6,6 +6,14 @@ class InvalidCredentialsException extends AuthException {
   const InvalidCredentialsException();
 }
 
+class RegistrationConflictException extends AuthException {
+  const RegistrationConflictException();
+}
+
+class InvalidRegistrationDataException extends AuthException {
+  const InvalidRegistrationDataException();
+}
+
 class InvalidStoredSessionException extends AuthException {
   const InvalidStoredSessionException();
 }

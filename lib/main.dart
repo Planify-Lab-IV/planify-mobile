@@ -73,16 +73,26 @@ class _MyAppState extends ConsumerState<MyApp> {
       locale: currentLocale,
 
       // Enrutamiento reactivo según el estado de autenticación
-      home: switch (authState) {
-        AuthAuthenticated(session: final OrganizerSession session) =>
-          RegisteredHomeShell(home: OrganizerHomeScreen(session: session)),
-        AuthAuthenticated(session: final AnonymousSession session) =>
-          ParticipantHomeScreen(session: session),
-        AuthLoading() => const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
-        ),
-        _ => LoginScreen(eventId: resolvedEventId),
-      },
+      home: homeForAuthState(
+        authState: authState,
+        resolvedEventId: resolvedEventId,
+      ),
     );
   }
+}
+
+Widget homeForAuthState({
+  required AuthState authState,
+  String? resolvedEventId,
+}) {
+  return switch (authState) {
+    AuthAuthenticated(session: final OrganizerSession session) =>
+      RegisteredHomeShell(home: OrganizerHomeScreen(session: session)),
+    AuthAuthenticated(session: final AnonymousSession session) =>
+      ParticipantHomeScreen(session: session),
+    AuthLoading() => const Scaffold(
+      body: Center(child: CircularProgressIndicator()),
+    ),
+    _ => LoginScreen(eventId: resolvedEventId),
+  };
 }

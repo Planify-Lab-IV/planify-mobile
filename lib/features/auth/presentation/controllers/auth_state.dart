@@ -2,6 +2,8 @@ import '../../domain/user_session.dart';
 
 enum AuthFailureReason {
   invalidCredentials,
+  registrationConflict,
+  invalidRegistrationData,
   invalidPin,
   eventNotFound,
   eventUnavailable,

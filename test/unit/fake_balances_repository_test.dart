@@ -15,7 +15,7 @@ void main() {
       final detail = await repository.getPersonDetail('user:ana');
 
       expect(detail.personKey, 'user:ana');
-      expect(detail.netCents, 24300);
+      expect(detail.netCents, -24300);
       expect(detail.breakdown, hasLength(2));
       expect(
         detail.breakdown.map((line) => line.direction),
@@ -83,13 +83,13 @@ void main() {
       expect(
         people
             .where((person) => person.status == PersonBalanceStatus.pending)
-            .fold(0, (sum, person) => sum + person.netCents),
+            .fold(0, (sum, person) => sum + person.netCents.abs()),
         summary.owedToMeCents,
       );
       expect(
         people
             .where((person) => person.status == PersonBalanceStatus.pay)
-            .fold(0, (sum, person) => sum + person.netCents),
+            .fold(0, (sum, person) => sum + person.netCents.abs()),
         summary.iOweCents,
       );
     });

@@ -127,6 +127,10 @@ void main() {
 }
 
 class _ControlledDebtsRepository implements DebtsRepository {
+  @override
+  Future<void> settleDebt(String eventId, String debtId) async {}
+  @override
+  Future<void> settleWithPerson(String personKey) async {}
   final _completer = Completer<EventDebts>();
 
   @override

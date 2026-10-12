@@ -6,10 +6,12 @@ enum PersonBalanceDetailLoadStatus { loading, success, error }
 class PersonBalanceDetailState {
   final PersonBalanceDetail? detail;
   final PersonBalanceDetailLoadStatus loadStatus;
+  final bool isSettling;
 
   const PersonBalanceDetailState({
     this.detail,
     this.loadStatus = PersonBalanceDetailLoadStatus.loading,
+    this.isSettling = false,
   });
 
   bool get isLoading => loadStatus == PersonBalanceDetailLoadStatus.loading;
@@ -22,10 +24,21 @@ class PersonBalanceDetailState {
       other is PersonBalanceDetailState &&
           runtimeType == other.runtimeType &&
           detail == other.detail &&
+          isSettling == other.isSettling &&
           loadStatus == other.loadStatus;
 
   @override
-  int get hashCode => detail.hashCode ^ loadStatus.hashCode;
+  int get hashCode => Object.hash(detail, loadStatus, isSettling);
+
+  PersonBalanceDetailState copyWith({
+    PersonBalanceDetail? detail,
+    PersonBalanceDetailLoadStatus? loadStatus,
+    bool? isSettling,
+  }) => PersonBalanceDetailState(
+    detail: detail ?? this.detail,
+    loadStatus: loadStatus ?? this.loadStatus,
+    isSettling: isSettling ?? this.isSettling,
+  );
 
   @override
   String toString() {
