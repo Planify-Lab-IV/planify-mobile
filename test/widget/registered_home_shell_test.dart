@@ -51,28 +51,45 @@ void main() {
         ),
       ),
     );
-    await tester.pumpAndSettle();
+    // The groups provider resolves asynchronously while a continuously
+    // animated progress indicator is mounted, so pump a bounded number of
+    // frames instead of waiting for every animation to settle.
+    await tester.pump();
+    await tester.pump();
+    expect(find.byKey(const Key('groups_screen_loading')), findsNothing);
     await tester.tap(find.byKey(const Key('registered_navigation_groups')));
-    await tester.pumpAndSettle();
-    await tester.drag(find.byType(CustomScrollView), const Offset(0, -500));
-    await tester.pumpAndSettle();
-    final scrollable = find
-        .descendant(
-          of: find.byType(CustomScrollView),
-          matching: find.byType(Scrollable),
-        )
-        .first;
-    final before = tester.state<ScrollableState>(scrollable).position.pixels;
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    final verticalScrollable = find.descendant(
+      of: find.byType(CustomScrollView),
+      matching: find.byWidgetPredicate(
+        (widget) =>
+            widget is Scrollable && widget.axisDirection == AxisDirection.down,
+      ),
+    );
+    expect(verticalScrollable, findsOneWidget);
+    await tester.drag(verticalScrollable, const Offset(0, -500));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    final before = tester
+        .state<ScrollableState>(verticalScrollable)
+        .position
+        .pixels;
     expect(before, greaterThan(0));
     final container = ProviderScope.containerOf(
       tester.element(find.byType(RegisteredHomeShell)),
     );
     final beforeOverview = container.read(groupsOverviewProvider);
     await tester.tap(find.byKey(const Key('registered_navigation_home')));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.tap(find.byKey(const Key('registered_navigation_groups')));
-    await tester.pumpAndSettle();
-    expect(tester.state<ScrollableState>(scrollable).position.pixels, before);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(
+      tester.state<ScrollableState>(verticalScrollable).position.pixels,
+      before,
+    );
     expect(
       identical(container.read(groupsOverviewProvider), beforeOverview),
       isTrue,
