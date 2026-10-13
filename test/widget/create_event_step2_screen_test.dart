@@ -3,6 +3,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
+import 'package:planify/features/activity_log/data/fake_activity_log_repository.dart';
+import 'package:planify/features/activity_log/presentation/controllers/activity_log_providers.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
 import 'package:planify/features/events/data/events_repository_provider.dart';
 import 'package:planify/features/events/domain/event_draft.dart';
@@ -36,6 +38,9 @@ Widget _buildTestApp({
       ),
       createEventsRepositoryProvider.overrideWithValue(eventsRepo),
       eventsRepositoryProvider.overrideWithValue(eventsRepo),
+      activityLogRepositoryProvider.overrideWithValue(
+        FakeActivityLogRepository(delay: Duration.zero),
+      ),
       tasksRepositoryProvider.overrideWithValue(
         FakeTasksRepository(delay: Duration.zero),
       ),
@@ -304,6 +309,8 @@ void main() {
         expect(find.byType(EventDetailScreen), findsOneWidget);
         expect(find.text('Detalle del evento'), findsOneWidget);
         expect(find.text('Cumpleaños de Lucas'), findsOneWidget);
+        expect(find.byKey(const Key('event_activity_card')), findsOneWidget);
+        expect(find.byKey(const Key('event_activity_loading')), findsNothing);
       },
     );
   });
