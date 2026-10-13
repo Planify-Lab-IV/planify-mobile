@@ -1,0 +1,18 @@
+# Color primary de docs/design-system.md. La app utiliza el mismo tema claro
+# incluso cuando el sistema está en modo oscuro.
+flutter_native_splash:
+  color: "#296CF2"
+  color_dark: "#296CF2"
+  image: assets/splash/planify_splash_classic.png
+  image_dark: assets/splash/planify_splash_classic.png
+  # Un mismo encuadre en todas las versiones de Android y en el primer frame Flutter.
+  image_android: assets/splash/planify_splash_android12.png
+  image_dark_android: assets/splash/planify_splash_android12.png
+  android_gravity: center
+  ios_content_mode: center
+  web: false
+  android_12:
+    color: "#296CF2"
+    color_dark: "#296CF2"
+    image: assets/splash/planify_splash_android12.png
+    image_dark: assets/splash/planify_splash_android12.png
