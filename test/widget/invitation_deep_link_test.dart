@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/providers/core_providers.dart';
 import 'package:planify/data/secure_storage.dart';
+import 'package:planify/features/activity_log/data/fake_activity_log_repository.dart';
+import 'package:planify/features/activity_log/presentation/controllers/activity_log_providers.dart';
 import 'package:planify/features/auth/data/fake_auth_repository.dart';
 import 'package:planify/features/auth/data/http_auth_repository.dart';
 import 'package:planify/features/auth/domain/auth_repository.dart';
@@ -42,6 +44,9 @@ void main() {
     Widget createTestApp({AuthRepository? authRepository}) {
       return ProviderScope(
         overrides: [
+          activityLogRepositoryProvider.overrideWithValue(
+            FakeActivityLogRepository(delay: Duration.zero),
+          ),
           appLinksProvider.overrideWithValue(fakeAppLinks),
           secureStorageProvider.overrideWithValue(fakeStorage),
           authRepositoryProvider.overrideWithValue(

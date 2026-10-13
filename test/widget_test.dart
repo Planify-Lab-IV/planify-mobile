@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/providers/core_providers.dart';
 import 'package:planify/core/widgets/planify_logo.dart';
 import 'package:planify/data/secure_storage.dart';
+import 'package:planify/features/activity_log/data/fake_activity_log_repository.dart';
+import 'package:planify/features/activity_log/presentation/controllers/activity_log_providers.dart';
 import 'package:planify/features/auth/data/fake_auth_repository.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
 import 'package:planify/main.dart';
@@ -39,6 +41,9 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
+              activityLogRepositoryProvider.overrideWithValue(
+                FakeActivityLogRepository(delay: Duration.zero),
+              ),
               authRepositoryProvider.overrideWithValue(repository),
               secureStorageProvider.overrideWithValue(storage),
               eventsRepositoryProvider.overrideWithValue(
