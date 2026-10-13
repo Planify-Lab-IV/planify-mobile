@@ -13,4 +13,6 @@ class AppDimens {
   static const minButtonHeight = 52.0;
   static const inputPadding = 16.0;
   static const cardElevation = 1.0;
+  // PNG de 1152 px a escala nativa 4x, compartido con Android 12+.
+  static const splashLogoSize = 288.0;
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -14,13 +15,47 @@ import 'package:planify/features/home/presentation/screens/participant_home_scre
 import 'package:planify/features/home/presentation/screens/registered_home_shell.dart';
 import 'package:planify/features/invitations/presentation/controllers/invitation_providers.dart';
 import 'package:planify/features/invitations/presentation/controllers/invitation_state.dart';
+import 'package:planify/features/splash/presentation/controllers/splash_providers.dart';
+import 'package:planify/features/splash/presentation/screens/splash_screen.dart';
 
-void main() {
-  runApp(const ProviderScope(child: MyApp()));
+Future<void> main() async {
+  final startupClock = Stopwatch()..start();
+  final binding = WidgetsFlutterBinding.ensureInitialized();
+  binding.deferFirstFrame();
+  var firstFrameAllowed = false;
+  void allowStartupFrame() {
+    if (firstFrameAllowed) return;
+    firstFrameAllowed = true;
+    binding.allowFirstFrame();
+  }
+
+  runApp(
+    ProviderScope(
+      overrides: [
+        startupElapsedProvider.overrideWith((ref) => startupClock.elapsed),
+      ],
+      child: MyApp(onSplashFinished: allowStartupFrame),
+    ),
+  );
+  try {
+    // Precarga el PNG mientras la marca está visible; onSplashFinished libera
+    // el frame antes si auth termina o vence el plazo. Auth y los deep links
+    // arrancan en paralelo desde MyApp.initState.
+    await SplashScreen.precacheLogo(
+      defaultTargetPlatform,
+    ).timeout(SplashNotifier.maximumDuration);
+  } catch (_) {
+    // Un asset fallido o lento nunca debe retener el primer frame para siempre.
+  } finally {
+    allowStartupFrame();
+  }
 }
 
 class MyApp extends ConsumerStatefulWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, this.onSplashFinished});
+
+  /// Permite retirar el launch si el siguiente destino está listo antes del PNG.
+  final VoidCallback? onSplashFinished;
 
   @override
   ConsumerState<MyApp> createState() => _MyAppState();
@@ -30,6 +65,12 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
     super.initState();
+    ref.read(splashNotifierProvider);
+    if (widget.onSplashFinished != null) {
+      ref.listenManual<SplashPhase>(splashNotifierProvider, (previous, next) {
+        if (next != SplashPhase.brand) widget.onSplashFinished?.call();
+      }, fireImmediately: true);
+    }
     // Inicia la escucha centralizada de deep links al arrancar la app
     ref.read(deepLinkServiceProvider).listen((uri) {
       ref.read(invitationNotifierProvider.notifier).handleDeepLink(uri);
@@ -47,6 +88,7 @@ class _MyAppState extends ConsumerState<MyApp> {
 
     final currentLocale = ref.watch(localeNotifierProvider);
     final authState = ref.watch(authNotifierProvider);
+    final splashPhase = ref.watch(splashNotifierProvider);
     final invitationState = ref.watch(invitationNotifierProvider);
 
     final resolvedEventId = switch (invitationState) {
@@ -75,6 +117,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       // Enrutamiento reactivo según el estado de autenticación
       home: homeForAuthState(
         authState: authState,
+        splashPhase: splashPhase,
         resolvedEventId: resolvedEventId,
       ),
     );
@@ -83,14 +126,18 @@ class _MyAppState extends ConsumerState<MyApp> {
 
 Widget homeForAuthState({
   required AuthState authState,
+  SplashPhase splashPhase = SplashPhase.completed,
   String? resolvedEventId,
 }) {
   return switch (authState) {
+    AuthCheckingInitialSession() when splashPhase == SplashPhase.brand =>
+      const SplashScreen(),
     AuthAuthenticated(session: final OrganizerSession session) =>
       RegisteredHomeShell(home: OrganizerHomeScreen(session: session)),
     AuthAuthenticated(session: final AnonymousSession session) =>
       ParticipantHomeScreen(session: session),
-    AuthLoading() => const Scaffold(
+    AuthLoading() || AuthCheckingInitialSession() => const Scaffold(
+      key: Key('auth_loading_screen'),
       body: Center(child: CircularProgressIndicator()),
     ),
     _ => LoginScreen(eventId: resolvedEventId),
