@@ -5,6 +5,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
+import 'package:planify/features/activity_log/data/fake_activity_log_repository.dart';
+import 'package:planify/features/activity_log/presentation/controllers/activity_log_providers.dart';
 import 'package:planify/features/events/data/events_repository_provider.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
 import 'package:planify/features/events/detail/screens/event_detail_screen.dart';
@@ -39,6 +41,9 @@ Widget app(GroupsOverviewRepository repository, {String language = 'es'}) =>
         groupsOverviewRepositoryProvider.overrideWithValue(repository),
         eventsRepositoryProvider.overrideWithValue(
           FakeEventsRepository(delay: Duration.zero),
+        ),
+        activityLogRepositoryProvider.overrideWithValue(
+          FakeActivityLogRepository(delay: Duration.zero),
         ),
         tasksRepositoryProvider.overrideWithValue(
           FakeTasksRepository(delay: Duration.zero),
@@ -135,6 +140,8 @@ void main() {
       tester.widget<EventDetailScreen>(find.byType(EventDetailScreen)).eventId,
       'evt-123',
     );
+    expect(find.byKey(const Key('event_activity_card')), findsOneWidget);
+    expect(find.byKey(const Key('event_activity_loading')), findsNothing);
   });
 
   testWidgets('English copy and cancelled-event exclusion', (tester) async {
