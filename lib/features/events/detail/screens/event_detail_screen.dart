@@ -373,7 +373,6 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                       eventId: event.id,
                       eventName: event.name,
                       currentParticipantId: notifier.currentParticipantId,
-                      participants: event.participants,
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     TaskListCard(
