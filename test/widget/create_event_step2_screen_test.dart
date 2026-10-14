@@ -29,6 +29,9 @@ Widget _buildTestApp({
       fakeEventsRepo ?? FakeEventsRepository(delay: Duration.zero);
   return ProviderScope(
     overrides: [
+      activityLogRepositoryProvider.overrideWithValue(
+        FakeActivityLogRepository(delay: Duration.zero),
+      ),
       if (initialDraft != null)
         eventDraftProvider.overrideWith(
           (ref) => EventDraftNotifier(initialDraft),

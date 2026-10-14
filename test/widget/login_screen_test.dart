@@ -179,6 +179,8 @@ void main() {
         );
         await tester.pumpAndSettle();
 
+        await tester.pump(const Duration(milliseconds: 200));
+        await tester.pumpAndSettle();
         expect(find.text('Planify'), findsOneWidget);
 
         // Emitimos la invitación válida para que se resuelva el eventId y aparezca el botón de invitado
@@ -247,6 +249,8 @@ void main() {
         );
         await tester.pumpAndSettle();
 
+        await tester.pump(const Duration(milliseconds: 200));
+        await tester.pumpAndSettle();
         expect(find.text('Planify'), findsOneWidget);
 
         await tester.enterText(

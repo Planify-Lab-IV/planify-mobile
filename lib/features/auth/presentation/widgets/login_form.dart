@@ -84,7 +84,8 @@ class _LoginFormState extends ConsumerState<LoginForm> {
     final i18n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final authState = ref.watch(authNotifierProvider);
-    final isLoading = authState is AuthLoading;
+    final isLoading =
+        authState is AuthLoading || authState is AuthCheckingInitialSession;
 
     return Card(
       child: Padding(

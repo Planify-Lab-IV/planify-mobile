@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,6 +10,72 @@ import 'package:planify/features/activity_log/presentation/controllers/activity_
 import 'package:planify/features/activity_log/presentation/controllers/event_activity_state.dart';
 
 void main() {
+  test('HTTP feed success refreshes shared fake unread counts', () async {
+    final requests = <String>[];
+    final feedLoaded = Completer<void>();
+    final countsUpdated = Completer<void>();
+    final dio = Dio();
+    addTearDown(() => dio.close(force: true));
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          requests.add(options.path);
+          handler.resolve(
+            Response<dynamic>(
+              requestOptions: options,
+              data: {'entries': []},
+              statusCode: 200,
+            ),
+          );
+        },
+      ),
+    );
+    final container = ProviderContainer(
+      overrides: [dioClientProvider.overrideWithValue(dio)],
+    );
+    addTearDown(container.dispose);
+    final countsSubscription = container.listen(unreadCountsProvider, (
+      _,
+      next,
+    ) {
+      final counts = next.asData?.value;
+      if (counts?.forEvent('evt-123') == 0 && !countsUpdated.isCompleted) {
+        countsUpdated.complete();
+      }
+    });
+    addTearDown(countsSubscription.close);
+    final before = await container.read(unreadCountsProvider.future);
+    expect(before.forEvent('evt-123'), 5);
+    expect(before.forGroup('grp-amigos'), 12);
+
+    final provider = eventActivityNotifierProvider('evt-123');
+    final feedSubscription = container.listen(provider, (_, next) {
+      if (next.loadStatus == EventActivityLoadStatus.success &&
+          !feedLoaded.isCompleted) {
+        feedLoaded.complete();
+      }
+    });
+    addTearDown(feedSubscription.close);
+    await feedLoaded.future;
+    await countsUpdated.future;
+
+    expect(
+      container.read(provider).loadStatus,
+      EventActivityLoadStatus.success,
+    );
+    final after = await container.read(unreadCountsProvider.future);
+    expect(after.forEvent('evt-123'), 0);
+    expect(after.forGroup('grp-amigos'), 7);
+    container.invalidate(unreadCountsProvider);
+    expect(
+      (await container.read(
+        unreadCountsProvider.future,
+      )).forGroup('grp-amigos'),
+      7,
+    );
+    expect(requests, ['/events/evt-123/activity-log']);
+  });
+
   test('activity log provider uses the shared Dio client', () async {
     RequestOptions? request;
     final dio = Dio();

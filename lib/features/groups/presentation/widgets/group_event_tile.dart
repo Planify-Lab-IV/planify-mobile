@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/widgets/unread_badge.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../activity_log/presentation/controllers/activity_log_providers.dart';
 import '../../../events/detail/screens/event_detail_screen.dart';
 import '../../domain/group_overview.dart';
 
-class GroupEventTile extends StatelessWidget {
+class GroupEventTile extends ConsumerWidget {
   final GroupEventSummary event;
 
   const GroupEventTile({super.key, required this.event});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final counts = ref.watch(unreadCountsProvider).asData?.value;
     final theme = Theme.of(context);
     final i18n = AppLocalizations.of(context)!;
     final date = event.startDateTime;
@@ -30,22 +34,38 @@ class GroupEventTile extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => EventDetailScreen(eventId: event.id),
-          ),
-        ),
+        onTap: () async {
+          await Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => EventDetailScreen(eventId: event.id),
+            ),
+          );
+          if (context.mounted) ref.invalidate(unreadCountsProvider);
+        },
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                event.name,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: theme.colorScheme.onPrimaryContainer,
-                  fontWeight: FontWeight.w700,
-                ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      event.name,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: theme.colorScheme.onPrimaryContainer,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  if (counts != null && counts.forEvent(event.id) > 0) ...[
+                    const SizedBox(width: AppSpacing.sm),
+                    UnreadBadge(
+                      key: Key('event_unread_badge_${event.id}'),
+                      count: counts.forEvent(event.id),
+                    ),
+                  ],
+                ],
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
