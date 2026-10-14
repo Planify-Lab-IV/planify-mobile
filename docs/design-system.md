@@ -121,6 +121,18 @@ Implementación: `lib/core/theme/app_radius.dart` (`AppDimens`)
 
 ---
 
+### Splash estática — PLANIFY-155
+
+- Fondo: `primary` (`#296CF2`), también con modo oscuro del sistema.
+- Logo centrado, sin nombre ni tagline; lienzo de 288 puntos lógicos
+  (`AppDimens.splashLogoSize`) exportado como PNG transparente de 1152 px (4x).
+- Android utiliza `assets/splash/planify_splash_android12.png` en todas sus
+  versiones; iOS utiliza `assets/splash/planify_splash_classic.png`.
+- La pantalla Flutter utiliza el mismo asset y tamaño que la nativa.
+- Duración máxima de la marca en Flutter: dos segundos desde `main()`;
+  después se muestra carga si aún se verifica la sesión. El launch previo al
+  motor Flutter lo controla el sistema operativo y no un Timer de Dart.
+
 ## 8. Convención de uso
 
 - Los widgets **nunca** deben usar valores hardcodeados de color, tipografía, spacing o radios.

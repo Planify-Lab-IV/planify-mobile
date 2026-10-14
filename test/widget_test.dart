@@ -77,6 +77,8 @@ void main() {
       ),
     );
 
+    // SplashScreen es estática: pumpAndSettle no espera el timer del fake storage.
+    await tester.pump(const Duration(milliseconds: 200));
     await tester.pumpAndSettle();
 
     expect(find.byType(PlanifyLogo), findsOneWidget);

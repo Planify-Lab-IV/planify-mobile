@@ -118,7 +118,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> checkAuthStatus() async {
-    state = const AuthLoading();
+    state = const AuthCheckingInitialSession();
     try {
       final session = await _repository.getCurrentSession();
       if (session != null) {
