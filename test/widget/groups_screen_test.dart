@@ -7,6 +7,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/activity_log/data/fake_activity_log_repository.dart';
 import 'package:planify/features/activity_log/presentation/controllers/activity_log_providers.dart';
+import 'package:planify/features/debts/data/fake_debts_repository.dart';
+import 'package:planify/features/debts/presentation/controllers/debts_providers.dart';
 import 'package:planify/features/events/data/events_repository_provider.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
 import 'package:planify/features/events/detail/screens/event_detail_screen.dart';
@@ -41,6 +43,9 @@ Widget app(GroupsOverviewRepository repository, {String language = 'es'}) =>
         groupsOverviewRepositoryProvider.overrideWithValue(repository),
         eventsRepositoryProvider.overrideWithValue(
           FakeEventsRepository(delay: Duration.zero),
+        ),
+        debtsRepositoryProvider.overrideWithValue(
+          FakeDebtsRepository(delay: Duration.zero),
         ),
         activityLogRepositoryProvider.overrideWithValue(
           FakeActivityLogRepository(delay: Duration.zero),

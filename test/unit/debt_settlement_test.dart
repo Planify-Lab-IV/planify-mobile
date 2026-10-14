@@ -421,12 +421,22 @@ void main() {
               store: ref.watch(fakeSettlementStoreProvider),
             ),
           ),
+          debtsRepositoryProvider.overrideWith(
+            (ref) => FakeDebtsRepository(
+              store: ref.watch(fakeSettlementStoreProvider),
+            ),
+          ),
         ],
       );
       final other = ProviderContainer(
         overrides: [
           balancesRepositoryProvider.overrideWith(
             (ref) => FakeBalancesRepository(
+              store: ref.watch(fakeSettlementStoreProvider),
+            ),
+          ),
+          debtsRepositoryProvider.overrideWith(
+            (ref) => FakeDebtsRepository(
               store: ref.watch(fakeSettlementStoreProvider),
             ),
           ),

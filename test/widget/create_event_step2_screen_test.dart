@@ -5,6 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/activity_log/data/fake_activity_log_repository.dart';
 import 'package:planify/features/activity_log/presentation/controllers/activity_log_providers.dart';
+import 'package:planify/features/debts/data/fake_debts_repository.dart';
+import 'package:planify/features/debts/presentation/controllers/debts_providers.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
 import 'package:planify/features/events/data/events_repository_provider.dart';
 import 'package:planify/features/events/domain/event_draft.dart';
@@ -27,6 +29,7 @@ Widget _buildTestApp({
 }) {
   final eventsRepo =
       fakeEventsRepo ?? FakeEventsRepository(delay: Duration.zero);
+  final debtsRepo = FakeDebtsRepository(delay: Duration.zero);
   return ProviderScope(
     overrides: [
       if (initialDraft != null)
@@ -38,6 +41,7 @@ Widget _buildTestApp({
       ),
       createEventsRepositoryProvider.overrideWithValue(eventsRepo),
       eventsRepositoryProvider.overrideWithValue(eventsRepo),
+      debtsRepositoryProvider.overrideWithValue(debtsRepo),
       activityLogRepositoryProvider.overrideWithValue(
         FakeActivityLogRepository(delay: Duration.zero),
       ),
