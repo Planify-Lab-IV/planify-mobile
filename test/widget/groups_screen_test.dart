@@ -39,18 +39,59 @@ class MutableOverviewRepository implements GroupsOverviewRepository {
   }
 }
 
-Widget app(GroupsOverviewRepository repository, {String language = 'es'}) =>
-    ProviderScope(
-      overrides: [
-        groupsOverviewRepositoryProvider.overrideWithValue(repository),
-        eventsRepositoryProvider.overrideWithValue(
-          FakeEventsRepository(delay: Duration.zero),
-        ),
-        debtsRepositoryProvider.overrideWithValue(
-          FakeDebtsRepository(delay: Duration.zero),
-        ),
-        activityLogRepositoryProvider.overrideWithValue(
-          FakeActivityLogRepository(delay: Duration.zero),
+Widget app(
+  GroupsOverviewRepository repository, {
+  String language = 'es',
+  FakeActivityLogRepository? activityRepository,
+}) => ProviderScope(
+  overrides: [
+    activityLogRepositoryProvider.overrideWithValue(
+      activityRepository ?? FakeActivityLogRepository(delay: Duration.zero),
+    ),
+    groupsOverviewRepositoryProvider.overrideWithValue(repository),
+    eventsRepositoryProvider.overrideWithValue(
+      FakeEventsRepository(delay: Duration.zero),
+    ),
+    debtsRepositoryProvider.overrideWithValue(
+      FakeDebtsRepository(delay: Duration.zero),
+    ),
+    tasksRepositoryProvider.overrideWithValue(
+      FakeTasksRepository(delay: Duration.zero),
+    ),
+  ],
+  child: MaterialApp(
+    theme: AppTheme.light,
+    locale: Locale(language),
+    supportedLocales: AppLocalizations.supportedLocales,
+    localizationsDelegates: const [
+      AppLocalizations.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
+    home: const GroupsScreen(),
+  ),
+);
+
+void main() {
+  String badgeText(WidgetTester tester, String key) => tester
+      .widget<Text>(
+        find.descendant(of: find.byKey(Key(key)), matching: find.byType(Text)),
+      )
+      .data!;
+
+  testWidgets('usa los conteos de grupo recibidos sin sumar eventos', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      app(
+        FakeGroupsOverviewRepository(delay: Duration.zero),
+        activityRepository: FakeActivityLogRepository(
+          delay: Duration.zero,
+          initialUnreadCounts: UnreadCounts(
+            byEvent: {'evt-123': 2},
+            byGroup: {'grp-amigos': 15},
+          ),
         ),
       ),
     );
