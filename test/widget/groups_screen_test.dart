@@ -277,6 +277,8 @@ void main() {
       tester.widget<EventDetailScreen>(find.byType(EventDetailScreen)).eventId,
       'evt-123',
     );
+    expect(find.byKey(const Key('event_activity_card')), findsOneWidget);
+    expect(find.byKey(const Key('event_activity_loading')), findsNothing);
   });
 
   testWidgets('English copy and cancelled-event exclusion', (tester) async {

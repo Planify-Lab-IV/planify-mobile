@@ -41,6 +41,9 @@ Widget _buildTestApp({
       ),
       createEventsRepositoryProvider.overrideWithValue(eventsRepo),
       eventsRepositoryProvider.overrideWithValue(eventsRepo),
+      activityLogRepositoryProvider.overrideWithValue(
+        FakeActivityLogRepository(delay: Duration.zero),
+      ),
       tasksRepositoryProvider.overrideWithValue(
         FakeTasksRepository(delay: Duration.zero),
       ),
@@ -309,6 +312,8 @@ void main() {
         expect(find.byType(EventDetailScreen), findsOneWidget);
         expect(find.text('Detalle del evento'), findsOneWidget);
         expect(find.text('Cumpleaños de Lucas'), findsOneWidget);
+        expect(find.byKey(const Key('event_activity_card')), findsOneWidget);
+        expect(find.byKey(const Key('event_activity_loading')), findsNothing);
       },
     );
   });
