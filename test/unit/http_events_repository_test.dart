@@ -261,6 +261,19 @@ void main() {
         expect(event.isCancelled, isTrue);
       });
 
+      test('rejects unknown event statuses', () async {
+        final response = Map<String, dynamic>.from(eventResponse)
+          ..['status'] = 'postponed';
+        final repository = HttpEventsRepository(
+          dio: dioResolving(response, null),
+        );
+
+        expect(
+          () => repository.getEvent('evt-1'),
+          throwsA(isA<InvalidEventResponseException>()),
+        );
+      });
+
       test('maps confirmed status and startDateTime correctly', () async {
         const startDateTime = '2026-12-20T21:30:00.000Z';
         final confirmedResponse = Map<String, dynamic>.from(eventResponse)
