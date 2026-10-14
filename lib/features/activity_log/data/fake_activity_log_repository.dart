@@ -1,19 +1,78 @@
 import '../domain/activity_entry.dart';
 import '../domain/activity_log_repository.dart';
 import '../domain/activity_type.dart';
+import '../domain/unread_counts.dart';
 
 class FakeActivityLogRepository implements ActivityLogRepository {
   final Duration delay;
   bool shouldThrowError;
+  bool shouldThrowUnreadCountsError;
+  bool shouldThrowMarkAsReadError;
+  final Map<String, int> _unreadByEvent;
+  final Map<String, int> _unreadByGroup;
+  final Map<String, String> _groupByEvent;
   final Map<String, List<ActivityEntry>> _activityByEventId;
 
   FakeActivityLogRepository({
     this.delay = const Duration(milliseconds: 300),
     this.shouldThrowError = false,
+    this.shouldThrowUnreadCountsError = false,
+    this.shouldThrowMarkAsReadError = false,
+    UnreadCounts? initialUnreadCounts,
+    Map<String, String>? groupByEvent,
     Map<String, List<ActivityEntry>>? initialActivity,
-  }) : _activityByEventId = Map<String, List<ActivityEntry>>.from(
+  }) : _unreadByEvent = Map.of(
+         initialUnreadCounts?.byEvent ?? _defaultUnreadByEvent,
+       ),
+       _unreadByGroup = Map.of(
+         initialUnreadCounts?.byGroup ?? _defaultUnreadByGroup,
+       ),
+       _groupByEvent = Map.of(groupByEvent ?? _defaultGroupByEvent),
+       _activityByEventId = Map<String, List<ActivityEntry>>.from(
          initialActivity ?? _defaultActivity,
        );
+
+  @override
+  Future<UnreadCounts> getUnreadCounts() async {
+    if (delay > Duration.zero) await Future<void>.delayed(delay);
+    if (shouldThrowUnreadCountsError) {
+      throw Exception('Could not load unread counts');
+    }
+    return UnreadCounts(byEvent: _unreadByEvent, byGroup: _unreadByGroup);
+  }
+
+  @override
+  Future<void> markEventAsRead(String eventId) async {
+    if (delay > Duration.zero) await Future<void>.delayed(delay);
+    if (shouldThrowMarkAsReadError) {
+      throw Exception('Could not mark event as read');
+    }
+    final previousCount = _unreadByEvent[eventId] ?? 0;
+    _unreadByEvent[eventId] = 0;
+    final groupId = _groupByEvent[eventId];
+    if (groupId != null) {
+      final remaining = (_unreadByGroup[groupId] ?? 0) - previousCount;
+      _unreadByGroup[groupId] = remaining < 0 ? 0 : remaining;
+    }
+  }
+
+  static const _defaultUnreadByEvent = {
+    'evt-123': 5,
+    'evt-asado-amigos': 7,
+    'evt-fake-demo': 0,
+    'evt-almuerzo-familia': 1,
+  };
+  static const _defaultUnreadByGroup = {
+    'grp-amigos': 12,
+    'grp-familia': 1,
+    'grp-trabajo': 0,
+  };
+  static const _defaultGroupByEvent = {
+    'evt-123': 'grp-amigos',
+    'evt-asado-amigos': 'grp-amigos',
+    'evt-fake-demo': 'grp-amigos',
+    'evt-almuerzo-familia': 'grp-familia',
+  };
 
   @override
   Future<List<ActivityEntry>> listEventActivity(String eventId) async {

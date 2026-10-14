@@ -3,12 +3,26 @@ import 'package:dio/dio.dart';
 import '../domain/activity_entry.dart';
 import '../domain/activity_log_repository.dart';
 import '../domain/activity_type.dart';
+import '../domain/unread_counts.dart';
 import 'activity_log_exceptions.dart';
+import 'fake_activity_log_repository.dart';
 
 class HttpActivityLogRepository implements ActivityLogRepository {
   final Dio dio;
+  final ActivityLogRepository _unreadFallback;
 
-  HttpActivityLogRepository({required this.dio});
+  HttpActivityLogRepository({
+    required this.dio,
+    ActivityLogRepository? unreadFallback,
+  }) : _unreadFallback =
+           unreadFallback ?? FakeActivityLogRepository(delay: Duration.zero);
+
+  @override
+  Future<UnreadCounts> getUnreadCounts() => _unreadFallback.getUnreadCounts();
+
+  @override
+  Future<void> markEventAsRead(String eventId) =>
+      _unreadFallback.markEventAsRead(eventId);
 
   @override
   Future<List<ActivityEntry>> listEventActivity(String eventId) async {
