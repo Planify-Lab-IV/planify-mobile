@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/activity_log/data/activity_log_exceptions.dart';
+import 'package:planify/features/activity_log/data/fake_activity_log_repository.dart';
 import 'package:planify/features/activity_log/data/http_activity_log_repository.dart';
 import 'package:planify/features/activity_log/domain/activity_type.dart';
 
@@ -37,6 +38,60 @@ void main() {
   };
 
   group('HttpActivityLogRepository', () {
+    test(
+      'keeps unread state in the fake while loading the feed via HTTP',
+      () async {
+        final requests = <String>[];
+        final fake = FakeActivityLogRepository(
+          delay: Duration.zero,
+          shouldThrowError: true,
+        );
+        final repository = HttpActivityLogRepository(
+          dio: dioResolving({
+            'entries': [entry()],
+          }, (options) => requests.add(options.path)),
+          unreadFallback: fake,
+        );
+
+        final before = await repository.getUnreadCounts();
+        expect(before.forEvent('evt-123'), 5);
+        expect(before.forGroup('grp-amigos'), 12);
+        expect(
+          (await repository.listEventActivity('evt-123')).single.id,
+          'activity-1',
+        );
+
+        await repository.markEventAsRead('evt-123');
+        await repository.markEventAsRead('evt-123');
+        final after = await repository.getUnreadCounts();
+        expect(after.forEvent('evt-123'), 0);
+        expect(after.forGroup('grp-amigos'), 7);
+        expect(after.forEvent('evt-asado-amigos'), 7);
+        expect(requests, ['/events/evt-123/activity-log']);
+      },
+    );
+
+    test(
+      'propagates fake unread failures without affecting the HTTP feed',
+      () async {
+        final repository = HttpActivityLogRepository(
+          dio: dioResolving({'entries': []}),
+          unreadFallback: FakeActivityLogRepository(
+            delay: Duration.zero,
+            shouldThrowUnreadCountsError: true,
+            shouldThrowMarkAsReadError: true,
+          ),
+        );
+
+        await expectLater(repository.getUnreadCounts(), throwsException);
+        await expectLater(
+          repository.markEventAsRead('evt-123'),
+          throwsException,
+        );
+        expect(await repository.listEventActivity('evt-123'), isEmpty);
+      },
+    );
+
     test('loads entries using the backend activity log contract', () async {
       RequestOptions? request;
       final repository = HttpActivityLogRepository(
