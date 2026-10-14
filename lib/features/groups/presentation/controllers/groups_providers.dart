@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/providers/core_providers.dart';
 import '../../data/http_groups_repository.dart';
+import '../../data/http_groups_overview_repository.dart';
 import '../../domain/group.dart';
 import '../../domain/groups_repository.dart';
-import '../../data/fake_groups_overview_repository.dart';
 import '../../domain/group_overview.dart';
 import '../../domain/groups_overview_repository.dart';
 
@@ -17,7 +17,7 @@ final myGroupsProvider = FutureProvider.autoDispose<List<Group>>((ref) async {
 });
 
 final groupsOverviewRepositoryProvider = Provider<GroupsOverviewRepository>(
-  (ref) => FakeGroupsOverviewRepository(),
+  (ref) => HttpGroupsOverviewRepository(dio: ref.watch(dioClientProvider)),
 );
 
 final groupsOverviewProvider = FutureProvider.autoDispose<List<GroupOverview>>(
