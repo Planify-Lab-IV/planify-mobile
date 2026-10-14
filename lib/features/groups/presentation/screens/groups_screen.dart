@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../activity_log/presentation/controllers/activity_log_providers.dart';
 import '../controllers/groups_providers.dart';
 import '../widgets/group_avatar.dart';
 import '../widgets/group_event_tile.dart';
@@ -31,6 +32,7 @@ class GroupsScreen extends ConsumerWidget {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
+          ref.invalidate(unreadCountsProvider);
           ref.invalidate(groupsOverviewProvider);
           // AsyncValue renders refresh failures; the gesture itself completes.
           try {
