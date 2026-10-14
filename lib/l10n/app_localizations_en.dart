@@ -1,0 +1,1095 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for English (`en`).
+class AppLocalizationsEn extends AppLocalizations {
+  AppLocalizationsEn([String locale = 'en']) : super(locale);
+
+  @override
+  String get navigationGroups => 'Groups';
+
+  @override
+  String get groupsEmpty =>
+      'You don\'t have any groups yet. Create an event to start your first group.';
+
+  @override
+  String get groupEventsEmpty => 'This group has no active events yet.';
+
+  @override
+  String get groupsLoadError =>
+      'We couldn\'t load your groups. Please try again.';
+
+  @override
+  String get groupsDateTbd => 'TBD';
+
+  @override
+  String get groupsEventConfirmed => 'Confirmed';
+
+  @override
+  String get groupsEventActive => 'Active';
+
+  @override
+  String groupsMembers(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count members',
+      one: '1 member',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settleDebtAction => 'Settle up';
+
+  @override
+  String get settleAllAction => 'Settle all';
+
+  @override
+  String get settleInProgress => 'Settling…';
+
+  @override
+  String get settleDebtDialogTitle => 'Settle this debt?';
+
+  @override
+  String settleOwnDebtDialogMessage(
+    String name,
+    String amount,
+    String eventName,
+  ) {
+    return 'You are about to settle your debt with $name for $amount in the event “$eventName”. This action cannot be undone.';
+  }
+
+  @override
+  String settleOwedDebtDialogMessage(
+    String name,
+    String amount,
+    String eventName,
+  ) {
+    return 'You are about to mark the $amount debt from $name as settled in the event “$eventName”. This action cannot be undone.';
+  }
+
+  @override
+  String get settleAllDialogTitle => 'Settle everything with this person?';
+
+  @override
+  String settleAllDialogMessage(String name) {
+    return 'You are about to settle all debts with $name. This affects all events you share and cannot be undone.';
+  }
+
+  @override
+  String get settleSuccess => 'The debt was settled successfully.';
+
+  @override
+  String get settleForbidden =>
+      'You do not have permission to settle this debt.';
+
+  @override
+  String get settleNotFound =>
+      'The debt or person is no longer available. Refresh the data.';
+
+  @override
+  String get settleNetworkError =>
+      'Could not settle because of a connection problem. Please try again.';
+
+  @override
+  String get settleError => 'Could not settle. Please try again.';
+
+  @override
+  String get helloTest => 'Hello, this is an i18n test';
+
+  @override
+  String get identifierLabel => 'Email or username';
+
+  @override
+  String get identifierHint => 'organizer@planify.com';
+
+  @override
+  String get identifierRequired => 'Please enter your email or username';
+
+  @override
+  String get identifierInvalid => 'Please enter a valid email address';
+
+  @override
+  String get passwordLabel => 'Password';
+
+  @override
+  String get passwordHint => '••••••••';
+
+  @override
+  String get passwordRequired => 'Please enter your password';
+
+  @override
+  String get passwordMinLength => 'Password must be at least 6 characters';
+
+  @override
+  String get loginButton => 'Sign In';
+
+  @override
+  String get loggingIn => 'Signing in...';
+
+  @override
+  String get loginErrorGeneric => 'Could not sign in. Please try again.';
+
+  @override
+  String get loginErrorInvalidCredentials =>
+      'Invalid credentials. Please verify your email and password.';
+
+  @override
+  String get registrationTitle => 'Create account';
+
+  @override
+  String get registrationCreateAccountLink =>
+      'Don\'t have an account? Create one';
+
+  @override
+  String get registrationNameLabel => 'Name';
+
+  @override
+  String get registrationUsernameLabel => 'Username';
+
+  @override
+  String get registrationUsernameHelp => 'Use lowercase letters, numbers and _';
+
+  @override
+  String get registrationEmailLabel => 'Email';
+
+  @override
+  String get registrationNameInvalid =>
+      'Name must be between 1 and 80 characters';
+
+  @override
+  String get registrationUsernameInvalid =>
+      'Username must be between 3 and 30 characters and use only lowercase letters, numbers or _';
+
+  @override
+  String get registrationEmailInvalid => 'Enter a valid email address';
+
+  @override
+  String get registrationPasswordInvalid =>
+      'Password must be between 8 and 72 characters';
+
+  @override
+  String get registrationSubmitButton => 'Create account';
+
+  @override
+  String get registrationErrorConflict =>
+      'We could not create an account with those details. If you already have an account, sign in.';
+
+  @override
+  String get registrationErrorInvalidData =>
+      'Review the information entered and try again.';
+
+  @override
+  String get registrationErrorNetwork =>
+      'We could not create the account because of a connection problem. Please try again.';
+
+  @override
+  String get registrationErrorGeneric =>
+      'We could not create the account. Please try again.';
+
+  @override
+  String get registrationBackToLogin => 'Already have an account? Sign in';
+
+  @override
+  String get logoutButton => 'Sign Out';
+
+  @override
+  String welcomeOrganizer(String name) {
+    return 'Welcome, $name!';
+  }
+
+  @override
+  String get welcome => 'Welcome!';
+
+  @override
+  String get organizerPanelTitle => 'Organizer Dashboard';
+
+  @override
+  String get sessionActiveDescription =>
+      'You have successfully signed in as an event organizer on Planify.';
+
+  @override
+  String get tokenLabel => 'Session Token';
+
+  @override
+  String get roleLabel => 'Role';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get continueAsGuest => 'Continue as guest';
+
+  @override
+  String get orDivider => 'or';
+
+  @override
+  String get loginTitle => 'Sign In';
+
+  @override
+  String get loginSubtitle => 'Sign in to your account or continue as guest';
+
+  @override
+  String get appTagline => 'Organize your plans, effortlessly';
+
+  @override
+  String get nameLabel => 'Name';
+
+  @override
+  String get nameRequired => 'Please enter your name';
+
+  @override
+  String get nameMinLength => 'Name must be at least 2 characters';
+
+  @override
+  String get nameMaxLength => 'Name cannot be longer than 80 characters';
+
+  @override
+  String get pinLabel =>
+      'Choose a 4-digit PIN to identify yourself for this event.';
+
+  @override
+  String get pinRecoveryTitle =>
+      'Have you already joined this event with this name?';
+
+  @override
+  String get pinRecoveryMessage => 'Use the same PIN to restore your access.';
+
+  @override
+  String get pinRequired => 'Please enter your access PIN';
+
+  @override
+  String get pinMinLength => 'PIN must be at least 4 characters';
+
+  @override
+  String get pinInvalidFormat => 'PIN must contain exactly 4 digits';
+
+  @override
+  String get joinButton => 'Join';
+
+  @override
+  String get cancelButton => 'Cancel';
+
+  @override
+  String get loginErrorInvalidPin =>
+      'Invalid PIN. Please check the code and try again.';
+
+  @override
+  String get loginErrorEventNotFound =>
+      'This event no longer exists or is unavailable.';
+
+  @override
+  String get loginErrorEventUnavailable => 'The event is unavailable.';
+
+  @override
+  String get eventIdLabel => 'Event ID';
+
+  @override
+  String get participantPanelTitle => 'Participant Dashboard';
+
+  @override
+  String get sessionActiveParticipantDescription =>
+      'You have successfully joined as an event participant.';
+
+  @override
+  String get guestRole => 'Guest';
+
+  @override
+  String get organizerRole => 'Organizer';
+
+  @override
+  String get eventLabel => 'Event';
+
+  @override
+  String get createEventTitle => 'Create Event';
+
+  @override
+  String get createEventButton => 'Create new event';
+
+  @override
+  String get step1Badge => 'Step 1 of 2';
+
+  @override
+  String get step1Title => 'Basic information';
+
+  @override
+  String get step1Subtitle => 'Enter your event\'s name and location.';
+
+  @override
+  String get eventNameLabel => 'Event name';
+
+  @override
+  String get eventNameHint => 'e.g. Lucas\'s Birthday';
+
+  @override
+  String get eventNameRequired => 'Please enter the event name';
+
+  @override
+  String get eventLocationLabel => 'Location or address';
+
+  @override
+  String get eventLocationHint => 'e.g. Lucas\' house or 1234 Main St';
+
+  @override
+  String get eventLocationRequired => 'Please enter the event location';
+
+  @override
+  String get continueButton => 'Continue';
+
+  @override
+  String get backButton => 'Back';
+
+  @override
+  String get step2Badge => 'Step 2 of 2';
+
+  @override
+  String get step2Title => 'Group and participants';
+
+  @override
+  String get step2Subtitle =>
+      'Choose an existing group or create a new one with its members.';
+
+  @override
+  String get existingGroupOption => 'Existing group';
+
+  @override
+  String get existingGroupSubtitle => 'Select a group you already created';
+
+  @override
+  String get newGroupOption => 'Create new group';
+
+  @override
+  String get newGroupSubtitle => 'Create a new group and invite participants';
+
+  @override
+  String get selectGroupLabel => 'Select group';
+
+  @override
+  String get selectGroupHint => 'Choose a group...';
+
+  @override
+  String get selectGroupRequired => 'Please select a group';
+
+  @override
+  String get loadingGroups => 'Loading groups...';
+
+  @override
+  String get errorLoadingGroups => 'Could not load groups';
+
+  @override
+  String get retryButton => 'Retry';
+
+  @override
+  String get noGroupsAvailable =>
+      'You have no created groups. You can create a new one.';
+
+  @override
+  String get newGroupNameLabel => 'New group name';
+
+  @override
+  String get newGroupNameHint => 'e.g. Football Friends';
+
+  @override
+  String get newGroupNameRequired => 'Please enter the group name';
+
+  @override
+  String get memberIdentifierLabel => 'Member (email or username)';
+
+  @override
+  String get memberIdentifierHint => 'example@email.com or @username';
+
+  @override
+  String get addMemberButton => 'Add';
+
+  @override
+  String get memberAlreadyAdded => 'This member has already been added';
+
+  @override
+  String get memberIdentifierEmpty => 'Enter a valid email or username';
+
+  @override
+  String membersListTitle(int count) {
+    return 'Members ($count)';
+  }
+
+  @override
+  String get createEventSubmitButton => 'Create Event';
+
+  @override
+  String get creatingEventLoading => 'Creating event...';
+
+  @override
+  String get createEventErrorGeneric =>
+      'Could not create event. Please try again.';
+
+  @override
+  String get createEventSuccessTitle => 'Event created successfully!';
+
+  @override
+  String get createEventSuccessSubtitle =>
+      'Your event is ready and assigned to its group.';
+
+  @override
+  String get createdEventIdLabel => 'Event ID';
+
+  @override
+  String get assignedGroupLabel => 'Assigned group';
+
+  @override
+  String get backToHomeButton => 'Back to home';
+
+  @override
+  String get viewEventDetailButton => 'View event details';
+
+  @override
+  String get draftSummaryTitle => 'Draft summary';
+
+  @override
+  String get draftEventName => 'Name';
+
+  @override
+  String get draftEventLocation => 'Location';
+
+  @override
+  String get generateWithAi => 'Generate with AI';
+
+  @override
+  String get generateWithAiComingSoon => 'AI event generation coming soon';
+
+  @override
+  String get eventDetailTitle => 'Event Details';
+
+  @override
+  String get eventStatusLabel => 'Status';
+
+  @override
+  String get eventStatusActive => 'Planning';
+
+  @override
+  String get eventStatusCancelled => 'Cancelled';
+
+  @override
+  String get eventDateFallback => 'Date TBD';
+
+  @override
+  String get quickActionsTitle => 'Quick actions';
+
+  @override
+  String get quickActionInvite => 'Invite';
+
+  @override
+  String get quickActionAddExpense => 'Add expense';
+
+  @override
+  String get quickActionAddTask => 'Add task';
+
+  @override
+  String get quickActionSettle => 'Settle up';
+
+  @override
+  String get tasksSectionTitle => 'Tasks';
+
+  @override
+  String get noTasksPlaceholder => 'No tasks assigned yet.';
+
+  @override
+  String get activityLogSectionTitle => 'Recent activity';
+
+  @override
+  String get noActivityPlaceholder =>
+      'No activity recorded for this event yet.';
+
+  @override
+  String get activityLoading => 'Loading event activity...';
+
+  @override
+  String get activityLoadError =>
+      'Could not load this event\'s activity. Please try again.';
+
+  @override
+  String activityTaskCreated(String actor, String title) {
+    return '$actor created the task $title';
+  }
+
+  @override
+  String activityAvailabilityUpdated(String actor) {
+    return '$actor updated their availability';
+  }
+
+  @override
+  String activityExpenseCreated(
+    String actor,
+    String description,
+    String amount,
+  ) {
+    return '$actor added the expense $description for $amount';
+  }
+
+  @override
+  String activityScheduleConfirmed(String actor, String dateTime) {
+    return '$actor confirmed the schedule for $dateTime';
+  }
+
+  @override
+  String activityUnknown(String actor) {
+    return '$actor made a change to the event';
+  }
+
+  @override
+  String get featureUnderDevelopment => 'This feature will be available soon.';
+
+  @override
+  String get cancelEventAction => 'Cancel event';
+
+  @override
+  String get cancelEventDialogTitle => 'Cancel event?';
+
+  @override
+  String get cancelEventDialogMessage =>
+      'Are you sure you want to cancel this event? This action cannot be undone.';
+
+  @override
+  String get cancelEventConfirm => 'Yes, cancel event';
+
+  @override
+  String get cancelEventDismiss => 'Back';
+
+  @override
+  String get cancelEventSuccess => 'The event was successfully cancelled.';
+
+  @override
+  String get cancelEventError =>
+      'Could not cancel the event. Please try again.';
+
+  @override
+  String get closeExpensesAction => 'Close expenses';
+
+  @override
+  String get closeExpensesDialogTitle => 'Close expenses?';
+
+  @override
+  String get closeExpensesDialogMessage =>
+      'No new expenses can be added to this event, but you can continue settling up.';
+
+  @override
+  String get closeExpensesConfirm => 'Yes, close expenses';
+
+  @override
+  String get closeExpensesDismiss => 'Back';
+
+  @override
+  String get closeExpensesSuccess => 'Expenses were closed successfully.';
+
+  @override
+  String get closeExpensesError =>
+      'Could not close expenses. Please try again.';
+
+  @override
+  String get eventNotFound => 'Event not found';
+
+  @override
+  String get eventLoadError =>
+      'Could not load the event. Check your connection and try again.';
+
+  @override
+  String get eventCancelledNotice =>
+      'This event has been cancelled and no longer accepts new actions.';
+
+  @override
+  String get expensesClosedNotice =>
+      'Expenses are closed. No new expenses can be added.';
+
+  @override
+  String get eventActionsTooltip => 'Event options';
+
+  @override
+  String get cancellingEvent => 'Cancelling event...';
+
+  @override
+  String get invitationErrorInvalid => 'The invitation link is invalid.';
+
+  @override
+  String get invitationErrorNotFound =>
+      'The event for this invitation was not found.';
+
+  @override
+  String get invitationErrorExpired =>
+      'The invitation has expired or is no longer available.';
+
+  @override
+  String get invitationErrorNetwork =>
+      'Network error while validating invitation. Please check your connection.';
+
+  @override
+  String get invitationErrorGeneric =>
+      'Could not process invitation. Please try again.';
+
+  @override
+  String get invitationBannerEvent => 'You have an event invitation!';
+
+  @override
+  String get resolvingInvitation => 'Loading invitation...';
+
+  @override
+  String get attendanceTitle => 'Will you attend?';
+
+  @override
+  String get attendanceGoing => 'Going';
+
+  @override
+  String get attendanceNotGoing => 'Not going';
+
+  @override
+  String get attendanceConfirmed => 'Confirmed';
+
+  @override
+  String get attendanceRejected => 'Rejected';
+
+  @override
+  String get attendancePending => 'No response';
+
+  @override
+  String get attendanceUpdateError =>
+      'We could not update your attendance. Please try again.';
+
+  @override
+  String get eventConfigTitle => 'Event configuration';
+
+  @override
+  String get eventConfigAction => 'Configure participation';
+
+  @override
+  String get availabilityTitle => 'Weekly availability';
+
+  @override
+  String get availabilitySubtitle => 'Select the times when you are available.';
+
+  @override
+  String get availabilitySave => 'Save availability';
+
+  @override
+  String get availabilityLoadError => 'We could not load your availability.';
+
+  @override
+  String get availabilitySaveSuccess => 'Your availability was saved.';
+
+  @override
+  String get availabilitySaveError =>
+      'We could not save your availability. Please try again.';
+
+  @override
+  String get availabilityHeatmapTitle => 'Combined availability';
+
+  @override
+  String get availabilityHeatmapSubtitle =>
+      'See how many people are available at each time.';
+
+  @override
+  String get availabilityHeatmapLoadError =>
+      'We could not load the combined availability.';
+
+  @override
+  String availabilityHeatmapAvailableCount(int count) {
+    return '$count available';
+  }
+
+  @override
+  String get availabilityMondayShort => 'M';
+
+  @override
+  String get availabilityTuesdayShort => 'T';
+
+  @override
+  String get availabilityWednesdayShort => 'W';
+
+  @override
+  String get availabilityThursdayShort => 'T';
+
+  @override
+  String get availabilityFridayShort => 'F';
+
+  @override
+  String get availabilitySaturdayShort => 'S';
+
+  @override
+  String get availabilitySundayShort => 'S';
+
+  @override
+  String get loadingEvent => 'Loading event...';
+
+  @override
+  String get scheduleConfirmationTitle => 'Confirm schedule';
+
+  @override
+  String get scheduleConfirmationSubtitle =>
+      'Choose the event start date and time.';
+
+  @override
+  String get scheduleSelectDate => 'Choose date';
+
+  @override
+  String get scheduleSelectTime => 'Choose time';
+
+  @override
+  String get scheduleConfirm => 'Confirm schedule';
+
+  @override
+  String get scheduleConfirmationValidationError =>
+      'Choose a future date and time to confirm the event.';
+
+  @override
+  String get scheduleConfirmationAuthorizationError =>
+      'Only the organizer can confirm the schedule.';
+
+  @override
+  String get scheduleConfirmationNotFoundError => 'The event was not found.';
+
+  @override
+  String get scheduleConfirmationNetworkError =>
+      'The schedule could not be confirmed because of a network problem.';
+
+  @override
+  String get scheduleConfirmationGenericError =>
+      'The schedule could not be confirmed. Please try again.';
+
+  @override
+  String get scheduleConfirmationSuccess => 'The event schedule was confirmed.';
+
+  @override
+  String get addExpenseDescriptionLabel => 'Expense description';
+
+  @override
+  String get addExpenseDescriptionHint => 'e.g. Year-end dinner';
+
+  @override
+  String get addExpenseDescriptionRequired =>
+      'Enter a description for the expense.';
+
+  @override
+  String get addExpenseTotalLabel => 'Expense total';
+
+  @override
+  String get addExpenseTotalHint => 'e.g. 2,500.00';
+
+  @override
+  String get addExpenseTotalRequired => 'Enter the expense total.';
+
+  @override
+  String get addExpenseTotalInvalid => 'Enter a valid total greater than zero.';
+
+  @override
+  String get addExpensePayersTitle => 'Who paid?';
+
+  @override
+  String get addExpensePayersSubtitle =>
+      'Select one or more people who made the payment.';
+
+  @override
+  String get addExpenseDialogTitle => 'Add expense';
+
+  @override
+  String get addExpenseCloseTooltip => 'Close';
+
+  @override
+  String get addExpensePayerAmountsTitle => 'Amounts paid';
+
+  @override
+  String addExpensePayerAmountLabel(String name) {
+    return '$name\'s amount';
+  }
+
+  @override
+  String get addExpensePayerAmountInvalid => 'Enter a valid amount.';
+
+  @override
+  String get addExpenseSplitEvenly => 'Split equally';
+
+  @override
+  String addExpenseDifferenceMissing(String amount) {
+    return '$amount is still needed to reach the total.';
+  }
+
+  @override
+  String addExpenseDifferenceExceeded(String amount) {
+    return '$amount exceeds the total.';
+  }
+
+  @override
+  String get tasksLoadError => 'Tasks could not be loaded.';
+
+  @override
+  String get taskStatusUnassigned => 'Unassigned';
+
+  @override
+  String get taskStatusPending => 'Pending';
+
+  @override
+  String get taskStatusCompleted => 'Completed';
+
+  @override
+  String taskAssignedTo(String name) {
+    return 'Assigned to $name';
+  }
+
+  @override
+  String get addExpenseDebtorsTitle => 'Who owes?';
+
+  @override
+  String get addExpenseDebtorsSubtitle =>
+      'Select one or more people who need to cover the expense.';
+
+  @override
+  String get addExpenseDebtorAmountsTitle => 'Amounts owed';
+
+  @override
+  String addExpenseDebtorAmountLabel(String name) {
+    return '$name\'s amount';
+  }
+
+  @override
+  String get taskClaimAction => 'Claim';
+
+  @override
+  String get taskCompleteAction => 'Complete';
+
+  @override
+  String get taskReassignAction => 'Reassign';
+
+  @override
+  String get tasksOperationError =>
+      'The task could not be updated. Please try again.';
+
+  @override
+  String get createTaskDialogTitle => 'Add task';
+
+  @override
+  String get createTaskTitleLabel => 'What needs to be done?';
+
+  @override
+  String get createTaskTitleHint => 'e.g. Buy ice';
+
+  @override
+  String get createTaskTitleRequired => 'Enter a task title.';
+
+  @override
+  String get createTaskSubmit => 'Create task';
+
+  @override
+  String get reassignTaskDialogTitle => 'Reassign task';
+
+  @override
+  String get reassignTaskParticipantLabel => 'Choose who will take care of it.';
+
+  @override
+  String get reassignTaskParticipantRequired => 'Choose a person to continue.';
+
+  @override
+  String get reassignTaskConfirm => 'Reassign';
+
+  @override
+  String get addExpenseDebtorAmountInvalid => 'Enter a valid amount.';
+
+  @override
+  String get addExpenseSplitDebtorsEvenly => 'Split equally';
+
+  @override
+  String addExpenseDebtorDifferenceMissing(String amount) {
+    return '$amount is still needed to reach the total.';
+  }
+
+  @override
+  String addExpenseDebtorDifferenceExceeded(String amount) {
+    return '$amount exceeds the total.';
+  }
+
+  @override
+  String get addExpenseSave => 'Confirm';
+
+  @override
+  String get addExpenseSaving => 'Saving expense...';
+
+  @override
+  String get addExpenseSaveSuccess => 'The expense was saved successfully.';
+
+  @override
+  String get addExpenseValidationError =>
+      'Check the expense data, participants and that the amounts match the total.';
+
+  @override
+  String get addExpenseAuthenticationError =>
+      'Your session is invalid. Please sign in again.';
+
+  @override
+  String get addExpenseForbiddenError =>
+      'You do not have permission to add expenses to this event.';
+
+  @override
+  String get addExpenseNotFoundError => 'The event was not found.';
+
+  @override
+  String get addExpenseEventUnavailableError =>
+      'The event was cancelled and no longer accepts expenses.';
+
+  @override
+  String get addExpenseClosedError =>
+      'Expenses for this event are already closed.';
+
+  @override
+  String get addExpenseNetworkError =>
+      'The expense could not be saved because of a connection problem.';
+
+  @override
+  String get addExpenseSaveError =>
+      'We could not confirm that the expense was saved. Please try again.';
+
+  @override
+  String get eventDebtsTitle => 'Event debts';
+
+  @override
+  String get eventDebtsLoading => 'Loading event debts...';
+
+  @override
+  String eventDebtDescription(
+    String debtorName,
+    String amount,
+    String creditorName,
+  ) {
+    return '$debtorName owes $amount to $creditorName';
+  }
+
+  @override
+  String eventDebtIOweDescription(String name, String amount) {
+    return 'You owe $name $amount';
+  }
+
+  @override
+  String eventDebtOwedToMeDescription(String name, String amount) {
+    return '$name owes you $amount';
+  }
+
+  @override
+  String get eventDebtPending => 'Pending';
+
+  @override
+  String get eventDebtSettled => 'Settled';
+
+  @override
+  String get eventDebtsAllSettled => 'All settled';
+
+  @override
+  String get eventDebtsEmpty => 'There are no debts in this event yet.';
+
+  @override
+  String get eventDebtsLoadError =>
+      'Could not load this event\'s debts. Please try again.';
+
+  @override
+  String get navigationHome => 'Home';
+
+  @override
+  String get navigationBalances => 'Balances';
+
+  @override
+  String get balancesTitle => 'Balances';
+
+  @override
+  String get balancesOwedToMe => 'Owed to me';
+
+  @override
+  String get balancesIOwe => 'I owe';
+
+  @override
+  String get balancesPeopleTitle => 'Balances by person';
+
+  @override
+  String get balancesLoading => 'Loading balances...';
+
+  @override
+  String get balancesEmpty => 'You have no pending balances.';
+
+  @override
+  String get balancesLoadError =>
+      'Could not load your balances. Please try again.';
+
+  @override
+  String get balanceStatusPay => 'To pay';
+
+  @override
+  String get balanceStatusPending => 'Pending';
+
+  @override
+  String get balanceStatusSettled => 'Settled';
+
+  @override
+  String get balancesNetLabel => 'Net balance';
+
+  @override
+  String get balancesFilterAll => 'All';
+
+  @override
+  String get balancesFilterEmpty => 'There are no balances in this category.';
+
+  @override
+  String get personBalanceDetailLoading => 'Loading balance details';
+
+  @override
+  String get personBalanceDetailLoadError =>
+      'Could not load the balance details.';
+
+  @override
+  String get personBalanceDetailBreakdownTitle => 'Breakdown by event';
+
+  @override
+  String personBalanceDetailYouOwe(String amount, String name) {
+    return 'You owe \$ $amount to $name';
+  }
+
+  @override
+  String personBalanceDetailOwedToYou(String name, String amount) {
+    return '$name owes you \$ $amount';
+  }
+
+  @override
+  String get personBalanceDetailSettled => 'You\'re all settled';
+
+  @override
+  String personBalanceDetailLineYouOwe(String name) {
+    return 'You owe $name';
+  }
+
+  @override
+  String personBalanceDetailLineOwedToYou(String name) {
+    return '$name owes you';
+  }
+
+  @override
+  String get navigationProfile => 'Profile';
+
+  @override
+  String get profileTitle => 'Profile';
+
+  @override
+  String get profileNameLabel => 'Name';
+
+  @override
+  String get profileUsernameLabel => 'Username';
+
+  @override
+  String get profileEmailLabel => 'Email';
+
+  @override
+  String get profileChangeAvatar => 'Change profile picture';
+
+  @override
+  String get profileSaveButton => 'Save';
+
+  @override
+  String get profileLoadError => 'Could not load profile.';
+
+  @override
+  String get profileSaveError => 'Could not save changes. Please try again.';
+}

@@ -1,0 +1,479 @@
+{
+  "@@locale": "en",
+  "navigationGroups": "Groups",
+  "groupsEmpty": "You don't have any groups yet. Create an event to start your first group.",
+  "groupEventsEmpty": "This group has no active events yet.",
+  "groupsLoadError": "We couldn't load your groups. Please try again.",
+  "groupsDateTbd": "TBD",
+  "groupsEventConfirmed": "Confirmed",
+  "groupsEventActive": "Active",
+  "groupsMembers": "{count, plural, =1{1 member} other{{count} members}}",
+  "@groupsMembers": {"placeholders": {"count": {"type": "int"}}},
+  "settleDebtAction": "Settle up",
+  "settleAllAction": "Settle all",
+  "settleInProgress": "Settling…",
+  "settleDebtDialogTitle": "Settle this debt?",
+  "settleOwnDebtDialogMessage": "You are about to settle your debt with {name} for {amount} in the event “{eventName}”. This action cannot be undone.",
+  "@settleOwnDebtDialogMessage": {"placeholders": {"name": {"type": "String"}, "amount": {"type": "String"}, "eventName": {"type": "String"}}},
+  "settleOwedDebtDialogMessage": "You are about to mark the {amount} debt from {name} as settled in the event “{eventName}”. This action cannot be undone.",
+  "@settleOwedDebtDialogMessage": {"placeholders": {"name": {"type": "String"}, "amount": {"type": "String"}, "eventName": {"type": "String"}}},
+  "settleAllDialogTitle": "Settle everything with this person?",
+  "settleAllDialogMessage": "You are about to settle all debts with {name}. This affects all events you share and cannot be undone.",
+  "@settleAllDialogMessage": {"placeholders": {"name": {"type": "String"}}},
+  "settleSuccess": "The debt was settled successfully.",
+  "settleForbidden": "You do not have permission to settle this debt.",
+  "settleNotFound": "The debt or person is no longer available. Refresh the data.",
+  "settleNetworkError": "Could not settle because of a connection problem. Please try again.",
+  "settleError": "Could not settle. Please try again.",
+  "helloTest": "Hello, this is an i18n test",
+  "identifierLabel": "Email or username",
+  "identifierHint": "organizer@planify.com",
+  "identifierRequired": "Please enter your email or username",
+  "identifierInvalid": "Please enter a valid email address",
+  "passwordLabel": "Password",
+  "passwordHint": "••••••••",
+  "passwordRequired": "Please enter your password",
+  "passwordMinLength": "Password must be at least 6 characters",
+  "loginButton": "Sign In",
+  "loggingIn": "Signing in...",
+  "loginErrorGeneric": "Could not sign in. Please try again.",
+  "loginErrorInvalidCredentials": "Invalid credentials. Please verify your email and password.",
+  "registrationTitle": "Create account",
+  "registrationCreateAccountLink": "Don't have an account? Create one",
+  "registrationNameLabel": "Name",
+  "registrationUsernameLabel": "Username",
+  "registrationUsernameHelp": "Use lowercase letters, numbers and _",
+  "registrationEmailLabel": "Email",
+  "registrationNameInvalid": "Name must be between 1 and 80 characters",
+  "registrationUsernameInvalid": "Username must be between 3 and 30 characters and use only lowercase letters, numbers or _",
+  "registrationEmailInvalid": "Enter a valid email address",
+  "registrationPasswordInvalid": "Password must be between 8 and 72 characters",
+  "registrationSubmitButton": "Create account",
+  "registrationErrorConflict": "We could not create an account with those details. If you already have an account, sign in.",
+  "registrationErrorInvalidData": "Review the information entered and try again.",
+  "registrationErrorNetwork": "We could not create the account because of a connection problem. Please try again.",
+  "registrationErrorGeneric": "We could not create the account. Please try again.",
+  "registrationBackToLogin": "Already have an account? Sign in",
+  "logoutButton": "Sign Out",
+  "welcomeOrganizer": "Welcome, {name}!",
+  "@welcomeOrganizer": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Organizer"
+      }
+    }
+  },
+  "welcome": "Welcome!",
+  "organizerPanelTitle": "Organizer Dashboard",
+  "sessionActiveDescription": "You have successfully signed in as an event organizer on Planify.",
+  "tokenLabel": "Session Token",
+  "roleLabel": "Role",
+  "emailLabel": "Email",
+  "continueAsGuest": "Continue as guest",
+  "orDivider": "or",
+  "loginTitle": "Sign In",
+  "loginSubtitle": "Sign in to your account or continue as guest",
+  "appTagline": "Organize your plans, effortlessly",
+  "nameLabel": "Name",
+  "nameRequired": "Please enter your name",
+  "nameMinLength": "Name must be at least 2 characters",
+  "nameMaxLength": "Name cannot be longer than 80 characters",
+  "pinLabel": "Choose a 4-digit PIN to identify yourself for this event.",
+  "pinRecoveryTitle": "Have you already joined this event with this name?",
+  "pinRecoveryMessage": "Use the same PIN to restore your access.",
+  "pinRequired": "Please enter your access PIN",
+  "pinMinLength": "PIN must be at least 4 characters",
+  "pinInvalidFormat": "PIN must contain exactly 4 digits",
+  "joinButton": "Join",
+  "cancelButton": "Cancel",
+  "loginErrorInvalidPin": "Invalid PIN. Please check the code and try again.",
+  "loginErrorEventNotFound": "This event no longer exists or is unavailable.",
+  "loginErrorEventUnavailable": "The event is unavailable.",
+  "eventIdLabel": "Event ID",
+  "participantPanelTitle": "Participant Dashboard",
+  "sessionActiveParticipantDescription": "You have successfully joined as an event participant.",
+  "guestRole": "Guest",
+  "organizerRole": "Organizer",
+  "eventLabel": "Event",
+  "createEventTitle": "Create Event",
+  "createEventButton": "Create new event",
+  "step1Badge": "Step 1 of 2",
+  "step1Title": "Basic information",
+  "step1Subtitle": "Enter your event's name and location.",
+  "eventNameLabel": "Event name",
+  "eventNameHint": "e.g. Lucas's Birthday",
+  "eventNameRequired": "Please enter the event name",
+  "eventLocationLabel": "Location or address",
+  "eventLocationHint": "e.g. Lucas' house or 1234 Main St",
+  "eventLocationRequired": "Please enter the event location",
+  "continueButton": "Continue",
+  "backButton": "Back",
+  "step2Badge": "Step 2 of 2",
+  "step2Title": "Group and participants",
+  "step2Subtitle": "Choose an existing group or create a new one with its members.",
+  "existingGroupOption": "Existing group",
+  "existingGroupSubtitle": "Select a group you already created",
+  "newGroupOption": "Create new group",
+  "newGroupSubtitle": "Create a new group and invite participants",
+  "selectGroupLabel": "Select group",
+  "selectGroupHint": "Choose a group...",
+  "selectGroupRequired": "Please select a group",
+  "loadingGroups": "Loading groups...",
+  "errorLoadingGroups": "Could not load groups",
+  "retryButton": "Retry",
+  "noGroupsAvailable": "You have no created groups. You can create a new one.",
+  "newGroupNameLabel": "New group name",
+  "newGroupNameHint": "e.g. Football Friends",
+  "newGroupNameRequired": "Please enter the group name",
+  "memberIdentifierLabel": "Member (email or username)",
+  "memberIdentifierHint": "example@email.com or @username",
+  "addMemberButton": "Add",
+  "memberAlreadyAdded": "This member has already been added",
+  "memberIdentifierEmpty": "Enter a valid email or username",
+  "membersListTitle": "Members ({count})",
+  "@membersListTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "createEventSubmitButton": "Create Event",
+  "creatingEventLoading": "Creating event...",
+  "createEventErrorGeneric": "Could not create event. Please try again.",
+  "createEventSuccessTitle": "Event created successfully!",
+  "createEventSuccessSubtitle": "Your event is ready and assigned to its group.",
+  "createdEventIdLabel": "Event ID",
+  "assignedGroupLabel": "Assigned group",
+  "backToHomeButton": "Back to home",
+  "viewEventDetailButton": "View event details",
+  "draftSummaryTitle": "Draft summary",
+  "draftEventName": "Name",
+  "draftEventLocation": "Location",
+  "generateWithAi": "Generate with AI",
+  "generateWithAiComingSoon": "AI event generation coming soon",
+  "eventDetailTitle": "Event Details",
+  "eventStatusLabel": "Status",
+  "eventStatusActive": "Planning",
+  "eventStatusCancelled": "Cancelled",
+  "eventDateFallback": "Date TBD",
+  "quickActionsTitle": "Quick actions",
+  "quickActionInvite": "Invite",
+  "quickActionAddExpense": "Add expense",
+  "quickActionAddTask": "Add task",
+  "quickActionSettle": "Settle up",
+  "tasksSectionTitle": "Tasks",
+  "noTasksPlaceholder": "No tasks assigned yet.",
+  "activityLogSectionTitle": "Recent activity",
+  "noActivityPlaceholder": "No activity recorded for this event yet.",
+  "activityLoading": "Loading event activity...",
+  "activityLoadError": "Could not load this event's activity. Please try again.",
+  "activityTaskCreated": "{actor} created the task {title}",
+  "@activityTaskCreated": {
+    "placeholders": {
+      "actor": {"type": "String", "example": "Juli"},
+      "title": {"type": "String", "example": "Buy meat"}
+    }
+  },
+  "activityAvailabilityUpdated": "{actor} updated their availability",
+  "@activityAvailabilityUpdated": {
+    "placeholders": {
+      "actor": {"type": "String", "example": "Juli"}
+    }
+  },
+  "activityExpenseCreated": "{actor} added the expense {description} for {amount}",
+  "@activityExpenseCreated": {
+    "placeholders": {
+      "actor": {"type": "String", "example": "Juli"},
+      "description": {"type": "String", "example": "Drinks"},
+      "amount": {"type": "String", "example": "$ 245.00"}
+    }
+  },
+  "activityScheduleConfirmed": "{actor} confirmed the schedule for {dateTime}",
+  "@activityScheduleConfirmed": {
+    "placeholders": {
+      "actor": {"type": "String", "example": "Juli"},
+      "dateTime": {"type": "String", "example": "1/10/2026 21:00"}
+    }
+  },
+  "activityUnknown": "{actor} made a change to the event",
+  "@activityUnknown": {
+    "placeholders": {
+      "actor": {"type": "String", "example": "Juli"}
+    }
+  },
+  "featureUnderDevelopment": "This feature will be available soon.",
+  "cancelEventAction": "Cancel event",
+  "cancelEventDialogTitle": "Cancel event?",
+  "cancelEventDialogMessage": "Are you sure you want to cancel this event? This action cannot be undone.",
+  "cancelEventConfirm": "Yes, cancel event",
+  "cancelEventDismiss": "Back",
+  "cancelEventSuccess": "The event was successfully cancelled.",
+  "cancelEventError": "Could not cancel the event. Please try again.",
+  "closeExpensesAction": "Close expenses",
+  "closeExpensesDialogTitle": "Close expenses?",
+  "closeExpensesDialogMessage": "No new expenses can be added to this event, but you can continue settling up.",
+  "closeExpensesConfirm": "Yes, close expenses",
+  "closeExpensesDismiss": "Back",
+  "closeExpensesSuccess": "Expenses were closed successfully.",
+  "closeExpensesError": "Could not close expenses. Please try again.",
+  "eventNotFound": "Event not found",
+  "eventLoadError": "Could not load the event. Check your connection and try again.",
+  "eventCancelledNotice": "This event has been cancelled and no longer accepts new actions.",
+  "expensesClosedNotice": "Expenses are closed. No new expenses can be added.",
+  "eventActionsTooltip": "Event options",
+  "cancellingEvent": "Cancelling event...",
+  "invitationErrorInvalid": "The invitation link is invalid.",
+    "invitationErrorNotFound": "The event for this invitation was not found.",
+    "invitationErrorExpired": "The invitation has expired or is no longer available.",
+    "invitationErrorNetwork": "Network error while validating invitation. Please check your connection.",
+    "invitationErrorGeneric": "Could not process invitation. Please try again.",
+    "invitationBannerEvent": "You have an event invitation!",
+    "resolvingInvitation": "Loading invitation...",
+    "attendanceTitle": "Will you attend?",
+    "attendanceGoing": "Going",
+    "attendanceNotGoing": "Not going",
+    "attendanceConfirmed": "Confirmed",
+    "attendanceRejected": "Rejected",
+    "attendancePending": "No response",
+    "attendanceUpdateError": "We could not update your attendance. Please try again.",
+    "eventConfigTitle": "Event configuration",
+    "eventConfigAction": "Configure participation",
+    "availabilityTitle": "Weekly availability",
+    "availabilitySubtitle": "Select the times when you are available.",
+    "availabilitySave": "Save availability",
+    "availabilityLoadError": "We could not load your availability.",
+    "availabilitySaveSuccess": "Your availability was saved.",
+    "availabilitySaveError": "We could not save your availability. Please try again.",
+    "availabilityHeatmapTitle": "Combined availability",
+    "availabilityHeatmapSubtitle": "See how many people are available at each time.",
+    "availabilityHeatmapLoadError": "We could not load the combined availability.",
+    "availabilityHeatmapAvailableCount": "{count} available",
+    "@availabilityHeatmapAvailableCount": {
+      "placeholders": {
+        "count": {
+          "type": "int",
+          "example": "3"
+        }
+      }
+    },
+    "availabilityMondayShort": "M",
+    "availabilityTuesdayShort": "T",
+    "availabilityWednesdayShort": "W",
+    "availabilityThursdayShort": "T",
+    "availabilityFridayShort": "F",
+    "availabilitySaturdayShort": "S",
+    "availabilitySundayShort": "S",
+    "loadingEvent": "Loading event...",
+    "scheduleConfirmationTitle": "Confirm schedule",
+    "scheduleConfirmationSubtitle": "Choose the event start date and time.",
+    "scheduleSelectDate": "Choose date",
+    "scheduleSelectTime": "Choose time",
+    "scheduleConfirm": "Confirm schedule",
+    "scheduleConfirmationValidationError": "Choose a future date and time to confirm the event.",
+    "scheduleConfirmationAuthorizationError": "Only the organizer can confirm the schedule.",
+    "scheduleConfirmationNotFoundError": "The event was not found.",
+    "scheduleConfirmationNetworkError": "The schedule could not be confirmed because of a network problem.",
+    "scheduleConfirmationGenericError": "The schedule could not be confirmed. Please try again.",
+    "scheduleConfirmationSuccess": "The event schedule was confirmed.",
+    "addExpenseDescriptionLabel": "Expense description",
+    "addExpenseDescriptionHint": "e.g. Year-end dinner",
+    "addExpenseDescriptionRequired": "Enter a description for the expense.",
+    "addExpenseTotalLabel": "Expense total",
+    "addExpenseTotalHint": "e.g. 2,500.00",
+    "addExpenseTotalRequired": "Enter the expense total.",
+    "addExpenseTotalInvalid": "Enter a valid total greater than zero.",
+    "addExpensePayersTitle": "Who paid?",
+    "addExpensePayersSubtitle": "Select one or more people who made the payment.",
+    "addExpenseDialogTitle": "Add expense",
+    "addExpenseCloseTooltip": "Close",
+    "addExpensePayerAmountsTitle": "Amounts paid",
+    "addExpensePayerAmountLabel": "{name}'s amount",
+    "@addExpensePayerAmountLabel": {
+      "placeholders": {
+        "name": {
+          "type": "String",
+          "example": "Lucía"
+        }
+      }
+    },
+    "addExpensePayerAmountInvalid": "Enter a valid amount.",
+    "addExpenseSplitEvenly": "Split equally",
+    "addExpenseDifferenceMissing": "{amount} is still needed to reach the total.",
+    "@addExpenseDifferenceMissing": {
+      "placeholders": {
+        "amount": {
+          "type": "String",
+          "example": "$ 10.00"
+        }
+      }
+    },
+    "addExpenseDifferenceExceeded": "{amount} exceeds the total.",
+    "@addExpenseDifferenceExceeded": {
+      "placeholders": {
+        "amount": {
+          "type": "String",
+          "example": "$ 10.00"
+        }
+      }
+    },
+    "tasksLoadError": "Tasks could not be loaded.",
+    "taskStatusUnassigned": "Unassigned",
+    "taskStatusPending": "Pending",
+    "taskStatusCompleted": "Completed",
+    "taskAssignedTo": "Assigned to {name}",
+    "@taskAssignedTo": {
+      "placeholders": {
+        "name": {
+          "type": "String",
+          "example": "Lucía"
+        }
+      }
+    },
+    "addExpenseDebtorsTitle": "Who owes?",
+    "addExpenseDebtorsSubtitle": "Select one or more people who need to cover the expense.",
+    "addExpenseDebtorAmountsTitle": "Amounts owed",
+    "addExpenseDebtorAmountLabel": "{name}'s amount",
+    "@addExpenseDebtorAmountLabel": {
+      "placeholders": {
+        "name": {
+          "type": "String",
+          "example": "Lucía"
+        }
+      }
+    },
+    "taskClaimAction": "Claim",
+    "taskCompleteAction": "Complete",
+    "taskReassignAction": "Reassign",
+    "tasksOperationError": "The task could not be updated. Please try again.",
+    "createTaskDialogTitle": "Add task",
+    "createTaskTitleLabel": "What needs to be done?",
+    "createTaskTitleHint": "e.g. Buy ice",
+    "createTaskTitleRequired": "Enter a task title.",
+    "createTaskSubmit": "Create task",
+    "reassignTaskDialogTitle": "Reassign task",
+    "reassignTaskParticipantLabel": "Choose who will take care of it.",
+    "reassignTaskParticipantRequired": "Choose a person to continue.",
+    "reassignTaskConfirm": "Reassign",
+    "addExpenseDebtorAmountInvalid": "Enter a valid amount.",
+    "addExpenseSplitDebtorsEvenly": "Split equally",
+    "addExpenseDebtorDifferenceMissing": "{amount} is still needed to reach the total.",
+    "@addExpenseDebtorDifferenceMissing": {
+      "placeholders": {
+        "amount": {
+          "type": "String",
+          "example": "$ 10.00"
+        }
+      }
+    },
+    "addExpenseDebtorDifferenceExceeded": "{amount} exceeds the total.",
+    "@addExpenseDebtorDifferenceExceeded": {
+      "placeholders": {
+        "amount": {
+          "type": "String",
+          "example": "$ 10.00"
+        }
+      }
+    },
+    "addExpenseSave": "Confirm",
+    "addExpenseSaving": "Saving expense...",
+    "addExpenseSaveSuccess": "The expense was saved successfully.",
+    "addExpenseValidationError": "Check the expense data, participants and that the amounts match the total.",
+    "addExpenseAuthenticationError": "Your session is invalid. Please sign in again.",
+    "addExpenseForbiddenError": "You do not have permission to add expenses to this event.",
+    "addExpenseNotFoundError": "The event was not found.",
+    "addExpenseEventUnavailableError": "The event was cancelled and no longer accepts expenses.",
+    "addExpenseClosedError": "Expenses for this event are already closed.",
+    "addExpenseNetworkError": "The expense could not be saved because of a connection problem.",
+    "addExpenseSaveError": "We could not confirm that the expense was saved. Please try again.",
+    "eventDebtsTitle": "Event debts",
+    "eventDebtsLoading": "Loading event debts...",
+    "eventDebtDescription": "{debtorName} owes {amount} to {creditorName}",
+    "@eventDebtDescription": {
+      "placeholders": {
+        "debtorName": {
+          "type": "String",
+          "example": "Ana"
+        },
+        "amount": {
+          "type": "String",
+          "example": "$ 500.00"
+        },
+        "creditorName": {
+          "type": "String",
+          "example": "Marcos"
+        }
+      }
+    },
+    "eventDebtIOweDescription": "You owe {name} {amount}",
+    "@eventDebtIOweDescription": {
+      "placeholders": {
+        "name": {"type": "String"},
+        "amount": {"type": "String"}
+      }
+    },
+    "eventDebtOwedToMeDescription": "{name} owes you {amount}",
+    "@eventDebtOwedToMeDescription": {
+      "placeholders": {
+        "name": {"type": "String"},
+        "amount": {"type": "String"}
+      }
+    },
+    "eventDebtPending": "Pending",
+    "eventDebtSettled": "Settled",
+    "eventDebtsAllSettled": "All settled",
+    "eventDebtsEmpty": "There are no debts in this event yet.",
+    "eventDebtsLoadError": "Could not load this event's debts. Please try again.",
+    "navigationHome": "Home",
+    "navigationBalances": "Balances",
+    "balancesTitle": "Balances",
+    "balancesOwedToMe": "Owed to me",
+    "balancesIOwe": "I owe",
+    "balancesPeopleTitle": "Balances by person",
+    "balancesLoading": "Loading balances...",
+    "balancesEmpty": "You have no pending balances.",
+    "balancesLoadError": "Could not load your balances. Please try again.",
+    "balanceStatusPay": "To pay",
+    "balanceStatusPending": "Pending",
+    "balanceStatusSettled": "Settled",
+    "balancesNetLabel": "Net balance",
+    "balancesFilterAll": "All",
+  "balancesFilterEmpty": "There are no balances in this category."
+  ,"personBalanceDetailLoading": "Loading balance details"
+  ,"personBalanceDetailLoadError": "Could not load the balance details."
+  ,"personBalanceDetailBreakdownTitle": "Breakdown by event"
+  ,"personBalanceDetailYouOwe": "You owe $ {amount} to {name}"
+  ,"@personBalanceDetailYouOwe": {
+    "placeholders": {
+      "amount": {"type": "String", "example": "$ 243.00"},
+      "name": {"type": "String", "example": "Ana"}
+    }
+  }
+  ,"personBalanceDetailOwedToYou": "{name} owes you $ {amount}"
+  ,"@personBalanceDetailOwedToYou": {
+    "placeholders": {
+      "name": {"type": "String", "example": "Martín"},
+      "amount": {"type": "String", "example": "$ 825.00"}
+    }
+  }
+  ,"personBalanceDetailSettled": "You're all settled"
+  ,"personBalanceDetailLineYouOwe": "You owe {name}"
+  ,"@personBalanceDetailLineYouOwe": {
+    "placeholders": {"name": {"type": "String", "example": "Ana"}}
+  }
+  ,"personBalanceDetailLineOwedToYou": "{name} owes you",
+  "navigationProfile": "Profile",
+  "profileTitle": "Profile",
+  "profileNameLabel": "Name",
+  "profileUsernameLabel": "Username",
+  "profileEmailLabel": "Email",
+  "profileChangeAvatar": "Change profile picture",
+  "profileSaveButton": "Save",
+  "profileLoadError": "Could not load profile.",
+  "profileSaveError": "Could not save changes. Please try again."
+  ,"@personBalanceDetailLineOwedToYou": {
+    "placeholders": {"name": {"type": "String", "example": "Ana"}}
+  }
+}

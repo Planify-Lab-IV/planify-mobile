@@ -1,0 +1,335 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:planify/features/events/data/event_exceptions.dart';
+import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/events/domain/attendance_status.dart';
+import 'package:planify/features/events/domain/event.dart';
+import 'package:planify/features/events/domain/event_draft.dart';
+import 'package:planify/features/events/domain/event_status.dart';
+
+void main() {
+  group('FakeEventsRepository', () {
+    late FakeEventsRepository repository;
+    const testOrganizerId = 'org-123';
+
+    setUp(() {
+      repository = FakeEventsRepository(delay: Duration.zero);
+    });
+
+    test(
+      'createEvent con grupo existente crea el evento con datos del grupo y autor',
+      () async {
+        const draft = EventDraft(
+          name: 'Cumpleaños de Lucas',
+          location: 'Av. Corrientes 1234',
+          isNewGroup: false,
+          selectedGroupId: 'grp-1',
+          selectedGroupName: 'Amigos del Fútbol',
+        );
+
+        final event = await repository.createEvent(draft);
+
+        expect(event.id, startsWith('evt-'));
+        expect(event.name, equals('Cumpleaños de Lucas'));
+        expect(event.location, equals('Av. Corrientes 1234'));
+        expect(event.organizerId, equals('org-123'));
+        expect(event.groupId, equals('grp-1'));
+        expect(event.status, equals(EventStatus.active));
+        expect(event.expensesClosed, isFalse);
+        expect(event.participants, hasLength(3));
+        expect(event.participants.first.id, 'participant-org-${event.id}');
+
+        final fetched = await repository.getEvent(event.id);
+        expect(fetched, equals(event));
+      },
+    );
+
+    test(
+      'createEvent con grupo nuevo crea el evento asignando el grupo',
+      () async {
+        const draft = EventDraft(
+          name: 'Asado de Fin de Año',
+          location: 'Club Social',
+          isNewGroup: true,
+          newGroupName: 'Amigos de la Primaria',
+          newGroupMembers: ['juan@gmail.com', '@pedro123'],
+        );
+
+        final event = await repository.createEvent(draft);
+
+        expect(event.id, startsWith('evt-'));
+        expect(event.name, equals('Asado de Fin de Año'));
+        expect(event.location, equals('Club Social'));
+        expect(event.groupId, startsWith('grp-'));
+      },
+    );
+
+    test(
+      'createEvent usa al organizador configurado como participante del evento',
+      () async {
+        const currentUserId = 'user-from-current-session';
+        final repositoryForCurrentUser = FakeEventsRepository(
+          delay: Duration.zero,
+          organizerId: currentUserId,
+        );
+
+        final event = await repositoryForCurrentUser.createEvent(
+          const EventDraft(
+            name: 'Evento de prueba',
+            location: 'Casa',
+            selectedGroupId: 'grp-1',
+          ),
+        );
+        final organizerParticipant = event.participants.singleWhere(
+          (participant) => participant.isOrganizer,
+        );
+
+        expect(event.organizerId, currentUserId);
+        expect(organizerParticipant.userId, currentUserId);
+        expect(organizerParticipant.eventId, event.id);
+      },
+    );
+
+    test(
+      'createEvent arroja excepción cuando shouldThrowError es true',
+      () async {
+        final errorRepo = FakeEventsRepository(
+          delay: Duration.zero,
+          shouldThrowError: true,
+        );
+
+        const draft = EventDraft(
+          name: 'Evento',
+          location: 'Lugar',
+          selectedGroupId: 'grp-1',
+        );
+
+        expect(() => errorRepo.createEvent(draft), throwsException);
+      },
+    );
+
+    test('cancel muta el estado del evento a cancelled', () async {
+      const draft = EventDraft(
+        name: 'Evento a Cancelar',
+        location: 'Lugar',
+        selectedGroupId: 'grp-1',
+      );
+      final event = await repository.createEvent(draft);
+
+      await repository.cancel(event.id);
+
+      final updated = await repository.getEvent(event.id);
+      expect(updated?.status, EventStatus.cancelled);
+      expect(updated?.isCancelled, isTrue);
+    });
+
+    test(
+      'cancel arroja EventNotFoundException si el evento no existe',
+      () async {
+        expect(
+          () => repository.cancel('non-existent-id'),
+          throwsA(isA<EventNotFoundException>()),
+        );
+      },
+    );
+
+    test(
+      'cancel arroja EventCancellationException si shouldFailCancellation es true',
+      () async {
+        final failRepo = FakeEventsRepository(
+          delay: Duration.zero,
+          shouldFailCancellation: true,
+        );
+        final event = await failRepo.createEvent(
+          const EventDraft(
+            name: 'Evt',
+            location: 'Loc',
+            selectedGroupId: 'grp-1',
+          ),
+        );
+
+        expect(
+          () => failRepo.cancel(event.id),
+          throwsA(isA<EventCancellationException>()),
+        );
+      },
+    );
+
+    test('confirmSchedule guarda el horario y confirma el evento', () async {
+      const eventId = 'evt-123';
+      final startDateTime = DateTime.now().add(const Duration(days: 1));
+
+      await repository.confirmSchedule(eventId, startDateTime);
+
+      final event = await repository.getEvent(eventId);
+      expect(event?.status, EventStatus.confirmed);
+      expect(event?.isConfirmed, isTrue);
+      expect(event?.startDateTime, startDateTime);
+    });
+
+    test(
+      'confirmSchedule no modifica el evento cuando el fake falla',
+      () async {
+        final failingRepository = FakeEventsRepository(
+          delay: Duration.zero,
+          shouldFailScheduleConfirmation: true,
+        );
+
+        await expectLater(
+          failingRepository.confirmSchedule(
+            'evt-123',
+            DateTime.now().add(const Duration(days: 1)),
+          ),
+          throwsA(isA<EventScheduleConfirmationException>()),
+        );
+
+        final event = await failingRepository.getEvent('evt-123');
+        expect(event?.status, EventStatus.active);
+        expect(event?.startDateTime, isNull);
+      },
+    );
+
+    test('confirmSchedule rejects past dates and cancelled events', () async {
+      await expectLater(
+        repository.confirmSchedule(
+          'evt-123',
+          DateTime.now().subtract(const Duration(days: 1)),
+        ),
+        throwsA(isA<EventScheduleValidationException>()),
+      );
+
+      await repository.cancel('evt-123');
+
+      await expectLater(
+        repository.confirmSchedule(
+          'evt-123',
+          DateTime.now().add(const Duration(days: 1)),
+        ),
+        throwsA(isA<EventScheduleValidationException>()),
+      );
+    });
+
+    test('permite inicializar con initialEvents personalizados', () async {
+      final customEvent = Event(
+        id: 'custom-1',
+        name: 'Custom',
+        location: 'Loc',
+        organizerId: testOrganizerId,
+        groupId: 'grp-1',
+        status: EventStatus.active,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+
+      final customRepo = FakeEventsRepository(
+        delay: Duration.zero,
+        initialEvents: [customEvent],
+      );
+
+      final fetched = await customRepo.getEvent('custom-1');
+      expect(fetched, equals(customEvent));
+    });
+
+    test(
+      'recupera el estado de gastos cerrados de un evento inicial',
+      () async {
+        final closedEvent = Event(
+          id: 'closed-1',
+          name: 'Evento cerrado',
+          location: 'Loc',
+          organizerId: testOrganizerId,
+          groupId: 'grp-1',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          expensesClosed: true,
+        );
+        final closedEventsRepository = FakeEventsRepository(
+          delay: Duration.zero,
+          initialEvents: [closedEvent],
+        );
+
+        final fetched = await closedEventsRepository.getEvent(closedEvent.id);
+
+        expect(fetched?.expensesClosed, isTrue);
+      },
+    );
+
+    test(
+      'guarda y recupera la asistencia del usuario actual por evento',
+      () async {
+        await repository.updateCurrentUserAttendance(
+          'evt-123',
+          AttendanceResponse.confirmed,
+        );
+
+        expect(
+          await repository.getCurrentUserAttendance('evt-123'),
+          AttendanceStatus.confirmed,
+        );
+      },
+    );
+
+    test(
+      'simula un error al responder asistencia sin guardar cambios',
+      () async {
+        final failingRepository = FakeEventsRepository(
+          delay: Duration.zero,
+          shouldFailAttendanceResponse: true,
+        );
+
+        await expectLater(
+          failingRepository.updateCurrentUserAttendance(
+            'evt-123',
+            AttendanceResponse.confirmed,
+          ),
+          throwsA(isA<AttendanceResponseException>()),
+        );
+        expect(
+          await failingRepository.getCurrentUserAttendance('evt-123'),
+          AttendanceStatus.noResponse,
+        );
+      },
+    );
+
+    test(
+      'carga eventos semilla por defecto cuando no se pasan initialEvents',
+      () async {
+        final defaultRepo = FakeEventsRepository(delay: Duration.zero);
+
+        final evt123 = await defaultRepo.getEvent('evt-123');
+        expect(evt123, isNotNull);
+        expect(evt123?.name, equals('Cumpleaños de Lucas'));
+        expect(evt123?.status, equals(EventStatus.active));
+        expect(evt123?.participants, hasLength(3));
+        expect(
+          evt123?.participants.map((participant) => participant.id).toSet(),
+          hasLength(3),
+        );
+        expect(
+          evt123?.participants.every(
+            (participant) => participant.eventId == evt123.id,
+          ),
+          isTrue,
+        );
+        expect(
+          evt123?.participants.where((participant) => participant.isOrganizer),
+          hasLength(1),
+        );
+        expect(
+          evt123?.participants.any((participant) => participant.isAnonymous),
+          isTrue,
+        );
+
+        final evtCumple = await defaultRepo.getEvent('evt-cumple-lucas');
+        expect(evtCumple, isNotNull);
+
+        final evtAsado = await defaultRepo.getEvent('evt-asado-amigos');
+        expect(evtAsado, isNotNull);
+
+        final eventDemo = await defaultRepo.getEvent('evt-fake-demo');
+        expect(eventDemo, isNotNull);
+        expect(eventDemo?.name, equals('Evento Demo'));
+        expect(eventDemo?.status, equals(EventStatus.active));
+      },
+    );
+  });
+}

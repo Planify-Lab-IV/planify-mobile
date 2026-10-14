@@ -1,0 +1,616 @@
+import 'package:dio/dio.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:planify/features/events/data/event_exceptions.dart';
+import 'package:planify/features/events/data/http_events_repository.dart';
+import 'package:planify/features/events/domain/attendance_status.dart';
+import 'package:planify/features/events/domain/event_draft.dart';
+import 'package:planify/features/events/domain/event_status.dart';
+
+void main() {
+  group('HttpEventsRepository', () {
+    const eventResponse = {
+      'id': 'evt-1',
+      'name': 'Asado',
+      'location': 'Casa',
+      'organizerId': 'usr-1',
+      'groupId': 'grp-1',
+      'status': 'active',
+      'startDateTime': null,
+      'createdAt': '2026-09-09T12:00:00.000Z',
+      'updatedAt': '2026-09-09T12:00:00.000Z',
+      'participants': [
+        {
+          'id': 'participant-1',
+          'eventId': 'evt-1',
+          'userId': 'usr-1',
+          'username': 'dev1',
+          'isAnonymous': false,
+          'isOrganizer': true,
+        },
+        {
+          'id': 'participant-2',
+          'eventId': 'evt-1',
+          'userId': null,
+          'username': 'Invitado',
+          'isAnonymous': true,
+          'isOrganizer': false,
+        },
+      ],
+    };
+
+    Dio dioResolving(dynamic body, void Function(RequestOptions)? inspect) {
+      final dio = Dio();
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            inspect?.call(options);
+            handler.resolve(
+              Response<dynamic>(
+                requestOptions: options,
+                statusCode: 201,
+                data: body,
+              ),
+            );
+          },
+        ),
+      );
+      return dio;
+    }
+
+    Dio dioRejecting(int statusCode) {
+      final dio = Dio();
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) => handler.reject(
+            DioException(
+              requestOptions: options,
+              response: Response<dynamic>(
+                requestOptions: options,
+                statusCode: statusCode,
+              ),
+            ),
+          ),
+        ),
+      );
+      return dio;
+    }
+
+    test('sends the existing group payload and maps the full event', () async {
+      RequestOptions? request;
+      final repository = HttpEventsRepository(
+        dio: dioResolving(eventResponse, (options) => request = options),
+      );
+      const draft = EventDraft(
+        name: 'Asado',
+        location: 'Casa',
+        selectedGroupId: 'grp-1',
+      );
+
+      final event = await repository.createEvent(draft);
+
+      expect(request?.method, 'POST');
+      expect(request?.path, '/events');
+      expect(request?.data, {
+        'name': 'Asado',
+        'location': 'Casa',
+        'groupId': 'grp-1',
+      });
+      expect(event.status, EventStatus.active);
+      expect(event.startDateTime, isNull);
+      expect(event.updatedAt, DateTime.parse('2026-09-09T12:00:00.000Z'));
+      expect(event.participants, hasLength(2));
+      expect(event.participants.first.id, 'participant-1');
+      expect(event.participants.first.username, 'dev1');
+      expect(event.participants.last.userId, isNull);
+      expect(event.participants.last.isAnonymous, isTrue);
+      expect(event.expensesClosed, isFalse);
+    });
+
+    test('sends the new group payload without an organizer ID', () async {
+      RequestOptions? request;
+      final repository = HttpEventsRepository(
+        dio: dioResolving(eventResponse, (options) => request = options),
+      );
+      const draft = EventDraft(
+        name: 'Asado',
+        location: 'Casa',
+        isNewGroup: true,
+        newGroupName: 'Amigos',
+        newGroupMembers: ['dev2', 'dev3'],
+      );
+
+      await repository.createEvent(draft);
+
+      expect(request?.data, {
+        'name': 'Asado',
+        'location': 'Casa',
+        'newGroupName': 'Amigos',
+        'memberIdentifiers': ['dev2', 'dev3'],
+      });
+    });
+
+    test('rejects malformed event responses', () async {
+      final repository = HttpEventsRepository(
+        dio: dioResolving({'id': 'evt-1'}, null),
+      );
+      const draft = EventDraft(
+        name: 'Asado',
+        location: 'Casa',
+        selectedGroupId: 'grp-1',
+      );
+
+      expect(
+        () => repository.createEvent(draft),
+        throwsA(isA<InvalidEventResponseException>()),
+      );
+    });
+
+    test('maps connection errors to a network exception', () async {
+      final dio = Dio();
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) => handler.reject(
+            DioException(
+              requestOptions: options,
+              type: DioExceptionType.connectionError,
+            ),
+          ),
+        ),
+      );
+      final repository = HttpEventsRepository(dio: dio);
+      const draft = EventDraft(
+        name: 'Asado',
+        location: 'Casa',
+        selectedGroupId: 'grp-1',
+      );
+
+      expect(
+        () => repository.createEvent(draft),
+        throwsA(isA<NetworkEventException>()),
+      );
+    });
+
+    group('getEvent', () {
+      test('maps expensesClosed when the backend sends it', () async {
+        final repository = HttpEventsRepository(
+          dio: dioResolving({...eventResponse, 'expensesClosed': true}, null),
+        );
+
+        final event = await repository.getEvent('evt-1');
+
+        expect(event?.expensesClosed, isTrue);
+      });
+
+      test('rejects a non-boolean expensesClosed value', () async {
+        final repository = HttpEventsRepository(
+          dio: dioResolving({...eventResponse, 'expensesClosed': 'true'}, null),
+        );
+
+        expect(
+          () => repository.getEvent('evt-1'),
+          throwsA(isA<InvalidEventResponseException>()),
+        );
+      });
+
+      test(
+        'executes GET /events/:eventId and maps the full event with participants',
+        () async {
+          RequestOptions? request;
+          final repository = HttpEventsRepository(
+            dio: dioResolving(eventResponse, (options) => request = options),
+          );
+
+          final event = await repository.getEvent('evt-1');
+
+          expect(request?.method, 'GET');
+          expect(request?.path, '/events/evt-1');
+          expect(event, isNotNull);
+          expect(event!.id, 'evt-1');
+          expect(event.name, 'Asado');
+          expect(event.location, 'Casa');
+          expect(event.organizerId, 'usr-1');
+          expect(event.groupId, 'grp-1');
+          expect(event.status, EventStatus.active);
+          expect(event.startDateTime, isNull);
+          expect(event.createdAt, DateTime.parse('2026-09-09T12:00:00.000Z'));
+          expect(event.updatedAt, DateTime.parse('2026-09-09T12:00:00.000Z'));
+          expect(event.participants, hasLength(2));
+          expect(event.participants[0].id, 'participant-1');
+          expect(event.participants[0].userId, 'usr-1');
+          expect(event.participants[0].username, 'dev1');
+          expect(event.participants[0].isAnonymous, isFalse);
+          expect(event.participants[0].isOrganizer, isTrue);
+          expect(event.participants[1].userId, isNull);
+          expect(event.participants[1].id, 'participant-2');
+          expect(event.participants[1].username, 'Invitado');
+          expect(event.participants[1].isAnonymous, isTrue);
+          expect(event.participants[1].isOrganizer, isFalse);
+        },
+      );
+
+      test('rejects a participant response without its ID', () async {
+        final participants = eventResponse['participants']! as List<dynamic>;
+        final responseWithoutParticipantId =
+            Map<String, dynamic>.from(eventResponse)
+              ..['participants'] = [
+                Map<String, dynamic>.from(participants.first as Map)
+                  ..remove('id'),
+                participants[1],
+              ];
+        final repository = HttpEventsRepository(
+          dio: dioResolving(responseWithoutParticipantId, null),
+        );
+
+        expect(
+          () => repository.getEvent('evt-1'),
+          throwsA(isA<InvalidEventResponseException>()),
+        );
+      });
+
+      test('maps cancelled status correctly', () async {
+        final cancelledResponse = Map<String, dynamic>.from(eventResponse)
+          ..['status'] = 'cancelled';
+        final repository = HttpEventsRepository(
+          dio: dioResolving(cancelledResponse, null),
+        );
+
+        final event = await repository.getEvent('evt-1');
+
+        expect(event, isNotNull);
+        expect(event!.status, EventStatus.cancelled);
+        expect(event.isCancelled, isTrue);
+      });
+
+      test('maps confirmed status and startDateTime correctly', () async {
+        const startDateTime = '2026-12-20T21:30:00.000Z';
+        final confirmedResponse = Map<String, dynamic>.from(eventResponse)
+          ..['status'] = 'confirmed'
+          ..['startDateTime'] = startDateTime;
+        final repository = HttpEventsRepository(
+          dio: dioResolving(confirmedResponse, null),
+        );
+
+        final event = await repository.getEvent('evt-1');
+
+        expect(event, isNotNull);
+        expect(event!.status, EventStatus.confirmed);
+        expect(event.isConfirmed, isTrue);
+        expect(event.startDateTime, DateTime.parse(startDateTime));
+      });
+
+      test('returns null when the backend responds with 404', () async {
+        final dio = Dio();
+        dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) => handler.reject(
+              DioException(
+                requestOptions: options,
+                response: Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 404,
+                ),
+              ),
+            ),
+          ),
+        );
+        final repository = HttpEventsRepository(dio: dio);
+
+        final event = await repository.getEvent('evt-missing');
+
+        expect(event, isNull);
+      });
+
+      test('maps connection errors to NetworkEventException', () async {
+        final dio = Dio();
+        dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) => handler.reject(
+              DioException(
+                requestOptions: options,
+                type: DioExceptionType.connectionError,
+              ),
+            ),
+          ),
+        );
+        final repository = HttpEventsRepository(dio: dio);
+
+        expect(
+          () => repository.getEvent('evt-1'),
+          throwsA(isA<NetworkEventException>()),
+        );
+      });
+
+      test(
+        'maps malformed event response to InvalidEventResponseException',
+        () async {
+          final repository = HttpEventsRepository(
+            dio: dioResolving({'invalid': 'data'}, null),
+          );
+
+          expect(
+            () => repository.getEvent('evt-1'),
+            throwsA(isA<InvalidEventResponseException>()),
+          );
+        },
+      );
+
+      test(
+        'rejects blank event IDs with InvalidEventResponseException',
+        () async {
+          final repository = HttpEventsRepository(dio: Dio());
+
+          expect(
+            () => repository.getEvent('   '),
+            throwsA(isA<InvalidEventResponseException>()),
+          );
+        },
+      );
+    });
+
+    group('cancel', () {
+      test('executes PUT /events/:eventId', () async {
+        RequestOptions? request;
+        final repository = HttpEventsRepository(
+          dio: dioResolving(null, (options) => request = options),
+        );
+
+        await repository.cancel('evt-1');
+
+        expect(request?.method, 'PUT');
+        expect(request?.path, '/events/evt-1/cancel');
+      });
+
+      test('maps a missing event to EventNotFoundException', () async {
+        final dio = Dio();
+        dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) => handler.reject(
+              DioException(
+                requestOptions: options,
+                response: Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 404,
+                ),
+              ),
+            ),
+          ),
+        );
+        final repository = HttpEventsRepository(dio: dio);
+
+        expect(
+          () => repository.cancel('evt-missing'),
+          throwsA(isA<EventNotFoundException>()),
+        );
+      });
+
+      test('maps connection errors to NetworkEventException', () async {
+        final dio = Dio();
+        dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) => handler.reject(
+              DioException(
+                requestOptions: options,
+                type: DioExceptionType.connectionError,
+              ),
+            ),
+          ),
+        );
+        final repository = HttpEventsRepository(dio: dio);
+
+        expect(
+          () => repository.cancel('evt-1'),
+          throwsA(isA<NetworkEventException>()),
+        );
+      });
+
+      test(
+        'maps non-recoverable HTTP errors to EventCancellationException',
+        () async {
+          for (final statusCode in [401, 403, 409, 500, 503]) {
+            final repository = HttpEventsRepository(
+              dio: dioRejecting(statusCode),
+            );
+
+            await expectLater(
+              repository.cancel('evt-1'),
+              throwsA(isA<EventCancellationException>()),
+            );
+          }
+        },
+      );
+
+      test('rejects blank event IDs before sending a request', () async {
+        final repository = HttpEventsRepository(dio: Dio());
+
+        expect(
+          () => repository.cancel('   '),
+          throwsA(isA<InvalidEventResponseException>()),
+        );
+      });
+    });
+
+    group('confirmSchedule', () {
+      test('executes PATCH with the backend schedule payload', () async {
+        RequestOptions? request;
+        final repository = HttpEventsRepository(
+          dio: dioResolving(null, (options) => request = options),
+        );
+        final startDateTime = DateTime.parse('2026-12-20T21:30:00.000Z');
+
+        await repository.confirmSchedule('evt-1', startDateTime);
+
+        expect(request?.method, 'PATCH');
+        expect(request?.path, '/events/evt-1/confirm-schedule');
+        expect(request?.data, {
+          'startDateTime': startDateTime.toUtc().toIso8601String(),
+        });
+      });
+
+      test(
+        'maps validation errors to EventScheduleValidationException',
+        () async {
+          final repository = HttpEventsRepository(dio: dioRejecting(400));
+
+          expect(
+            () => repository.confirmSchedule('evt-1', DateTime.now()),
+            throwsA(isA<EventScheduleValidationException>()),
+          );
+        },
+      );
+
+      test(
+        'maps authentication and authorization errors to EventScheduleAuthorizationException',
+        () async {
+          for (final statusCode in [401, 403]) {
+            final repository = HttpEventsRepository(
+              dio: dioRejecting(statusCode),
+            );
+
+            await expectLater(
+              repository.confirmSchedule('evt-1', DateTime.now()),
+              throwsA(isA<EventScheduleAuthorizationException>()),
+            );
+          }
+        },
+      );
+
+      test('maps a missing event to EventNotFoundException', () async {
+        final repository = HttpEventsRepository(dio: dioRejecting(404));
+
+        expect(
+          () => repository.confirmSchedule('evt-missing', DateTime.now()),
+          throwsA(isA<EventNotFoundException>()),
+        );
+      });
+
+      test('maps connection errors to NetworkEventException', () async {
+        final dio = Dio();
+        dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) => handler.reject(
+              DioException(
+                requestOptions: options,
+                type: DioExceptionType.connectionError,
+              ),
+            ),
+          ),
+        );
+        final repository = HttpEventsRepository(dio: dio);
+
+        expect(
+          () => repository.confirmSchedule('evt-1', DateTime.now()),
+          throwsA(isA<NetworkEventException>()),
+        );
+      });
+
+      test('rejects blank event IDs before sending a request', () async {
+        final repository = HttpEventsRepository(dio: Dio());
+
+        expect(
+          () => repository.confirmSchedule('   ', DateTime.now()),
+          throwsA(isA<InvalidEventResponseException>()),
+        );
+      });
+    });
+
+    group('updateCurrentUserAttendance', () {
+      test('sends the confirmed attendance response', () async {
+        RequestOptions? request;
+        final repository = HttpEventsRepository(
+          dio: dioResolving(null, (options) => request = options),
+        );
+
+        await repository.updateCurrentUserAttendance(
+          'evt-1',
+          AttendanceResponse.confirmed,
+        );
+
+        expect(request?.method, 'PUT');
+        expect(request?.path, '/events/evt-1/participants/me/attendance');
+        expect(request?.data, {'state': 'confirmed'});
+      });
+
+      test('sends the rejected attendance response', () async {
+        RequestOptions? request;
+        final repository = HttpEventsRepository(
+          dio: dioResolving(null, (options) => request = options),
+        );
+
+        await repository.updateCurrentUserAttendance(
+          'evt-1',
+          AttendanceResponse.rejected,
+        );
+
+        expect(request?.data, {'state': 'rejected'});
+      });
+
+      test('maps a missing event to EventNotFoundException', () async {
+        final repository = HttpEventsRepository(dio: dioRejecting(404));
+
+        expect(
+          () => repository.updateCurrentUserAttendance(
+            'evt-missing',
+            AttendanceResponse.confirmed,
+          ),
+          throwsA(isA<EventNotFoundException>()),
+        );
+      });
+
+      test('maps connection errors to NetworkEventException', () async {
+        final dio = Dio();
+        dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) => handler.reject(
+              DioException(
+                requestOptions: options,
+                type: DioExceptionType.connectionError,
+              ),
+            ),
+          ),
+        );
+        final repository = HttpEventsRepository(dio: dio);
+
+        expect(
+          () => repository.updateCurrentUserAttendance(
+            'evt-1',
+            AttendanceResponse.confirmed,
+          ),
+          throwsA(isA<NetworkEventException>()),
+        );
+      });
+
+      test('maps other HTTP errors to AttendanceResponseException', () async {
+        final repository = HttpEventsRepository(dio: dioRejecting(409));
+
+        expect(
+          () => repository.updateCurrentUserAttendance(
+            'evt-1',
+            AttendanceResponse.confirmed,
+          ),
+          throwsA(isA<AttendanceResponseException>()),
+        );
+      });
+
+      test('rejects blank event IDs before sending a request', () async {
+        final repository = HttpEventsRepository(dio: Dio());
+
+        expect(
+          () => repository.updateCurrentUserAttendance(
+            '   ',
+            AttendanceResponse.confirmed,
+          ),
+          throwsA(isA<InvalidEventResponseException>()),
+        );
+      });
+
+      test('keeps the attendance read operation unsupported', () async {
+        final repository = HttpEventsRepository(dio: Dio());
+
+        expect(
+          () => repository.getCurrentUserAttendance('evt-1'),
+          throwsA(isA<UnsupportedEventOperationException>()),
+        );
+      });
+    });
+  });
+}

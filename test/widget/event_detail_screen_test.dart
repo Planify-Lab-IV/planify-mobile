@@ -1,0 +1,618 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:planify/core/theme/app_theme.dart';
+import 'package:planify/features/activity_log/data/fake_activity_log_repository.dart';
+import 'package:planify/features/activity_log/domain/activity_entry.dart';
+import 'package:planify/features/activity_log/presentation/controllers/activity_log_providers.dart';
+import 'package:planify/features/auth/domain/user_session.dart';
+import 'package:planify/features/availability/data/fake_availability_repository.dart';
+import 'package:planify/features/availability/presentation/controllers/availability_providers.dart';
+import 'package:planify/features/debts/data/fake_debts_repository.dart';
+import 'package:planify/features/debts/presentation/controllers/debts_providers.dart';
+import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/expenses/data/fake_expenses_repository.dart';
+import 'package:planify/features/events/data/events_repository_provider.dart';
+import 'package:planify/features/events/domain/event.dart';
+import 'package:planify/features/events/domain/event_status.dart';
+import 'package:planify/features/events/detail/controllers/event_detail_notifier.dart';
+import 'package:planify/features/events/detail/controllers/events_providers.dart';
+import 'package:planify/features/events/config/presentation/screens/event_config_screen.dart';
+import 'package:planify/features/events/detail/screens/event_detail_screen.dart';
+import 'package:planify/features/events/detail/widgets/cancel_event_dialog.dart';
+import 'package:planify/features/events/detail/widgets/close_expenses_dialog.dart';
+import 'package:planify/features/expenses/presentation/widgets/add_expense_dialog.dart';
+import 'package:planify/features/tasks/presentation/widgets/create_task_dialog.dart';
+import 'package:planify/features/tasks/data/fake_tasks_repository.dart';
+import 'package:planify/features/tasks/presentation/controllers/tasks_providers.dart';
+import 'package:planify/l10n/app_localizations.dart';
+
+void main() {
+  group('EventDetailScreen Widget Tests', () {
+    const testOrganizerId = 'org-123';
+    const testEventId = 'evt-test-123';
+
+    final testEvent = Event(
+      id: testEventId,
+      name: 'Cumpleaños de Lucas',
+      location: 'Av. Corrientes 1234',
+      organizerId: testOrganizerId,
+      groupId: 'grp-123',
+      status: EventStatus.active,
+      createdAt: DateTime(2026, 11, 1),
+      updatedAt: DateTime(2026, 11, 1),
+      startDateTime: DateTime(2026, 11, 15, 21, 0),
+    );
+
+    const organizerSession = OrganizerSession(
+      userId: testOrganizerId,
+      email: 'lucas@planify.com',
+      name: 'Lucas',
+      username: 'lucas',
+      token: 'fake-token',
+    );
+
+    const otherOrganizerSession = OrganizerSession(
+      userId: 'org-999',
+      email: 'otro@planify.com',
+      name: 'Otro Organizador',
+      username: 'otro',
+      token: 'fake-token-2',
+    );
+
+    const guestSession = AnonymousSession(
+      participantId: 'anon-456',
+      name: 'Invitado',
+      eventId: testEventId,
+      token: 'fake-anon-token',
+    );
+
+    Widget buildDetailScreen({
+      required UserSession? session,
+      FakeEventsRepository? customRepo,
+      FakeExpensesRepository? customExpensesRepository,
+      String eventId = testEventId,
+    }) {
+      final repository =
+          customRepo ??
+          FakeEventsRepository(
+            delay: Duration.zero,
+            initialEvents: [testEvent],
+          );
+      final expensesRepository =
+          customExpensesRepository ??
+          FakeExpensesRepository(delay: Duration.zero);
+
+      return ProviderScope(
+        overrides: [
+          eventsRepositoryProvider.overrideWithValue(repository),
+          availabilityRepositoryProvider.overrideWithValue(
+            FakeAvailabilityRepository(delay: Duration.zero),
+          ),
+          availabilityHeatmapRepositoryProvider.overrideWithValue(
+            FakeAvailabilityRepository(delay: Duration.zero),
+          ),
+          debtsRepositoryProvider.overrideWithValue(
+            FakeDebtsRepository(delay: Duration.zero),
+          ),
+          tasksRepositoryProvider.overrideWithValue(
+            FakeTasksRepository(delay: Duration.zero),
+          ),
+          activityLogRepositoryProvider.overrideWithValue(
+            FakeActivityLogRepository(
+              delay: Duration.zero,
+              initialActivity: const {testEventId: <ActivityEntry>[]},
+            ),
+          ),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('es'),
+          home: EventDetailScreenWithSession(
+            session: session,
+            eventId: eventId,
+            repository: repository,
+            expensesRepository: expensesRepository,
+          ),
+        ),
+      );
+    }
+
+    testWidgets(
+      'renderiza header, acciones rápidas, deudas, tareas vacías y actividad vacía',
+      (tester) async {
+        await tester.pumpWidget(buildDetailScreen(session: organizerSession));
+        await tester.pumpAndSettle();
+
+        // Título del AppBar
+        expect(find.text('Detalle del evento'), findsOneWidget);
+
+        // Header
+        expect(find.byKey(const Key('event_detail_name')), findsOneWidget);
+        expect(find.text('Cumpleaños de Lucas'), findsOneWidget);
+        expect(find.byKey(const Key('event_detail_date')), findsOneWidget);
+        expect(find.textContaining('21:00'), findsOneWidget);
+        expect(find.text('En planificación'), findsOneWidget);
+
+        // Acciones rápidas (4 botones)
+        expect(find.text('Acciones rápidas'), findsOneWidget);
+        expect(find.byKey(const Key('quick_action_invite')), findsOneWidget);
+        expect(
+          find.byKey(const Key('quick_action_add_expense')),
+          findsOneWidget,
+        );
+        expect(find.byKey(const Key('quick_action_add_task')), findsOneWidget);
+        expect(find.byKey(const Key('quick_action_settle')), findsOneWidget);
+        expect(find.text('Invitar'), findsOneWidget);
+        expect(find.text('Agregar gasto'), findsOneWidget);
+        expect(find.text('Agregar tarea'), findsOneWidget);
+        expect(
+          find.descendant(
+            of: find.byKey(const Key('quick_action_settle')),
+            matching: find.text('Saldar'),
+          ),
+          findsOneWidget,
+        );
+
+        // Deudas
+        expect(find.text('Deudas del evento'), findsOneWidget);
+        expect(find.byKey(const Key('event_debts_card')), findsOneWidget);
+
+        // Tareas y Actividad vacías
+        expect(find.text('Tareas'), findsOneWidget);
+        expect(find.text('No hay tareas asignadas todavía.'), findsOneWidget);
+        expect(find.text('Actividad reciente'), findsOneWidget);
+        expect(find.byKey(const Key('event_activity_card')), findsOneWidget);
+        expect(
+          find.byKey(const Key('activity_placeholder_card')),
+          findsNothing,
+        );
+        expect(
+          find.text('Sin actividad registrada en este evento.'),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets('las acciones aún no construidas muestran feedback', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildDetailScreen(session: organizerSession));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('quick_action_invite')));
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Esta funcionalidad estará disponible próximamente.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('Saldar desplaza el detalle hasta la sección de deudas', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(400, 450));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(buildDetailScreen(session: organizerSession));
+      await tester.pumpAndSettle();
+
+      final scrollable = tester.state<ScrollableState>(
+        find.byType(Scrollable).first,
+      );
+      expect(scrollable.position.pixels, 0);
+
+      await tester.tap(find.byKey(const Key('quick_action_settle')));
+      await tester.pumpAndSettle();
+
+      expect(scrollable.position.pixels, greaterThan(0));
+    });
+
+    testWidgets('Agregar gasto abre el panel de gasto', (tester) async {
+      await tester.pumpWidget(buildDetailScreen(session: organizerSession));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('quick_action_add_expense')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AddExpenseDialog), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(AddExpenseDialog),
+          matching: find.text('Agregar gasto'),
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('Agregar tarea abre su diálogo de alta', (tester) async {
+      await tester.pumpWidget(buildDetailScreen(session: organizerSession));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('quick_action_add_task')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(CreateTaskDialog), findsOneWidget);
+      expect(find.text('¿Qué hay que hacer?'), findsOneWidget);
+    });
+
+    testWidgets('organizador del evento ve la opción Cancelar evento en menú', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildDetailScreen(session: organizerSession));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('event_actions_menu_button')),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('organizador ve Cerrar gastos junto a Cancelar evento', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildDetailScreen(session: organizerSession));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('event_actions_menu_button')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('cancel_event_menu_item')), findsOneWidget);
+      expect(find.byKey(const Key('close_expenses_menu_item')), findsOneWidget);
+    });
+
+    testWidgets('invitado del evento NO ve la opción Cancelar evento', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildDetailScreen(session: guestSession));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('event_actions_menu_button')), findsNothing);
+      expect(find.text('Cancelar evento'), findsNothing);
+      expect(find.text('Cerrar gastos'), findsNothing);
+      expect(find.byKey(const Key('event_debts_card')), findsOneWidget);
+    });
+
+    testWidgets('participante activo navega a configuración del evento', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildDetailScreen(session: guestSession));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('event_config_button')), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('event_config_button')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(EventConfigScreen), findsOneWidget);
+      expect(find.text('Configuración del evento'), findsOneWidget);
+    });
+
+    testWidgets('organizador activo también ve la configuración del evento', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildDetailScreen(session: organizerSession));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('event_config_button')), findsOneWidget);
+    });
+
+    testWidgets(
+      'el participante responde asistencia sin perder la posición del detalle',
+      (tester) async {
+        final repository = FakeEventsRepository(
+          delay: Duration.zero,
+          initialEvents: [testEvent],
+        );
+
+        await tester.pumpWidget(
+          buildDetailScreen(session: guestSession, customRepo: repository),
+        );
+        await tester.pump();
+        await tester.pump();
+
+        await tester.tap(find.byKey(const Key('event_config_button')));
+        await tester.pumpAndSettle();
+
+        expect(
+          find.byKey(const Key('attendance_response_selector')),
+          findsOneWidget,
+        );
+
+        final scrollable = tester.state<ScrollableState>(
+          find.byType(Scrollable).first,
+        );
+        scrollable.position.jumpTo(20);
+        await tester.pump();
+        final positionBeforeResponse = scrollable.position.pixels;
+
+        await tester.tap(find.byKey(const Key('attendance_confirm_button')));
+        await tester.pump();
+        await tester.pump();
+
+        expect(find.widgetWithText(FilledButton, 'Voy'), findsOneWidget);
+        expect(scrollable.position.pixels, positionBeforeResponse);
+      },
+    );
+
+    testWidgets('organizador de OTRO evento NO ve la opción Cancelar evento', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildDetailScreen(session: otherOrganizerSession),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('event_actions_menu_button')), findsNothing);
+      expect(find.text('Cancelar evento'), findsNothing);
+      expect(find.text('Cerrar gastos'), findsNothing);
+    });
+
+    testWidgets('cierra gastos, muestra el aviso y bloquea solo Agregar gasto', (
+      tester,
+    ) async {
+      final expensesRepository = FakeExpensesRepository(delay: Duration.zero);
+
+      await tester.pumpWidget(
+        buildDetailScreen(
+          session: organizerSession,
+          customExpensesRepository: expensesRepository,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('event_actions_menu_button')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('close_expenses_menu_item')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(CloseExpensesDialog), findsOneWidget);
+      expect(find.text('¿Cerrar gastos?'), findsOneWidget);
+      expect(
+        find.text(
+          'Ya no se podrán cargar gastos nuevos en este evento, pero se podrá seguir saldando.',
+        ),
+        findsOneWidget,
+      );
+
+      await tester.tap(
+        find.byKey(const Key('close_expenses_dialog_confirm_button')),
+      );
+      await tester.pumpAndSettle();
+
+      expect(expensesRepository.areExpensesClosedFor(testEventId), isTrue);
+      expect(
+        find.text(
+          'Los gastos están cerrados. Ya no se pueden cargar gastos nuevos.',
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Los gastos se cerraron correctamente.'),
+        findsOneWidget,
+      );
+      expect(
+        tester
+            .widget<InkWell>(find.byKey(const Key('quick_action_add_expense')))
+            .onTap,
+        isNull,
+      );
+      expect(
+        tester
+            .widget<InkWell>(find.byKey(const Key('quick_action_invite')))
+            .onTap,
+        isNotNull,
+      );
+      expect(
+        tester
+            .widget<InkWell>(find.byKey(const Key('quick_action_add_task')))
+            .onTap,
+        isNotNull,
+      );
+      expect(
+        tester
+            .widget<InkWell>(find.byKey(const Key('quick_action_settle')))
+            .onTap,
+        isNotNull,
+      );
+
+      await tester.tap(find.byKey(const Key('quick_action_add_expense')));
+      await tester.pumpAndSettle();
+      expect(find.byType(AddExpenseDialog), findsNothing);
+    });
+
+    testWidgets('participante ve gastos cerrados al cargar el evento', (
+      tester,
+    ) async {
+      final closedEvent = testEvent.copyWith(expensesClosed: true);
+      final repository = FakeEventsRepository(
+        delay: Duration.zero,
+        initialEvents: [closedEvent],
+      );
+
+      await tester.pumpWidget(
+        buildDetailScreen(session: guestSession, customRepo: repository),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text(
+          'Los gastos están cerrados. Ya no se pueden cargar gastos nuevos.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('event_actions_menu_button')), findsNothing);
+      expect(
+        tester
+            .widget<InkWell>(find.byKey(const Key('quick_action_add_expense')))
+            .onTap,
+        isNull,
+      );
+    });
+
+    testWidgets('flujo completo de confirmación y cancelación exitosa', (
+      tester,
+    ) async {
+      final repo = FakeEventsRepository(
+        delay: Duration.zero,
+        initialEvents: [testEvent],
+      );
+
+      await tester.pumpWidget(
+        buildDetailScreen(session: organizerSession, customRepo: repo),
+      );
+      await tester.pumpAndSettle();
+
+      // 1. Toca cancelar evento desde el menú del AppBar
+      await tester.tap(find.byKey(const Key('event_actions_menu_button')));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('cancel_event_menu_item')));
+      await tester.pumpAndSettle();
+
+      // 2. Se despliega el diálogo de confirmación
+      expect(find.byType(CancelEventDialog), findsOneWidget);
+      expect(find.text('¿Cancelar evento?'), findsOneWidget);
+      expect(
+        find.text(
+          '¿Estás seguro de que querés cancelar este evento? Esta acción no se puede deshacer.',
+        ),
+        findsOneWidget,
+      );
+
+      // 3. Confirmar cancelación
+      await tester.tap(find.byKey(const Key('cancel_dialog_confirm_button')));
+      await tester.pumpAndSettle();
+
+      // 4. Se refleja el estado Cancelado
+      expect(find.text('Cancelado'), findsOneWidget);
+      expect(
+        find.text(
+          'Este evento ha sido cancelado y ya no acepta nuevas acciones.',
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.text('El evento fue cancelado correctamente.'),
+        findsOneWidget,
+      );
+
+      // 5. El menú de acciones ya no se muestra al estar cancelado
+      expect(find.byKey(const Key('event_actions_menu_button')), findsNothing);
+
+      // 6. El repositorio en memoria cambió a cancelled
+      final eventInRepo = await repo.getEvent(testEventId);
+      expect(eventInRepo?.isCancelled, isTrue);
+    });
+
+    testWidgets(
+      'cancelación desde el PopupMenu del AppBar también ejecuta el diálogo y permite cancelar',
+      (tester) async {
+        final repo = FakeEventsRepository(
+          delay: Duration.zero,
+          initialEvents: [testEvent],
+        );
+
+        await tester.pumpWidget(
+          buildDetailScreen(session: organizerSession, customRepo: repo),
+        );
+        await tester.pumpAndSettle();
+
+        // Abrir menú de acciones del AppBar
+        await tester.tap(find.byKey(const Key('event_actions_menu_button')));
+        await tester.pumpAndSettle();
+
+        // Tocar opción Cancelar evento en el menú
+        expect(find.byKey(const Key('cancel_event_menu_item')), findsOneWidget);
+        await tester.tap(find.byKey(const Key('cancel_event_menu_item')));
+        await tester.pumpAndSettle();
+
+        // Diálogo abierto
+        expect(find.byType(CancelEventDialog), findsOneWidget);
+
+        // Descartar diálogo (Volver)
+        await tester.tap(find.byKey(const Key('cancel_dialog_dismiss_button')));
+        await tester.pumpAndSettle();
+
+        // El diálogo se cierra y el evento sigue Activo
+        expect(find.byType(CancelEventDialog), findsNothing);
+        expect(find.text('En planificación'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'maneja error de cancelación mostrando SnackBar y permitiendo reintentar',
+      (tester) async {
+        final repo = FakeEventsRepository(
+          delay: Duration.zero,
+          shouldFailCancellation: true,
+          initialEvents: [testEvent],
+        );
+
+        await tester.pumpWidget(
+          buildDetailScreen(session: organizerSession, customRepo: repo),
+        );
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byKey(const Key('event_actions_menu_button')));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byKey(const Key('cancel_event_menu_item')));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byKey(const Key('cancel_dialog_confirm_button')));
+        await tester.pumpAndSettle();
+
+        // El diálogo se cierra y se muestra SnackBar de error con Reintentar
+        expect(find.byType(CancelEventDialog), findsNothing);
+        expect(
+          find.textContaining('No se pudo cancelar el evento'),
+          findsOneWidget,
+        );
+        expect(find.text('Reintentar'), findsOneWidget);
+        expect(find.text('En planificación'), findsOneWidget);
+      },
+    );
+  });
+}
+
+/// Helper para sobreescribir la sesión en tests sin acoplar a ProviderScope global
+class EventDetailScreenWithSession extends ConsumerWidget {
+  final UserSession? session;
+  final String eventId;
+  final FakeEventsRepository repository;
+  final FakeExpensesRepository expensesRepository;
+
+  const EventDetailScreenWithSession({
+    super.key,
+    required this.session,
+    required this.eventId,
+    required this.repository,
+    required this.expensesRepository,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ProviderScope(
+      overrides: [
+        eventDetailNotifierProvider(eventId).overrideWith((ref) {
+          return EventDetailNotifier(
+            repository: repository,
+            expensesRepository: expensesRepository,
+            currentSession: session,
+            eventId: eventId,
+          );
+        }),
+      ],
+      child: EventDetailScreen(eventId: eventId),
+    );
+  }
+}

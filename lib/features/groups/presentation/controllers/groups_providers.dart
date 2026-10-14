@@ -1,0 +1,39 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/providers/core_providers.dart';
+import '../../data/http_groups_repository.dart';
+import '../../domain/group.dart';
+import '../../domain/groups_repository.dart';
+import '../../data/fake_groups_overview_repository.dart';
+import '../../domain/group_overview.dart';
+import '../../domain/groups_overview_repository.dart';
+
+final groupsRepositoryProvider = Provider<GroupsRepository>((ref) {
+  return HttpGroupsRepository(dio: ref.watch(dioClientProvider));
+});
+
+final myGroupsProvider = FutureProvider.autoDispose<List<Group>>((ref) async {
+  final repository = ref.watch(groupsRepositoryProvider);
+  return repository.getMyGroups();
+});
+
+final groupsOverviewRepositoryProvider = Provider<GroupsOverviewRepository>(
+  (ref) => FakeGroupsOverviewRepository(),
+);
+
+final groupsOverviewProvider = FutureProvider.autoDispose<List<GroupOverview>>(
+  (ref) => ref.watch(groupsOverviewRepositoryProvider).getMyGroupsOverview(),
+);
+
+final selectedGroupIdProvider = StateProvider<String?>((ref) => null);
+
+final selectedGroupOverviewProvider = Provider.autoDispose<GroupOverview?>((
+  ref,
+) {
+  final groups = ref.watch(groupsOverviewProvider).asData?.value;
+  final id = ref.watch(selectedGroupIdProvider);
+  if (groups == null || groups.isEmpty) return null;
+  for (final group in groups) {
+    if (group.id == id) return group;
+  }
+  return groups.first;
+});

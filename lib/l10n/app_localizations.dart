@@ -1,0 +1,2052 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' as intl;
+
+import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
+
+// ignore_for_file: type=lint
+
+/// Callers can lookup localized strings with an instance of AppLocalizations
+/// returned by `AppLocalizations.of(context)`.
+///
+/// Applications need to include `AppLocalizations.delegate()` in their app's
+/// `localizationDelegates` list, and the locales they support in the app's
+/// `supportedLocales` list. For example:
+///
+/// ```dart
+/// import 'l10n/app_localizations.dart';
+///
+/// return MaterialApp(
+///   localizationsDelegates: AppLocalizations.localizationsDelegates,
+///   supportedLocales: AppLocalizations.supportedLocales,
+///   home: MyApplicationHome(),
+/// );
+/// ```
+///
+/// ## Update pubspec.yaml
+///
+/// Please make sure to update your pubspec.yaml to include the following
+/// packages:
+///
+/// ```yaml
+/// dependencies:
+///   # Internationalization support.
+///   flutter_localizations:
+///     sdk: flutter
+///   intl: any # Use the pinned version from flutter_localizations
+///
+///   # Rest of dependencies
+/// ```
+///
+/// ## iOS Applications
+///
+/// iOS applications define key application metadata, including supported
+/// locales, in an Info.plist file that is built into the application bundle.
+/// To configure the locales supported by your app, you’ll need to edit this
+/// file.
+///
+/// First, open your project’s ios/Runner.xcworkspace Xcode workspace file.
+/// Then, in the Project Navigator, open the Info.plist file under the Runner
+/// project’s Runner folder.
+///
+/// Next, select the Information Property List item, select Add Item from the
+/// Editor menu, then select Localizations from the pop-up menu.
+///
+/// Select and expand the newly-created Localizations item then, for each
+/// locale your application supports, add a new item and select the locale
+/// you wish to add from the pop-up menu in the Value field. This list should
+/// be consistent with the languages listed in the AppLocalizations.supportedLocales
+/// property.
+abstract class AppLocalizations {
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+
+  final String localeName;
+
+  static AppLocalizations? of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations);
+  }
+
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
+
+  /// A list of this localizations delegate along with the default localizations
+  /// delegates.
+  ///
+  /// Returns a list of localizations delegates containing this delegate along with
+  /// GlobalMaterialLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
+  /// and GlobalWidgetsLocalizations.delegate.
+  ///
+  /// Additional delegates can be added by appending to this list in
+  /// MaterialApp. This list does not have to be used at all if a custom list
+  /// of delegates is preferred or required.
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
+
+  /// A list of this localizations delegate's supported locales.
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('es'),
+  ];
+
+  /// No description provided for @navigationGroups.
+  ///
+  /// In es, this message translates to:
+  /// **'Grupos'**
+  String get navigationGroups;
+
+  /// No description provided for @groupsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no tenés grupos. Creá un evento para armar tu primer grupo.'**
+  String get groupsEmpty;
+
+  /// No description provided for @groupEventsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Este grupo todavía no tiene eventos activos.'**
+  String get groupEventsEmpty;
+
+  /// No description provided for @groupsLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tus grupos. Intentá de nuevo.'**
+  String get groupsLoadError;
+
+  /// No description provided for @groupsDateTbd.
+  ///
+  /// In es, this message translates to:
+  /// **'A definir'**
+  String get groupsDateTbd;
+
+  /// No description provided for @groupsEventConfirmed.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmado'**
+  String get groupsEventConfirmed;
+
+  /// No description provided for @groupsEventActive.
+  ///
+  /// In es, this message translates to:
+  /// **'Activo'**
+  String get groupsEventActive;
+
+  /// No description provided for @groupsMembers.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 miembro} other{{count} miembros}}'**
+  String groupsMembers(int count);
+
+  /// No description provided for @settleDebtAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldar'**
+  String get settleDebtAction;
+
+  /// No description provided for @settleAllAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldar todo'**
+  String get settleAllAction;
+
+  /// No description provided for @settleInProgress.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldando…'**
+  String get settleInProgress;
+
+  /// No description provided for @settleDebtDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Saldar esta deuda?'**
+  String get settleDebtDialogTitle;
+
+  /// No description provided for @settleOwnDebtDialogMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Vas a saldar tu deuda con {name} por {amount} en el evento «{eventName}». Esta acción no se puede deshacer.'**
+  String settleOwnDebtDialogMessage(
+    String name,
+    String amount,
+    String eventName,
+  );
+
+  /// No description provided for @settleOwedDebtDialogMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Vas a marcar como saldada la deuda de {name} por {amount} en el evento «{eventName}». Esta acción no se puede deshacer.'**
+  String settleOwedDebtDialogMessage(
+    String name,
+    String amount,
+    String eventName,
+  );
+
+  /// No description provided for @settleAllDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Saldar todo con esta persona?'**
+  String get settleAllDialogTitle;
+
+  /// No description provided for @settleAllDialogMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Vas a saldar todas las deudas con {name}. Esta acción afecta todos los eventos en común y no se puede deshacer.'**
+  String settleAllDialogMessage(String name);
+
+  /// No description provided for @settleSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'La deuda se saldó correctamente.'**
+  String get settleSuccess;
+
+  /// No description provided for @settleForbidden.
+  ///
+  /// In es, this message translates to:
+  /// **'No tenés permiso para saldar esta deuda.'**
+  String get settleForbidden;
+
+  /// No description provided for @settleNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'La deuda o la persona ya no está disponible. Actualizá los datos.'**
+  String get settleNotFound;
+
+  /// No description provided for @settleNetworkError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo saldar por un problema de conexión. Intentá nuevamente.'**
+  String get settleNetworkError;
+
+  /// No description provided for @settleError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo saldar. Intentá nuevamente.'**
+  String get settleError;
+
+  /// No description provided for @helloTest.
+  ///
+  /// In es, this message translates to:
+  /// **'Hola, esta es una prueba de i18n'**
+  String get helloTest;
+
+  /// No description provided for @identifierLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo o usuario'**
+  String get identifierLabel;
+
+  /// No description provided for @identifierHint.
+  ///
+  /// In es, this message translates to:
+  /// **'organizador@planify.com'**
+  String get identifierHint;
+
+  /// No description provided for @identifierRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor ingresa tu correo o usuario'**
+  String get identifierRequired;
+
+  /// No description provided for @identifierInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa un correo electrónico válido'**
+  String get identifierInvalid;
+
+  /// No description provided for @passwordLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña'**
+  String get passwordLabel;
+
+  /// No description provided for @passwordHint.
+  ///
+  /// In es, this message translates to:
+  /// **'••••••••'**
+  String get passwordHint;
+
+  /// No description provided for @passwordRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor ingresa tu contraseña'**
+  String get passwordRequired;
+
+  /// No description provided for @passwordMinLength.
+  ///
+  /// In es, this message translates to:
+  /// **'La contraseña debe tener al menos 6 caracteres'**
+  String get passwordMinLength;
+
+  /// No description provided for @loginButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciar Sesión'**
+  String get loginButton;
+
+  /// No description provided for @loggingIn.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciando sesión...'**
+  String get loggingIn;
+
+  /// No description provided for @loginErrorGeneric.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo iniciar sesión. Intenta nuevamente.'**
+  String get loginErrorGeneric;
+
+  /// No description provided for @loginErrorInvalidCredentials.
+  ///
+  /// In es, this message translates to:
+  /// **'Credenciales inválidas. Verifica tu correo y contraseña.'**
+  String get loginErrorInvalidCredentials;
+
+  /// No description provided for @registrationTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear cuenta'**
+  String get registrationTitle;
+
+  /// No description provided for @registrationCreateAccountLink.
+  ///
+  /// In es, this message translates to:
+  /// **'¿No tenés cuenta? Crear cuenta'**
+  String get registrationCreateAccountLink;
+
+  /// No description provided for @registrationNameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get registrationNameLabel;
+
+  /// No description provided for @registrationUsernameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Usuario'**
+  String get registrationUsernameLabel;
+
+  /// No description provided for @registrationUsernameHelp.
+  ///
+  /// In es, this message translates to:
+  /// **'Usá minúsculas, números y _'**
+  String get registrationUsernameHelp;
+
+  /// No description provided for @registrationEmailLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo electrónico'**
+  String get registrationEmailLabel;
+
+  /// No description provided for @registrationNameInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'El nombre debe tener entre 1 y 80 caracteres'**
+  String get registrationNameInvalid;
+
+  /// No description provided for @registrationUsernameInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'El usuario debe tener entre 3 y 30 caracteres y usar solo minúsculas, números o _'**
+  String get registrationUsernameInvalid;
+
+  /// No description provided for @registrationEmailInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá un correo electrónico válido'**
+  String get registrationEmailInvalid;
+
+  /// No description provided for @registrationPasswordInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'La contraseña debe tener entre 8 y 72 caracteres'**
+  String get registrationPasswordInvalid;
+
+  /// No description provided for @registrationSubmitButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Registrarme'**
+  String get registrationSubmitButton;
+
+  /// No description provided for @registrationErrorConflict.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos crear la cuenta con esos datos. Si ya tenés una cuenta, iniciá sesión.'**
+  String get registrationErrorConflict;
+
+  /// No description provided for @registrationErrorInvalidData.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisá los datos ingresados e intentá nuevamente.'**
+  String get registrationErrorInvalidData;
+
+  /// No description provided for @registrationErrorNetwork.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos crear la cuenta por un problema de conexión. Intentá nuevamente.'**
+  String get registrationErrorNetwork;
+
+  /// No description provided for @registrationErrorGeneric.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos crear la cuenta. Intentá nuevamente.'**
+  String get registrationErrorGeneric;
+
+  /// No description provided for @registrationBackToLogin.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Ya tenés cuenta? Iniciá sesión'**
+  String get registrationBackToLogin;
+
+  /// No description provided for @logoutButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar Sesión'**
+  String get logoutButton;
+
+  /// No description provided for @welcomeOrganizer.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Bienvenido, {name}!'**
+  String welcomeOrganizer(String name);
+
+  /// No description provided for @welcome.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Bienvenido!'**
+  String get welcome;
+
+  /// No description provided for @organizerPanelTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Panel de Organizador'**
+  String get organizerPanelTitle;
+
+  /// No description provided for @sessionActiveDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Has iniciado sesión correctamente como organizador de eventos en Planify.'**
+  String get sessionActiveDescription;
+
+  /// No description provided for @tokenLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Token de Sesión'**
+  String get tokenLabel;
+
+  /// No description provided for @roleLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Rol'**
+  String get roleLabel;
+
+  /// No description provided for @emailLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo'**
+  String get emailLabel;
+
+  /// No description provided for @continueAsGuest.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar como invitado'**
+  String get continueAsGuest;
+
+  /// No description provided for @orDivider.
+  ///
+  /// In es, this message translates to:
+  /// **'o'**
+  String get orDivider;
+
+  /// No description provided for @loginTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciar Sesión'**
+  String get loginTitle;
+
+  /// No description provided for @loginSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa a tu cuenta o continúa como invitado'**
+  String get loginSubtitle;
+
+  /// No description provided for @appTagline.
+  ///
+  /// In es, this message translates to:
+  /// **'Organizá tus planes, sin vueltas'**
+  String get appTagline;
+
+  /// No description provided for @nameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre o apodo'**
+  String get nameLabel;
+
+  /// No description provided for @nameRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor ingresa tu nombre'**
+  String get nameRequired;
+
+  /// No description provided for @nameMinLength.
+  ///
+  /// In es, this message translates to:
+  /// **'El nombre debe tener al menos 2 caracteres'**
+  String get nameMinLength;
+
+  /// No description provided for @nameMaxLength.
+  ///
+  /// In es, this message translates to:
+  /// **'El nombre no puede superar los 80 caracteres'**
+  String get nameMaxLength;
+
+  /// No description provided for @pinLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegí un PIN de 4 dígitos para identificarte en este evento.'**
+  String get pinLabel;
+
+  /// No description provided for @pinRecoveryTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Ya ingresaste a este evento con este nombre?'**
+  String get pinRecoveryTitle;
+
+  /// No description provided for @pinRecoveryMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Usá el mismo PIN para recuperar tu acceso.'**
+  String get pinRecoveryMessage;
+
+  /// No description provided for @pinRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor ingresá tu PIN de acceso'**
+  String get pinRequired;
+
+  /// No description provided for @pinMinLength.
+  ///
+  /// In es, this message translates to:
+  /// **'El PIN debe tener al menos 4 caracteres'**
+  String get pinMinLength;
+
+  /// No description provided for @pinInvalidFormat.
+  ///
+  /// In es, this message translates to:
+  /// **'El PIN debe tener exactamente 4 dígitos'**
+  String get pinInvalidFormat;
+
+  /// No description provided for @joinButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresar'**
+  String get joinButton;
+
+  /// No description provided for @cancelButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar'**
+  String get cancelButton;
+
+  /// No description provided for @loginErrorInvalidPin.
+  ///
+  /// In es, this message translates to:
+  /// **'PIN incorrecto. Verifica el código e intenta nuevamente.'**
+  String get loginErrorInvalidPin;
+
+  /// No description provided for @loginErrorEventNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'El evento ya no existe o no está disponible.'**
+  String get loginErrorEventNotFound;
+
+  /// No description provided for @loginErrorEventUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'El evento no está disponible.'**
+  String get loginErrorEventUnavailable;
+
+  /// No description provided for @eventIdLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'ID del Evento'**
+  String get eventIdLabel;
+
+  /// No description provided for @participantPanelTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Panel de Participante'**
+  String get participantPanelTitle;
+
+  /// No description provided for @sessionActiveParticipantDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Has ingresado correctamente como participante del evento.'**
+  String get sessionActiveParticipantDescription;
+
+  /// No description provided for @guestRole.
+  ///
+  /// In es, this message translates to:
+  /// **'Invitado'**
+  String get guestRole;
+
+  /// No description provided for @organizerRole.
+  ///
+  /// In es, this message translates to:
+  /// **'Organizador'**
+  String get organizerRole;
+
+  /// No description provided for @eventLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Evento'**
+  String get eventLabel;
+
+  /// No description provided for @createEventTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear Evento'**
+  String get createEventTitle;
+
+  /// No description provided for @createEventButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear nuevo evento'**
+  String get createEventButton;
+
+  /// No description provided for @step1Badge.
+  ///
+  /// In es, this message translates to:
+  /// **'Paso 1 de 2'**
+  String get step1Badge;
+
+  /// No description provided for @step1Title.
+  ///
+  /// In es, this message translates to:
+  /// **'Información básica'**
+  String get step1Title;
+
+  /// No description provided for @step1Subtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá el nombre y el lugar de tu evento.'**
+  String get step1Subtitle;
+
+  /// No description provided for @eventNameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre del evento'**
+  String get eventNameLabel;
+
+  /// No description provided for @eventNameHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Cumpleaños de Lucas'**
+  String get eventNameHint;
+
+  /// No description provided for @eventNameRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor ingresa el nombre del evento'**
+  String get eventNameRequired;
+
+  /// No description provided for @eventLocationLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Lugar o dirección'**
+  String get eventLocationLabel;
+
+  /// No description provided for @eventLocationHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Casa de Lucas o Av. Corrientes 1234'**
+  String get eventLocationHint;
+
+  /// No description provided for @eventLocationRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor ingresa el lugar del evento'**
+  String get eventLocationRequired;
+
+  /// No description provided for @continueButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar'**
+  String get continueButton;
+
+  /// No description provided for @backButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Atrás'**
+  String get backButton;
+
+  /// No description provided for @step2Badge.
+  ///
+  /// In es, this message translates to:
+  /// **'Paso 2 de 2'**
+  String get step2Badge;
+
+  /// No description provided for @step2Title.
+  ///
+  /// In es, this message translates to:
+  /// **'Grupo y participantes'**
+  String get step2Title;
+
+  /// No description provided for @step2Subtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegí un grupo existente o creá uno nuevo con sus miembros.'**
+  String get step2Subtitle;
+
+  /// No description provided for @existingGroupOption.
+  ///
+  /// In es, this message translates to:
+  /// **'Grupo existente'**
+  String get existingGroupOption;
+
+  /// No description provided for @existingGroupSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccioná un grupo que ya tengas creado'**
+  String get existingGroupSubtitle;
+
+  /// No description provided for @newGroupOption.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear grupo nuevo'**
+  String get newGroupOption;
+
+  /// No description provided for @newGroupSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Armá un grupo nuevo e invitá participantes'**
+  String get newGroupSubtitle;
+
+  /// No description provided for @selectGroupLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar grupo'**
+  String get selectGroupLabel;
+
+  /// No description provided for @selectGroupHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegí un grupo...'**
+  String get selectGroupHint;
+
+  /// No description provided for @selectGroupRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor seleccioná un grupo'**
+  String get selectGroupRequired;
+
+  /// No description provided for @loadingGroups.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando grupos...'**
+  String get loadingGroups;
+
+  /// No description provided for @errorLoadingGroups.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron cargar los grupos'**
+  String get errorLoadingGroups;
+
+  /// No description provided for @retryButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get retryButton;
+
+  /// No description provided for @noGroupsAvailable.
+  ///
+  /// In es, this message translates to:
+  /// **'No tenés grupos creados. Podés crear uno nuevo.'**
+  String get noGroupsAvailable;
+
+  /// No description provided for @newGroupNameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre del nuevo grupo'**
+  String get newGroupNameLabel;
+
+  /// No description provided for @newGroupNameHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Amigos del Fútbol'**
+  String get newGroupNameHint;
+
+  /// No description provided for @newGroupNameRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor ingresá el nombre del grupo'**
+  String get newGroupNameRequired;
+
+  /// No description provided for @memberIdentifierLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Miembro (email o usuario)'**
+  String get memberIdentifierLabel;
+
+  /// No description provided for @memberIdentifierHint.
+  ///
+  /// In es, this message translates to:
+  /// **'ejemplo@correo.com o @usuario'**
+  String get memberIdentifierHint;
+
+  /// No description provided for @addMemberButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar'**
+  String get addMemberButton;
+
+  /// No description provided for @memberAlreadyAdded.
+  ///
+  /// In es, this message translates to:
+  /// **'Este miembro ya fue agregado'**
+  String get memberAlreadyAdded;
+
+  /// No description provided for @memberIdentifierEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá un email o usuario válido'**
+  String get memberIdentifierEmpty;
+
+  /// No description provided for @membersListTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Miembros ({count})'**
+  String membersListTitle(int count);
+
+  /// No description provided for @createEventSubmitButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear Evento'**
+  String get createEventSubmitButton;
+
+  /// No description provided for @creatingEventLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Creando evento...'**
+  String get creatingEventLoading;
+
+  /// No description provided for @createEventErrorGeneric.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo crear el evento. Intenta nuevamente.'**
+  String get createEventErrorGeneric;
+
+  /// No description provided for @createEventSuccessTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Evento creado con éxito!'**
+  String get createEventSuccessTitle;
+
+  /// No description provided for @createEventSuccessSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu evento ya está listo y asignado a su grupo.'**
+  String get createEventSuccessSubtitle;
+
+  /// No description provided for @createdEventIdLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'ID del Evento'**
+  String get createdEventIdLabel;
+
+  /// No description provided for @assignedGroupLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Grupo asignado'**
+  String get assignedGroupLabel;
+
+  /// No description provided for @backToHomeButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver al inicio'**
+  String get backToHomeButton;
+
+  /// No description provided for @viewEventDetailButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver detalle del evento'**
+  String get viewEventDetailButton;
+
+  /// No description provided for @draftSummaryTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Resumen del borrador'**
+  String get draftSummaryTitle;
+
+  /// No description provided for @draftEventName.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get draftEventName;
+
+  /// No description provided for @draftEventLocation.
+  ///
+  /// In es, this message translates to:
+  /// **'Lugar'**
+  String get draftEventLocation;
+
+  /// No description provided for @generateWithAi.
+  ///
+  /// In es, this message translates to:
+  /// **'Generar con IA'**
+  String get generateWithAi;
+
+  /// No description provided for @generateWithAiComingSoon.
+  ///
+  /// In es, this message translates to:
+  /// **'Generación de eventos con IA disponible próximamente'**
+  String get generateWithAiComingSoon;
+
+  /// No description provided for @eventDetailTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Detalle del evento'**
+  String get eventDetailTitle;
+
+  /// No description provided for @eventStatusLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado'**
+  String get eventStatusLabel;
+
+  /// No description provided for @eventStatusActive.
+  ///
+  /// In es, this message translates to:
+  /// **'En planificación'**
+  String get eventStatusActive;
+
+  /// No description provided for @eventStatusCancelled.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelado'**
+  String get eventStatusCancelled;
+
+  /// No description provided for @eventDateFallback.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha a definir'**
+  String get eventDateFallback;
+
+  /// No description provided for @quickActionsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Acciones rápidas'**
+  String get quickActionsTitle;
+
+  /// No description provided for @quickActionInvite.
+  ///
+  /// In es, this message translates to:
+  /// **'Invitar'**
+  String get quickActionInvite;
+
+  /// No description provided for @quickActionAddExpense.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar gasto'**
+  String get quickActionAddExpense;
+
+  /// No description provided for @quickActionAddTask.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar tarea'**
+  String get quickActionAddTask;
+
+  /// No description provided for @quickActionSettle.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldar'**
+  String get quickActionSettle;
+
+  /// No description provided for @tasksSectionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tareas'**
+  String get tasksSectionTitle;
+
+  /// No description provided for @noTasksPlaceholder.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay tareas asignadas todavía.'**
+  String get noTasksPlaceholder;
+
+  /// No description provided for @activityLogSectionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Actividad reciente'**
+  String get activityLogSectionTitle;
+
+  /// No description provided for @noActivityPlaceholder.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin actividad registrada en este evento.'**
+  String get noActivityPlaceholder;
+
+  /// No description provided for @activityLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando actividad del evento...'**
+  String get activityLoading;
+
+  /// No description provided for @activityLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cargar la actividad del evento. Intentá nuevamente.'**
+  String get activityLoadError;
+
+  /// No description provided for @activityTaskCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'{actor} creó la tarea {title}'**
+  String activityTaskCreated(String actor, String title);
+
+  /// No description provided for @activityAvailabilityUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'{actor} actualizó su disponibilidad'**
+  String activityAvailabilityUpdated(String actor);
+
+  /// No description provided for @activityExpenseCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'{actor} agregó el gasto {description} por {amount}'**
+  String activityExpenseCreated(
+    String actor,
+    String description,
+    String amount,
+  );
+
+  /// No description provided for @activityScheduleConfirmed.
+  ///
+  /// In es, this message translates to:
+  /// **'{actor} confirmó el horario para {dateTime}'**
+  String activityScheduleConfirmed(String actor, String dateTime);
+
+  /// No description provided for @activityUnknown.
+  ///
+  /// In es, this message translates to:
+  /// **'{actor} hizo un cambio en el evento'**
+  String activityUnknown(String actor);
+
+  /// No description provided for @featureUnderDevelopment.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta funcionalidad estará disponible próximamente.'**
+  String get featureUnderDevelopment;
+
+  /// No description provided for @cancelEventAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar evento'**
+  String get cancelEventAction;
+
+  /// No description provided for @cancelEventDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cancelar evento?'**
+  String get cancelEventDialogTitle;
+
+  /// No description provided for @cancelEventDialogMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que querés cancelar este evento? Esta acción no se puede deshacer.'**
+  String get cancelEventDialogMessage;
+
+  /// No description provided for @cancelEventConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Sí, cancelar evento'**
+  String get cancelEventConfirm;
+
+  /// No description provided for @cancelEventDismiss.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver'**
+  String get cancelEventDismiss;
+
+  /// No description provided for @cancelEventSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'El evento fue cancelado correctamente.'**
+  String get cancelEventSuccess;
+
+  /// No description provided for @cancelEventError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cancelar el evento. Intenta nuevamente.'**
+  String get cancelEventError;
+
+  /// No description provided for @closeExpensesAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar gastos'**
+  String get closeExpensesAction;
+
+  /// No description provided for @closeExpensesDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cerrar gastos?'**
+  String get closeExpensesDialogTitle;
+
+  /// No description provided for @closeExpensesDialogMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya no se podrán cargar gastos nuevos en este evento, pero se podrá seguir saldando.'**
+  String get closeExpensesDialogMessage;
+
+  /// No description provided for @closeExpensesConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Sí, cerrar gastos'**
+  String get closeExpensesConfirm;
+
+  /// No description provided for @closeExpensesDismiss.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver'**
+  String get closeExpensesDismiss;
+
+  /// No description provided for @closeExpensesSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Los gastos se cerraron correctamente.'**
+  String get closeExpensesSuccess;
+
+  /// No description provided for @closeExpensesError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron cerrar los gastos. Intentá nuevamente.'**
+  String get closeExpensesError;
+
+  /// No description provided for @eventNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'Evento no encontrado'**
+  String get eventNotFound;
+
+  /// No description provided for @eventLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cargar el evento. Verificá tu conexión e intentá nuevamente.'**
+  String get eventLoadError;
+
+  /// No description provided for @eventCancelledNotice.
+  ///
+  /// In es, this message translates to:
+  /// **'Este evento ha sido cancelado y ya no acepta nuevas acciones.'**
+  String get eventCancelledNotice;
+
+  /// No description provided for @expensesClosedNotice.
+  ///
+  /// In es, this message translates to:
+  /// **'Los gastos están cerrados. Ya no se pueden cargar gastos nuevos.'**
+  String get expensesClosedNotice;
+
+  /// No description provided for @eventActionsTooltip.
+  ///
+  /// In es, this message translates to:
+  /// **'Opciones del evento'**
+  String get eventActionsTooltip;
+
+  /// No description provided for @cancellingEvent.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelando evento...'**
+  String get cancellingEvent;
+
+  /// No description provided for @invitationErrorInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'El enlace de invitación no es válido.'**
+  String get invitationErrorInvalid;
+
+  /// No description provided for @invitationErrorNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontró el evento correspondiente a la invitación.'**
+  String get invitationErrorNotFound;
+
+  /// No description provided for @invitationErrorExpired.
+  ///
+  /// In es, this message translates to:
+  /// **'La invitación ha expirado o ya no está disponible.'**
+  String get invitationErrorExpired;
+
+  /// No description provided for @invitationErrorNetwork.
+  ///
+  /// In es, this message translates to:
+  /// **'Error de conexión al validar la invitación. Verifica tu red.'**
+  String get invitationErrorNetwork;
+
+  /// No description provided for @invitationErrorGeneric.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo procesar la invitación. Intenta nuevamente.'**
+  String get invitationErrorGeneric;
+
+  /// No description provided for @invitationBannerEvent.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Tenés una invitación a un evento!'**
+  String get invitationBannerEvent;
+
+  /// No description provided for @resolvingInvitation.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando invitación...'**
+  String get resolvingInvitation;
+
+  /// No description provided for @attendanceTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Vas a asistir?'**
+  String get attendanceTitle;
+
+  /// No description provided for @attendanceGoing.
+  ///
+  /// In es, this message translates to:
+  /// **'Voy'**
+  String get attendanceGoing;
+
+  /// No description provided for @attendanceNotGoing.
+  ///
+  /// In es, this message translates to:
+  /// **'No voy'**
+  String get attendanceNotGoing;
+
+  /// No description provided for @attendanceConfirmed.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmado'**
+  String get attendanceConfirmed;
+
+  /// No description provided for @attendanceRejected.
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazado'**
+  String get attendanceRejected;
+
+  /// No description provided for @attendancePending.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin respuesta'**
+  String get attendancePending;
+
+  /// No description provided for @attendanceUpdateError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo actualizar tu asistencia. Intenta nuevamente.'**
+  String get attendanceUpdateError;
+
+  /// No description provided for @eventConfigTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Configuración del evento'**
+  String get eventConfigTitle;
+
+  /// No description provided for @eventConfigAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Configurar participación'**
+  String get eventConfigAction;
+
+  /// No description provided for @availabilityTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Disponibilidad semanal'**
+  String get availabilityTitle;
+
+  /// No description provided for @availabilitySubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Marcá los horarios en los que estás disponible.'**
+  String get availabilitySubtitle;
+
+  /// No description provided for @availabilitySave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar disponibilidad'**
+  String get availabilitySave;
+
+  /// No description provided for @availabilityLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cargar tu disponibilidad.'**
+  String get availabilityLoadError;
+
+  /// No description provided for @availabilitySaveSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu disponibilidad fue guardada.'**
+  String get availabilitySaveSuccess;
+
+  /// No description provided for @availabilitySaveError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo guardar tu disponibilidad. Intenta nuevamente.'**
+  String get availabilitySaveError;
+
+  /// No description provided for @availabilityHeatmapTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Disponibilidad combinada'**
+  String get availabilityHeatmapTitle;
+
+  /// No description provided for @availabilityHeatmapSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Consultá cuántas personas están disponibles en cada horario.'**
+  String get availabilityHeatmapSubtitle;
+
+  /// No description provided for @availabilityHeatmapLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cargar la disponibilidad combinada.'**
+  String get availabilityHeatmapLoadError;
+
+  /// No description provided for @availabilityHeatmapAvailableCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} disponibles'**
+  String availabilityHeatmapAvailableCount(int count);
+
+  /// No description provided for @availabilityMondayShort.
+  ///
+  /// In es, this message translates to:
+  /// **'L'**
+  String get availabilityMondayShort;
+
+  /// No description provided for @availabilityTuesdayShort.
+  ///
+  /// In es, this message translates to:
+  /// **'M'**
+  String get availabilityTuesdayShort;
+
+  /// No description provided for @availabilityWednesdayShort.
+  ///
+  /// In es, this message translates to:
+  /// **'X'**
+  String get availabilityWednesdayShort;
+
+  /// No description provided for @availabilityThursdayShort.
+  ///
+  /// In es, this message translates to:
+  /// **'J'**
+  String get availabilityThursdayShort;
+
+  /// No description provided for @availabilityFridayShort.
+  ///
+  /// In es, this message translates to:
+  /// **'V'**
+  String get availabilityFridayShort;
+
+  /// No description provided for @availabilitySaturdayShort.
+  ///
+  /// In es, this message translates to:
+  /// **'S'**
+  String get availabilitySaturdayShort;
+
+  /// No description provided for @availabilitySundayShort.
+  ///
+  /// In es, this message translates to:
+  /// **'D'**
+  String get availabilitySundayShort;
+
+  /// No description provided for @loadingEvent.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando evento...'**
+  String get loadingEvent;
+
+  /// No description provided for @scheduleConfirmationTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar horario'**
+  String get scheduleConfirmationTitle;
+
+  /// No description provided for @scheduleConfirmationSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegí la fecha y la hora de inicio del evento.'**
+  String get scheduleConfirmationSubtitle;
+
+  /// No description provided for @scheduleSelectDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir fecha'**
+  String get scheduleSelectDate;
+
+  /// No description provided for @scheduleSelectTime.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir hora'**
+  String get scheduleSelectTime;
+
+  /// No description provided for @scheduleConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar horario'**
+  String get scheduleConfirm;
+
+  /// No description provided for @scheduleConfirmationValidationError.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegí una fecha y hora futuras para confirmar el evento.'**
+  String get scheduleConfirmationValidationError;
+
+  /// No description provided for @scheduleConfirmationAuthorizationError.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo el organizador puede confirmar el horario.'**
+  String get scheduleConfirmationAuthorizationError;
+
+  /// No description provided for @scheduleConfirmationNotFoundError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontró el evento.'**
+  String get scheduleConfirmationNotFoundError;
+
+  /// No description provided for @scheduleConfirmationNetworkError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo confirmar el horario por un problema de conexión.'**
+  String get scheduleConfirmationNetworkError;
+
+  /// No description provided for @scheduleConfirmationGenericError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo confirmar el horario. Intentá nuevamente.'**
+  String get scheduleConfirmationGenericError;
+
+  /// No description provided for @scheduleConfirmationSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'El horario del evento fue confirmado.'**
+  String get scheduleConfirmationSuccess;
+
+  /// No description provided for @addExpenseDescriptionLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Descripción del gasto'**
+  String get addExpenseDescriptionLabel;
+
+  /// No description provided for @addExpenseDescriptionHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Cena de fin de año'**
+  String get addExpenseDescriptionHint;
+
+  /// No description provided for @addExpenseDescriptionRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá una descripción para el gasto.'**
+  String get addExpenseDescriptionRequired;
+
+  /// No description provided for @addExpenseTotalLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Total del gasto'**
+  String get addExpenseTotalLabel;
+
+  /// No description provided for @addExpenseTotalHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. 2.500,00'**
+  String get addExpenseTotalHint;
+
+  /// No description provided for @addExpenseTotalRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá el total del gasto.'**
+  String get addExpenseTotalRequired;
+
+  /// No description provided for @addExpenseTotalInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá un total válido mayor a cero.'**
+  String get addExpenseTotalInvalid;
+
+  /// No description provided for @addExpensePayersTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Quiénes pagaron?'**
+  String get addExpensePayersTitle;
+
+  /// No description provided for @addExpensePayersSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccioná una o más personas que hicieron el pago.'**
+  String get addExpensePayersSubtitle;
+
+  /// No description provided for @addExpenseDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar gasto'**
+  String get addExpenseDialogTitle;
+
+  /// No description provided for @addExpenseCloseTooltip.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar'**
+  String get addExpenseCloseTooltip;
+
+  /// No description provided for @addExpensePayerAmountsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Montos pagados'**
+  String get addExpensePayerAmountsTitle;
+
+  /// No description provided for @addExpensePayerAmountLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto de {name}'**
+  String addExpensePayerAmountLabel(String name);
+
+  /// No description provided for @addExpensePayerAmountInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá un monto válido.'**
+  String get addExpensePayerAmountInvalid;
+
+  /// No description provided for @addExpenseSplitEvenly.
+  ///
+  /// In es, this message translates to:
+  /// **'Repartir en partes iguales'**
+  String get addExpenseSplitEvenly;
+
+  /// No description provided for @addExpenseDifferenceMissing.
+  ///
+  /// In es, this message translates to:
+  /// **'Faltan {amount} para completar el total.'**
+  String addExpenseDifferenceMissing(String amount);
+
+  /// No description provided for @addExpenseDifferenceExceeded.
+  ///
+  /// In es, this message translates to:
+  /// **'Sobran {amount} respecto del total.'**
+  String addExpenseDifferenceExceeded(String amount);
+
+  /// No description provided for @tasksLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron cargar las tareas.'**
+  String get tasksLoadError;
+
+  /// No description provided for @taskStatusUnassigned.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin asignar'**
+  String get taskStatusUnassigned;
+
+  /// No description provided for @taskStatusPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Pendiente'**
+  String get taskStatusPending;
+
+  /// No description provided for @taskStatusCompleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Completada'**
+  String get taskStatusCompleted;
+
+  /// No description provided for @taskAssignedTo.
+  ///
+  /// In es, this message translates to:
+  /// **'Asignada a {name}'**
+  String taskAssignedTo(String name);
+
+  /// No description provided for @addExpenseDebtorsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Quiénes deben?'**
+  String get addExpenseDebtorsTitle;
+
+  /// No description provided for @addExpenseDebtorsSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccioná una o más personas que deben asumir el gasto.'**
+  String get addExpenseDebtorsSubtitle;
+
+  /// No description provided for @addExpenseDebtorAmountsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Montos adeudados'**
+  String get addExpenseDebtorAmountsTitle;
+
+  /// No description provided for @addExpenseDebtorAmountLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto de {name}'**
+  String addExpenseDebtorAmountLabel(String name);
+
+  /// No description provided for @taskClaimAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Tomar'**
+  String get taskClaimAction;
+
+  /// No description provided for @taskCompleteAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Completar'**
+  String get taskCompleteAction;
+
+  /// No description provided for @taskReassignAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Reasignar'**
+  String get taskReassignAction;
+
+  /// No description provided for @tasksOperationError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo actualizar la tarea. Intentá nuevamente.'**
+  String get tasksOperationError;
+
+  /// No description provided for @createTaskDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar tarea'**
+  String get createTaskDialogTitle;
+
+  /// No description provided for @createTaskTitleLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué hay que hacer?'**
+  String get createTaskTitleLabel;
+
+  /// No description provided for @createTaskTitleHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Comprar hielo'**
+  String get createTaskTitleHint;
+
+  /// No description provided for @createTaskTitleRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá un título para la tarea.'**
+  String get createTaskTitleRequired;
+
+  /// No description provided for @createTaskSubmit.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear tarea'**
+  String get createTaskSubmit;
+
+  /// No description provided for @reassignTaskDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Reasignar tarea'**
+  String get reassignTaskDialogTitle;
+
+  /// No description provided for @reassignTaskParticipantLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegí quién se hará cargo.'**
+  String get reassignTaskParticipantLabel;
+
+  /// No description provided for @reassignTaskParticipantRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegí una persona para continuar.'**
+  String get reassignTaskParticipantRequired;
+
+  /// No description provided for @reassignTaskConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Reasignar'**
+  String get reassignTaskConfirm;
+
+  /// No description provided for @addExpenseDebtorAmountInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá un monto válido.'**
+  String get addExpenseDebtorAmountInvalid;
+
+  /// No description provided for @addExpenseSplitDebtorsEvenly.
+  ///
+  /// In es, this message translates to:
+  /// **'Repartir en partes iguales'**
+  String get addExpenseSplitDebtorsEvenly;
+
+  /// No description provided for @addExpenseDebtorDifferenceMissing.
+  ///
+  /// In es, this message translates to:
+  /// **'Faltan {amount} para completar el total.'**
+  String addExpenseDebtorDifferenceMissing(String amount);
+
+  /// No description provided for @addExpenseDebtorDifferenceExceeded.
+  ///
+  /// In es, this message translates to:
+  /// **'Sobran {amount} respecto del total.'**
+  String addExpenseDebtorDifferenceExceeded(String amount);
+
+  /// No description provided for @addExpenseSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar'**
+  String get addExpenseSave;
+
+  /// No description provided for @addExpenseSaving.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardando gasto...'**
+  String get addExpenseSaving;
+
+  /// No description provided for @addExpenseSaveSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'El gasto se guardó correctamente.'**
+  String get addExpenseSaveSuccess;
+
+  /// No description provided for @addExpenseValidationError.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisá los datos del gasto, los participantes y que los montos coincidan con el total.'**
+  String get addExpenseValidationError;
+
+  /// No description provided for @addExpenseAuthenticationError.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu sesión no es válida. Volvé a iniciar sesión.'**
+  String get addExpenseAuthenticationError;
+
+  /// No description provided for @addExpenseForbiddenError.
+  ///
+  /// In es, this message translates to:
+  /// **'No tenés permiso para cargar gastos en este evento.'**
+  String get addExpenseForbiddenError;
+
+  /// No description provided for @addExpenseNotFoundError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontró el evento.'**
+  String get addExpenseNotFoundError;
+
+  /// No description provided for @addExpenseEventUnavailableError.
+  ///
+  /// In es, this message translates to:
+  /// **'El evento fue cancelado y no acepta gastos.'**
+  String get addExpenseEventUnavailableError;
+
+  /// No description provided for @addExpenseClosedError.
+  ///
+  /// In es, this message translates to:
+  /// **'Los gastos de este evento ya están cerrados.'**
+  String get addExpenseClosedError;
+
+  /// No description provided for @addExpenseNetworkError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo guardar el gasto por un problema de conexión.'**
+  String get addExpenseNetworkError;
+
+  /// No description provided for @addExpenseSaveError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo confirmar el guardado del gasto. Intentá nuevamente.'**
+  String get addExpenseSaveError;
+
+  /// No description provided for @eventDebtsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Deudas del evento'**
+  String get eventDebtsTitle;
+
+  /// No description provided for @eventDebtsLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando deudas del evento...'**
+  String get eventDebtsLoading;
+
+  /// No description provided for @eventDebtDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'{debtorName} le debe {amount} a {creditorName}'**
+  String eventDebtDescription(
+    String debtorName,
+    String amount,
+    String creditorName,
+  );
+
+  /// No description provided for @eventDebtIOweDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Le debés {amount} a {name}'**
+  String eventDebtIOweDescription(String name, String amount);
+
+  /// No description provided for @eventDebtOwedToMeDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} te debe {amount}'**
+  String eventDebtOwedToMeDescription(String name, String amount);
+
+  /// No description provided for @eventDebtPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Pendiente'**
+  String get eventDebtPending;
+
+  /// No description provided for @eventDebtSettled.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldada'**
+  String get eventDebtSettled;
+
+  /// No description provided for @eventDebtsAllSettled.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo saldado'**
+  String get eventDebtsAllSettled;
+
+  /// No description provided for @eventDebtsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay deudas en este evento.'**
+  String get eventDebtsEmpty;
+
+  /// No description provided for @eventDebtsLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron cargar las deudas del evento. Intentá nuevamente.'**
+  String get eventDebtsLoadError;
+
+  /// No description provided for @navigationHome.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio'**
+  String get navigationHome;
+
+  /// No description provided for @navigationBalances.
+  ///
+  /// In es, this message translates to:
+  /// **'Balances'**
+  String get navigationBalances;
+
+  /// No description provided for @balancesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Balances'**
+  String get balancesTitle;
+
+  /// No description provided for @balancesOwedToMe.
+  ///
+  /// In es, this message translates to:
+  /// **'Me deben'**
+  String get balancesOwedToMe;
+
+  /// No description provided for @balancesIOwe.
+  ///
+  /// In es, this message translates to:
+  /// **'Debo'**
+  String get balancesIOwe;
+
+  /// No description provided for @balancesPeopleTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldos por persona'**
+  String get balancesPeopleTitle;
+
+  /// No description provided for @balancesLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando balances...'**
+  String get balancesLoading;
+
+  /// No description provided for @balancesEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'No tenés saldos pendientes.'**
+  String get balancesEmpty;
+
+  /// No description provided for @balancesLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron cargar tus balances. Intentá nuevamente.'**
+  String get balancesLoadError;
+
+  /// No description provided for @balanceStatusPay.
+  ///
+  /// In es, this message translates to:
+  /// **'A pagar'**
+  String get balanceStatusPay;
+
+  /// No description provided for @balanceStatusPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Pendiente'**
+  String get balanceStatusPending;
+
+  /// No description provided for @balanceStatusSettled.
+  ///
+  /// In es, this message translates to:
+  /// **'Saldado'**
+  String get balanceStatusSettled;
+
+  /// No description provided for @balancesNetLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Balance neto'**
+  String get balancesNetLabel;
+
+  /// No description provided for @balancesFilterAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo'**
+  String get balancesFilterAll;
+
+  /// No description provided for @balancesFilterEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay saldos en esta categoría.'**
+  String get balancesFilterEmpty;
+
+  /// No description provided for @personBalanceDetailLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando detalle de saldo'**
+  String get personBalanceDetailLoading;
+
+  /// No description provided for @personBalanceDetailLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cargar el detalle del saldo.'**
+  String get personBalanceDetailLoadError;
+
+  /// No description provided for @personBalanceDetailBreakdownTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Desglose por evento'**
+  String get personBalanceDetailBreakdownTitle;
+
+  /// No description provided for @personBalanceDetailYouOwe.
+  ///
+  /// In es, this message translates to:
+  /// **'Le debés \$ {amount} a {name}'**
+  String personBalanceDetailYouOwe(String amount, String name);
+
+  /// No description provided for @personBalanceDetailOwedToYou.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} te debe \$ {amount}'**
+  String personBalanceDetailOwedToYou(String name, String amount);
+
+  /// No description provided for @personBalanceDetailSettled.
+  ///
+  /// In es, this message translates to:
+  /// **'Están a mano'**
+  String get personBalanceDetailSettled;
+
+  /// No description provided for @personBalanceDetailLineYouOwe.
+  ///
+  /// In es, this message translates to:
+  /// **'Le debés a {name}'**
+  String personBalanceDetailLineYouOwe(String name);
+
+  /// No description provided for @personBalanceDetailLineOwedToYou.
+  ///
+  /// In es, this message translates to:
+  /// **'{name} te debe'**
+  String personBalanceDetailLineOwedToYou(String name);
+
+  /// No description provided for @navigationProfile.
+  ///
+  /// In es, this message translates to:
+  /// **'Perfil'**
+  String get navigationProfile;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Perfil'**
+  String get profileTitle;
+
+  /// No description provided for @profileNameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get profileNameLabel;
+
+  /// No description provided for @profileUsernameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Usuario'**
+  String get profileUsernameLabel;
+
+  /// No description provided for @profileEmailLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo electrónico'**
+  String get profileEmailLabel;
+
+  /// No description provided for @profileChangeAvatar.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar foto de perfil'**
+  String get profileChangeAvatar;
+
+  /// No description provided for @profileSaveButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar'**
+  String get profileSaveButton;
+
+  /// No description provided for @profileLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cargar el perfil.'**
+  String get profileLoadError;
+
+  /// No description provided for @profileSaveError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron guardar los cambios. Intentá nuevamente.'**
+  String get profileSaveError;
+}
+
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
+  const _AppLocalizationsDelegate();
+
+  @override
+  Future<AppLocalizations> load(Locale locale) {
+    return SynchronousFuture<AppLocalizations>(lookupAppLocalizations(locale));
+  }
+
+  @override
+  bool isSupported(Locale locale) =>
+      <String>['en', 'es'].contains(locale.languageCode);
+
+  @override
+  bool shouldReload(_AppLocalizationsDelegate old) => false;
+}
+
+AppLocalizations lookupAppLocalizations(Locale locale) {
+  // Lookup logic when only language code is specified.
+  switch (locale.languageCode) {
+    case 'en':
+      return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
+  }
+
+  throw FlutterError(
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.',
+  );
+}

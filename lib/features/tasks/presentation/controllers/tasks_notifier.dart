@@ -1,0 +1,181 @@
+import 'dart:async';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../events/domain/event_participant.dart';
+import '../../domain/task.dart';
+import '../../domain/task_action.dart';
+import '../../domain/tasks_repository.dart';
+import 'tasks_state.dart';
+
+class TasksNotifier extends StateNotifier<TasksState> {
+  final TasksRepository _repository;
+  final String _eventId;
+  final String? _currentParticipantId;
+  final bool _isOrganizer;
+  final List<EventParticipant> _participants;
+  int _taskListRequestVersion = 0;
+
+  TasksNotifier({
+    required TasksRepository repository,
+    required String eventId,
+    required String? currentParticipantId,
+    required bool isOrganizer,
+    required List<EventParticipant> participants,
+  }) : this._(
+         repository,
+         eventId,
+         currentParticipantId,
+         isOrganizer,
+         participants,
+       );
+
+  TasksNotifier._(
+    this._repository,
+    this._eventId,
+    this._currentParticipantId,
+    this._isOrganizer,
+    List<EventParticipant> participants,
+  ) : _participants = List.unmodifiable(participants),
+      super(TasksState()) {
+    load();
+  }
+
+  String? get currentParticipantId => _currentParticipantId;
+  bool get isOrganizer => _isOrganizer;
+
+  TaskAction? actionFor(Task task) {
+    return availableTaskAction(
+      task: task,
+      currentParticipantId: _currentParticipantId,
+      isOrganizer: _isOrganizer,
+    );
+  }
+
+  Future<void> load() async {
+    final requestVersion = ++_taskListRequestVersion;
+    state = state.copyWith(loadStatus: TasksLoadStatus.loading);
+
+    try {
+      final tasks = await _repository.listTasks(_eventId);
+      if (!mounted || requestVersion != _taskListRequestVersion) return;
+      state = state.copyWith(tasks: tasks, loadStatus: TasksLoadStatus.success);
+    } catch (_) {
+      if (!mounted || requestVersion != _taskListRequestVersion) return;
+      state = state.copyWith(loadStatus: TasksLoadStatus.error);
+    }
+  }
+
+  Future<bool> create(String title) async {
+    if (_currentParticipantId == null ||
+        title.trim().isEmpty ||
+        state.isOperating) {
+      return false;
+    }
+
+    state = state.copyWith(operationStatus: TasksOperationStatus.inProgress);
+    try {
+      final task = await _repository.createTask(_eventId, title);
+      if (!mounted) return false;
+      _taskListRequestVersion++;
+      state = state.copyWith(
+        tasks: [...state.tasks, task],
+        loadStatus: TasksLoadStatus.success,
+        operationStatus: TasksOperationStatus.success,
+      );
+      unawaited(_refreshTasks(preservedTasks: [task]));
+      return true;
+    } catch (_) {
+      if (!mounted) return false;
+      state = state.copyWith(operationStatus: TasksOperationStatus.error);
+      return false;
+    }
+  }
+
+  Future<bool> claim(String taskId) {
+    return _runTaskOperation(
+      taskId: taskId,
+      expectedAction: TaskAction.claim,
+      operation: () => _repository.claimTask(taskId),
+    );
+  }
+
+  Future<bool> assign(String taskId, String participantId) {
+    if (!_participants.any((participant) => participant.id == participantId)) {
+      return Future.value(false);
+    }
+
+    return _runTaskOperation(
+      taskId: taskId,
+      expectedAction: TaskAction.reassign,
+      operation: () => _repository.assignTask(taskId, participantId),
+    );
+  }
+
+  Future<bool> complete(String taskId) {
+    return _runTaskOperation(
+      taskId: taskId,
+      expectedAction: TaskAction.complete,
+      operation: () => _repository.completeTask(taskId),
+    );
+  }
+
+  Future<bool> _runTaskOperation({
+    required String taskId,
+    required TaskAction expectedAction,
+    required Future<Task> Function() operation,
+  }) async {
+    if (state.isOperating) return false;
+
+    final task = _taskById(taskId);
+    if (task == null || actionFor(task) != expectedAction) return false;
+
+    state = state.copyWith(
+      operationStatus: TasksOperationStatus.inProgress,
+      activeTaskId: taskId,
+    );
+    try {
+      final updatedTask = await operation();
+      if (!mounted) return false;
+      state = state.copyWith(
+        tasks: [
+          for (final currentTask in state.tasks)
+            if (currentTask.id == updatedTask.id) updatedTask else currentTask,
+        ],
+        operationStatus: TasksOperationStatus.success,
+      );
+
+      await _refreshTasks();
+      return true;
+    } catch (_) {
+      if (!mounted) return false;
+      state = state.copyWith(operationStatus: TasksOperationStatus.error);
+      return false;
+    }
+  }
+
+  Task? _taskById(String taskId) {
+    for (final task in state.tasks) {
+      if (task.id == taskId) return task;
+    }
+    return null;
+  }
+
+  Future<void> _refreshTasks({List<Task> preservedTasks = const []}) async {
+    final requestVersion = ++_taskListRequestVersion;
+    try {
+      final tasks = await _repository.listTasks(_eventId);
+      if (!mounted || requestVersion != _taskListRequestVersion) return;
+      final taskIds = tasks.map((task) => task.id).toSet();
+      state = state.copyWith(
+        tasks: [
+          ...tasks,
+          for (final task in preservedTasks)
+            if (!taskIds.contains(task.id)) task,
+        ],
+      );
+    } catch (_) {
+      // La mutación ya fue confirmada; se conserva su resultado local.
+    }
+  }
+}

@@ -1,0 +1,37 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../auth/presentation/controllers/auth_providers.dart';
+import '../../../auth/presentation/controllers/auth_state.dart';
+import '../../data/events_repository_provider.dart';
+import '../../../expenses/presentation/controllers/expenses_providers.dart';
+import 'event_detail_notifier.dart';
+import 'event_detail_state.dart';
+import '../../attendance/controllers/attendance_notifier.dart';
+import '../../attendance/controllers/attendance_state.dart';
+
+/*
+  un provider sin .family es un singleton, solo existe una instancia en toda la app
+  al agregarle el .family el provider se transforma en un factory indexado, como
+  un Map<Parametro, Provider>, en este caso, se crearia un provider por event id
+ */
+final eventDetailNotifierProvider = StateNotifierProvider.autoDispose
+    // le paso el provider, el estado que observa/maneja y el parametro
+    .family<EventDetailNotifier, EventDetailState, String>((ref, eventId) {
+      final repository = ref.watch(eventsRepositoryProvider);
+      final authState = ref.watch(authNotifierProvider);
+      final session = authState is AuthAuthenticated ? authState.session : null;
+
+      return EventDetailNotifier(
+        repository: repository,
+        expensesRepository: ref.watch(expensesRepositoryProvider),
+        currentSession: session,
+        eventId: eventId,
+      );
+    });
+
+final attendanceNotifierProvider = StateNotifierProvider.autoDispose
+    .family<AttendanceNotifier, AttendanceState, String>((ref, eventId) {
+      return AttendanceNotifier(
+        repository: ref.watch(eventsRepositoryProvider),
+        eventId: eventId,
+      );
+    });

@@ -1,0 +1,551 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:planify/features/auth/domain/user_session.dart';
+import 'package:planify/features/events/data/fake_events_repository.dart';
+import 'package:planify/features/expenses/data/fake_expenses_repository.dart';
+import 'package:planify/features/events/domain/event.dart';
+import 'package:planify/features/events/domain/event_participant.dart';
+import 'package:planify/features/events/domain/event_status.dart';
+import 'package:planify/features/events/detail/controllers/event_detail_notifier.dart';
+import 'package:planify/features/events/detail/controllers/event_detail_state.dart';
+
+void main() {
+  group('EventDetailNotifier Unit Tests', () {
+    const testOrganizerId = 'org-123';
+    const otherUserId = 'usr-999';
+    const testEventId = 'evt-test-123';
+    final fixedCreatedAt = DateTime(2026, 11, 1);
+    final testDate = DateTime(2026, 11, 15, 21, 0);
+
+    final testEvent = Event(
+      id: testEventId,
+      name: 'Cumpleaños de Lucas',
+      location: 'Av. Corrientes 1234',
+      organizerId: testOrganizerId,
+      groupId: 'grp-amigos',
+      status: EventStatus.active,
+      createdAt: fixedCreatedAt,
+      updatedAt: fixedCreatedAt,
+      startDateTime: testDate,
+    );
+
+    const organizerSession = OrganizerSession(
+      userId: testOrganizerId,
+      email: 'lucas@planify.com',
+      name: 'Lucas',
+      username: 'lucas',
+      token: 'fake-token',
+    );
+
+    const otherOrganizerSession = OrganizerSession(
+      userId: otherUserId,
+      email: 'otro@planify.com',
+      name: 'Otro Organizador',
+      username: 'otro',
+      token: 'fake-token-2',
+    );
+
+    const guestSession = AnonymousSession(
+      participantId: 'anon-456',
+      name: 'Invitado',
+      eventId: testEventId,
+      token: 'fake-anon-token',
+    );
+
+    EventDetailNotifier buildNotifier({
+      UserSession? session,
+      Event? event,
+      FakeExpensesRepository? expensesRepository,
+    }) {
+      return EventDetailNotifier(
+        repository: FakeEventsRepository(delay: Duration.zero),
+        expensesRepository:
+            expensesRepository ?? FakeExpensesRepository(delay: Duration.zero),
+        currentSession: session ?? organizerSession,
+        eventId: testEventId,
+        initialEvent: event ?? testEvent,
+      );
+    }
+
+    group(
+      'Lógica de autorización "soy organizador de este evento puntual"',
+      () {
+        test(
+          'retorna true si session.userId coincide con event.organizerId',
+          () {
+            final result = EventDetailNotifier.isUserOrganizerOfEvent(
+              session: organizerSession,
+              event: testEvent,
+            );
+            expect(result, isTrue);
+          },
+        );
+
+        test(
+          'retorna false si session.userId no coincide con event.organizerId',
+          () {
+            final result = EventDetailNotifier.isUserOrganizerOfEvent(
+              session: otherOrganizerSession,
+              event: testEvent,
+            );
+            expect(result, isFalse);
+          },
+        );
+
+        test('retorna false si la sesión es un invitado / anónimo', () {
+          final result = EventDetailNotifier.isUserOrganizerOfEvent(
+            session: guestSession,
+            event: testEvent,
+          );
+          expect(result, isFalse);
+        });
+
+        test('retorna false si la sesión es nula (usuario no autenticado)', () {
+          final result = EventDetailNotifier.isUserOrganizerOfEvent(
+            session: null,
+            event: testEvent,
+          );
+          expect(result, isFalse);
+        });
+
+        test('retorna false si el evento es nulo', () {
+          final result = EventDetailNotifier.isUserOrganizerOfEvent(
+            session: organizerSession,
+            event: null,
+          );
+          expect(result, isFalse);
+        });
+
+        test('retorna false si los IDs están vacíos o con espacios', () {
+          const emptyIdSession = OrganizerSession(
+            userId: '  ',
+            email: '',
+            name: '',
+            username: '',
+            token: '',
+          );
+          final emptyOrganizerEvent = Event(
+            id: 'evt-1',
+            name: '',
+            location: '',
+            organizerId: '  ',
+            groupId: 'grp-1',
+            createdAt: fixedCreatedAt,
+            updatedAt: fixedCreatedAt,
+          );
+
+          expect(
+            EventDetailNotifier.isUserOrganizerOfEvent(
+              session: emptyIdSession,
+              event: testEvent,
+            ),
+            isFalse,
+          );
+          expect(
+            EventDetailNotifier.isUserOrganizerOfEvent(
+              session: organizerSession,
+              event: emptyOrganizerEvent,
+            ),
+            isFalse,
+          );
+        });
+      },
+    );
+
+    group('canCancelEvent', () {
+      test('es true para el organizador del evento activo', () {
+        final repo = FakeEventsRepository(delay: Duration.zero);
+        final notifier = EventDetailNotifier(
+          repository: repo,
+          expensesRepository: FakeExpensesRepository(delay: Duration.zero),
+          currentSession: organizerSession,
+          eventId: testEventId,
+          initialEvent: testEvent,
+        );
+
+        expect(notifier.isOrganizer, isTrue);
+        expect(notifier.canCancelEvent, isTrue);
+      });
+
+      test('es false si el evento ya fue cancelado', () {
+        final repo = FakeEventsRepository(delay: Duration.zero);
+        final cancelledEvent = testEvent.copyWith(
+          status: EventStatus.cancelled,
+        );
+        final notifier = EventDetailNotifier(
+          repository: repo,
+          expensesRepository: FakeExpensesRepository(delay: Duration.zero),
+          currentSession: organizerSession,
+          eventId: testEventId,
+          initialEvent: cancelledEvent,
+        );
+
+        expect(notifier.isOrganizer, isTrue);
+        expect(notifier.canCancelEvent, isFalse);
+      });
+
+      test('es true para un evento confirmado del organizador', () {
+        final repo = FakeEventsRepository(delay: Duration.zero);
+        final confirmedEvent = testEvent.copyWith(
+          status: EventStatus.confirmed,
+        );
+        final notifier = EventDetailNotifier(
+          repository: repo,
+          expensesRepository: FakeExpensesRepository(delay: Duration.zero),
+          currentSession: organizerSession,
+          eventId: testEventId,
+          initialEvent: confirmedEvent,
+        );
+
+        expect(notifier.isOrganizer, isTrue);
+        expect(notifier.canCancelEvent, isTrue);
+      });
+
+      test('es false si el usuario no es organizador de este evento', () {
+        final repo = FakeEventsRepository(delay: Duration.zero);
+        final notifier = EventDetailNotifier(
+          repository: repo,
+          expensesRepository: FakeExpensesRepository(delay: Duration.zero),
+          currentSession: guestSession,
+          eventId: testEventId,
+          initialEvent: testEvent,
+        );
+
+        expect(notifier.isOrganizer, isFalse);
+        expect(notifier.canCancelEvent, isFalse);
+      });
+    });
+
+    group('canCloseExpenses', () {
+      test('es true para el organizador de un evento activo', () {
+        final notifier = buildNotifier();
+
+        expect(notifier.canCloseExpenses, isTrue);
+      });
+
+      test('es true para el organizador de un evento confirmado', () {
+        final notifier = buildNotifier(
+          event: testEvent.copyWith(status: EventStatus.confirmed),
+        );
+
+        expect(notifier.canCloseExpenses, isTrue);
+      });
+
+      test('es false para un usuario que no organiza el evento', () {
+        final notifier = buildNotifier(session: guestSession);
+
+        expect(notifier.canCloseExpenses, isFalse);
+      });
+
+      test('es false si el evento está cancelado o sus gastos ya cerrados', () {
+        final cancelledNotifier = buildNotifier(
+          event: testEvent.copyWith(status: EventStatus.cancelled),
+        );
+        final closedNotifier = buildNotifier(
+          event: testEvent.copyWith(expensesClosed: true),
+        );
+
+        expect(cancelledNotifier.canCloseExpenses, isFalse);
+        expect(closedNotifier.canCloseExpenses, isFalse);
+      });
+
+      test('es false mientras el cierre de gastos está en curso', () {
+        final notifier = buildNotifier();
+        notifier.state = notifier.state.copyWith(
+          expensesClosureStatus: EventExpensesClosureStatus.inProgress,
+        );
+
+        expect(notifier.canCloseExpenses, isFalse);
+      });
+    });
+
+    group('loadEvent', () {
+      test('carga exitosamente el evento desde el repositorio', () async {
+        final repo = FakeEventsRepository(
+          delay: Duration.zero,
+          initialEvents: [testEvent],
+        );
+        final notifier = EventDetailNotifier(
+          repository: repo,
+          expensesRepository: FakeExpensesRepository(delay: Duration.zero),
+          currentSession: organizerSession,
+          eventId: testEventId,
+        );
+
+        await Future<void>.delayed(Duration.zero);
+
+        expect(notifier.state.loadStatus, EventDetailLoadStatus.success);
+        expect(notifier.state.isSuccess, isTrue);
+        expect(notifier.state.event, equals(testEvent));
+        expect(notifier.state.hasLoadError, isFalse);
+      });
+
+      test('marca error si el evento no existe en el repositorio', () async {
+        final repo = FakeEventsRepository(
+          delay: Duration.zero,
+          initialEvents: [],
+        );
+        final notifier = EventDetailNotifier(
+          repository: repo,
+          expensesRepository: FakeExpensesRepository(delay: Duration.zero),
+          currentSession: organizerSession,
+          eventId: 'id-inexistente',
+        );
+
+        await Future<void>.delayed(Duration.zero);
+
+        expect(notifier.state.loadStatus, EventDetailLoadStatus.notFound);
+        expect(notifier.state.isNotFound, isTrue);
+        expect(notifier.state.hasLoadError, isFalse);
+        expect(notifier.state.event, isNull);
+      });
+
+      test('marca error de carga ante una falla del repositorio', () async {
+        final repo = FakeEventsRepository(
+          delay: Duration.zero,
+          shouldThrowError: true,
+        );
+        final notifier = EventDetailNotifier(
+          repository: repo,
+          expensesRepository: FakeExpensesRepository(delay: Duration.zero),
+          currentSession: organizerSession,
+          eventId: testEventId,
+        );
+
+        await Future<void>.delayed(Duration.zero);
+
+        expect(notifier.state.loadStatus, EventDetailLoadStatus.error);
+        expect(notifier.state.hasLoadError, isTrue);
+        expect(notifier.state.isNotFound, isFalse);
+        expect(notifier.state.event, isNull);
+      });
+    });
+
+    group('cancelEvent', () {
+      test('cancela el evento exitosamente y actualiza el estado', () async {
+        final repo = FakeEventsRepository(
+          delay: Duration.zero,
+          initialEvents: [testEvent],
+        );
+        final notifier = EventDetailNotifier(
+          repository: repo,
+          expensesRepository: FakeExpensesRepository(delay: Duration.zero),
+          currentSession: organizerSession,
+          eventId: testEventId,
+          initialEvent: testEvent,
+        );
+
+        final success = await notifier.cancelEvent();
+
+        expect(success, isTrue);
+        expect(notifier.state.event?.status, EventStatus.cancelled);
+        expect(notifier.state.event?.isCancelled, isTrue);
+        expect(notifier.state.cancellationSucceeded, isTrue);
+        expect(notifier.state.isCancelling, isFalse);
+        expect(notifier.canCancelEvent, isFalse);
+      });
+
+      test(
+        'bloquea la cancelación si el usuario no es el organizador',
+        () async {
+          final repo = FakeEventsRepository(
+            delay: Duration.zero,
+            initialEvents: [testEvent],
+          );
+          final notifier = EventDetailNotifier(
+            repository: repo,
+            expensesRepository: FakeExpensesRepository(delay: Duration.zero),
+            currentSession: guestSession,
+            eventId: testEventId,
+            initialEvent: testEvent,
+          );
+
+          final success = await notifier.cancelEvent();
+
+          expect(success, isFalse);
+          expect(notifier.state.event?.status, EventStatus.active);
+          expect(notifier.state.cancellationFailed, isTrue);
+        },
+      );
+
+      test(
+        'maneja error del repositorio sin romper el estado del evento',
+        () async {
+          final repo = FakeEventsRepository(
+            delay: Duration.zero,
+            shouldFailCancellation: true,
+            initialEvents: [testEvent],
+          );
+          final notifier = EventDetailNotifier(
+            repository: repo,
+            expensesRepository: FakeExpensesRepository(delay: Duration.zero),
+            currentSession: organizerSession,
+            eventId: testEventId,
+            initialEvent: testEvent,
+          );
+
+          final success = await notifier.cancelEvent();
+
+          expect(success, isFalse);
+          expect(notifier.state.event?.status, EventStatus.active);
+          expect(notifier.state.isCancelling, isFalse);
+          expect(notifier.state.cancellationFailed, isTrue);
+          expect(notifier.state.cancellationSucceeded, isFalse);
+        },
+      );
+
+      test('resetCancellationStatus limpia el estado de cancelación', () {
+        final repo = FakeEventsRepository(delay: Duration.zero);
+        final notifier = EventDetailNotifier(
+          repository: repo,
+          expensesRepository: FakeExpensesRepository(delay: Duration.zero),
+          currentSession: organizerSession,
+          eventId: testEventId,
+          initialEvent: testEvent,
+        );
+
+        notifier.state = notifier.state.copyWith(
+          cancellationStatus: EventCancellationStatus.failure,
+        );
+        expect(notifier.state.cancellationFailed, isTrue);
+
+        notifier.resetCancellationStatus();
+        expect(notifier.state.cancellationStatus, EventCancellationStatus.idle);
+      });
+    });
+
+    group('currentParticipantId', () {
+      final eventWithParticipants = testEvent.copyWith(
+        participants: const [
+          EventParticipant(
+            id: 'participant-organizer',
+            eventId: testEventId,
+            userId: testOrganizerId,
+            username: 'lucas',
+            isAnonymous: false,
+            isOrganizer: true,
+          ),
+          EventParticipant(
+            id: 'anon-456',
+            eventId: testEventId,
+            userId: null,
+            username: 'Invitado',
+            isAnonymous: true,
+            isOrganizer: false,
+          ),
+        ],
+      );
+
+      EventDetailNotifier notifierFor(UserSession? session, Event event) {
+        return EventDetailNotifier(
+          repository: FakeEventsRepository(delay: Duration.zero),
+          expensesRepository: FakeExpensesRepository(delay: Duration.zero),
+          currentSession: session,
+          eventId: event.id,
+          initialEvent: event,
+        );
+      }
+
+      test('usa el participantId recibido por una sesión anónima', () {
+        final notifier = notifierFor(guestSession, eventWithParticipants);
+
+        expect(notifier.currentParticipantId, 'anon-456');
+      });
+
+      test('busca el participante del organizador por su userId', () {
+        final notifier = notifierFor(organizerSession, eventWithParticipants);
+
+        expect(notifier.currentParticipantId, 'participant-organizer');
+      });
+
+      test('retorna null si el organizador no participa del evento', () {
+        final notifier = notifierFor(
+          otherOrganizerSession,
+          eventWithParticipants,
+        );
+
+        expect(notifier.currentParticipantId, isNull);
+      });
+
+      test('retorna null si la sesión anónima pertenece a otro evento', () {
+        const otherEventGuestSession = AnonymousSession(
+          participantId: 'anon-456',
+          name: 'Invitado',
+          eventId: 'evt-otro',
+          token: 'fake-anon-token',
+        );
+        final notifier = notifierFor(
+          otherEventGuestSession,
+          eventWithParticipants,
+        );
+
+        expect(notifier.currentParticipantId, isNull);
+      });
+
+      test('retorna null si no existe una sesión actual', () {
+        final notifier = notifierFor(null, eventWithParticipants);
+
+        expect(notifier.currentParticipantId, isNull);
+      });
+    });
+
+    group('closeExpenses', () {
+      test('cierra los gastos y actualiza el evento local', () async {
+        final expensesRepository = FakeExpensesRepository(delay: Duration.zero);
+        final notifier = buildNotifier(expensesRepository: expensesRepository);
+
+        final success = await notifier.closeExpenses();
+
+        expect(success, isTrue);
+        expect(expensesRepository.areExpensesClosedFor(testEventId), isTrue);
+        expect(notifier.state.event?.expensesClosed, isTrue);
+        expect(notifier.state.expensesClosureSucceeded, isTrue);
+        expect(notifier.state.isClosingExpenses, isFalse);
+        expect(notifier.canCloseExpenses, isFalse);
+      });
+
+      test('no cierra localmente si el repositorio falla', () async {
+        final expensesRepository = FakeExpensesRepository(
+          delay: Duration.zero,
+          shouldFailClosingExpenses: true,
+        );
+        final notifier = buildNotifier(expensesRepository: expensesRepository);
+
+        final success = await notifier.closeExpenses();
+
+        expect(success, isFalse);
+        expect(expensesRepository.areExpensesClosedFor(testEventId), isFalse);
+        expect(notifier.state.event?.expensesClosed, isFalse);
+        expect(notifier.state.expensesClosureFailed, isTrue);
+        expect(notifier.state.isClosingExpenses, isFalse);
+      });
+
+      test('bloquea el cierre si el usuario no es el organizador', () async {
+        final expensesRepository = FakeExpensesRepository(delay: Duration.zero);
+        final notifier = buildNotifier(
+          session: guestSession,
+          expensesRepository: expensesRepository,
+        );
+
+        final success = await notifier.closeExpenses();
+
+        expect(success, isFalse);
+        expect(expensesRepository.areExpensesClosedFor(testEventId), isFalse);
+        expect(notifier.state.expensesClosureFailed, isTrue);
+      });
+
+      test('restablece el estado del cierre de gastos', () {
+        final notifier = buildNotifier();
+        notifier.state = notifier.state.copyWith(
+          expensesClosureStatus: EventExpensesClosureStatus.failure,
+        );
+
+        notifier.resetExpensesClosureStatus();
+
+        expect(
+          notifier.state.expensesClosureStatus,
+          EventExpensesClosureStatus.idle,
+        );
+      });
+    });
+  });
+}

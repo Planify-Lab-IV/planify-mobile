@@ -1,0 +1,394 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_radius.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../activity_log/presentation/widgets/event_activity_card.dart';
+import '../../../debts/presentation/widgets/event_debts_card.dart';
+import '../controllers/events_providers.dart';
+import '../widgets/cancel_event_dialog.dart';
+import '../widgets/close_expenses_dialog.dart';
+import '../widgets/event_header_card.dart';
+import '../widgets/event_quick_actions_card.dart';
+import '../../config/presentation/screens/event_config_screen.dart';
+import '../../../tasks/presentation/controllers/tasks_providers.dart';
+import '../../../tasks/presentation/controllers/tasks_context.dart';
+import '../../../tasks/presentation/widgets/create_task_dialog.dart';
+import '../../../tasks/presentation/widgets/task_list_card.dart';
+
+class EventDetailScreen extends ConsumerStatefulWidget {
+  final String eventId;
+
+  const EventDetailScreen({super.key, required this.eventId});
+
+  @override
+  ConsumerState<EventDetailScreen> createState() => _EventDetailScreenState();
+}
+
+class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
+  final _eventDebtsSectionKey = GlobalKey();
+
+  Future<void> _confirmAndCancel(BuildContext context) async {
+    final i18n = AppLocalizations.of(context)!;
+    final confirmed = await CancelEventDialog.show(context);
+    if (!context.mounted || confirmed != true) return;
+
+    final notifier = ref.read(
+      eventDetailNotifierProvider(widget.eventId).notifier,
+    );
+    final success = await notifier.cancelEvent();
+    if (!context.mounted) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+
+    if (success) {
+      messenger.showSnackBar(
+        SnackBar(
+          key: const Key('cancel_event_success_snackbar'),
+          content: Text(i18n.cancelEventSuccess),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: AppColors.success,
+        ),
+      );
+    } else {
+      messenger.showSnackBar(
+        SnackBar(
+          key: const Key('cancel_event_error_snackbar'),
+          content: Text(i18n.cancelEventError),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: AppColors.error,
+          action: SnackBarAction(
+            label: i18n.retryButton,
+            textColor: Colors.white,
+            onPressed: () => _confirmAndCancel(context),
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _confirmAndCloseExpenses(BuildContext context) async {
+    final i18n = AppLocalizations.of(context)!;
+    final confirmed = await CloseExpensesDialog.show(context);
+    if (!context.mounted || confirmed != true) return;
+
+    final notifier = ref.read(
+      eventDetailNotifierProvider(widget.eventId).notifier,
+    );
+    final success = await notifier.closeExpenses();
+    if (!context.mounted) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+
+    if (success) {
+      messenger.showSnackBar(
+        SnackBar(
+          key: const Key('close_expenses_success_snackbar'),
+          content: Text(i18n.closeExpensesSuccess),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: AppColors.success,
+        ),
+      );
+    } else {
+      messenger.showSnackBar(
+        SnackBar(
+          key: const Key('close_expenses_error_snackbar'),
+          content: Text(i18n.closeExpensesError),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: AppColors.error,
+          action: SnackBarAction(
+            label: i18n.retryButton,
+            textColor: Colors.white,
+            onPressed: () => _confirmAndCloseExpenses(context),
+          ),
+        ),
+      );
+    }
+  }
+
+  void _scrollToEventDebts() {
+    final debtsContext = _eventDebtsSectionKey.currentContext;
+    if (debtsContext == null) return;
+
+    Scrollable.ensureVisible(
+      debtsContext,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final state = ref.watch(eventDetailNotifierProvider(widget.eventId));
+    final notifier = ref.read(
+      eventDetailNotifierProvider(widget.eventId).notifier,
+    );
+
+    final event = state.event;
+    final canCancel = notifier.canCancelEvent;
+    final canCloseExpenses = notifier.canCloseExpenses;
+    final hasCurrentSession = notifier.hasCurrentSession;
+    final tasksContext = event == null
+        ? null
+        : TasksContext(
+            eventId: event.id,
+            currentParticipantId: notifier.currentParticipantId,
+            isOrganizer: notifier.isOrganizer,
+            participants: event.participants,
+          );
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          i18n.eventDetailTitle,
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: theme.colorScheme.onPrimaryContainer,
+          ),
+        ),
+        backgroundColor: theme.colorScheme.primaryContainer,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => Navigator.of(context).maybePop(),
+        ),
+        actions: [
+          if (event != null && !event.isCancelled && hasCurrentSession)
+            IconButton(
+              key: const Key('event_config_button'),
+              tooltip: i18n.eventConfigAction,
+              icon: Icon(
+                event.isConfirmed
+                    ? Icons.event_available_outlined
+                    : Icons.calendar_month_outlined,
+              ),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) => EventConfigScreen(eventId: event.id),
+                  ),
+                );
+              },
+            ),
+          if (canCancel || canCloseExpenses)
+            PopupMenuButton<String>(
+              key: const Key('event_actions_menu_button'),
+              tooltip: i18n.eventActionsTooltip,
+              icon: const Icon(Icons.more_vert_rounded),
+              onSelected: (value) {
+                if (value == 'cancel') {
+                  _confirmAndCancel(context);
+                } else if (value == 'close_expenses') {
+                  _confirmAndCloseExpenses(context);
+                }
+              },
+              itemBuilder: (context) => [
+                if (canCancel)
+                  PopupMenuItem<String>(
+                    key: const Key('cancel_event_menu_item'),
+                    value: 'cancel',
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.cancel_outlined,
+                          color: AppColors.error,
+                          size: 20,
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Text(
+                          i18n.cancelEventAction,
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: AppColors.error,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                if (canCloseExpenses)
+                  PopupMenuItem<String>(
+                    key: const Key('close_expenses_menu_item'),
+                    value: 'close_expenses',
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.lock_outline_rounded,
+                          color: AppColors.warning,
+                          size: 20,
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Text(
+                          i18n.closeExpensesAction,
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: AppColors.warning,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+        ],
+      ),
+      body: Builder(
+        builder: (context) {
+          if (state.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if ((state.isNotFound || state.hasLoadError) && event == null) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.error_outline_rounded,
+                      size: 48,
+                      color: AppColors.error,
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    Text(
+                      state.isNotFound
+                          ? i18n.eventNotFound
+                          : i18n.eventLoadError,
+                      style: theme.textTheme.bodyLarge,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    ElevatedButton(
+                      key: const Key('retry_load_event_button'),
+                      onPressed: () => notifier.loadEvent(),
+                      child: Text(i18n.retryButton),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          if (event == null) {
+            return Center(child: Text(i18n.eventNotFound));
+          }
+
+          return Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 600),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (event.isCancelled) ...[
+                      Container(
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        decoration: BoxDecoration(
+                          color: AppColors.error.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(AppRadius.card),
+                          border: Border.all(
+                            color: AppColors.error.withValues(alpha: 0.4),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.info_outline_rounded,
+                              color: AppColors.error,
+                            ),
+                            const SizedBox(width: AppSpacing.sm),
+                            Expanded(
+                              child: Text(
+                                i18n.eventCancelledNotice,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: AppColors.error,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                    ],
+                    if (event.expensesClosed) ...[
+                      Container(
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        decoration: BoxDecoration(
+                          color: AppColors.warning.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(AppRadius.card),
+                          border: Border.all(
+                            color: AppColors.warning.withValues(alpha: 0.4),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.info_outline_rounded,
+                              color: AppColors.warning,
+                            ),
+                            const SizedBox(width: AppSpacing.sm),
+                            Expanded(
+                              child: Text(
+                                i18n.expensesClosedNotice,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: AppColors.warning,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                    ],
+                    EventHeaderCard(event: event),
+                    const SizedBox(height: AppSpacing.lg),
+                    EventQuickActionsCard(
+                      eventId: event.id,
+                      isCancelled: event.isCancelled,
+                      expensesClosed: event.expensesClosed,
+                      participants: event.participants,
+                      onAddTask: () {
+                        CreateTaskDialog.show(
+                          context,
+                          onCreate: (title) => ref
+                              .read(
+                                tasksNotifierProvider(tasksContext!).notifier,
+                              )
+                              .create(title),
+                        );
+                      },
+                      onSettleTap: _scrollToEventDebts,
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    EventDebtsCard(
+                      key: _eventDebtsSectionKey,
+                      eventId: event.id,
+                      eventName: event.name,
+                      currentParticipantId: notifier.currentParticipantId,
+                      participants: event.participants,
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    TaskListCard(
+                      participants: event.participants,
+                      tasksContext: tasksContext!,
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+                    EventActivityCard(eventId: event.id),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
