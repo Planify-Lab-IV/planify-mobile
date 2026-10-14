@@ -9,6 +9,7 @@ import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/activity_log/data/fake_activity_log_repository.dart';
 import 'package:planify/features/activity_log/domain/activity_entry.dart';
 import 'package:planify/features/activity_log/domain/activity_log_repository.dart';
+import 'package:planify/features/activity_log/domain/unread_counts.dart';
 import 'package:planify/features/activity_log/presentation/controllers/activity_log_providers.dart';
 import 'package:planify/features/activity_log/presentation/widgets/event_activity_card.dart';
 import 'package:planify/l10n/app_localizations.dart';
@@ -198,6 +199,13 @@ void _expectIconStyle(
 }
 
 class _ControlledActivityLogRepository implements ActivityLogRepository {
+  @override
+  Future<UnreadCounts> getUnreadCounts() async =>
+      UnreadCounts(byEvent: {}, byGroup: {});
+
+  @override
+  Future<void> markEventAsRead(String eventId) async {}
+
   final _completer = Completer<List<ActivityEntry>>();
 
   @override

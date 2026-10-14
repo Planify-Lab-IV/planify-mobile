@@ -28,6 +28,11 @@ class AuthLoading extends AuthState {
   const AuthLoading();
 }
 
+/// Verificación de sesión al arrancar; las acciones del usuario usan AuthLoading.
+class AuthCheckingInitialSession extends AuthState {
+  const AuthCheckingInitialSession();
+}
+
 class AuthAuthenticated extends AuthState {
   final UserSession session;
   const AuthAuthenticated(this.session);

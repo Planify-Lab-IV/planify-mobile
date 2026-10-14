@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/providers/core_providers.dart';
 import 'package:planify/data/secure_storage.dart';
+import 'package:planify/features/activity_log/data/fake_activity_log_repository.dart';
+import 'package:planify/features/activity_log/presentation/controllers/activity_log_providers.dart';
 import 'package:planify/features/auth/data/fake_auth_repository.dart';
 import 'package:planify/features/auth/data/http_auth_repository.dart';
 import 'package:planify/features/auth/domain/auth_repository.dart';
@@ -17,6 +19,8 @@ import 'package:planify/features/home/presentation/screens/participant_home_scre
 import 'package:planify/features/invitations/data/fake_invitations_repository.dart';
 import 'package:planify/features/invitations/presentation/controllers/invitation_providers.dart';
 import 'package:planify/main.dart';
+import 'package:planify/features/auth/presentation/screens/login_screen.dart';
+import 'package:planify/features/splash/presentation/screens/splash_screen.dart';
 
 import '../unit/deep_link_service_test.dart';
 
@@ -42,6 +46,9 @@ void main() {
     Widget createTestApp({AuthRepository? authRepository}) {
       return ProviderScope(
         overrides: [
+          activityLogRepositoryProvider.overrideWithValue(
+            FakeActivityLogRepository(delay: Duration.zero),
+          ),
           appLinksProvider.overrideWithValue(fakeAppLinks),
           secureStorageProvider.overrideWithValue(fakeStorage),
           authRepositoryProvider.overrideWithValue(
@@ -61,6 +68,55 @@ void main() {
           ),
         ],
         child: const MyApp(),
+      );
+    }
+
+    for (final invitationDelay in [
+      Duration.zero,
+      const Duration(milliseconds: 500),
+    ]) {
+      testWidgets(
+        'cold start conserva eventId con invitación que demora $invitationDelay',
+        (tester) async {
+          fakeAppLinks.initialUri = Uri.parse(
+            'planify://invite/token-valid-123',
+          );
+          fakeAuthRepository = FakeAuthRepository(
+            storage: fakeStorage,
+            delay: const Duration(milliseconds: 100),
+          );
+          fakeInvitationsRepository = FakeInvitationsRepository(
+            delay: invitationDelay,
+          );
+          await tester.pumpWidget(createTestApp());
+          expect(find.byType(SplashScreen), findsOneWidget);
+          await tester.pump();
+          await tester.pump(const Duration(milliseconds: 100));
+          // FakeSecureStorage suma 200 ms después de la demora del repositorio.
+          await tester.pump(const Duration(milliseconds: 200));
+          await tester.pump();
+          if (invitationDelay != Duration.zero) {
+            expect(find.byType(LoginScreen), findsOneWidget);
+            expect(
+              tester.widget<LoginScreen>(find.byType(LoginScreen)).eventId,
+              isNull,
+            );
+          }
+          await tester.pumpAndSettle();
+          if (invitationDelay != Duration.zero) {
+            await tester.pump(invitationDelay);
+            await tester.pumpAndSettle();
+          }
+          expect(find.byType(SplashScreen), findsNothing);
+          expect(
+            tester.widget<LoginScreen>(find.byType(LoginScreen)).eventId,
+            'evt-123',
+          );
+          expect(
+            find.byKey(const Key('invitation_event_badge')),
+            findsOneWidget,
+          );
+        },
       );
     }
 

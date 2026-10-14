@@ -6,9 +6,13 @@ import 'event_activity_state.dart';
 class EventActivityNotifier extends StateNotifier<EventActivityState> {
   final ActivityLogRepository repository;
   final String eventId;
+  final void Function()? onUnreadCountsChanged;
 
-  EventActivityNotifier({required this.repository, required this.eventId})
-    : super(const EventActivityState()) {
+  EventActivityNotifier({
+    required this.repository,
+    required this.eventId,
+    this.onUnreadCountsChanged,
+  }) : super(const EventActivityState()) {
     load();
   }
 
@@ -25,6 +29,15 @@ class EventActivityNotifier extends StateNotifier<EventActivityState> {
     } catch (_) {
       if (!mounted) return;
       state = state.copyWith(loadStatus: EventActivityLoadStatus.error);
+      return;
+    }
+
+    // Reading activity is a secondary effect: its failure must not hide the feed.
+    try {
+      await repository.markEventAsRead(eventId);
+      if (mounted) onUnreadCountsChanged?.call();
+    } catch (_) {
+      // Keep the successful feed; a later visit can retry marking it as read.
     }
   }
 

@@ -25,6 +25,40 @@ void main() {
     });
 
     test(
+      'solo checkAuthStatus emite el estado de verificación inicial',
+      () async {
+        final checking = notifier.checkAuthStatus();
+        expect(notifier.state, isA<AuthCheckingInitialSession>());
+        await checking;
+        expect(notifier.state, isA<AuthUnauthenticated>());
+
+        final login = notifier.login(
+          identifier: 'lucas',
+          password: 'password123',
+        );
+        expect(notifier.state, isA<AuthLoading>());
+        await login;
+        final logout = notifier.logout();
+        expect(notifier.state, isA<AuthLoading>());
+        await logout;
+        final register = notifier.register(
+          name: 'Lucía',
+          username: 'lucia',
+          email: 'lucia@planify.com',
+          password: 'password123',
+        );
+        expect(notifier.state, isA<AuthLoading>());
+        await register;
+        final anonymous = notifier.loginAnonymously(
+          name: 'Invitado',
+          pin: '1234',
+        );
+        expect(notifier.state, isA<AuthLoading>());
+        await anonymous;
+      },
+    );
+
+    test(
       'login exitoso guarda token y cambia a AuthAuthenticated con OrganizerSession',
       () async {
         await notifier.login(

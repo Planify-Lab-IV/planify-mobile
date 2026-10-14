@@ -55,6 +55,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  # Versiones fijadas para conservar compatibilidad con el SDK Dart 3.12 del repo.
+  flutter_native_splash: 2.4.6
+  xml: 6.5.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -67,6 +70,8 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  assets:
+    - assets/splash/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

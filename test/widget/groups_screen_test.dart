@@ -5,7 +5,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
+import 'package:planify/core/widgets/unread_badge.dart';
 import 'package:planify/features/activity_log/data/fake_activity_log_repository.dart';
+import 'package:planify/features/activity_log/domain/unread_counts.dart';
 import 'package:planify/features/activity_log/presentation/controllers/activity_log_providers.dart';
 import 'package:planify/features/debts/data/fake_debts_repository.dart';
 import 'package:planify/features/debts/presentation/controllers/debts_providers.dart';
@@ -50,25 +52,119 @@ Widget app(GroupsOverviewRepository repository, {String language = 'es'}) =>
         activityLogRepositoryProvider.overrideWithValue(
           FakeActivityLogRepository(delay: Duration.zero),
         ),
-        tasksRepositoryProvider.overrideWithValue(
-          FakeTasksRepository(delay: Duration.zero),
-        ),
-      ],
-      child: MaterialApp(
-        theme: AppTheme.light,
-        locale: Locale(language),
-        supportedLocales: AppLocalizations.supportedLocales,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        home: const GroupsScreen(),
       ),
     );
+    await tester.pumpAndSettle();
+    expect(badgeText(tester, 'group_unread_badge_grp-amigos'), '9+');
+    expect(badgeText(tester, 'event_unread_badge_evt-123'), '2');
+    expect(
+      find.byKey(const Key('group_unread_badge_grp-trabajo')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('event_unread_badge_evt-fake-demo')),
+      findsNothing,
+    );
+  });
 
-void main() {
+  testWidgets(
+    'al volver del feed actualiza el evento y su grupo sin refrescar',
+    (tester) async {
+      final overview = MutableOverviewRepository(
+        await FakeGroupsOverviewRepository(
+          delay: Duration.zero,
+        ).getMyGroupsOverview(),
+      );
+      final activity = FakeActivityLogRepository(delay: Duration.zero);
+      await tester.pumpWidget(app(overview, activityRepository: activity));
+      await tester.pumpAndSettle();
+      expect(badgeText(tester, 'group_unread_badge_grp-amigos'), '9+');
+      expect(badgeText(tester, 'event_unread_badge_evt-123'), '5');
+      await tester.tap(find.byKey(const Key('group_event_tile_evt-123')));
+      await tester.pumpAndSettle();
+      expect((await activity.getUnreadCounts()).forEvent('evt-123'), 0);
+      await tester.tap(find.byIcon(Icons.arrow_back_rounded));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('event_unread_badge_evt-123')), findsNothing);
+      expect(badgeText(tester, 'group_unread_badge_grp-amigos'), '7');
+      expect(badgeText(tester, 'event_unread_badge_evt-asado-amigos'), '7');
+      expect(overview.calls, 1);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  for (final failFeed in [true, false]) {
+    testWidgets(
+      'un fallo de ${failFeed ? 'feed' : 'marcado'} conserva los contadores y la navegación',
+      (tester) async {
+        final activity = FakeActivityLogRepository(
+          delay: Duration.zero,
+          shouldThrowError: failFeed,
+          shouldThrowMarkAsReadError: !failFeed,
+        );
+        await tester.pumpWidget(
+          app(
+            FakeGroupsOverviewRepository(delay: Duration.zero),
+            activityRepository: activity,
+          ),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('group_event_tile_evt-123')));
+        await tester.pumpAndSettle();
+        expect(
+          find.byKey(const Key('event_activity_error')),
+          failFeed ? findsOneWidget : findsNothing,
+        );
+        await tester.tap(find.byIcon(Icons.arrow_back_rounded));
+        await tester.pumpAndSettle();
+        expect(badgeText(tester, 'event_unread_badge_evt-123'), '5');
+        expect(badgeText(tester, 'group_unread_badge_grp-amigos'), '9+');
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
+
+  testWidgets('el error de contadores oculta badges sin bloquear la lista', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      app(
+        FakeGroupsOverviewRepository(delay: Duration.zero),
+        activityRepository: FakeActivityLogRepository(
+          delay: Duration.zero,
+          shouldThrowUnreadCountsError: true,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byType(UnreadBadge), findsNothing);
+    expect(find.byKey(const Key('group_event_tile_evt-123')), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(find.byKey(const Key('groups_screen_error')), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+    'durante carga de contadores muestra la lista sin badges ni spinner',
+    (tester) async {
+      await tester.pumpWidget(
+        app(
+          FakeGroupsOverviewRepository(delay: Duration.zero),
+          activityRepository: FakeActivityLogRepository(
+            delay: const Duration(seconds: 1),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump();
+      expect(find.byKey(const Key('group_event_tile_evt-123')), findsOneWidget);
+      expect(find.byType(UnreadBadge), findsNothing);
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+    },
+  );
+
   testWidgets('loading then empty groups are rendered', (tester) async {
     final repo = MutableOverviewRepository([])..pending = Completer();
     await tester.pumpWidget(app(repo));
