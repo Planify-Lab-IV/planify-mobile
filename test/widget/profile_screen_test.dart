@@ -12,6 +12,8 @@ import 'package:planify/features/auth/presentation/controllers/auth_providers.da
 import 'package:planify/features/auth/presentation/controllers/auth_state.dart';
 import 'package:planify/features/profile/data/avatar_picker.dart';
 import 'package:planify/features/profile/data/fake_profile_repository.dart';
+import 'package:planify/features/profile/data/profile_exceptions.dart';
+import 'package:planify/features/profile/domain/user_profile.dart';
 import 'package:planify/features/profile/presentation/controllers/profile_providers.dart';
 import 'package:planify/features/profile/presentation/screens/profile_screen.dart';
 import 'package:planify/l10n/app_localizations.dart';
@@ -136,6 +138,37 @@ void main() {
     expect(saveButton.onPressed, isNull);
   });
 
+  testWidgets(
+    'explica el error específico cuando el avatar no se puede almacenar',
+    (tester) async {
+      final container = await _buildContainer(
+        avatarPicker: _AvatarPicker('/tmp/avatar.jpg'),
+        profileRepository: _UnavailableAvatarProfileRepository(),
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(_buildScreen(container));
+      await tester.pump();
+      await tester.pump();
+      await tester.tap(find.byKey(const Key('profile_avatar_button')));
+      await tester.pump();
+      await tester.ensureVisible(find.byKey(const Key('profile_save_button')));
+      await tester.tap(find.byKey(const Key('profile_save_button')));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text(
+          'No se pudo guardar la foto en este momento. El nombre sí se puede cambiar.',
+        ),
+        findsOneWidget,
+      );
+      expect(
+        container.read(profileNotifierProvider).pendingAvatarFilePath,
+        '/tmp/avatar.jpg',
+      );
+    },
+  );
+
   testWidgets('un error al guardar conserva el borrador', (tester) async {
     final repository = FakeProfileRepository(delay: Duration.zero);
     final container = await _buildContainer(
@@ -254,6 +287,15 @@ class _FailingAvatarPicker implements AvatarPicker {
   @override
   Future<String?> pickAvatar() {
     throw PlatformException(code: 'photo_access_denied');
+  }
+}
+
+class _UnavailableAvatarProfileRepository extends FakeProfileRepository {
+  _UnavailableAvatarProfileRepository() : super(delay: Duration.zero);
+
+  @override
+  Future<UserProfile> updateProfile({String? name, String? avatarFilePath}) {
+    throw const AvatarStorageUnavailableException();
   }
 }
 

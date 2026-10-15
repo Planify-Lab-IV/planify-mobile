@@ -163,11 +163,14 @@ class _ProfileContent extends StatelessWidget {
     final i18n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final profile = state.profile!;
-    final imagePath = state.pendingAvatarFilePath ?? profile.avatarUrl;
-    final imageProvider = imagePath == null
+    final pendingAvatarPath = state.pendingAvatarFilePath;
+    final imageProvider = pendingAvatarPath != null
+        ? avatarImageProvider?.call(pendingAvatarPath) ??
+              FileImage(File(pendingAvatarPath))
+        : profile.avatarUrl == null
         ? null
-        : avatarImageProvider?.call(imagePath) ??
-              profileAvatarImageProvider(imagePath);
+        : avatarImageProvider?.call(profile.avatarUrl!) ??
+              NetworkImage(profile.avatarUrl!);
 
     return Center(
       child: SingleChildScrollView(
@@ -276,7 +279,10 @@ class _ProfileContent extends StatelessWidget {
                   if (state.hasSaveError) ...[
                     const SizedBox(height: AppSpacing.md),
                     Text(
-                      i18n.profileSaveError,
+                      state.saveFailure ==
+                              ProfileSaveFailure.avatarStorageUnavailable
+                          ? i18n.profileAvatarStorageUnavailable
+                          : i18n.profileSaveError,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.colorScheme.error,
                       ),
