@@ -124,32 +124,38 @@ void main() {
         ),
       ),
     );
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.byKey(const Key('registered_navigation_bar')), findsOneWidget);
     expect(find.text('Inicio de prueba'), findsOneWidget);
     expect(find.text('Balances'), findsOneWidget);
     expect(find.byType(NavigationDestination), findsNWidgets(4));
     await tester.tap(find.byKey(const Key('registered_navigation_groups')));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.tap(find.byKey(const Key('group_avatar_grp-familia')));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     expect(
       find.byKey(const Key('group_event_tile_evt-almuerzo-familia')),
       findsOneWidget,
     );
     await tester.tap(find.byKey(const Key('registered_navigation_home')));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     expect(find.text('Inicio de prueba'), findsOneWidget);
     await tester.tap(find.byKey(const Key('registered_navigation_groups')));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     expect(
       find.byKey(const Key('group_event_tile_evt-almuerzo-familia')),
       findsOneWidget,
     );
 
     await tester.tap(find.byKey(const Key('registered_navigation_balances')));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.text('Saldos por persona'), findsOneWidget);
     expect(find.byKey(const Key('balance_summary_card')), findsOneWidget);
