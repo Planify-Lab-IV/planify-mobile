@@ -36,6 +36,7 @@ class InitialsAvatar extends StatelessWidget {
       radius: radius,
       backgroundColor: colorScheme.primaryContainer,
       foregroundImage: imageProvider,
+      onForegroundImageError: imageProvider == null ? null : (_, _) {},
       child: Text(
         initialsFor(name),
         style: Theme.of(context).textTheme.titleMedium?.copyWith(

@@ -3,16 +3,22 @@ import 'package:planify/features/profile/data/avatar_picker.dart';
 
 void main() {
   group('ImagePickerAvatarPicker', () {
-    test('devuelve la ruta elegida y solicita una imagen reducida', () async {
-      final gallery = _FakeGalleryImagePicker('/tmp/avatar.jpg');
-      final picker = ImagePickerAvatarPicker(galleryImagePicker: gallery);
+    test(
+      'solicita una transformación que recodifica HEIC de iOS a JPEG',
+      () async {
+        final gallery = _FakeGalleryImagePicker('/tmp/avatar.jpg');
+        final picker = ImagePickerAvatarPicker(galleryImagePicker: gallery);
 
-      final path = await picker.pickAvatar();
+        final path = await picker.pickAvatar();
 
-      expect(path, '/tmp/avatar.jpg');
-      expect(gallery.maxWidth, ImagePickerAvatarPicker.maxAvatarWidth);
-      expect(gallery.imageQuality, ImagePickerAvatarPicker.avatarImageQuality);
-    });
+        expect(path, '/tmp/avatar.jpg');
+        expect(gallery.maxWidth, ImagePickerAvatarPicker.maxAvatarWidth);
+        expect(
+          gallery.imageQuality,
+          ImagePickerAvatarPicker.avatarImageQuality,
+        );
+      },
+    );
 
     test('devuelve null cuando la persona cancela la selección', () async {
       final picker = ImagePickerAvatarPicker(

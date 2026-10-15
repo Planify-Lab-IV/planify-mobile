@@ -26,6 +26,9 @@ class ImagePickerAvatarPicker implements AvatarPicker {
 
   @override
   Future<String?> pickAvatar() {
+    // image_picker para iOS recodifica imágenes HEIC/HEIF a JPEG cuando se
+    // solicita una transformación (ancho o calidad). Ambos parámetros se
+    // mantienen para que el archivo llegue en un formato admitido por la API.
     return _galleryImagePicker.pickImage(
       maxWidth: maxAvatarWidth,
       imageQuality: avatarImageQuality,

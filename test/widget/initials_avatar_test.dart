@@ -41,6 +41,7 @@ void main() {
     final avatar = tester.widget<CircleAvatar>(find.byType(CircleAvatar));
 
     expect(avatar.foregroundImage, same(imageProvider));
+    expect(avatar.onForegroundImageError, isNotNull);
   });
 
   test('calcula iniciales para nombres simples, compuestos y vacíos', () {
