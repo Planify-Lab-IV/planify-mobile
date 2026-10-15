@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/activity_log/data/activity_log_exceptions.dart';
-import 'package:planify/features/activity_log/data/fake_activity_log_repository.dart';
 import 'package:planify/features/activity_log/data/http_activity_log_repository.dart';
 import 'package:planify/features/activity_log/domain/activity_type.dart';
 
@@ -9,6 +8,7 @@ void main() {
   Dio dioResolving(
     dynamic body, [
     void Function(RequestOptions options)? inspect,
+    int statusCode = 200,
   ]) {
     final dio = Dio();
     addTearDown(() => dio.close(force: true));
@@ -19,7 +19,7 @@ void main() {
           handler.resolve(
             Response<dynamic>(
               requestOptions: options,
-              statusCode: 200,
+              statusCode: statusCode,
               data: body,
             ),
           );
@@ -38,59 +38,163 @@ void main() {
   };
 
   group('HttpActivityLogRepository', () {
-    test(
-      'keeps unread state in the fake while loading the feed via HTTP',
-      () async {
-        final requests = <String>[];
-        final fake = FakeActivityLogRepository(
-          delay: Duration.zero,
-          shouldThrowError: true,
-        );
-        final repository = HttpActivityLogRepository(
-          dio: dioResolving({
-            'entries': [entry()],
-          }, (options) => requests.add(options.path)),
-          unreadFallback: fake,
-        );
+    test('accepts empty unread collections', () async {
+      final repository = HttpActivityLogRepository(
+        dio: dioResolving({'events': [], 'groups': []}),
+      );
+      final counts = await repository.getUnreadCounts();
+      expect(counts.byEvent, isEmpty);
+      expect(counts.byGroup, isEmpty);
+    });
 
-        final before = await repository.getUnreadCounts();
-        expect(before.forEvent('evt-123'), 5);
-        expect(before.forGroup('grp-amigos'), 12);
-        expect(
-          (await repository.listEventActivity('evt-123')).single.id,
-          'activity-1',
-        );
-
-        await repository.markEventAsRead('evt-123');
-        await repository.markEventAsRead('evt-123');
-        final after = await repository.getUnreadCounts();
-        expect(after.forEvent('evt-123'), 0);
-        expect(after.forGroup('grp-amigos'), 7);
-        expect(after.forEvent('evt-asado-amigos'), 7);
-        expect(requests, ['/events/evt-123/activity-log']);
-      },
-    );
-
-    test(
-      'propagates fake unread failures without affecting the HTTP feed',
-      () async {
-        final repository = HttpActivityLogRepository(
-          dio: dioResolving({'entries': []}),
-          unreadFallback: FakeActivityLogRepository(
-            delay: Duration.zero,
-            shouldThrowUnreadCountsError: true,
-            shouldThrowMarkAsReadError: true,
-          ),
-        );
-
-        await expectLater(repository.getUnreadCounts(), throwsException);
+    for (final body in [
+      null,
+      [],
+      {},
+      {'events': [], 'groups': null},
+    ]) {
+      test('rejects malformed unread body $body', () async {
+        final repository = HttpActivityLogRepository(dio: dioResolving(body));
         await expectLater(
-          repository.markEventAsRead('evt-123'),
-          throwsException,
+          repository.getUnreadCounts(),
+          throwsA(isA<InvalidActivityLogResponseException>()),
         );
-        expect(await repository.listEventActivity('evt-123'), isEmpty);
-      },
-    );
+      });
+    }
+
+    for (final collection in ['events', 'groups']) {
+      final idKey = collection == 'events' ? 'eventId' : 'groupId';
+      for (final value in [null, {}, 'invalid']) {
+        test('rejects non-list $collection: $value', () async {
+          final body = <String, dynamic>{'events': [], 'groups': []};
+          body[collection] = value;
+          final repository = HttpActivityLogRepository(dio: dioResolving(body));
+          await expectLater(
+            repository.getUnreadCounts(),
+            throwsA(isA<InvalidActivityLogResponseException>()),
+          );
+        });
+      }
+      for (final invalid in [
+        null,
+        {},
+        {idKey: null, 'unreadCount': 0},
+        {idKey: 1, 'unreadCount': 0},
+        {idKey: ' ', 'unreadCount': 0},
+        {idKey: 'id'},
+        for (final count in [null, -1, 1.0, '1', true])
+          {idKey: 'id', 'unreadCount': count},
+      ]) {
+        test('rejects malformed $collection entry $invalid', () async {
+          final body = <String, dynamic>{'events': [], 'groups': []};
+          body[collection] = [
+            {idKey: 'valid', 'unreadCount': 2},
+            invalid,
+          ];
+          final repository = HttpActivityLogRepository(dio: dioResolving(body));
+          await expectLater(
+            repository.getUnreadCounts(),
+            throwsA(isA<InvalidActivityLogResponseException>()),
+          );
+        });
+      }
+    }
+
+    test('rejects a blank read id without a request', () async {
+      var requested = false;
+      final repository = HttpActivityLogRepository(
+        dio: dioResolving(null, (_) => requested = true, 204),
+      );
+      await expectLater(
+        repository.markEventAsRead('  '),
+        throwsA(isA<InvalidActivityLogResponseException>()),
+      );
+      expect(requested, isFalse);
+    });
+
+    test('rejects a read response other than 204', () async {
+      final repository = HttpActivityLogRepository(dio: dioResolving(null));
+      await expectLater(
+        repository.markEventAsRead('e'),
+        throwsA(isA<InvalidActivityLogResponseException>()),
+      );
+    });
+
+    for (final type in [
+      DioExceptionType.connectionTimeout,
+      DioExceptionType.sendTimeout,
+      DioExceptionType.receiveTimeout,
+      DioExceptionType.connectionError,
+      DioExceptionType.badResponse,
+    ]) {
+      for (final markRead in [false, true]) {
+        test('${markRead ? 'read' : 'counts'} maps $type', () async {
+          final dio = Dio();
+          addTearDown(() => dio.close(force: true));
+          dio.interceptors.add(
+            InterceptorsWrapper(
+              onRequest: (options, handler) => handler.reject(
+                DioException(
+                  requestOptions: options,
+                  type: type,
+                  response: type == DioExceptionType.badResponse
+                      ? Response<dynamic>(
+                          requestOptions: options,
+                          statusCode: 500,
+                        )
+                      : null,
+                ),
+              ),
+            ),
+          );
+          final repository = HttpActivityLogRepository(dio: dio);
+          await expectLater(
+            markRead
+                ? repository.markEventAsRead('e')
+                : repository.getUnreadCounts(),
+            throwsA(
+              type == DioExceptionType.badResponse
+                  ? isA<InvalidActivityLogResponseException>()
+                  : isA<NetworkActivityLogException>(),
+            ),
+          );
+        });
+      }
+    }
+
+    test('loads real event and group counts including zero', () async {
+      RequestOptions? request;
+      final repository = HttpActivityLogRepository(
+        dio: dioResolving({
+          'events': [
+            {'eventId': 'e', 'unreadCount': 2},
+            {'eventId': 'zero', 'unreadCount': 0},
+          ],
+          'groups': [
+            {'groupId': 'g', 'unreadCount': 2},
+            {'groupId': 'zero', 'unreadCount': 0},
+          ],
+        }, (options) => request = options),
+      );
+
+      final counts = await repository.getUnreadCounts();
+      expect(request?.method, 'GET');
+      expect(request?.path, '/me/unread-counts');
+      expect(counts.byEvent, {'e': 2, 'zero': 0});
+      expect(counts.byGroup, {'g': 2, 'zero': 0});
+    });
+
+    test('marks a normalized event id with POST and accepts 204', () async {
+      RequestOptions? request;
+      final repository = HttpActivityLogRepository(
+        dio: dioResolving(null, (options) => request = options, 204),
+      );
+
+      await repository.markEventAsRead(' evt-123 ');
+      expect(request?.method, 'POST');
+      expect(request?.path, '/events/evt-123/activity-log/read');
+      expect(request?.data, isNull);
+    });
 
     test('loads entries using the backend activity log contract', () async {
       RequestOptions? request;

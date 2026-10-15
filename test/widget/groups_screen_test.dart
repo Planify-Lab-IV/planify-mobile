@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +9,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/core/widgets/unread_badge.dart';
 import 'package:planify/features/activity_log/data/fake_activity_log_repository.dart';
+import 'package:planify/features/activity_log/data/http_activity_log_repository.dart';
+import 'package:planify/features/activity_log/domain/activity_log_repository.dart';
 import 'package:planify/features/activity_log/domain/unread_counts.dart';
 import 'package:planify/features/activity_log/presentation/controllers/activity_log_providers.dart';
 import 'package:planify/features/debts/data/fake_debts_repository.dart';
@@ -42,7 +46,7 @@ class MutableOverviewRepository implements GroupsOverviewRepository {
 Widget app(
   GroupsOverviewRepository repository, {
   String language = 'es',
-  FakeActivityLogRepository? activityRepository,
+  ActivityLogRepository? activityRepository,
 }) => ProviderScope(
   overrides: [
     activityLogRepositoryProvider.overrideWithValue(
@@ -74,6 +78,68 @@ Widget app(
 );
 
 void main() {
+  for (final failCounts in [false, true]) {
+    testWidgets('HTTP counts refresh updates badges; failure=$failCounts', (
+      tester,
+    ) async {
+      var count = 0;
+      var countsCalls = 0;
+      final dio = Dio();
+      addTearDown(() => dio.close(force: true));
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            expect(options.path, '/me/unread-counts');
+            expect(options.method, 'GET');
+            countsCalls++;
+            if (failCounts && countsCalls > 1) {
+              handler.reject(
+                DioException(
+                  requestOptions: options,
+                  type: DioExceptionType.connectionError,
+                ),
+              );
+              return;
+            }
+            handler.resolve(
+              Response<dynamic>(
+                requestOptions: options,
+                statusCode: 200,
+                data: {
+                  'events': [
+                    {'eventId': 'evt-123', 'unreadCount': count},
+                  ],
+                  'groups': [
+                    {'groupId': 'grp-amigos', 'unreadCount': count},
+                  ],
+                },
+              ),
+            );
+          },
+        ),
+      );
+      await tester.pumpWidget(
+        app(
+          FakeGroupsOverviewRepository(delay: Duration.zero),
+          activityRepository: HttpActivityLogRepository(dio: dio),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(UnreadBadge), findsNothing);
+      count = 2;
+      await tester.drag(find.byType(CustomScrollView), const Offset(0, 400));
+      await tester.pumpAndSettle();
+      expect(countsCalls, 2);
+      expect(find.byKey(const Key('group_event_tile_evt-123')), findsOneWidget);
+      expect(find.byKey(const Key('groups_screen_error')), findsNothing);
+      expect(
+        find.byType(UnreadBadge),
+        failCounts ? findsNothing : findsNWidgets(2),
+      );
+      expect(tester.takeException(), isNull);
+    });
+  }
+
   String badgeText(WidgetTester tester, String key) => tester
       .widget<Text>(
         find.descendant(of: find.byKey(Key(key)), matching: find.byType(Text)),

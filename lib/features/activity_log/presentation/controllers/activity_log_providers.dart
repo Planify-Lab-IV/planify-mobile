@@ -21,5 +21,9 @@ final eventActivityNotifierProvider = StateNotifierProvider.autoDispose
         repository: ref.watch(activityLogRepositoryProvider),
         eventId: eventId,
         onUnreadCountsChanged: () => ref.invalidate(unreadCountsProvider),
+        onMarkStarted: () {
+          final keepAliveLink = ref.keepAlive();
+          return keepAliveLink.close;
+        },
       );
     });

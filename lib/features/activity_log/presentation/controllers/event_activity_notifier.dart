@@ -3,15 +3,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/activity_log_repository.dart';
 import 'event_activity_state.dart';
 
+typedef MarkOperationFinished = void Function();
+typedef MarkOperationStarter = MarkOperationFinished? Function();
+
 class EventActivityNotifier extends StateNotifier<EventActivityState> {
   final ActivityLogRepository repository;
   final String eventId;
   final void Function()? onUnreadCountsChanged;
+  final MarkOperationStarter? onMarkStarted;
 
   EventActivityNotifier({
     required this.repository,
     required this.eventId,
     this.onUnreadCountsChanged,
+    this.onMarkStarted,
   }) : super(const EventActivityState()) {
     load();
   }
@@ -32,12 +37,13 @@ class EventActivityNotifier extends StateNotifier<EventActivityState> {
       return;
     }
 
-    // Reading activity is a secondary effect: its failure must not hide the feed.
+    final onMarkFinished = onMarkStarted?.call();
     try {
       await repository.markEventAsRead(eventId);
       if (mounted) onUnreadCountsChanged?.call();
     } catch (_) {
-      // Keep the successful feed; a later visit can retry marking it as read.
+    } finally {
+      onMarkFinished?.call();
     }
   }
 
