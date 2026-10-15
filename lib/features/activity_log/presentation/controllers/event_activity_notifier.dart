@@ -7,11 +7,13 @@ class EventActivityNotifier extends StateNotifier<EventActivityState> {
   final ActivityLogRepository repository;
   final String eventId;
   final void Function()? onUnreadCountsChanged;
+  final void Function()? onLoadFinished;
 
   EventActivityNotifier({
     required this.repository,
     required this.eventId,
     this.onUnreadCountsChanged,
+    this.onLoadFinished,
   }) : super(const EventActivityState()) {
     load();
   }
@@ -29,6 +31,7 @@ class EventActivityNotifier extends StateNotifier<EventActivityState> {
     } catch (_) {
       if (!mounted) return;
       state = state.copyWith(loadStatus: EventActivityLoadStatus.error);
+      onLoadFinished?.call();
       return;
     }
 
@@ -37,7 +40,8 @@ class EventActivityNotifier extends StateNotifier<EventActivityState> {
       await repository.markEventAsRead(eventId);
       if (mounted) onUnreadCountsChanged?.call();
     } catch (_) {
-      // Keep the successful feed; a later visit can retry marking it as read.
+    } finally {
+      onLoadFinished?.call();
     }
   }
 
