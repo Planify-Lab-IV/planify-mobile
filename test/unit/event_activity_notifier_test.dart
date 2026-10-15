@@ -119,6 +119,70 @@ void main() {
       },
     );
 
+    test(
+      'un reintento adquiere una retención nueva hasta terminar el marcado',
+      () async {
+        final repository = _CountingActivityLogRepository()..failFeed = true;
+        final countsRefreshed = Completer<void>();
+        final container = ProviderContainer(
+          overrides: [
+            activityLogRepositoryProvider.overrideWithValue(repository),
+          ],
+        );
+        addTearDown(container.dispose);
+        final countsSubscription = container.listen(unreadCountsProvider, (
+          _,
+          _,
+        ) {
+          if (repository.unreadCountCalls == 2 &&
+              !countsRefreshed.isCompleted) {
+            countsRefreshed.complete();
+          }
+        });
+        addTearDown(countsSubscription.close);
+        await container.read(unreadCountsProvider.future);
+        final provider = eventActivityNotifierProvider('evt-123');
+        final feedSubscription = container.listen(provider, (_, _) {});
+        await Future<void>.delayed(Duration.zero);
+        expect(container.read(provider).hasLoadError, isTrue);
+
+        repository
+          ..failFeed = false
+          ..pendingMark = Completer<void>()
+          ..markStarted = Completer<void>();
+        unawaited(container.read(provider.notifier).reload());
+        await repository.markStarted!.future;
+        feedSubscription.close();
+        await container.pump();
+
+        repository.pendingMark!.complete();
+        await countsRefreshed.future.timeout(const Duration(seconds: 1));
+        expect(repository.callCount, 2);
+      },
+    );
+
+    test('no marca leído si se cierra el feed durante su carga', () async {
+      final repository = _CountingActivityLogRepository()
+        ..pendingFeed = Completer<List<ActivityEntry>>();
+      final container = ProviderContainer(
+        overrides: [
+          activityLogRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+      final feedSubscription = container.listen(
+        eventActivityNotifierProvider('evt-123'),
+        (_, _) {},
+      );
+
+      feedSubscription.close();
+      await container.pump();
+      repository.pendingFeed!.complete(const <ActivityEntry>[]);
+      await Future<void>.delayed(Duration.zero);
+
+      expect(repository.readEventIds, isEmpty);
+    });
+
     test('un marcado fallido conserva el feed y no invalida', () async {
       final repository = _CountingActivityLogRepository()..failMark = true;
       var invalidations = 0;

@@ -17,11 +17,13 @@ final unreadCountsProvider = FutureProvider.autoDispose<UnreadCounts>((ref) {
 
 final eventActivityNotifierProvider = StateNotifierProvider.autoDispose
     .family<EventActivityNotifier, EventActivityState, String>((ref, eventId) {
-      final keepAliveLink = ref.keepAlive();
       return EventActivityNotifier(
         repository: ref.watch(activityLogRepositoryProvider),
         eventId: eventId,
         onUnreadCountsChanged: () => ref.invalidate(unreadCountsProvider),
-        onLoadFinished: keepAliveLink.close,
+        onMarkStarted: () {
+          final keepAliveLink = ref.keepAlive();
+          return keepAliveLink.close;
+        },
       );
     });
