@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/profile_exceptions.dart';
 import '../../domain/profile_repository.dart';
 import 'profile_state.dart';
 
@@ -14,6 +15,7 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     state = state.copyWith(
       loadStatus: ProfileLoadStatus.loading,
       saveStatus: ProfileSaveStatus.idle,
+      saveFailure: ProfileSaveFailure.none,
     );
 
     try {
@@ -34,7 +36,11 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
   void updateDraftName(String name) {
     if (state.profile == null) return;
 
-    state = state.copyWith(draftName: name, saveStatus: ProfileSaveStatus.idle);
+    state = state.copyWith(
+      draftName: name,
+      saveStatus: ProfileSaveStatus.idle,
+      saveFailure: ProfileSaveFailure.none,
+    );
   }
 
   void selectAvatar(String avatarFilePath) {
@@ -43,6 +49,17 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     state = state.copyWith(
       pendingAvatarFilePath: avatarFilePath,
       saveStatus: ProfileSaveStatus.idle,
+      saveFailure: ProfileSaveFailure.none,
+    );
+  }
+
+  void discardPendingAvatar() {
+    if (state.pendingAvatarFilePath == null) return;
+
+    state = state.copyWith(
+      clearPendingAvatar: true,
+      saveStatus: ProfileSaveStatus.idle,
+      saveFailure: ProfileSaveFailure.none,
     );
   }
 
@@ -54,7 +71,10 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     final requestedName = name == savedProfile.name ? null : name;
     final avatarFilePath = state.pendingAvatarFilePath;
 
-    state = state.copyWith(saveStatus: ProfileSaveStatus.saving);
+    state = state.copyWith(
+      saveStatus: ProfileSaveStatus.saving,
+      saveFailure: ProfileSaveFailure.none,
+    );
     try {
       final updatedProfile = await repository.updateProfile(
         name: requestedName,
@@ -67,9 +87,18 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
         draftName: updatedProfile.name,
         loadStatus: ProfileLoadStatus.success,
       );
+    } on AvatarStorageUnavailableException {
+      if (!mounted) return;
+      state = state.copyWith(
+        saveStatus: ProfileSaveStatus.error,
+        saveFailure: ProfileSaveFailure.avatarStorageUnavailable,
+      );
     } catch (_) {
       if (!mounted) return;
-      state = state.copyWith(saveStatus: ProfileSaveStatus.error);
+      state = state.copyWith(
+        saveStatus: ProfileSaveStatus.error,
+        saveFailure: ProfileSaveFailure.generic,
+      );
     }
   }
 }

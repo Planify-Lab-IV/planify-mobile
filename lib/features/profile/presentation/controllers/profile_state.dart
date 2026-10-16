@@ -4,12 +4,15 @@ enum ProfileLoadStatus { loading, success, error }
 
 enum ProfileSaveStatus { idle, saving, error }
 
+enum ProfileSaveFailure { none, generic, avatarStorageUnavailable }
+
 class ProfileState {
   final UserProfile? profile;
   final String draftName;
   final String? pendingAvatarFilePath;
   final ProfileLoadStatus loadStatus;
   final ProfileSaveStatus saveStatus;
+  final ProfileSaveFailure saveFailure;
 
   const ProfileState({
     this.profile,
@@ -17,6 +20,7 @@ class ProfileState {
     this.pendingAvatarFilePath,
     this.loadStatus = ProfileLoadStatus.loading,
     this.saveStatus = ProfileSaveStatus.idle,
+    this.saveFailure = ProfileSaveFailure.none,
   });
 
   bool get isLoading => loadStatus == ProfileLoadStatus.loading;
@@ -44,16 +48,20 @@ class ProfileState {
     UserProfile? profile,
     String? draftName,
     String? pendingAvatarFilePath,
+    bool clearPendingAvatar = false,
     ProfileLoadStatus? loadStatus,
     ProfileSaveStatus? saveStatus,
+    ProfileSaveFailure? saveFailure,
   }) {
     return ProfileState(
       profile: profile ?? this.profile,
       draftName: draftName ?? this.draftName,
-      pendingAvatarFilePath:
-          pendingAvatarFilePath ?? this.pendingAvatarFilePath,
+      pendingAvatarFilePath: clearPendingAvatar
+          ? null
+          : pendingAvatarFilePath ?? this.pendingAvatarFilePath,
       loadStatus: loadStatus ?? this.loadStatus,
       saveStatus: saveStatus ?? this.saveStatus,
+      saveFailure: saveFailure ?? this.saveFailure,
     );
   }
 }

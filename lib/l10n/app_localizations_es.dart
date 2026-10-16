@@ -1099,4 +1099,12 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get profileSaveError =>
       'No se pudieron guardar los cambios. Intentá nuevamente.';
+
+  @override
+  String get profileAvatarStorageUnavailable =>
+      'No se pudo guardar la foto en este momento. El nombre sí se puede cambiar.';
+
+  @override
+  String get profileDiscardAvatarAndSaveName =>
+      'Descartar foto y guardar nombre';
 }

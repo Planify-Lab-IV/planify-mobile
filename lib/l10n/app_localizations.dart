@@ -2015,6 +2015,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No se pudieron guardar los cambios. Intentá nuevamente.'**
   String get profileSaveError;
+
+  /// No description provided for @profileAvatarStorageUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo guardar la foto en este momento. El nombre sí se puede cambiar.'**
+  String get profileAvatarStorageUnavailable;
+
+  /// No description provided for @profileDiscardAvatarAndSaveName.
+  ///
+  /// In es, this message translates to:
+  /// **'Descartar foto y guardar nombre'**
+  String get profileDiscardAvatarAndSaveName;
 }
 
 class _AppLocalizationsDelegate

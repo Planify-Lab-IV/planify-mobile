@@ -476,7 +476,9 @@
   "profileChangeAvatar": "Cambiar foto de perfil",
   "profileSaveButton": "Guardar",
   "profileLoadError": "No se pudo cargar el perfil.",
-  "profileSaveError": "No se pudieron guardar los cambios. Intentá nuevamente."
+  "profileSaveError": "No se pudieron guardar los cambios. Intentá nuevamente.",
+  "profileAvatarStorageUnavailable": "No se pudo guardar la foto en este momento. El nombre sí se puede cambiar.",
+  "profileDiscardAvatarAndSaveName": "Descartar foto y guardar nombre"
   ,"@personBalanceDetailLineOwedToYou": {
     "placeholders": {"name": {"type": "String", "example": "Ana"}}
   }

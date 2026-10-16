@@ -1092,4 +1092,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileSaveError => 'Could not save changes. Please try again.';
+
+  @override
+  String get profileAvatarStorageUnavailable =>
+      'The profile picture could not be saved right now. You can still change your name.';
+
+  @override
+  String get profileDiscardAvatarAndSaveName => 'Discard picture and save name';
 }

@@ -12,6 +12,8 @@ import 'package:planify/features/auth/presentation/controllers/auth_providers.da
 import 'package:planify/features/auth/presentation/controllers/auth_state.dart';
 import 'package:planify/features/profile/data/avatar_picker.dart';
 import 'package:planify/features/profile/data/fake_profile_repository.dart';
+import 'package:planify/features/profile/data/profile_exceptions.dart';
+import 'package:planify/features/profile/domain/user_profile.dart';
 import 'package:planify/features/profile/presentation/controllers/profile_providers.dart';
 import 'package:planify/features/profile/presentation/screens/profile_screen.dart';
 import 'package:planify/l10n/app_localizations.dart';
@@ -136,6 +138,83 @@ void main() {
     expect(saveButton.onPressed, isNull);
   });
 
+  testWidgets(
+    'explica el error específico cuando el avatar no se puede almacenar',
+    (tester) async {
+      final container = await _buildContainer(
+        avatarPicker: _AvatarPicker('/tmp/avatar.jpg'),
+        profileRepository: _UnavailableAvatarProfileRepository(),
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(_buildScreen(container));
+      await tester.pump();
+      await tester.pump();
+      await tester.tap(find.byKey(const Key('profile_avatar_button')));
+      await tester.pump();
+      await tester.ensureVisible(find.byKey(const Key('profile_save_button')));
+      await tester.tap(find.byKey(const Key('profile_save_button')));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text(
+          'No se pudo guardar la foto en este momento. El nombre sí se puede cambiar.',
+        ),
+        findsOneWidget,
+      );
+      expect(
+        container.read(profileNotifierProvider).pendingAvatarFilePath,
+        '/tmp/avatar.jpg',
+      );
+    },
+  );
+
+  testWidgets('descarta el avatar fallido y reintenta guardar solo el nombre', (
+    tester,
+  ) async {
+    final repository = _AvatarUnavailableThenSuccessProfileRepository();
+    final container = await _buildContainer(
+      avatarPicker: _AvatarPicker('/tmp/avatar.jpg'),
+      profileRepository: repository,
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(_buildScreen(container));
+    await tester.pump();
+    await tester.pump();
+    await tester.enterText(
+      find.byKey(const Key('profile_name_field')),
+      'Alice Personal',
+    );
+    await tester.tap(find.byKey(const Key('profile_avatar_button')));
+    await tester.pump();
+    await tester.ensureVisible(find.byKey(const Key('profile_save_button')));
+    await tester.tap(find.byKey(const Key('profile_save_button')));
+    await tester.pumpAndSettle();
+
+    final retryButton = find.byKey(
+      const Key('profile_discard_avatar_and_save_name_button'),
+    );
+    expect(retryButton, findsOneWidget);
+
+    await tester.ensureVisible(retryButton);
+    await tester.tap(retryButton);
+    await tester.pumpAndSettle();
+
+    expect(repository.updateRequests, [
+      (name: 'Alice Personal', avatarFilePath: '/tmp/avatar.jpg'),
+      (name: 'Alice Personal', avatarFilePath: null),
+    ]);
+    expect(
+      container.read(profileNotifierProvider).pendingAvatarFilePath,
+      isNull,
+    );
+    expect(
+      container.read(profileNotifierProvider).profile?.name,
+      'Alice Personal',
+    );
+  });
+
   testWidgets('un error al guardar conserva el borrador', (tester) async {
     final repository = FakeProfileRepository(delay: Duration.zero);
     final container = await _buildContainer(
@@ -254,6 +333,32 @@ class _FailingAvatarPicker implements AvatarPicker {
   @override
   Future<String?> pickAvatar() {
     throw PlatformException(code: 'photo_access_denied');
+  }
+}
+
+class _UnavailableAvatarProfileRepository extends FakeProfileRepository {
+  _UnavailableAvatarProfileRepository() : super(delay: Duration.zero);
+
+  @override
+  Future<UserProfile> updateProfile({String? name, String? avatarFilePath}) {
+    throw const AvatarStorageUnavailableException();
+  }
+}
+
+class _AvatarUnavailableThenSuccessProfileRepository
+    extends FakeProfileRepository {
+  _AvatarUnavailableThenSuccessProfileRepository()
+    : super(delay: Duration.zero);
+
+  final updateRequests = <({String? name, String? avatarFilePath})>[];
+
+  @override
+  Future<UserProfile> updateProfile({String? name, String? avatarFilePath}) {
+    updateRequests.add((name: name, avatarFilePath: avatarFilePath));
+    if (avatarFilePath != null) {
+      throw const AvatarStorageUnavailableException();
+    }
+    return super.updateProfile(name: name, avatarFilePath: avatarFilePath);
   }
 }
 

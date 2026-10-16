@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/profile/data/fake_profile_repository.dart';
+import 'package:planify/features/profile/data/profile_exceptions.dart';
 import 'package:planify/features/profile/domain/user_profile.dart';
 import 'package:planify/features/profile/presentation/controllers/profile_notifier.dart';
 import 'package:planify/features/profile/presentation/controllers/profile_state.dart';
@@ -128,7 +129,33 @@ void main() {
       expect(notifier.state.draftName, 'Juan García');
       expect(notifier.state.pendingAvatarFilePath, '/tmp/avatar.jpg');
       expect(notifier.state.profile, profile);
+      expect(notifier.state.saveFailure, ProfileSaveFailure.generic);
     });
+
+    test(
+      'distingue que el almacenamiento de avatares no está disponible',
+      () async {
+        final unavailableRepository = _UnavailableAvatarRepository(profile);
+        final unavailableNotifier = ProfileNotifier(
+          repository: unavailableRepository,
+        );
+        await unavailableNotifier.load();
+        unavailableNotifier.selectAvatar('/tmp/avatar.jpg');
+
+        await unavailableNotifier.save();
+
+        expect(unavailableNotifier.state.hasSaveError, isTrue);
+        expect(
+          unavailableNotifier.state.saveFailure,
+          ProfileSaveFailure.avatarStorageUnavailable,
+        );
+        expect(
+          unavailableNotifier.state.pendingAvatarFilePath,
+          '/tmp/avatar.jpg',
+        );
+        unavailableNotifier.dispose();
+      },
+    );
 
     test('expone un error de carga y permite reintentar', () async {
       final failingRepository = FakeProfileRepository(
@@ -147,4 +174,14 @@ void main() {
       failingNotifier.dispose();
     });
   });
+}
+
+class _UnavailableAvatarRepository extends FakeProfileRepository {
+  _UnavailableAvatarRepository(UserProfile profile)
+    : super(delay: Duration.zero, initialProfile: profile);
+
+  @override
+  Future<UserProfile> updateProfile({String? name, String? avatarFilePath}) {
+    throw const AvatarStorageUnavailableException();
+  }
 }

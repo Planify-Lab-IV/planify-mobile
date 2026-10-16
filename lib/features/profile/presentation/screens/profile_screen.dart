@@ -90,6 +90,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 .updateDraftName,
             onAvatarPressed: _pickAvatar,
             onSave: _save,
+            onDiscardAvatarAndSaveName: _discardAvatarAndSaveName,
           ),
         },
       ),
@@ -139,6 +140,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       ref.read(authNotifierProvider.notifier).updateSessionName(profile.name);
     }
   }
+
+  Future<void> _discardAvatarAndSaveName() async {
+    ref.read(profileNotifierProvider.notifier).discardPendingAvatar();
+    await _save();
+  }
 }
 
 class _ProfileContent extends StatelessWidget {
@@ -148,6 +154,7 @@ class _ProfileContent extends StatelessWidget {
   final ValueChanged<String> onNameChanged;
   final Future<void> Function() onAvatarPressed;
   final Future<void> Function() onSave;
+  final Future<void> Function() onDiscardAvatarAndSaveName;
 
   const _ProfileContent({
     required this.state,
@@ -156,6 +163,7 @@ class _ProfileContent extends StatelessWidget {
     required this.onNameChanged,
     required this.onAvatarPressed,
     required this.onSave,
+    required this.onDiscardAvatarAndSaveName,
   });
 
   @override
@@ -163,11 +171,14 @@ class _ProfileContent extends StatelessWidget {
     final i18n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final profile = state.profile!;
-    final imagePath = state.pendingAvatarFilePath ?? profile.avatarUrl;
-    final imageProvider = imagePath == null
+    final pendingAvatarPath = state.pendingAvatarFilePath;
+    final imageProvider = pendingAvatarPath != null
+        ? avatarImageProvider?.call(pendingAvatarPath) ??
+              FileImage(File(pendingAvatarPath))
+        : profile.avatarUrl == null
         ? null
-        : avatarImageProvider?.call(imagePath) ??
-              profileAvatarImageProvider(imagePath);
+        : avatarImageProvider?.call(profile.avatarUrl!) ??
+              NetworkImage(profile.avatarUrl!);
 
     return Center(
       child: SingleChildScrollView(
@@ -276,12 +287,27 @@ class _ProfileContent extends StatelessWidget {
                   if (state.hasSaveError) ...[
                     const SizedBox(height: AppSpacing.md),
                     Text(
-                      i18n.profileSaveError,
+                      state.saveFailure ==
+                              ProfileSaveFailure.avatarStorageUnavailable
+                          ? i18n.profileAvatarStorageUnavailable
+                          : i18n.profileSaveError,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.colorScheme.error,
                       ),
                       textAlign: TextAlign.center,
                     ),
+                    if (state.saveFailure ==
+                            ProfileSaveFailure.avatarStorageUnavailable &&
+                        pendingAvatarPath != null) ...[
+                      const SizedBox(height: AppSpacing.sm),
+                      OutlinedButton(
+                        key: const Key(
+                          'profile_discard_avatar_and_save_name_button',
+                        ),
+                        onPressed: onDiscardAvatarAndSaveName,
+                        child: Text(i18n.profileDiscardAvatarAndSaveName),
+                      ),
+                    ],
                   ],
                   const SizedBox(height: AppSpacing.xl),
                   ElevatedButton(
