@@ -204,7 +204,15 @@
       "actor": {"type": "String", "example": "Juli"}
     }
   },
-  "featureUnderDevelopment": "This feature will be available soon.",
+  "invitationCreateTitle": "Invite to event",
+  "invitationCreateLoading": "Creating invitation link...",
+  "invitationCreateCopy": "Copy link",
+  "invitationCreateCopied": "Link copied",
+  "invitationCreateForbidden": "You do not have permission to invite people to this event.",
+  "invitationCreateNotFound": "The event was not found.",
+  "invitationCreateUnavailable": "The event is not active and does not accept invitations.",
+  "invitationCreateNetworkError": "The link could not be created because of a connection issue. Please try again.",
+  "invitationCreateError": "The invitation link could not be created. Please try again.",
   "cancelEventAction": "Cancel event",
   "cancelEventDialogTitle": "Cancel event?",
   "cancelEventDialogMessage": "Are you sure you want to cancel this event? This action cannot be undone.",

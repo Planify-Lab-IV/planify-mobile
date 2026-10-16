@@ -124,5 +124,24 @@ void main() {
         expect(eventId, isNot(equals(token)));
       },
     );
+
+    test('crea una invitación falsa para usar en tests de interfaz', () async {
+      final invitationUrl = await repository.createInvitation('evt-123');
+
+      expect(invitationUrl, 'planify://invite/token-valid-123');
+      expect(repository.createInvitationCalls, 1);
+    });
+
+    test('puede simular un error al crear una invitación', () async {
+      final failingRepository = FakeInvitationsRepository(
+        delay: Duration.zero,
+        createInvitationException: const NetworkInvitationException(),
+      );
+
+      expect(
+        () => failingRepository.createInvitation('evt-123'),
+        throwsA(isA<NetworkInvitationException>()),
+      );
+    });
   });
 }

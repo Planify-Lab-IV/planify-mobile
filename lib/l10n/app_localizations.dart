@@ -1040,11 +1040,59 @@ abstract class AppLocalizations {
   /// **'{actor} hizo un cambio en el evento'**
   String activityUnknown(String actor);
 
-  /// No description provided for @featureUnderDevelopment.
+  /// No description provided for @invitationCreateTitle.
   ///
   /// In es, this message translates to:
-  /// **'Esta funcionalidad estará disponible próximamente.'**
-  String get featureUnderDevelopment;
+  /// **'Invitar al evento'**
+  String get invitationCreateTitle;
+
+  /// No description provided for @invitationCreateLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Creando link de invitación...'**
+  String get invitationCreateLoading;
+
+  /// No description provided for @invitationCreateCopy.
+  ///
+  /// In es, this message translates to:
+  /// **'Copiar link'**
+  String get invitationCreateCopy;
+
+  /// No description provided for @invitationCreateCopied.
+  ///
+  /// In es, this message translates to:
+  /// **'Link copiado'**
+  String get invitationCreateCopied;
+
+  /// No description provided for @invitationCreateForbidden.
+  ///
+  /// In es, this message translates to:
+  /// **'No tenés permiso para invitar a este evento.'**
+  String get invitationCreateForbidden;
+
+  /// No description provided for @invitationCreateNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontró el evento.'**
+  String get invitationCreateNotFound;
+
+  /// No description provided for @invitationCreateUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'El evento no está activo y no acepta invitaciones.'**
+  String get invitationCreateUnavailable;
+
+  /// No description provided for @invitationCreateNetworkError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo crear el link por un problema de conexión. Intentá nuevamente.'**
+  String get invitationCreateNetworkError;
+
+  /// No description provided for @invitationCreateError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo crear el link de invitación. Intentá nuevamente.'**
+  String get invitationCreateError;
 
   /// No description provided for @cancelEventAction.
   ///
