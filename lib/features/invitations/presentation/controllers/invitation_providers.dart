@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/providers/core_providers.dart';
 import '../../data/http_invitations_repository.dart';
 import '../../domain/invitations_repository.dart';
+import 'create_invitation_notifier.dart';
+import 'create_invitation_state.dart';
 import 'invitation_notifier.dart';
 import 'invitation_state.dart';
 
@@ -15,3 +17,12 @@ final invitationNotifierProvider =
       final repository = ref.watch(invitationsRepositoryProvider);
       return InvitationNotifier(repository);
     });
+
+/// Mantiene la creación de una invitación aislada del estado de deep links.
+final createInvitationNotifierProvider = StateNotifierProvider.autoDispose
+    .family<CreateInvitationNotifier, CreateInvitationState, String>(
+      (ref, eventId) => CreateInvitationNotifier(
+        repository: ref.watch(invitationsRepositoryProvider),
+        eventId: eventId,
+      ),
+    );
