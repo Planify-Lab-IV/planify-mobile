@@ -542,8 +542,35 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get featureUnderDevelopment =>
-      'Esta funcionalidad estará disponible próximamente.';
+  String get invitationCreateTitle => 'Invitar al evento';
+
+  @override
+  String get invitationCreateLoading => 'Creando link de invitación...';
+
+  @override
+  String get invitationCreateCopy => 'Copiar link';
+
+  @override
+  String get invitationCreateCopied => 'Link copiado';
+
+  @override
+  String get invitationCreateForbidden =>
+      'No tenés permiso para invitar a este evento.';
+
+  @override
+  String get invitationCreateNotFound => 'No se encontró el evento.';
+
+  @override
+  String get invitationCreateUnavailable =>
+      'El evento no está activo y no acepta invitaciones.';
+
+  @override
+  String get invitationCreateNetworkError =>
+      'No se pudo crear el link por un problema de conexión. Intentá nuevamente.';
+
+  @override
+  String get invitationCreateError =>
+      'No se pudo crear el link de invitación. Intentá nuevamente.';
 
   @override
   String get cancelEventAction => 'Cancelar evento';
