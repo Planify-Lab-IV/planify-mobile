@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:planify/core/theme/app_colors.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/invitations/data/fake_invitations_repository.dart';
 import 'package:planify/features/invitations/data/invitation_exceptions.dart';
@@ -57,7 +58,9 @@ void main() {
     );
   }
 
-  testWidgets('muestra carga, link y confirma al copiarlo', (tester) async {
+  testWidgets('muestra carga, link y actualiza el botón al copiarlo', (
+    tester,
+  ) async {
     String? copiedText;
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
       SystemChannels.platform,
@@ -90,7 +93,26 @@ void main() {
     await tester.tap(find.byKey(const Key('create_invitation_copy_button')));
     await tester.pump();
     expect(copiedText, 'planify://invite/token-valid-123');
-    expect(find.text('Link copiado'), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, 'Link copiado'), findsOneWidget);
+    expect(
+      find.byKey(const Key('create_invitation_copied_snackbar')),
+      findsNothing,
+    );
+    final copyButton = tester.widget<FilledButton>(
+      find.byKey(const Key('create_invitation_copy_button')),
+    );
+    expect(
+      copyButton.style?.backgroundColor?.resolve(<WidgetState>{}),
+      AppColors.success,
+    );
+
+    await tester.pump(const Duration(seconds: 2));
+
+    expect(find.widgetWithText(FilledButton, 'Copiar link'), findsOneWidget);
+    final restoredCopyButton = tester.widget<FilledButton>(
+      find.byKey(const Key('create_invitation_copy_button')),
+    );
+    expect(restoredCopyButton.style, isNull);
   });
 
   testWidgets('muestra error y permite reintentar', (tester) async {

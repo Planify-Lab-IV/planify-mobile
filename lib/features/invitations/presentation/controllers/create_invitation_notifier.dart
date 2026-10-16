@@ -11,9 +11,10 @@ class CreateInvitationNotifier extends StateNotifier<CreateInvitationState> {
   CreateInvitationNotifier({
     required InvitationsRepository repository,
     required String eventId,
-  }) : _repository = repository,
-       _eventId = eventId,
-       super(const CreateInvitationInitial());
+  }) : this._(repository, eventId);
+
+  CreateInvitationNotifier._(this._repository, this._eventId)
+    : super(const CreateInvitationInitial());
 
   Future<void> createInvitation() async {
     if (state is CreateInvitationLoading || state is CreateInvitationSuccess) {

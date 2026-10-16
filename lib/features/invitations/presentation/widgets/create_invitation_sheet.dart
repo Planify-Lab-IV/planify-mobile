@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -113,7 +115,7 @@ class _LoadingContent extends StatelessWidget {
   }
 }
 
-class _SuccessContent extends StatelessWidget {
+class _SuccessContent extends StatefulWidget {
   final String invitationUrl;
   final String title;
   final String copyLabel;
@@ -126,18 +128,28 @@ class _SuccessContent extends StatelessWidget {
     required this.copiedMessage,
   });
 
-  Future<void> _copy(BuildContext context) async {
-    await Clipboard.setData(ClipboardData(text: invitationUrl));
-    if (!context.mounted) return;
-    final messenger = ScaffoldMessenger.of(context);
-    messenger.hideCurrentSnackBar();
-    messenger.showSnackBar(
-      SnackBar(
-        key: const Key('create_invitation_copied_snackbar'),
-        content: Text(copiedMessage),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+  @override
+  State<_SuccessContent> createState() => _SuccessContentState();
+}
+
+class _SuccessContentState extends State<_SuccessContent> {
+  var _copied = false;
+  Timer? _resetCopyStateTimer;
+
+  Future<void> _copy() async {
+    await Clipboard.setData(ClipboardData(text: widget.invitationUrl));
+    if (!mounted) return;
+    setState(() => _copied = true);
+    _resetCopyStateTimer?.cancel();
+    _resetCopyStateTimer = Timer(const Duration(seconds: 2), () {
+      if (mounted) setState(() => _copied = false);
+    });
+  }
+
+  @override
+  void dispose() {
+    _resetCopyStateTimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -149,7 +161,7 @@ class _SuccessContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          title,
+          widget.title,
           style: theme.textTheme.titleLarge?.copyWith(
             color: AppColors.onSurface,
             fontWeight: FontWeight.w600,
@@ -157,7 +169,7 @@ class _SuccessContent extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.md),
         SelectableText(
-          invitationUrl,
+          widget.invitationUrl,
           key: const Key('create_invitation_url'),
           style: theme.textTheme.bodyMedium?.copyWith(
             color: AppColors.onSurfaceVariant,
@@ -166,9 +178,15 @@ class _SuccessContent extends StatelessWidget {
         const SizedBox(height: AppSpacing.lg),
         FilledButton.icon(
           key: const Key('create_invitation_copy_button'),
-          onPressed: () => _copy(context),
-          icon: const Icon(Icons.copy_outlined),
-          label: Text(copyLabel),
+          onPressed: _copy,
+          style: _copied
+              ? FilledButton.styleFrom(
+                  backgroundColor: AppColors.success,
+                  foregroundColor: AppColors.onSuccess,
+                )
+              : null,
+          icon: Icon(_copied ? Icons.check_rounded : Icons.copy_outlined),
+          label: Text(_copied ? widget.copiedMessage : widget.copyLabel),
         ),
       ],
     );
@@ -189,8 +207,8 @@ class _ErrorContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return SizedBox(
-      height: 180,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 180),
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
