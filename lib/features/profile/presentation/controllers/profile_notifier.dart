@@ -53,6 +53,16 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     );
   }
 
+  void discardPendingAvatar() {
+    if (state.pendingAvatarFilePath == null) return;
+
+    state = state.copyWith(
+      clearPendingAvatar: true,
+      saveStatus: ProfileSaveStatus.idle,
+      saveFailure: ProfileSaveFailure.none,
+    );
+  }
+
   Future<void> save() async {
     final savedProfile = state.profile;
     if (savedProfile == null || !state.canSave) return;

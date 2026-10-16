@@ -473,7 +473,8 @@
   "profileSaveButton": "Save",
   "profileLoadError": "Could not load profile.",
   "profileSaveError": "Could not save changes. Please try again.",
-  "profileAvatarStorageUnavailable": "The profile picture could not be saved right now. You can still change your name."
+  "profileAvatarStorageUnavailable": "The profile picture could not be saved right now. You can still change your name.",
+  "profileDiscardAvatarAndSaveName": "Discard picture and save name"
   ,"@personBalanceDetailLineOwedToYou": {
     "placeholders": {"name": {"type": "String", "example": "Ana"}}
   }

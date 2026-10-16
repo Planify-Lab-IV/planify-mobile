@@ -48,6 +48,7 @@ class ProfileState {
     UserProfile? profile,
     String? draftName,
     String? pendingAvatarFilePath,
+    bool clearPendingAvatar = false,
     ProfileLoadStatus? loadStatus,
     ProfileSaveStatus? saveStatus,
     ProfileSaveFailure? saveFailure,
@@ -55,8 +56,9 @@ class ProfileState {
     return ProfileState(
       profile: profile ?? this.profile,
       draftName: draftName ?? this.draftName,
-      pendingAvatarFilePath:
-          pendingAvatarFilePath ?? this.pendingAvatarFilePath,
+      pendingAvatarFilePath: clearPendingAvatar
+          ? null
+          : pendingAvatarFilePath ?? this.pendingAvatarFilePath,
       loadStatus: loadStatus ?? this.loadStatus,
       saveStatus: saveStatus ?? this.saveStatus,
       saveFailure: saveFailure ?? this.saveFailure,

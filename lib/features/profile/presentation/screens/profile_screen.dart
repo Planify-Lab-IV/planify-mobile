@@ -90,6 +90,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 .updateDraftName,
             onAvatarPressed: _pickAvatar,
             onSave: _save,
+            onDiscardAvatarAndSaveName: _discardAvatarAndSaveName,
           ),
         },
       ),
@@ -139,6 +140,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       ref.read(authNotifierProvider.notifier).updateSessionName(profile.name);
     }
   }
+
+  Future<void> _discardAvatarAndSaveName() async {
+    ref.read(profileNotifierProvider.notifier).discardPendingAvatar();
+    await _save();
+  }
 }
 
 class _ProfileContent extends StatelessWidget {
@@ -148,6 +154,7 @@ class _ProfileContent extends StatelessWidget {
   final ValueChanged<String> onNameChanged;
   final Future<void> Function() onAvatarPressed;
   final Future<void> Function() onSave;
+  final Future<void> Function() onDiscardAvatarAndSaveName;
 
   const _ProfileContent({
     required this.state,
@@ -156,6 +163,7 @@ class _ProfileContent extends StatelessWidget {
     required this.onNameChanged,
     required this.onAvatarPressed,
     required this.onSave,
+    required this.onDiscardAvatarAndSaveName,
   });
 
   @override
@@ -288,6 +296,18 @@ class _ProfileContent extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                     ),
+                    if (state.saveFailure ==
+                            ProfileSaveFailure.avatarStorageUnavailable &&
+                        pendingAvatarPath != null) ...[
+                      const SizedBox(height: AppSpacing.sm),
+                      OutlinedButton(
+                        key: const Key(
+                          'profile_discard_avatar_and_save_name_button',
+                        ),
+                        onPressed: onDiscardAvatarAndSaveName,
+                        child: Text(i18n.profileDiscardAvatarAndSaveName),
+                      ),
+                    ],
                   ],
                   const SizedBox(height: AppSpacing.xl),
                   ElevatedButton(
