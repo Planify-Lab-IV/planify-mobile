@@ -17,6 +17,8 @@ import '../../../tasks/presentation/controllers/tasks_providers.dart';
 import '../../../tasks/presentation/controllers/tasks_context.dart';
 import '../../../tasks/presentation/widgets/create_task_dialog.dart';
 import '../../../tasks/presentation/widgets/task_list_card.dart';
+import '../../../invitations/presentation/controllers/invitation_providers.dart';
+import '../../../invitations/presentation/widgets/create_invitation_sheet.dart';
 
 class EventDetailScreen extends ConsumerStatefulWidget {
   final String eventId;
@@ -131,6 +133,9 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
     );
 
     final event = state.event;
+    if (event != null) {
+      ref.listen(createInvitationNotifierProvider(event.id), (_, _) {});
+    }
     final canCancel = notifier.canCancelEvent;
     final canCloseExpenses = notifier.canCloseExpenses;
     final hasCurrentSession = notifier.hasCurrentSession;
@@ -352,6 +357,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                     const SizedBox(height: AppSpacing.lg),
                     EventQuickActionsCard(
                       eventId: event.id,
+                      canInvite: notifier.isOrganizer && event.isActive,
                       isCancelled: event.isCancelled,
                       expensesClosed: event.expensesClosed,
                       participants: event.participants,
@@ -366,6 +372,10 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                         );
                       },
                       onSettleTap: _scrollToEventDebts,
+                      onInviteTap: () => CreateInvitationSheet.show(
+                        context,
+                        eventId: event.id,
+                      ),
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     EventDebtsCard(
