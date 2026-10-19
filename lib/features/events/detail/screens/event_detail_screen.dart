@@ -134,7 +134,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
 
     final event = state.event;
     if (event != null) {
-      ref.watch(createInvitationNotifierProvider(event.id));
+      ref.listen(createInvitationNotifierProvider(event.id), (_, _) {});
     }
     final canCancel = notifier.canCancelEvent;
     final canCloseExpenses = notifier.canCloseExpenses;
@@ -357,7 +357,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                     const SizedBox(height: AppSpacing.lg),
                     EventQuickActionsCard(
                       eventId: event.id,
-                      canInvite: notifier.isOrganizer,
+                      canInvite: notifier.isOrganizer && event.isActive,
                       isCancelled: event.isCancelled,
                       expensesClosed: event.expensesClosed,
                       participants: event.participants,

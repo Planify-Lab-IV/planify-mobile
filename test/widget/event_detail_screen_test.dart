@@ -219,6 +219,41 @@ void main() {
       expect(invitationsRepository.createInvitationCalls, 1);
     });
 
+    testWidgets('organizador no puede invitar en un evento confirmado', (
+      tester,
+    ) async {
+      final confirmedEvent = testEvent.copyWith(status: EventStatus.confirmed);
+      final repository = FakeEventsRepository(
+        delay: Duration.zero,
+        initialEvents: [confirmedEvent],
+      );
+      final invitationsRepository = FakeInvitationsRepository(
+        delay: Duration.zero,
+      );
+
+      await tester.pumpWidget(
+        buildDetailScreen(
+          session: organizerSession,
+          customRepo: repository,
+          customInvitationsRepository: invitationsRepository,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        tester
+            .widget<InkWell>(find.byKey(const Key('quick_action_invite')))
+            .onTap,
+        isNull,
+      );
+
+      await tester.tap(find.byKey(const Key('quick_action_invite')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(CreateInvitationSheet), findsNothing);
+      expect(invitationsRepository.createInvitationCalls, 0);
+    });
+
     testWidgets('Saldar desplaza el detalle hasta la sección de deudas', (
       tester,
     ) async {

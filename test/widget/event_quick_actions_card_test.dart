@@ -46,10 +46,13 @@ void main() {
     expect(calls, 1);
   });
 
-  testWidgets('Invitar está deshabilitado para quien no organiza', (
+  testWidgets('Invitar no ejecuta su callback cuando no está habilitado', (
     tester,
   ) async {
-    await tester.pumpWidget(buildCard(canInvite: false));
+    var calls = 0;
+    await tester.pumpWidget(
+      buildCard(canInvite: false, onInviteTap: () => calls++),
+    );
 
     expect(
       tester
@@ -57,6 +60,9 @@ void main() {
           .onTap,
       isNull,
     );
+
+    await tester.tap(find.byKey(const Key('quick_action_invite')));
+    expect(calls, 0);
   });
 
   testWidgets('Invitar permanece deshabilitado en un evento cancelado', (
