@@ -1,33 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../groups/presentation/screens/groups_screen.dart';
 import '../../../balances/presentation/screens/balances_screen.dart';
 import '../../../profile/presentation/screens/profile_screen.dart';
+import '../controllers/registered_home_tab_provider.dart';
 
 // Shell compartida por sesiones registradas. Las sesiones anónimas no llegan
 // a este widget desde main.dart y, por eso, no pueden navegar a Balances.
-class RegisteredHomeShell extends StatefulWidget {
+class RegisteredHomeShell extends ConsumerWidget {
   final Widget home;
 
   const RegisteredHomeShell({super.key, required this.home});
 
   @override
-  State<RegisteredHomeShell> createState() => _RegisteredHomeShellState();
-}
-
-class _RegisteredHomeShellState extends State<RegisteredHomeShell> {
-  int _selectedIndex = 0;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final i18n = AppLocalizations.of(context)!;
+    final selectedIndex = ref.watch(registeredHomeSelectedTabProvider);
 
     return Scaffold(
       body: IndexedStack(
-        index: _selectedIndex,
+        index: selectedIndex,
         children: [
-          widget.home,
+          home,
           const GroupsScreen(),
           const BalancesScreen(),
           const ProfileScreen(),
@@ -35,9 +31,9 @@ class _RegisteredHomeShellState extends State<RegisteredHomeShell> {
       ),
       bottomNavigationBar: NavigationBar(
         key: const Key('registered_navigation_bar'),
-        selectedIndex: _selectedIndex,
+        selectedIndex: selectedIndex,
         onDestinationSelected: (index) {
-          setState(() => _selectedIndex = index);
+          ref.read(registeredHomeSelectedTabProvider.notifier).state = index;
         },
         destinations: [
           NavigationDestination(

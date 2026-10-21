@@ -6,6 +6,7 @@ import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/balances/data/fake_balances_repository.dart';
 import 'package:planify/features/balances/presentation/controllers/balances_providers.dart';
 import 'package:planify/features/home/presentation/screens/registered_home_shell.dart';
+import 'package:planify/features/home/presentation/controllers/registered_home_tab_provider.dart';
 import 'package:planify/l10n/app_localizations.dart';
 import 'package:planify/features/groups/data/fake_groups_overview_repository.dart';
 import 'package:planify/features/groups/presentation/controllers/groups_providers.dart';
@@ -159,5 +160,45 @@ void main() {
 
     expect(find.text('Saldos por persona'), findsOneWidget);
     expect(find.byKey(const Key('balance_summary_card')), findsOneWidget);
+  });
+
+  testWidgets('la shell permite seleccionar Grupos desde otro consumidor', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          groupsOverviewRepositoryProvider.overrideWithValue(
+            FakeGroupsOverviewRepository(delay: Duration.zero),
+          ),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          locale: const Locale('es'),
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          home: const RegisteredHomeShell(home: Scaffold(body: Text('Home'))),
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump();
+
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(RegisteredHomeShell)),
+    );
+    container.read(registeredHomeSelectedTabProvider.notifier).state =
+        registeredHomeGroupsTabIndex;
+    await tester.pump();
+
+    expect(
+      tester
+          .widget<NavigationBar>(
+            find.byKey(const Key('registered_navigation_bar')),
+          )
+          .selectedIndex,
+      registeredHomeGroupsTabIndex,
+    );
+    expect(find.byKey(const Key('group_avatar_grp-familia')), findsOneWidget);
   });
 }
