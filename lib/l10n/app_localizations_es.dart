@@ -209,6 +209,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get organizerPanelTitle => 'Panel de Organizador';
 
   @override
+  String get homeNotificationsTooltip => 'Ver novedades';
+
+  @override
   String get sessionActiveDescription =>
       'Has iniciado sesión correctamente como organizador de eventos en Planify.';
 

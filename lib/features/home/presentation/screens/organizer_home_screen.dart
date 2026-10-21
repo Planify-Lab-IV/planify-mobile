@@ -9,6 +9,7 @@ import '../../../auth/presentation/controllers/auth_providers.dart';
 import '../../../auth/presentation/controllers/auth_state.dart';
 import '../../../events/creation/controllers/event_draft_providers.dart';
 import '../../../events/creation/screens/create_event_step1_screen.dart';
+import '../controllers/registered_home_tab_provider.dart';
 
 class OrganizerHomeScreen extends ConsumerWidget {
   final OrganizerSession session;
@@ -33,6 +34,18 @@ class OrganizerHomeScreen extends ConsumerWidget {
         backgroundColor: theme.colorScheme.primaryContainer,
         elevation: 0,
         actions: [
+          IconButton(
+            key: const Key('home_notifications_button'),
+            tooltip: i18n.homeNotificationsTooltip,
+            icon: Icon(
+              Icons.notifications_outlined,
+              color: theme.colorScheme.onPrimaryContainer,
+            ),
+            onPressed: () {
+              ref.read(registeredHomeSelectedTabProvider.notifier).state =
+                  registeredHomeGroupsTabIndex;
+            },
+          ),
           IconButton(
             tooltip: i18n.logoutButton,
             icon: const Icon(Icons.logout_rounded),

@@ -11,6 +11,7 @@ import 'package:planify/features/auth/presentation/controllers/auth_providers.da
 import 'package:planify/features/events/creation/screens/create_event_step1_screen.dart';
 import 'package:planify/features/groups/data/fake_groups_repository.dart';
 import 'package:planify/features/groups/presentation/controllers/groups_providers.dart';
+import 'package:planify/features/home/presentation/controllers/registered_home_tab_provider.dart';
 import 'package:planify/features/home/presentation/screens/organizer_home_screen.dart';
 import 'package:planify/l10n/app_localizations.dart';
 
@@ -74,5 +75,40 @@ void main() {
         expect(find.text('Información básica'), findsOneWidget);
       },
     );
+
+    testWidgets('muestra la campana y selecciona Grupos al tocarla', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildHomeScreen());
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pumpAndSettle();
+
+      final notificationsButton = find.byKey(
+        const Key('home_notifications_button'),
+      );
+      expect(notificationsButton, findsOneWidget);
+      expect(
+        tester.widget<IconButton>(notificationsButton).tooltip,
+        'Ver novedades',
+      );
+      expect(
+        find.descendant(
+          of: notificationsButton,
+          matching: find.byIcon(Icons.notifications_outlined),
+        ),
+        findsOneWidget,
+      );
+
+      await tester.tap(notificationsButton);
+      await tester.pump();
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(OrganizerHomeScreen)),
+      );
+      expect(
+        container.read(registeredHomeSelectedTabProvider),
+        registeredHomeGroupsTabIndex,
+      );
+    });
   });
 }
