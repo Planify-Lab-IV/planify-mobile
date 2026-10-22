@@ -14,9 +14,11 @@ import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
 import 'package:planify/features/events/creation/screens/create_event_step1_screen.dart';
 import 'package:planify/features/groups/data/fake_groups_repository.dart';
+import 'package:planify/features/groups/data/fake_groups_overview_repository.dart';
 import 'package:planify/features/groups/presentation/controllers/groups_providers.dart';
 import 'package:planify/features/home/presentation/controllers/registered_home_tab_provider.dart';
 import 'package:planify/features/home/presentation/screens/organizer_home_screen.dart';
+import 'package:planify/features/home/presentation/screens/registered_home_shell.dart';
 import 'package:planify/l10n/app_localizations.dart';
 
 void main() {
@@ -33,7 +35,9 @@ void main() {
       FakeAuthRepository? fakeAuthRepo,
       FakeSecureStorage? fakeStorage,
       Override? unreadCountsOverride,
+      bool withRegisteredShell = false,
     }) {
+      final home = OrganizerHomeScreen(session: testSession);
       return ProviderScope(
         overrides: [
           authRepositoryProvider.overrideWithValue(
@@ -45,7 +49,15 @@ void main() {
           groupsRepositoryProvider.overrideWithValue(
             FakeGroupsRepository(delay: Duration.zero),
           ),
-          ?unreadCountsOverride,
+          groupsOverviewRepositoryProvider.overrideWithValue(
+            FakeGroupsOverviewRepository(delay: Duration.zero),
+          ),
+          unreadCountsOverride ??
+              unreadCountsProvider.overrideWith(
+                (ref) => Future.value(
+                  UnreadCounts(byEvent: const {}, byGroup: const {}),
+                ),
+              ),
         ],
         child: MaterialApp(
           theme: AppTheme.light,
@@ -57,7 +69,9 @@ void main() {
           ],
           supportedLocales: AppLocalizations.supportedLocales,
           locale: const Locale('es'),
-          home: const OrganizerHomeScreen(session: testSession),
+          home: withRegisteredShell
+              ? RegisteredHomeShell(home: home)
+              : home,
         ),
       );
     }
@@ -85,9 +99,9 @@ void main() {
     testWidgets('muestra la campana y selecciona Grupos al tocarla', (
       tester,
     ) async {
-      await tester.pumpWidget(buildHomeScreen());
-      await tester.pump(const Duration(milliseconds: 200));
-      await tester.pumpAndSettle();
+      await tester.pumpWidget(buildHomeScreen(withRegisteredShell: true));
+      await tester.pump();
+      await tester.pump();
 
       final notificationsButton = find.byKey(
         const Key('home_notifications_button'),
@@ -108,13 +122,15 @@ void main() {
       await tester.tap(notificationsButton);
       await tester.pump();
 
-      final container = ProviderScope.containerOf(
-        tester.element(find.byType(OrganizerHomeScreen)),
-      );
       expect(
-        container.read(registeredHomeSelectedTabProvider),
+        tester
+            .widget<NavigationBar>(
+              find.byKey(const Key('registered_navigation_bar')),
+            )
+            .selectedIndex,
         registeredHomeGroupsTabIndex,
       );
+      expect(find.byKey(const Key('group_avatar_grp-amigos')), findsOneWidget);
     });
 
     testWidgets('muestra el punto cuando hay novedades sin leer', (
