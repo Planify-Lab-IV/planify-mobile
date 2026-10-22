@@ -16,7 +16,7 @@ class FakeAuthRepository implements AuthRepository {
     this.delay = const Duration(milliseconds: 800),
     Iterable<String> usedUsernames = const [],
     Iterable<String> usedEmails = const [],
-  }) : _storage = storage ?? FakeSecureStorage(),
+  }) : _storage = storage ?? FakeSecureStorage(delay: delay),
        _usedUsernames = usedUsernames
            .map((username) => username.trim())
            .toSet(),

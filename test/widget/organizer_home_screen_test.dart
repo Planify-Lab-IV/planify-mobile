@@ -12,11 +12,15 @@ import 'package:planify/features/activity_log/presentation/controllers/activity_
 import 'package:planify/features/auth/data/fake_auth_repository.dart';
 import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
+import 'package:planify/features/balances/data/fake_balances_repository.dart';
+import 'package:planify/features/balances/presentation/controllers/balances_providers.dart';
 import 'package:planify/features/events/creation/screens/create_event_step1_screen.dart';
 import 'package:planify/features/groups/data/fake_groups_repository.dart';
 import 'package:planify/features/groups/data/fake_groups_overview_repository.dart';
 import 'package:planify/features/groups/presentation/controllers/groups_providers.dart';
 import 'package:planify/features/home/presentation/controllers/registered_home_tab_provider.dart';
+import 'package:planify/features/profile/data/fake_profile_repository.dart';
+import 'package:planify/features/profile/presentation/controllers/profile_providers.dart';
 import 'package:planify/features/home/presentation/screens/organizer_home_screen.dart';
 import 'package:planify/features/home/presentation/screens/registered_home_shell.dart';
 import 'package:planify/l10n/app_localizations.dart';
@@ -44,7 +48,13 @@ void main() {
             fakeAuthRepo ?? FakeAuthRepository(delay: Duration.zero),
           ),
           secureStorageProvider.overrideWithValue(
-            fakeStorage ?? FakeSecureStorage(),
+            fakeStorage ?? FakeSecureStorage(delay: Duration.zero),
+          ),
+          balancesRepositoryProvider.overrideWithValue(
+            FakeBalancesRepository(delay: Duration.zero),
+          ),
+          profileRepositoryProvider.overrideWithValue(
+            FakeProfileRepository(delay: Duration.zero),
           ),
           groupsRepositoryProvider.overrideWithValue(
             FakeGroupsRepository(delay: Duration.zero),
@@ -69,9 +79,7 @@ void main() {
           ],
           supportedLocales: AppLocalizations.supportedLocales,
           locale: const Locale('es'),
-          home: withRegisteredShell
-              ? RegisteredHomeShell(home: home)
-              : home,
+          home: withRegisteredShell ? RegisteredHomeShell(home: home) : home,
         ),
       );
     }
