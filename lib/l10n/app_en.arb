@@ -482,7 +482,27 @@
   "profileLoadError": "Could not load profile.",
   "profileSaveError": "Could not save changes. Please try again.",
   "profileAvatarStorageUnavailable": "The profile picture could not be saved right now. You can still change your name.",
-  "profileDiscardAvatarAndSaveName": "Discard picture and save name"
+  "profileDiscardAvatarAndSaveName": "Discard picture and save name",
+  "profileFriendsAction": "Friends",
+  "friendsTitle": "Friends",
+  "friendsSearchLabel": "Search people",
+  "friendsSearchHint": "Name or username",
+  "friendsSearchEmpty": "We couldn't find anyone.",
+  "friendsSearchError": "Could not search for people. Please try again.",
+  "friendsRequestsTitle": "Requests",
+  "friendsReceivedRequestsTitle": "Received",
+  "friendsSentRequestsTitle": "Sent",
+  "friendsReceivedRequestsEmpty": "You don't have any pending requests.",
+  "friendsFriendsTitle": "My friends",
+  "friendsFriendsEmpty": "You don't have any friends yet.",
+  "friendsLoadError": "Could not load this section. Please try again.",
+  "friendAddAction": "Add",
+  "friendAcceptAction": "Accept",
+  "friendRejectAction": "Decline",
+  "friendCancelAction": "Cancel",
+  "friendRequestSent": "Request sent",
+  "friendsActionError": "Could not update the request. Please try again.",
+  "friendRequestUnavailable": "That request is no longer available"
   ,"@personBalanceDetailLineOwedToYou": {
     "placeholders": {"name": {"type": "String", "example": "Ana"}}
   }
