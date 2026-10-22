@@ -1164,8 +1164,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get friendsSentRequestsTitle => 'Enviadas';
 
   @override
-  String get friendsReceivedRequestsEmpty =>
-      'No tenés solicitudes pendientes.';
+  String get friendsReceivedRequestsEmpty => 'No tenés solicitudes pendientes.';
 
   @override
   String get friendsFriendsTitle => 'Mis amigos';
@@ -1197,6 +1196,5 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo actualizar la solicitud. Intentá nuevamente.';
 
   @override
-  String get friendRequestUnavailable =>
-      'Esa solicitud ya no está disponible';
+  String get friendRequestUnavailable => 'Esa solicitud ya no está disponible';
 }

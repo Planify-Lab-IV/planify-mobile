@@ -1190,6 +1190,5 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not update the request. Please try again.';
 
   @override
-  String get friendRequestUnavailable =>
-      'That request is no longer available';
+  String get friendRequestUnavailable => 'That request is no longer available';
 }
