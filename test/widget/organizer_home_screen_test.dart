@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +7,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/core/providers/core_providers.dart';
 import 'package:planify/data/secure_storage.dart';
+import 'package:planify/features/activity_log/domain/unread_counts.dart';
+import 'package:planify/features/activity_log/presentation/controllers/activity_log_providers.dart';
 import 'package:planify/features/auth/data/fake_auth_repository.dart';
 import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
@@ -28,6 +32,7 @@ void main() {
     Widget buildHomeScreen({
       FakeAuthRepository? fakeAuthRepo,
       FakeSecureStorage? fakeStorage,
+      Override? unreadCountsOverride,
     }) {
       return ProviderScope(
         overrides: [
@@ -40,6 +45,7 @@ void main() {
           groupsRepositoryProvider.overrideWithValue(
             FakeGroupsRepository(delay: Duration.zero),
           ),
+          ?unreadCountsOverride,
         ],
         child: MaterialApp(
           theme: AppTheme.light,
@@ -109,6 +115,83 @@ void main() {
         container.read(registeredHomeSelectedTabProvider),
         registeredHomeGroupsTabIndex,
       );
+    });
+
+    testWidgets('muestra el punto cuando hay novedades sin leer', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildHomeScreen(
+          unreadCountsOverride: unreadCountsProvider.overrideWith(
+            (ref) => Future.value(
+              UnreadCounts(byEvent: {'evt-123': 1}, byGroup: {}),
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('home_notifications_dot')), findsOneWidget);
+    });
+
+    testWidgets('oculta el punto cuando no hay novedades sin leer', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildHomeScreen(
+          unreadCountsOverride: unreadCountsProvider.overrideWith(
+            (ref) => Future.value(
+              UnreadCounts(byEvent: {'evt-123': 0}, byGroup: {}),
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('home_notifications_dot')), findsNothing);
+    });
+
+    testWidgets('oculta el punto mientras cargan los contadores', (
+      tester,
+    ) async {
+      final pendingCounts = Completer<UnreadCounts>();
+      await tester.pumpWidget(
+        buildHomeScreen(
+          unreadCountsOverride: unreadCountsProvider.overrideWith(
+            (ref) => pendingCounts.future,
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pump();
+
+      expect(
+        find.byKey(const Key('home_notifications_button')),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('home_notifications_dot')), findsNothing);
+    });
+
+    testWidgets('oculta el punto si falla la consulta de contadores', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        buildHomeScreen(
+          unreadCountsOverride: unreadCountsProvider.overrideWith(
+            (ref) => Future<UnreadCounts>.error(StateError('network error')),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('home_notifications_button')),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('home_notifications_dot')), findsNothing);
     });
   });
 }

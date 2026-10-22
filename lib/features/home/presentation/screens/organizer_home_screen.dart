@@ -4,6 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../activity_log/presentation/controllers/activity_log_providers.dart';
 import '../../../auth/domain/user_session.dart';
 import '../../../auth/presentation/controllers/auth_providers.dart';
 import '../../../auth/presentation/controllers/auth_state.dart';
@@ -22,6 +23,11 @@ class OrganizerHomeScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final authState = ref.watch(authNotifierProvider);
     final isLoggingOut = authState is AuthLoading;
+    final unreadCounts = ref.watch(unreadCountsProvider).asData?.value;
+    final hasUnreadActivity =
+        unreadCounts != null &&
+        unreadCounts.byEvent.values.fold<int>(0, (sum, count) => sum + count) >
+            0;
 
     return Scaffold(
       appBar: AppBar(
@@ -37,9 +43,28 @@ class OrganizerHomeScreen extends ConsumerWidget {
           IconButton(
             key: const Key('home_notifications_button'),
             tooltip: i18n.homeNotificationsTooltip,
-            icon: Icon(
-              Icons.notifications_outlined,
-              color: theme.colorScheme.onPrimaryContainer,
+            icon: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Icon(
+                  Icons.notifications_outlined,
+                  color: theme.colorScheme.onPrimaryContainer,
+                ),
+                if (hasUnreadActivity)
+                  Positioned(
+                    top: 2,
+                    right: 2,
+                    child: Container(
+                      key: const Key('home_notifications_dot'),
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: AppColors.accent,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+              ],
             ),
             onPressed: () {
               ref.read(registeredHomeSelectedTabProvider.notifier).state =
