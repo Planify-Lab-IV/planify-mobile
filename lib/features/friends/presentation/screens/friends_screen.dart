@@ -103,6 +103,13 @@ class FriendsScreen extends ConsumerWidget {
                               errorLabel: i18n.friendsLoadError,
                               retryLabel: i18n.retryButton,
                               onRetry: notifier.loadRequests,
+                              trailingBuilder: (context, person) =>
+                                  _buildReceivedTrailing(
+                                    context,
+                                    person,
+                                    state,
+                                    notifier,
+                                  ),
                             ),
                             if (state.requestsStatus ==
                                     FriendsLoadStatus.success &&
@@ -114,9 +121,7 @@ class FriendsScreen extends ConsumerWidget {
                               ),
                               const SizedBox(height: AppSpacing.sm),
                               _RequestsSection(
-                                key: const Key(
-                                  'friends_sent_requests_section',
-                                ),
+                                key: const Key('friends_sent_requests_section'),
                                 people: [
                                   for (final request in state.requests.sent)
                                     request.user,
@@ -126,7 +131,13 @@ class FriendsScreen extends ConsumerWidget {
                                 errorLabel: i18n.friendsLoadError,
                                 retryLabel: i18n.retryButton,
                                 onRetry: notifier.loadRequests,
-                                showSentStatus: true,
+                                trailingBuilder: (context, person) =>
+                                    _buildSentTrailing(
+                                      context,
+                                      person,
+                                      state,
+                                      notifier,
+                                    ),
                               ),
                             ],
                             const SizedBox(height: AppSpacing.lg),
@@ -151,6 +162,194 @@ class FriendsScreen extends ConsumerWidget {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+Future<void> _executeAction(
+  BuildContext context,
+  Person person,
+  FriendsState state,
+  Future<FriendActionResult> Function() action,
+) async {
+  if (state.isPending(person)) return;
+
+  final messenger = ScaffoldMessenger.of(context);
+  final i18n = AppLocalizations.of(context)!;
+
+  final result = await action();
+  if (!context.mounted) return;
+
+  switch (result) {
+    case FriendActionResult.failure:
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(i18n.friendsActionError),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+    case FriendActionResult.requestUnavailable:
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(i18n.friendRequestUnavailable),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+    case FriendActionResult.success:
+    case FriendActionResult.ignored:
+      break;
+  }
+}
+
+Widget? _buildSearchTrailing(
+  BuildContext context,
+  Person person,
+  FriendsState state,
+  FriendsNotifier notifier,
+) {
+  final i18n = AppLocalizations.of(context)!;
+  final isPending = state.isPending(person);
+
+  if (isPending) {
+    if (person.relationship == FriendRelationship.requestSent) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _SentRequestStatus(label: i18n.friendRequestSent),
+          const SizedBox(width: AppSpacing.sm),
+          const _RowProgressIndicator(),
+        ],
+      );
+    }
+    return const _RowProgressIndicator();
+  }
+
+  return switch (person.relationship) {
+    FriendRelationship.none => FilledButton(
+      key: Key('friend_add_button_${person.id}'),
+      style: FilledButton.styleFrom(visualDensity: VisualDensity.compact),
+      onPressed: () => _executeAction(
+        context,
+        person,
+        state,
+        () => notifier.sendRequest(person),
+      ),
+      child: Text(i18n.friendAddAction),
+    ),
+    FriendRelationship.requestSent => Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _SentRequestStatus(label: i18n.friendRequestSent),
+        const SizedBox(width: AppSpacing.xs),
+        OutlinedButton(
+          key: Key('friend_cancel_button_${person.id}'),
+          style: OutlinedButton.styleFrom(visualDensity: VisualDensity.compact),
+          onPressed: () => _executeAction(
+            context,
+            person,
+            state,
+            () => notifier.removeRequest(person),
+          ),
+          child: Text(i18n.friendCancelAction),
+        ),
+      ],
+    ),
+    FriendRelationship.requestReceived => FilledButton(
+      key: Key('friend_accept_button_${person.id}'),
+      style: FilledButton.styleFrom(visualDensity: VisualDensity.compact),
+      onPressed: () => _executeAction(
+        context,
+        person,
+        state,
+        () => notifier.acceptRequest(person),
+      ),
+      child: Text(i18n.friendAcceptAction),
+    ),
+    FriendRelationship.friend => null,
+  };
+}
+
+Widget? _buildReceivedTrailing(
+  BuildContext context,
+  Person person,
+  FriendsState state,
+  FriendsNotifier notifier,
+) {
+  final i18n = AppLocalizations.of(context)!;
+  if (state.isPending(person)) {
+    return const _RowProgressIndicator();
+  }
+
+  return Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      FilledButton(
+        key: Key('friend_accept_button_${person.id}'),
+        style: FilledButton.styleFrom(visualDensity: VisualDensity.compact),
+        onPressed: () => _executeAction(
+          context,
+          person,
+          state,
+          () => notifier.acceptRequest(person),
+        ),
+        child: Text(i18n.friendAcceptAction),
+      ),
+      const SizedBox(width: AppSpacing.xs),
+      OutlinedButton(
+        key: Key('friend_reject_button_${person.id}'),
+        style: OutlinedButton.styleFrom(visualDensity: VisualDensity.compact),
+        onPressed: () => _executeAction(
+          context,
+          person,
+          state,
+          () => notifier.removeRequest(person),
+        ),
+        child: Text(i18n.friendRejectAction),
+      ),
+    ],
+  );
+}
+
+Widget? _buildSentTrailing(
+  BuildContext context,
+  Person person,
+  FriendsState state,
+  FriendsNotifier notifier,
+) {
+  final i18n = AppLocalizations.of(context)!;
+  if (state.isPending(person)) {
+    return const _RowProgressIndicator();
+  }
+
+  return OutlinedButton(
+    key: Key('friend_cancel_button_${person.id}'),
+    style: OutlinedButton.styleFrom(visualDensity: VisualDensity.compact),
+    onPressed: () => _executeAction(
+      context,
+      person,
+      state,
+      () => notifier.removeRequest(person),
+    ),
+    child: Text(i18n.friendCancelAction),
+  );
+}
+
+class _RowProgressIndicator extends StatelessWidget {
+  const _RowProgressIndicator();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+      child: SizedBox(
+        width: 20,
+        height: 20,
+        child: CircularProgressIndicator(strokeWidth: 2),
       ),
     );
   }
@@ -201,7 +400,11 @@ class _SearchResults extends StatelessWidget {
         ),
         FriendsLoadStatus.success when state.searchResults.isEmpty =>
           _SectionEmpty(message: emptyLabel),
-        FriendsLoadStatus.success => _PersonCards(people: state.searchResults),
+        FriendsLoadStatus.success => _PersonCards(
+          people: state.searchResults,
+          trailingBuilder: (context, person) =>
+              _buildSearchTrailing(context, person, state, notifier),
+        ),
         FriendsLoadStatus.idle => const SizedBox.shrink(),
       },
     );
@@ -214,8 +417,8 @@ class _RequestsSection extends StatelessWidget {
   final String emptyLabel;
   final String errorLabel;
   final String retryLabel;
-  final Future<void> Function() onRetry;
-  final bool showSentStatus;
+  final VoidCallback onRetry;
+  final Widget? Function(BuildContext context, Person person)? trailingBuilder;
 
   const _RequestsSection({
     super.key,
@@ -225,7 +428,7 @@ class _RequestsSection extends StatelessWidget {
     required this.errorLabel,
     required this.retryLabel,
     required this.onRetry,
-    this.showSentStatus = false,
+    this.trailingBuilder,
   });
 
   @override
@@ -242,7 +445,7 @@ class _RequestsSection extends StatelessWidget {
       ),
       FriendsLoadStatus.success || FriendsLoadStatus.idle => _PersonCards(
         people: people,
-        showSentStatus: showSentStatus,
+        trailingBuilder: trailingBuilder,
       ),
     };
   }
@@ -254,7 +457,7 @@ class _FriendsSection extends StatelessWidget {
   final String emptyLabel;
   final String errorLabel;
   final String retryLabel;
-  final Future<void> Function() onRetry;
+  final VoidCallback onRetry;
 
   const _FriendsSection({
     super.key,
@@ -278,23 +481,20 @@ class _FriendsSection extends StatelessWidget {
       FriendsLoadStatus.success when people.isEmpty => _SectionEmpty(
         message: emptyLabel,
       ),
-      FriendsLoadStatus.success || FriendsLoadStatus.idle => _PersonCards(
-        people: people,
-      ),
+      FriendsLoadStatus.success ||
+      FriendsLoadStatus.idle => _PersonCards(people: people),
     };
   }
 }
 
 class _PersonCards extends StatelessWidget {
   final List<Person> people;
-  final bool showSentStatus;
+  final Widget? Function(BuildContext context, Person person)? trailingBuilder;
 
-  const _PersonCards({required this.people, this.showSentStatus = false});
+  const _PersonCards({required this.people, this.trailingBuilder});
 
   @override
   Widget build(BuildContext context) {
-    final i18n = AppLocalizations.of(context)!;
-
     return Column(
       children: [
         for (var index = 0; index < people.length; index++) ...[
@@ -302,9 +502,7 @@ class _PersonCards extends StatelessWidget {
             margin: EdgeInsets.zero,
             child: PersonRow(
               person: people[index],
-              trailing: showSentStatus
-                  ? _SentRequestStatus(label: i18n.friendRequestSent)
-                  : null,
+              trailing: trailingBuilder?.call(context, people[index]),
             ),
           ),
           if (index != people.length - 1) const SizedBox(height: AppSpacing.sm),
@@ -370,7 +568,7 @@ class _SectionEmpty extends StatelessWidget {
 class _SectionError extends StatelessWidget {
   final String message;
   final String retryLabel;
-  final Future<void> Function() onRetry;
+  final VoidCallback onRetry;
 
   const _SectionError({
     required this.message,
