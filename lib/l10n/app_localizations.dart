@@ -2079,7 +2079,7 @@ abstract class AppLocalizations {
   /// No description provided for @profileFriendsAction.
   ///
   /// In es, this message translates to:
-  /// **'Amigos'**
+  /// **'Mis amigos'**
   String get profileFriendsAction;
 
   /// No description provided for @friendsTitle.

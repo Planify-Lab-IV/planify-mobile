@@ -1136,7 +1136,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Descartar foto y guardar nombre';
 
   @override
-  String get profileFriendsAction => 'Amigos';
+  String get profileFriendsAction => 'Mis amigos';
 
   @override
   String get friendsTitle => 'Amigos';

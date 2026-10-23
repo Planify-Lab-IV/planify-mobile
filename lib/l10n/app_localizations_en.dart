@@ -1129,7 +1129,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileDiscardAvatarAndSaveName => 'Discard picture and save name';
 
   @override
-  String get profileFriendsAction => 'Friends';
+  String get profileFriendsAction => 'My friends';
 
   @override
   String get friendsTitle => 'Friends';

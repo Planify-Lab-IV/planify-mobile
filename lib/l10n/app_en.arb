@@ -483,7 +483,7 @@
   "profileSaveError": "Could not save changes. Please try again.",
   "profileAvatarStorageUnavailable": "The profile picture could not be saved right now. You can still change your name.",
   "profileDiscardAvatarAndSaveName": "Discard picture and save name",
-  "profileFriendsAction": "Friends",
+  "profileFriendsAction": "My friends",
   "friendsTitle": "Friends",
   "friendsSearchLabel": "Search people",
   "friendsSearchHint": "Name or username",
