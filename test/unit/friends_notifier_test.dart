@@ -198,6 +198,30 @@ void main() {
       expect(friendsNotifier.state.pendingPersonIds, isEmpty);
       friendsNotifier.dispose();
     });
+
+    test(
+      'recarga cuando eliminar una solicitud encuentra que ya no está disponible',
+      () async {
+        final repository = FakeFriendsRepository(delay: Duration.zero);
+        final friendsNotifier = notifier(repository);
+        await settle();
+        friendsNotifier.updateSearchQuery('bruno');
+        await settle();
+        final person = friendsNotifier.state.searchResults.single;
+        repository.markRequestUnavailable(person.requestId!);
+
+        final result = await friendsNotifier.removeRequest(person);
+
+        expect(result, FriendActionResult.requestUnavailable);
+        expect(friendsNotifier.state.requests.sent, isEmpty);
+        expect(
+          friendsNotifier.state.searchResults.single.relationship,
+          FriendRelationship.none,
+        );
+        expect(friendsNotifier.state.pendingPersonIds, isEmpty);
+        friendsNotifier.dispose();
+      },
+    );
   });
 }
 
