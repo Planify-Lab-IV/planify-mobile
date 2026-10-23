@@ -13,6 +13,7 @@ import 'package:planify/features/auth/presentation/screens/login_screen.dart';
 import 'package:planify/features/home/presentation/screens/organizer_home_screen.dart';
 import 'package:planify/features/home/presentation/screens/participant_home_screen.dart';
 import 'package:planify/features/home/presentation/screens/registered_home_shell.dart';
+import 'package:planify/features/home/presentation/controllers/registered_home_tab_provider.dart';
 import 'package:planify/features/invitations/presentation/controllers/invitation_providers.dart';
 import 'package:planify/features/invitations/presentation/controllers/invitation_state.dart';
 import 'package:planify/features/splash/presentation/controllers/splash_providers.dart';
@@ -83,6 +84,9 @@ class _MyAppState extends ConsumerState<MyApp> {
     ref.listen<AuthState>(authNotifierProvider, (previous, next) {
       if (next is AuthAuthenticated) {
         ref.read(invitationNotifierProvider.notifier).clearInvitation();
+      }
+      if (next is AuthUnauthenticated) {
+        ref.read(registeredHomeSelectedTabProvider.notifier).state = 0;
       }
     });
 

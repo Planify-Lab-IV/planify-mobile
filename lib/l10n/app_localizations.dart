@@ -430,6 +430,12 @@ abstract class AppLocalizations {
   /// **'Panel de Organizador'**
   String get organizerPanelTitle;
 
+  /// No description provided for @homeNotificationsTooltip.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver novedades'**
+  String get homeNotificationsTooltip;
+
   /// No description provided for @sessionActiveDescription.
   ///
   /// In es, this message translates to:

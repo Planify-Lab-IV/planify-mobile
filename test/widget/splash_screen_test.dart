@@ -17,6 +17,7 @@ import 'package:planify/features/events/data/events_repository_provider.dart';
 import 'package:planify/features/events/data/fake_events_repository.dart';
 import 'package:planify/features/home/presentation/screens/participant_home_screen.dart';
 import 'package:planify/features/home/presentation/screens/registered_home_shell.dart';
+import 'package:planify/features/home/presentation/controllers/registered_home_tab_provider.dart';
 import 'package:planify/features/splash/presentation/controllers/splash_providers.dart';
 import 'package:planify/features/splash/presentation/screens/splash_screen.dart';
 import 'package:planify/main.dart';
@@ -271,6 +272,12 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     await login;
     await tester.pumpAndSettle();
+    container.read(registeredHomeSelectedTabProvider.notifier).state =
+        registeredHomeGroupsTabIndex;
+    expect(
+      container.read(registeredHomeSelectedTabProvider),
+      registeredHomeGroupsTabIndex,
+    );
     final logout = notifier.logout();
     await tester.pump();
     expect(find.byType(SplashScreen), findsNothing);
@@ -278,6 +285,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     await logout;
     await tester.pumpAndSettle();
+    expect(container.read(registeredHomeSelectedTabProvider), 0);
   });
 
   for (final anonymous in [false, true]) {

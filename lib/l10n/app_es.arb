@@ -66,6 +66,7 @@
   },
   "welcome": "¡Bienvenido!",
   "organizerPanelTitle": "Panel de Organizador",
+  "homeNotificationsTooltip": "Ver novedades",
   "sessionActiveDescription": "Has iniciado sesión correctamente como organizador de eventos en Planify.",
   "tokenLabel": "Token de Sesión",
   "roleLabel": "Rol",
