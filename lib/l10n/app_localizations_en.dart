@@ -1130,4 +1130,68 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileDiscardAvatarAndSaveName => 'Discard picture and save name';
+
+  @override
+  String get profileFriendsAction => 'My friends';
+
+  @override
+  String get friendsTitle => 'Friends';
+
+  @override
+  String get friendsSearchLabel => 'Search people';
+
+  @override
+  String get friendsSearchHint => 'Name or username';
+
+  @override
+  String get friendsSearchEmpty => 'We couldn\'t find anyone.';
+
+  @override
+  String get friendsSearchError =>
+      'Could not search for people. Please try again.';
+
+  @override
+  String get friendsRequestsTitle => 'Requests';
+
+  @override
+  String get friendsReceivedRequestsTitle => 'Received';
+
+  @override
+  String get friendsSentRequestsTitle => 'Sent';
+
+  @override
+  String get friendsReceivedRequestsEmpty =>
+      'You don\'t have any pending requests.';
+
+  @override
+  String get friendsFriendsTitle => 'My friends';
+
+  @override
+  String get friendsFriendsEmpty => 'You don\'t have any friends yet.';
+
+  @override
+  String get friendsLoadError =>
+      'Could not load this section. Please try again.';
+
+  @override
+  String get friendAddAction => 'Add';
+
+  @override
+  String get friendAcceptAction => 'Accept';
+
+  @override
+  String get friendRejectAction => 'Decline';
+
+  @override
+  String get friendCancelAction => 'Cancel';
+
+  @override
+  String get friendRequestSent => 'Request sent';
+
+  @override
+  String get friendsActionError =>
+      'Could not update the request. Please try again.';
+
+  @override
+  String get friendRequestUnavailable => 'That request is no longer available';
 }
