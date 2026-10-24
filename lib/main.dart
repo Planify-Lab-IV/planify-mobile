@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'package:planify/l10n/app_localizations.dart';
 import 'package:planify/core/theme/app_theme.dart';
@@ -22,6 +23,9 @@ Future<void> main() async {
   final startupClock = Stopwatch()..start();
   final binding = WidgetsFlutterBinding.ensureInitialized();
   binding.deferFirstFrame();
+  if (defaultTargetPlatform == TargetPlatform.android) {
+    await Firebase.initializeApp();
+  }
   var firstFrameAllowed = false;
   void allowStartupFrame() {
     if (firstFrameAllowed) return;
