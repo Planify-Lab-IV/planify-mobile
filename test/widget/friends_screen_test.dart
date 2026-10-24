@@ -71,6 +71,8 @@ void main() {
       find.byKey(const Key('friend_reject_button_friend-ana')),
       findsOneWidget,
     );
+    expect(find.byTooltip('Aceptar'), findsOneWidget);
+    expect(find.byTooltip('Rechazar'), findsOneWidget);
 
     expect(find.text('Bruno Díaz'), findsOneWidget);
     expect(find.text('@bruno'), findsOneWidget);
@@ -544,8 +546,8 @@ void main() {
     expect(find.text('Requests · Received'), findsOneWidget);
     expect(find.text('Requests · Sent'), findsOneWidget);
     expect(find.text('My friends'), findsOneWidget);
-    expect(find.text('Accept'), findsOneWidget);
-    expect(find.text('Decline'), findsOneWidget);
+    expect(find.byTooltip('Accept'), findsOneWidget);
+    expect(find.byTooltip('Decline'), findsOneWidget);
     expect(find.text('Cancel'), findsOneWidget);
   });
 }

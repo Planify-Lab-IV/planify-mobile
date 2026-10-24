@@ -261,16 +261,16 @@ Widget? _buildSearchTrailing(
         ),
       ],
     ),
-    FriendRelationship.requestReceived => FilledButton(
-      key: Key('friend_accept_button_${person.id}'),
-      style: FilledButton.styleFrom(visualDensity: VisualDensity.compact),
+    FriendRelationship.requestReceived => _FriendActionIconButton(
+      buttonKey: Key('friend_accept_button_${person.id}'),
+      label: i18n.friendAcceptAction,
+      icon: Icons.check_rounded,
       onPressed: () => _executeAction(
         feedbackContext,
         person,
         state,
         () => notifier.acceptRequest(person),
       ),
-      child: Text(i18n.friendAcceptAction),
     ),
     FriendRelationship.friend => null,
   };
@@ -290,28 +290,28 @@ Widget? _buildReceivedTrailing(
   return Row(
     mainAxisSize: MainAxisSize.min,
     children: [
-      FilledButton(
-        key: Key('friend_accept_button_${person.id}'),
-        style: FilledButton.styleFrom(visualDensity: VisualDensity.compact),
+      _FriendActionIconButton(
+        buttonKey: Key('friend_accept_button_${person.id}'),
+        label: i18n.friendAcceptAction,
+        icon: Icons.check_rounded,
         onPressed: () => _executeAction(
           feedbackContext,
           person,
           state,
           () => notifier.acceptRequest(person),
         ),
-        child: Text(i18n.friendAcceptAction),
       ),
       const SizedBox(width: AppSpacing.xs),
-      OutlinedButton(
-        key: Key('friend_reject_button_${person.id}'),
-        style: OutlinedButton.styleFrom(visualDensity: VisualDensity.compact),
+      _FriendActionIconButton.outlined(
+        buttonKey: Key('friend_reject_button_${person.id}'),
+        label: i18n.friendRejectAction,
+        icon: Icons.close_rounded,
         onPressed: () => _executeAction(
           feedbackContext,
           person,
           state,
           () => notifier.removeRequest(person),
         ),
-        child: Text(i18n.friendRejectAction),
       ),
     ],
   );
@@ -339,6 +339,53 @@ Widget? _buildSentTrailing(
     ),
     child: Text(i18n.friendCancelAction),
   );
+}
+
+class _FriendActionIconButton extends StatelessWidget {
+  final Key buttonKey;
+  final String label;
+  final IconData icon;
+  final VoidCallback onPressed;
+  final bool outlined;
+
+  const _FriendActionIconButton({
+    required this.buttonKey,
+    required this.label,
+    required this.icon,
+    required this.onPressed,
+  }) : outlined = false;
+
+  const _FriendActionIconButton.outlined({
+    required this.buttonKey,
+    required this.label,
+    required this.icon,
+    required this.onPressed,
+  }) : outlined = true;
+
+  @override
+  Widget build(BuildContext context) {
+    final button = outlined
+        ? IconButton.outlined(
+            key: buttonKey,
+            onPressed: onPressed,
+            icon: Icon(icon),
+          )
+        : IconButton.filled(
+            key: buttonKey,
+            onPressed: onPressed,
+            icon: Icon(icon),
+          );
+
+    return Semantics(
+      label: label,
+      button: true,
+      onTap: onPressed,
+      child: Tooltip(
+        message: label,
+        child: ExcludeSemantics(child: button),
+      ),
+    );
+  }
 }
 
 class _RowProgressIndicator extends StatelessWidget {
