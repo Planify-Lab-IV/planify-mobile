@@ -16,6 +16,7 @@ class FriendsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final feedbackContext = context;
     final i18n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final state = ref.watch(friendsNotifierProvider);
@@ -81,6 +82,7 @@ class FriendsScreen extends ConsumerWidget {
                               _SearchResults(
                                 state: state,
                                 notifier: notifier,
+                                feedbackContext: feedbackContext,
                                 emptyLabel: i18n.friendsSearchEmpty,
                                 errorLabel: i18n.friendsSearchError,
                                 retryLabel: i18n.retryButton,
@@ -103,9 +105,9 @@ class FriendsScreen extends ConsumerWidget {
                               errorLabel: i18n.friendsLoadError,
                               retryLabel: i18n.retryButton,
                               onRetry: notifier.loadRequests,
-                              trailingBuilder: (context, person) =>
+                              trailingBuilder: (_, person) =>
                                   _buildReceivedTrailing(
-                                    context,
+                                    feedbackContext,
                                     person,
                                     state,
                                     notifier,
@@ -131,9 +133,9 @@ class FriendsScreen extends ConsumerWidget {
                                 errorLabel: i18n.friendsLoadError,
                                 retryLabel: i18n.retryButton,
                                 onRetry: notifier.loadRequests,
-                                trailingBuilder: (context, person) =>
+                                trailingBuilder: (_, person) =>
                                     _buildSentTrailing(
-                                      context,
+                                      feedbackContext,
                                       person,
                                       state,
                                       notifier,
@@ -168,18 +170,18 @@ class FriendsScreen extends ConsumerWidget {
 }
 
 Future<void> _executeAction(
-  BuildContext context,
+  BuildContext feedbackContext,
   Person person,
   FriendsState state,
   Future<FriendActionResult> Function() action,
 ) async {
   if (state.isPending(person)) return;
 
-  final messenger = ScaffoldMessenger.of(context);
-  final i18n = AppLocalizations.of(context)!;
+  final messenger = ScaffoldMessenger.of(feedbackContext);
+  final i18n = AppLocalizations.of(feedbackContext)!;
 
   final result = await action();
-  if (!context.mounted) return;
+  if (!feedbackContext.mounted) return;
 
   switch (result) {
     case FriendActionResult.failure:
@@ -207,12 +209,12 @@ Future<void> _executeAction(
 }
 
 Widget? _buildSearchTrailing(
-  BuildContext context,
+  BuildContext feedbackContext,
   Person person,
   FriendsState state,
   FriendsNotifier notifier,
 ) {
-  final i18n = AppLocalizations.of(context)!;
+  final i18n = AppLocalizations.of(feedbackContext)!;
   final isPending = state.isPending(person);
 
   if (isPending) {
@@ -234,7 +236,7 @@ Widget? _buildSearchTrailing(
       key: Key('friend_add_button_${person.id}'),
       style: FilledButton.styleFrom(visualDensity: VisualDensity.compact),
       onPressed: () => _executeAction(
-        context,
+        feedbackContext,
         person,
         state,
         () => notifier.sendRequest(person),
@@ -250,7 +252,7 @@ Widget? _buildSearchTrailing(
           key: Key('friend_cancel_button_${person.id}'),
           style: OutlinedButton.styleFrom(visualDensity: VisualDensity.compact),
           onPressed: () => _executeAction(
-            context,
+            feedbackContext,
             person,
             state,
             () => notifier.removeRequest(person),
@@ -263,7 +265,7 @@ Widget? _buildSearchTrailing(
       key: Key('friend_accept_button_${person.id}'),
       style: FilledButton.styleFrom(visualDensity: VisualDensity.compact),
       onPressed: () => _executeAction(
-        context,
+        feedbackContext,
         person,
         state,
         () => notifier.acceptRequest(person),
@@ -275,12 +277,12 @@ Widget? _buildSearchTrailing(
 }
 
 Widget? _buildReceivedTrailing(
-  BuildContext context,
+  BuildContext feedbackContext,
   Person person,
   FriendsState state,
   FriendsNotifier notifier,
 ) {
-  final i18n = AppLocalizations.of(context)!;
+  final i18n = AppLocalizations.of(feedbackContext)!;
   if (state.isPending(person)) {
     return const _RowProgressIndicator();
   }
@@ -292,7 +294,7 @@ Widget? _buildReceivedTrailing(
         key: Key('friend_accept_button_${person.id}'),
         style: FilledButton.styleFrom(visualDensity: VisualDensity.compact),
         onPressed: () => _executeAction(
-          context,
+          feedbackContext,
           person,
           state,
           () => notifier.acceptRequest(person),
@@ -304,7 +306,7 @@ Widget? _buildReceivedTrailing(
         key: Key('friend_reject_button_${person.id}'),
         style: OutlinedButton.styleFrom(visualDensity: VisualDensity.compact),
         onPressed: () => _executeAction(
-          context,
+          feedbackContext,
           person,
           state,
           () => notifier.removeRequest(person),
@@ -316,12 +318,12 @@ Widget? _buildReceivedTrailing(
 }
 
 Widget? _buildSentTrailing(
-  BuildContext context,
+  BuildContext feedbackContext,
   Person person,
   FriendsState state,
   FriendsNotifier notifier,
 ) {
-  final i18n = AppLocalizations.of(context)!;
+  final i18n = AppLocalizations.of(feedbackContext)!;
   if (state.isPending(person)) {
     return const _RowProgressIndicator();
   }
@@ -330,7 +332,7 @@ Widget? _buildSentTrailing(
     key: Key('friend_cancel_button_${person.id}'),
     style: OutlinedButton.styleFrom(visualDensity: VisualDensity.compact),
     onPressed: () => _executeAction(
-      context,
+      feedbackContext,
       person,
       state,
       () => notifier.removeRequest(person),
@@ -375,6 +377,7 @@ class _SectionTitle extends StatelessWidget {
 class _SearchResults extends StatelessWidget {
   final FriendsState state;
   final FriendsNotifier notifier;
+  final BuildContext feedbackContext;
   final String emptyLabel;
   final String errorLabel;
   final String retryLabel;
@@ -382,6 +385,7 @@ class _SearchResults extends StatelessWidget {
   const _SearchResults({
     required this.state,
     required this.notifier,
+    required this.feedbackContext,
     required this.emptyLabel,
     required this.errorLabel,
     required this.retryLabel,
@@ -402,8 +406,8 @@ class _SearchResults extends StatelessWidget {
           _SectionEmpty(message: emptyLabel),
         FriendsLoadStatus.success => _PersonCards(
           people: state.searchResults,
-          trailingBuilder: (context, person) =>
-              _buildSearchTrailing(context, person, state, notifier),
+          trailingBuilder: (_, person) =>
+              _buildSearchTrailing(feedbackContext, person, state, notifier),
         ),
         FriendsLoadStatus.idle => const SizedBox.shrink(),
       },

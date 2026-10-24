@@ -376,6 +376,70 @@ void main() {
     },
   );
 
+  testWidgets(
+    'muestra el aviso si Recibidas desmonta la fila durante la recarga',
+    (tester) async {
+      const delay = Duration(milliseconds: 300);
+      final repository = FakeFriendsRepository(delay: delay);
+      final container = buildContainer(repository: repository);
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(buildScreen(container: container));
+      await tester.pump(delay);
+      await tester.pump();
+
+      repository.markRequestUnavailable('request-ana');
+      await tester.tap(
+        find.byKey(const Key('friend_accept_button_friend-ana')),
+      );
+      await tester.pump();
+      await tester.pump(delay);
+      await tester.pump();
+
+      expect(
+        find.byKey(const Key('friend_accept_button_friend-ana')),
+        findsNothing,
+      );
+
+      await tester.pump(delay);
+      await tester.pump();
+
+      expect(find.text('Esa solicitud ya no está disponible'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'muestra el aviso si Enviadas desmonta la fila durante la recarga',
+    (tester) async {
+      const delay = Duration(milliseconds: 300);
+      final repository = FakeFriendsRepository(delay: delay);
+      final container = buildContainer(repository: repository);
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(buildScreen(container: container));
+      await tester.pump(delay);
+      await tester.pump();
+
+      repository.markRequestUnavailable('request-bruno');
+      await tester.tap(
+        find.byKey(const Key('friend_cancel_button_friend-bruno')),
+      );
+      await tester.pump();
+      await tester.pump(delay);
+      await tester.pump();
+
+      expect(
+        find.byKey(const Key('friends_sent_requests_section')),
+        findsNothing,
+      );
+
+      await tester.pump(delay);
+      await tester.pump();
+
+      expect(find.text('Esa solicitud ya no está disponible'), findsOneWidget);
+    },
+  );
+
   testWidgets('muestra SnackBar genérico cuando una acción falla', (
     tester,
   ) async {
