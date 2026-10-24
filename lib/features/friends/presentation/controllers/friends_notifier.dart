@@ -103,7 +103,6 @@ class FriendsNotifier extends StateNotifier<FriendsState> {
       final request = await repository.sendRequest(person.id);
       if (!mounted) return FriendActionResult.ignored;
       _requestsVersion++;
-      _searchVersion++;
       state = state.copyWith(
         searchResults: _replaceSearchPerson(request.user),
         requests: state.requests.copyWith(
@@ -111,6 +110,7 @@ class FriendsNotifier extends StateNotifier<FriendsState> {
         ),
         requestsStatus: FriendsLoadStatus.success,
       );
+      _refreshPendingSearch();
       return FriendActionResult.success;
     } catch (_) {
       return mounted ? FriendActionResult.failure : FriendActionResult.ignored;
@@ -132,7 +132,6 @@ class FriendsNotifier extends StateNotifier<FriendsState> {
       onSuccess: () {
         _requestsVersion++;
         _friendsVersion++;
-        _searchVersion++;
         final accepted = person.copyWith(
           relationship: FriendRelationship.friend,
           clearRequestId: true,
@@ -148,6 +147,7 @@ class FriendsNotifier extends StateNotifier<FriendsState> {
           requestsStatus: FriendsLoadStatus.success,
           friendsStatus: FriendsLoadStatus.success,
         );
+        _refreshPendingSearch();
       },
     );
   }
@@ -165,7 +165,6 @@ class FriendsNotifier extends StateNotifier<FriendsState> {
       operation: () => repository.removeRequest(person.requestId!),
       onSuccess: () {
         _requestsVersion++;
-        _searchVersion++;
         final removed = person.copyWith(
           relationship: FriendRelationship.none,
           clearRequestId: true,
@@ -182,6 +181,7 @@ class FriendsNotifier extends StateNotifier<FriendsState> {
           ),
           requestsStatus: FriendsLoadStatus.success,
         );
+        _refreshPendingSearch();
       },
     );
   }
@@ -221,6 +221,16 @@ class FriendsNotifier extends StateNotifier<FriendsState> {
       if (!mounted || version != _searchVersion) return;
       state = state.copyWith(searchStatus: FriendsLoadStatus.error);
     }
+  }
+
+  void _refreshPendingSearch() {
+    final query = state.searchQuery.trim();
+    if (state.searchStatus != FriendsLoadStatus.loading || query.length < 2) {
+      return;
+    }
+
+    _searchTimer?.cancel();
+    unawaited(_loadSearch(query, ++_searchVersion));
   }
 
   bool _beginOperation(String personId) {
