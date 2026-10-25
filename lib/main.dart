@@ -16,6 +16,7 @@ import 'package:planify/features/home/presentation/screens/participant_home_scre
 import 'package:planify/features/home/presentation/screens/registered_home_shell.dart';
 import 'package:planify/features/invitations/presentation/controllers/invitation_providers.dart';
 import 'package:planify/features/invitations/presentation/controllers/invitation_state.dart';
+import 'package:planify/features/notifications/presentation/controllers/push_registration_notifier.dart';
 import 'package:planify/features/splash/presentation/controllers/splash_providers.dart';
 import 'package:planify/features/splash/presentation/screens/splash_screen.dart';
 
@@ -56,10 +57,17 @@ Future<void> main() async {
 }
 
 class MyApp extends ConsumerStatefulWidget {
-  const MyApp({super.key, this.onSplashFinished});
+  const MyApp({
+    super.key,
+    this.onSplashFinished,
+    this.startPushRegistration = true,
+  });
 
   /// Permite retirar el launch si el siguiente destino está listo antes del PNG.
   final VoidCallback? onSplashFinished;
+
+  /// Permite aislar los plugins nativos en widget tests que no cubren push.
+  final bool startPushRegistration;
 
   @override
   ConsumerState<MyApp> createState() => _MyAppState();
@@ -74,6 +82,9 @@ class _MyAppState extends ConsumerState<MyApp> {
       ref.listenManual<SplashPhase>(splashNotifierProvider, (previous, next) {
         if (next != SplashPhase.brand) widget.onSplashFinished?.call();
       }, fireImmediately: true);
+    }
+    if (widget.startPushRegistration) {
+      ref.read(pushRegistrationNotifierProvider);
     }
     // Inicia la escucha centralizada de deep links al arrancar la app
     ref.read(deepLinkServiceProvider).listen((uri) {

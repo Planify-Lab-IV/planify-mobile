@@ -174,7 +174,7 @@ void main() {
                 (ref) => LocaleNotifier()..setLocale(const Locale('es')),
               ),
             ],
-            child: const MyApp(),
+            child: const MyApp(startPushRegistration: false),
           ),
         );
         await tester.pumpAndSettle();
@@ -244,7 +244,7 @@ void main() {
                 (ref) => LocaleNotifier()..setLocale(const Locale('es')),
               ),
             ],
-            child: const MyApp(),
+            child: const MyApp(startPushRegistration: false),
           ),
         );
         await tester.pumpAndSettle();
@@ -302,7 +302,7 @@ void main() {
                 (ref) => LocaleNotifier()..setLocale(const Locale('es')),
               ),
             ],
-            child: const MyApp(),
+            child: const MyApp(startPushRegistration: false),
           ),
         );
         await tester.pumpAndSettle();

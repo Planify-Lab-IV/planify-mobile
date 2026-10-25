@@ -36,7 +36,10 @@ Widget testApp(
       FakeEventsRepository(delay: Duration.zero),
     ),
   ],
-  child: MyApp(onSplashFinished: onSplashFinished),
+  child: MyApp(
+    onSplashFinished: onSplashFinished,
+    startPushRegistration: false,
+  ),
 );
 
 void main() {

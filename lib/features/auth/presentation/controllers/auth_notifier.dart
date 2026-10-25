@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../data/secure_storage.dart';
+import '../../../notifications/domain/notifications_repository.dart';
 import '../../data/auth_exceptions.dart';
 import '../../domain/auth_repository.dart';
 import '../../domain/user_session.dart';
@@ -9,8 +10,15 @@ import 'auth_state.dart';
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository _repository;
   final SecureStorage _storage;
+  final NotificationsRepository _notificationsRepository;
+  final Future<String?> Function() getPushToken;
 
-  AuthNotifier(this._repository, this._storage) : super(const AuthInitial());
+  AuthNotifier(
+    this._repository,
+    this._storage, {
+    required this._notificationsRepository,
+    required this.getPushToken,
+  }) : super(const AuthInitial());
 
   Future<void> login({
     required String identifier,
@@ -101,7 +109,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> logout() async {
+    final session = state is AuthAuthenticated
+        ? (state as AuthAuthenticated).session
+        : null;
     state = const AuthLoading();
+    if (session is OrganizerSession) {
+      await _unregisterDevice();
+    }
     try {
       await _repository.logout();
     } catch (_) {
@@ -114,6 +128,18 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } catch (_) {
       // No confirmamos el logout si el token puede seguir almacenado.
       state = const AuthError(AuthFailureReason.unknown);
+    }
+  }
+
+  Future<void> _unregisterDevice() async {
+    try {
+      await (() async {
+        final pushToken = await getPushToken();
+        if (pushToken == null || pushToken.trim().isEmpty) return;
+        await _notificationsRepository.unregisterDevice(pushToken);
+      })().timeout(const Duration(seconds: 2));
+    } catch (_) {
+      // Un fallo de red no debe impedir el cierre local de sesión.
     }
   }
 

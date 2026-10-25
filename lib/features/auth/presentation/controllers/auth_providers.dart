@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/providers/core_providers.dart';
+import '../../../notifications/presentation/controllers/notifications_providers.dart';
 import '../../data/http_auth_repository.dart';
 import '../../domain/auth_repository.dart';
 import 'auth_notifier.dart';
@@ -18,5 +19,10 @@ final authNotifierProvider = StateNotifierProvider<AuthNotifier, AuthState>((
 ) {
   final repository = ref.watch(authRepositoryProvider);
   final storage = ref.watch(secureStorageProvider);
-  return AuthNotifier(repository, storage)..checkAuthStatus();
+  return AuthNotifier(
+    repository,
+    storage,
+    notificationsRepository: ref.watch(notificationsRepositoryProvider),
+    getPushToken: () => ref.read(pushMessagingServiceProvider).getToken(),
+  )..checkAuthStatus();
 });
