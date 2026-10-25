@@ -10,7 +10,7 @@ import '../../../activity_log/presentation/controllers/activity_log_providers.da
 import '../../../auth/domain/user_session.dart';
 import '../../../auth/presentation/controllers/auth_providers.dart';
 import '../../../auth/presentation/controllers/auth_state.dart';
-import '../../../events/detail/screens/event_detail_screen.dart';
+import 'push_event_navigator.dart';
 
 class ForegroundPushListener extends ConsumerStatefulWidget {
   const ForegroundPushListener({
@@ -67,25 +67,16 @@ class _ForegroundPushListenerState
         ),
         action: SnackBarAction(
           label: localizations.pushNotificationViewAction,
-          onPressed: () => _openEvent(message.eventId, sessionToken),
+          onPressed: () => openPushEvent(
+            ref: ref,
+            navigatorKey: widget.navigatorKey,
+            isMounted: () => mounted,
+            eventId: message.eventId,
+            sessionToken: sessionToken,
+          ),
         ),
       ),
     );
-  }
-
-  Future<void> _openEvent(String eventId, String sessionToken) async {
-    final auth = ref.read(authNotifierProvider);
-    if (auth is! AuthAuthenticated ||
-        auth.session is! OrganizerSession ||
-        auth.session.token != sessionToken) {
-      return;
-    }
-    final navigator = widget.navigatorKey.currentState;
-    if (navigator == null) return;
-    await navigator.push<void>(
-      MaterialPageRoute(builder: (_) => EventDetailScreen(eventId: eventId)),
-    );
-    if (mounted) ref.invalidate(unreadCountsProvider);
   }
 
   @override

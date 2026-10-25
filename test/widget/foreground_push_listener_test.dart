@@ -37,6 +37,13 @@ const _anonymous = AnonymousSession(
   eventId: 'event-1',
   token: 'anonymous-token',
 );
+const _otherOrganizer = OrganizerSession(
+  userId: 'organizer-2',
+  email: 'other@example.com',
+  name: 'Otro usuario',
+  username: 'otro',
+  token: 'other-session-token',
+);
 const _message = PushMessage(
   title: 'Nuevo gasto',
   body: 'Ana agregó bebidas',
@@ -200,6 +207,20 @@ void main() {
     await tester.pumpWidget(const SizedBox.shrink());
   });
 
+  testWidgets('Ver no abre el evento si ingresó otro organizador', (
+    tester,
+  ) async {
+    auth.setSession(_organizer);
+    await showApp(tester);
+    messaging.emitForegroundMessage(_message);
+    await tester.pumpAndSettle();
+    auth.setSession(_otherOrganizer);
+    await tester.tap(find.text('Ver'));
+    await tester.pumpAndSettle();
+    expect(find.byType(EventDetailScreen), findsNothing);
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
   testWidgets('una notificación tocada en segundo plano abre su evento', (
     tester,
   ) async {
@@ -216,6 +237,19 @@ void main() {
     navigatorKey.currentState!.pop();
     await tester.pumpAndSettle();
     expect(unreadLoads, greaterThan(loadsBeforeReturn));
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('no navega si la sesión cambia antes de abrir el evento', (
+    tester,
+  ) async {
+    auth.setSession(_organizer);
+    await showApp(tester);
+    messaging.emitMessageOpened(_message);
+    await tester.idle();
+    auth.setSession(_otherOrganizer);
+    await tester.pumpAndSettle();
+    expect(find.byType(EventDetailScreen), findsNothing);
     await tester.pumpWidget(const SizedBox.shrink());
   });
 

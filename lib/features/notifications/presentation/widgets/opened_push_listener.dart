@@ -5,12 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/providers/core_providers.dart';
 import '../../../../core/services/push_messaging_service.dart';
-import '../../../activity_log/presentation/controllers/activity_log_providers.dart';
-import '../../../auth/domain/user_session.dart';
 import '../../../auth/presentation/controllers/auth_providers.dart';
 import '../../../auth/presentation/controllers/auth_state.dart';
-import '../../../events/detail/screens/event_detail_screen.dart';
 import '../controllers/push_navigation_coordinator.dart';
+import 'push_event_navigator.dart';
 
 class OpenedPushListener extends ConsumerStatefulWidget {
   const OpenedPushListener({
@@ -62,24 +60,17 @@ class _OpenedPushListenerState extends ConsumerState<OpenedPushListener> {
   void _scheduleNavigation(String eventId, String sessionToken) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      final auth = ref.read(authNotifierProvider);
-      if (auth is! AuthAuthenticated ||
-          auth.session is! OrganizerSession ||
-          auth.session.token != sessionToken) {
-        return;
-      }
-      final navigator = widget.navigatorKey.currentState;
-      if (navigator == null) return;
-      unawaited(_openEvent(navigator, eventId));
+      unawaited(
+        openPushEvent(
+          ref: ref,
+          navigatorKey: widget.navigatorKey,
+          isMounted: () => mounted,
+          eventId: eventId,
+          sessionToken: sessionToken,
+        ),
+      );
     });
     WidgetsBinding.instance.ensureVisualUpdate();
-  }
-
-  Future<void> _openEvent(NavigatorState navigator, String eventId) async {
-    await navigator.push<void>(
-      MaterialPageRoute(builder: (_) => EventDetailScreen(eventId: eventId)),
-    );
-    if (mounted) ref.invalidate(unreadCountsProvider);
   }
 
   @override
