@@ -18,6 +18,7 @@ import 'package:planify/features/invitations/presentation/controllers/invitation
 import 'package:planify/features/invitations/presentation/controllers/invitation_state.dart';
 import 'package:planify/features/notifications/presentation/controllers/push_registration_notifier.dart';
 import 'package:planify/features/notifications/presentation/widgets/foreground_push_listener.dart';
+import 'package:planify/features/notifications/presentation/widgets/opened_push_listener.dart';
 import 'package:planify/features/splash/presentation/controllers/splash_providers.dart';
 import 'package:planify/features/splash/presentation/screens/splash_screen.dart';
 
@@ -124,7 +125,10 @@ class _MyAppState extends ConsumerState<MyApp> {
           ? (context, child) => ForegroundPushListener(
               navigatorKey: _navigatorKey,
               scaffoldMessengerKey: _scaffoldMessengerKey,
-              child: child!,
+              child: OpenedPushListener(
+                navigatorKey: _navigatorKey,
+                child: child!,
+              ),
             )
           : null,
 

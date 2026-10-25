@@ -19,6 +19,7 @@ import 'package:planify/features/expenses/data/fake_expenses_repository.dart';
 import 'package:planify/features/expenses/presentation/controllers/expenses_providers.dart';
 import 'package:planify/features/notifications/data/fake_notifications_repository.dart';
 import 'package:planify/features/notifications/presentation/widgets/foreground_push_listener.dart';
+import 'package:planify/features/notifications/presentation/widgets/opened_push_listener.dart';
 import 'package:planify/l10n/app_localizations.dart';
 
 import '../helpers/fake_push_messaging_service.dart';
@@ -58,6 +59,8 @@ class _AuthNotifier extends AuthNotifier {
         ? const AuthUnauthenticated()
         : AuthAuthenticated(session);
   }
+
+  void setAuthState(AuthState next) => state = next;
 }
 
 void main() {
@@ -118,7 +121,10 @@ void main() {
           builder: (context, child) => ForegroundPushListener(
             navigatorKey: navigatorKey,
             scaffoldMessengerKey: messengerKey,
-            child: child!,
+            child: OpenedPushListener(
+              navigatorKey: navigatorKey,
+              child: child!,
+            ),
           ),
           home: Consumer(
             builder: (context, ref, child) {
@@ -141,7 +147,7 @@ void main() {
 
     messaging.emitForegroundMessage(_message);
     await tester.pump();
-      await tester.pumpAndSettle();
+    await tester.pumpAndSettle();
 
     expect(find.text('Nuevo gasto'), findsOneWidget);
     expect(find.text('Ana agregó bebidas'), findsOneWidget);
@@ -189,6 +195,56 @@ void main() {
     expect(find.text('View'), findsOneWidget);
     auth.setSession(_anonymous);
     await tester.tap(find.text('View'));
+    await tester.pumpAndSettle();
+    expect(find.byType(EventDetailScreen), findsNothing);
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('una notificación tocada en segundo plano abre su evento', (
+    tester,
+  ) async {
+    auth.setSession(_organizer);
+    await showApp(tester);
+    expect(messaging.getInitialMessageCalls, 1);
+    messaging.emitMessageOpened(_message);
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<EventDetailScreen>(find.byType(EventDetailScreen)).eventId,
+      'event-1',
+    );
+    final loadsBeforeReturn = unreadLoads;
+    navigatorKey.currentState!.pop();
+    await tester.pumpAndSettle();
+    expect(unreadLoads, greaterThan(loadsBeforeReturn));
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('un arranque desde push espera a que se restaure la sesión', (
+    tester,
+  ) async {
+    auth.setAuthState(const AuthCheckingInitialSession());
+    messaging.initialMessage = _message;
+    await showApp(tester);
+    expect(messaging.getInitialMessageCalls, 1);
+    expect(find.byType(EventDetailScreen), findsNothing);
+    auth.setSession(_organizer);
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<EventDetailScreen>(find.byType(EventDetailScreen)).eventId,
+      'event-1',
+    );
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('un arranque sin sesión descarta la notificación pendiente', (
+    tester,
+  ) async {
+    auth.setAuthState(const AuthCheckingInitialSession());
+    messaging.initialMessage = _message;
+    await showApp(tester);
+    auth.setSession(null);
+    await tester.pumpAndSettle();
+    auth.setSession(_organizer);
     await tester.pumpAndSettle();
     expect(find.byType(EventDetailScreen), findsNothing);
     await tester.pumpWidget(const SizedBox.shrink());
