@@ -32,10 +32,30 @@ class ForegroundPushListener extends ConsumerStatefulWidget {
 class _ForegroundPushListenerState
     extends ConsumerState<ForegroundPushListener> {
   late final StreamSubscription<PushMessage> _subscription;
+  late final ProviderSubscription<AuthState> _authSubscription;
 
   @override
   void initState() {
     super.initState();
+    _authSubscription = ref.listenManual<AuthState>(authNotifierProvider, (
+      previous,
+      next,
+    ) {
+      final oldSession =
+          previous is AuthAuthenticated && previous.session is OrganizerSession
+          ? previous.session
+          : null;
+      final newSession =
+          next is AuthAuthenticated && next.session is OrganizerSession
+          ? next.session
+          : null;
+      if (oldSession != null && oldSession.token != newSession?.token) {
+        final messenger = widget.scaffoldMessengerKey.currentState;
+        messenger?.clearSnackBars();
+        messenger?.removeCurrentSnackBar();
+        widget.navigatorKey.currentState?.popUntil((route) => route.isFirst);
+      }
+    });
     _subscription = ref
         .read(pushMessagingServiceProvider)
         .onForegroundMessage
@@ -82,6 +102,7 @@ class _ForegroundPushListenerState
   @override
   void dispose() {
     _subscription.cancel();
+    _authSubscription.close();
     super.dispose();
   }
 

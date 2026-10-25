@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/foundation.dart';
 import '../../../../core/providers/core_providers.dart';
 import '../../../notifications/presentation/controllers/notifications_providers.dart';
 import '../../data/http_auth_repository.dart';
@@ -23,6 +24,10 @@ final authNotifierProvider = StateNotifierProvider<AuthNotifier, AuthState>((
     repository,
     storage,
     notificationsRepository: ref.watch(notificationsRepositoryProvider),
-    getPushToken: () => ref.read(pushMessagingServiceProvider).getToken(),
+    pushDeviceOperations: ref.watch(pushDeviceOperationsProvider),
+    getPushToken: () =>
+        !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+        ? ref.read(pushMessagingServiceProvider).getToken()
+        : Future<String?>.value(),
   )..checkAuthStatus();
 });

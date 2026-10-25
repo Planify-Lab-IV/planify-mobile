@@ -1,7 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/widgets.dart';
 import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_state.dart';
 import 'package:planify/features/notifications/data/fake_notifications_repository.dart';
+import 'package:planify/features/notifications/data/push_permission_store.dart';
 import 'package:planify/features/notifications/presentation/controllers/push_registration_notifier.dart';
 
 import '../helpers/fake_push_messaging_service.dart';
@@ -68,6 +70,55 @@ void main() {
       expect(pushMessagingService.getTokenCalls, 0);
       expect(repository.registeredPushTokens, isEmpty);
     });
+
+    test(
+      'no insiste tras rechazar el permiso, incluso al recrear el notifier',
+      () async {
+        final permissionStore = MemoryPushPermissionStore();
+        pushMessagingService.permissionGranted = false;
+        notifier = PushRegistrationNotifier(
+          repository: repository,
+          pushMessagingService: pushMessagingService,
+          permissionStore: permissionStore,
+        );
+        await notifier.handleAuthStateChange(
+          const AuthInitial(),
+          organizerState,
+        );
+        await notifier.handleAuthStateChange(
+          organizerState,
+          const AuthLoading(),
+        );
+        notifier.dispose();
+        notifier = PushRegistrationNotifier(
+          repository: repository,
+          pushMessagingService: pushMessagingService,
+          permissionStore: permissionStore,
+        );
+        await notifier.handleAuthStateChange(
+          const AuthInitial(),
+          organizerState,
+        );
+        expect(pushMessagingService.requestPermissionCalls, 1);
+        expect(repository.registeredPushTokens, isEmpty);
+      },
+    );
+
+    test(
+      'registra al volver si el usuario habilitó el permiso en Ajustes',
+      () async {
+        pushMessagingService.permissionGranted = false;
+        await notifier.handleAuthStateChange(
+          const AuthInitial(),
+          organizerState,
+        );
+        pushMessagingService.permissionCurrentlyGranted = true;
+        notifier.didChangeAppLifecycleState(AppLifecycleState.resumed);
+        await Future<void>.delayed(Duration.zero);
+        expect(pushMessagingService.requestPermissionCalls, 1);
+        expect(repository.registeredPushTokens, ['fake-push-token']);
+      },
+    );
 
     test('ignora un error al registrar para no afectar la sesión', () async {
       repository = FakeNotificationsRepository(

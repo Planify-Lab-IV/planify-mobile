@@ -39,6 +39,8 @@ class PushMessage {
 }
 
 abstract interface class PushMessagingService {
+  Future<bool> hasPermission();
+
   Future<bool> requestPermission();
 
   Future<String?> getToken();
@@ -57,6 +59,12 @@ class FirebasePushMessagingService implements PushMessagingService {
 
   FirebasePushMessagingService({FirebaseMessaging? messaging})
     : _messaging = messaging ?? FirebaseMessaging.instance;
+
+  @override
+  Future<bool> hasPermission() async {
+    final settings = await _messaging.getNotificationSettings();
+    return settings.authorizationStatus == AuthorizationStatus.authorized;
+  }
 
   @override
   Future<bool> requestPermission() async {

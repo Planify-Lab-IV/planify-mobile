@@ -13,14 +13,17 @@ class FakeNotificationsRepository implements NotificationsRepository {
   });
 
   @override
-  Future<void> registerDevice(String pushToken) async {
+  Future<void> registerDevice(String pushToken, {String? sessionToken}) async {
     final normalizedPushToken = _normalizedRequiredValue(pushToken);
     await _waitOrThrow();
     registeredPushTokens.add(normalizedPushToken);
   }
 
   @override
-  Future<void> unregisterDevice(String pushToken) async {
+  Future<void> unregisterDevice(
+    String pushToken, {
+    String? sessionToken,
+  }) async {
     final normalizedPushToken = _normalizedRequiredValue(pushToken);
     await _waitOrThrow();
     unregisteredPushTokens.add(normalizedPushToken);

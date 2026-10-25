@@ -9,20 +9,38 @@ class HttpNotificationsRepository implements NotificationsRepository {
   HttpNotificationsRepository({required this.dio});
 
   @override
-  Future<void> registerDevice(String pushToken) {
-    return _updateDevice('/notifications/register-device', pushToken);
+  Future<void> registerDevice(String pushToken, {String? sessionToken}) {
+    return _updateDevice(
+      '/notifications/register-device',
+      pushToken,
+      sessionToken,
+    );
   }
 
   @override
-  Future<void> unregisterDevice(String pushToken) {
-    return _updateDevice('/notifications/unregister-device', pushToken);
+  Future<void> unregisterDevice(String pushToken, {String? sessionToken}) {
+    return _updateDevice(
+      '/notifications/unregister-device',
+      pushToken,
+      sessionToken,
+    );
   }
 
-  Future<void> _updateDevice(String path, String pushToken) async {
+  Future<void> _updateDevice(
+    String path,
+    String pushToken,
+    String? sessionToken,
+  ) async {
     final normalizedPushToken = _normalizedRequiredValue(pushToken);
 
     try {
-      await dio.post<dynamic>(path, data: {'pushToken': normalizedPushToken});
+      await dio.post<dynamic>(
+        path,
+        data: {'pushToken': normalizedPushToken},
+        options: sessionToken == null
+            ? null
+            : Options(headers: {'Authorization': 'Bearer $sessionToken'}),
+      );
     } on NotificationsException {
       rethrow;
     } on DioException catch (error) {

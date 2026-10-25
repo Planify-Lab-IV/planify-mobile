@@ -1,26 +1,37 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../../auth/domain/user_session.dart';
 import '../../../auth/presentation/controllers/auth_providers.dart';
 import '../../../auth/presentation/controllers/auth_state.dart';
 import '../../domain/notifications_repository.dart';
+import '../../data/push_permission_store.dart';
 import 'notifications_providers.dart';
+import 'push_device_operations.dart';
 import '../../../../core/providers/core_providers.dart';
 import '../../../../core/services/push_messaging_service.dart';
 
-class PushRegistrationNotifier {
-  final NotificationsRepository _repository;
+class PushRegistrationNotifier with WidgetsBindingObserver {
+  final PushDeviceOperations _operations;
   final PushMessagingService _pushMessagingService;
+  final PushPermissionStore _permissionStore;
   StreamSubscription<String>? _tokenRefreshSubscription;
   bool _organizerSessionActive = false;
   int _activationVersion = 0;
+  int? _checkingVersion;
+  String? _sessionToken;
+  bool _permissionReady = false;
+  Future<bool>? _permissionRequest;
 
   PushRegistrationNotifier({
-    required this._repository,
+    required NotificationsRepository repository,
     required this._pushMessagingService,
-  });
+    PushDeviceOperations? operations,
+    PushPermissionStore? permissionStore,
+  }) : _operations = operations ?? PushDeviceOperations(repository),
+       _permissionStore = permissionStore ?? MemoryPushPermissionStore();
 
   Future<void> handleAuthStateChange(
     AuthState? previous,
@@ -33,23 +44,52 @@ class PushRegistrationNotifier {
       return;
     }
 
-    if (_organizerSessionActive) return;
+    final sessionToken = next.session.token;
+    if (_organizerSessionActive && _sessionToken == sessionToken) return;
+    if (_organizerSessionActive) _deactivate();
     _organizerSessionActive = true;
+    _sessionToken = sessionToken;
     final activationVersion = ++_activationVersion;
-    await _activate(activationVersion);
+    await _activate(activationVersion, sessionToken, allowRequest: true);
   }
 
-  Future<void> _activate(int activationVersion) async {
+  Future<void> _activate(
+    int activationVersion,
+    String sessionToken, {
+    required bool allowRequest,
+  }) async {
+    if (_checkingVersion == activationVersion) return;
+    _checkingVersion = activationVersion;
     try {
-      final permissionGranted = await _pushMessagingService.requestPermission();
+      var permissionGranted = await _pushMessagingService.hasPermission();
+      if (!permissionGranted &&
+          allowRequest &&
+          !await _permissionStore.wasRequested()) {
+        if (!_isCurrentActivation(activationVersion)) return;
+        final request = _permissionRequest ??= _requestPermissionOnce();
+        try {
+          permissionGranted = await request;
+        } finally {
+          if (identical(_permissionRequest, request)) _permissionRequest = null;
+        }
+      }
       if (!_isCurrentActivation(activationVersion) || !permissionGranted) {
+        if (_isCurrentActivation(activationVersion)) {
+          _permissionReady = false;
+          final subscription = _tokenRefreshSubscription;
+          _tokenRefreshSubscription = null;
+          unawaited(subscription?.cancel());
+        }
         return;
       }
+
+      if (_permissionReady) return;
+      _permissionReady = true;
 
       _tokenRefreshSubscription ??= _pushMessagingService.onTokenRefresh.listen(
         (pushToken) {
           if (_isCurrentActivation(activationVersion)) {
-            unawaited(_registerToken(pushToken));
+            unawaited(_registerToken(pushToken, sessionToken));
           }
         },
         onError: (_, _) {},
@@ -59,17 +99,36 @@ class PushRegistrationNotifier {
       if (!_isCurrentActivation(activationVersion) || pushToken == null) {
         return;
       }
-      await _registerToken(pushToken);
+      await _registerToken(pushToken, sessionToken);
     } catch (_) {
       // Registrar un dispositivo nunca debe afectar el inicio de sesión.
+    } finally {
+      if (_checkingVersion == activationVersion) _checkingVersion = null;
     }
   }
 
-  Future<void> _registerToken(String pushToken) async {
+  Future<bool> _requestPermissionOnce() async {
+    final granted = await _pushMessagingService.requestPermission();
+    await _permissionStore.markRequested();
+    return granted;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed &&
+        _organizerSessionActive &&
+        _sessionToken != null) {
+      unawaited(
+        _activate(_activationVersion, _sessionToken!, allowRequest: false),
+      );
+    }
+  }
+
+  Future<void> _registerToken(String pushToken, String sessionToken) async {
     if (pushToken.trim().isEmpty) return;
 
     try {
-      await _repository.registerDevice(pushToken);
+      await _operations.register(pushToken, sessionToken);
     } catch (_) {
       // Se reintentará cuando la app restaure la sesión en el próximo inicio.
     }
@@ -81,6 +140,8 @@ class PushRegistrationNotifier {
 
   void _deactivate() {
     _organizerSessionActive = false;
+    _permissionReady = false;
+    _sessionToken = null;
     _activationVersion++;
     _tokenRefreshSubscription?.cancel();
     _tokenRefreshSubscription = null;
@@ -96,6 +157,8 @@ final pushRegistrationNotifierProvider = Provider<PushRegistrationNotifier>((
 ) {
   final notifier = PushRegistrationNotifier(
     repository: ref.watch(notificationsRepositoryProvider),
+    operations: ref.watch(pushDeviceOperationsProvider),
+    permissionStore: PersistentPushPermissionStore(),
     pushMessagingService: ref.watch(pushMessagingServiceProvider),
   );
   ref.listen<AuthState>(
@@ -103,6 +166,10 @@ final pushRegistrationNotifierProvider = Provider<PushRegistrationNotifier>((
     notifier.handleAuthStateChange,
     fireImmediately: true,
   );
-  ref.onDispose(notifier.dispose);
+  WidgetsBinding.instance.addObserver(notifier);
+  ref.onDispose(() {
+    WidgetsBinding.instance.removeObserver(notifier);
+    notifier.dispose();
+  });
   return notifier;
 });

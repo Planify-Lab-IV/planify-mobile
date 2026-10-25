@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dio/dio.dart';
 import 'package:planify/data/secure_storage.dart';
@@ -286,6 +288,25 @@ void main() {
       expect(notifier.state, isA<AuthUnauthenticated>());
       expect(await storage.getToken(), isNull);
     });
+
+    test(
+      'no inicia un desregistro tardío si obtener el token excede el timeout',
+      () async {
+        final token = Completer<String?>();
+        notifier = AuthNotifier(
+          repository,
+          storage,
+          notificationsRepository: notificationsRepository,
+          getPushToken: () => token.future,
+        );
+        await notifier.login(identifier: 'lucas', password: 'password123');
+        await notifier.logout();
+        expect(notifier.state, isA<AuthUnauthenticated>());
+        token.complete('late-token');
+        await Future<void>.delayed(Duration.zero);
+        expect(notificationsRepository.unregisteredPushTokens, isEmpty);
+      },
+    );
 
     test('logout informa un error si no puede borrar el token local', () async {
       final failingStorage = _FailingDeleteSecureStorage();

@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/notifications/data/http_notifications_repository.dart';
 import 'package:planify/features/notifications/data/notification_exceptions.dart';
+import 'package:planify/data/dio_client.dart';
+import 'package:planify/data/secure_storage.dart';
 
 void main() {
   Dio dioResolving(void Function(RequestOptions options)? inspect) {
@@ -82,6 +84,32 @@ void main() {
   });
 
   group('HttpNotificationsRepository.unregisterDevice', () {
+    test(
+      'conserva las credenciales de la sesión que originó la operación',
+      () async {
+        final storage = FakeSecureStorage();
+        await storage.saveToken('session-b');
+        final dio = DioClient.create(storage: storage);
+        RequestOptions? request;
+        dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              request = options;
+              handler.resolve(
+                Response<dynamic>(requestOptions: options, statusCode: 204),
+              );
+            },
+          ),
+        );
+        final repository = HttpNotificationsRepository(dio: dio);
+        await repository.unregisterDevice(
+          'push-token',
+          sessionToken: 'session-a',
+        );
+        expect(request?.headers['Authorization'], 'Bearer session-a');
+      },
+    );
+
     test('posts the normalized token to the unregister endpoint', () async {
       RequestOptions? request;
       final repository = HttpNotificationsRepository(

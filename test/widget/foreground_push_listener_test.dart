@@ -201,8 +201,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('View'), findsOneWidget);
     auth.setSession(_anonymous);
-    await tester.tap(find.text('View'));
     await tester.pumpAndSettle();
+    expect(find.text('View'), findsNothing);
+    expect(find.text('Nuevo gasto'), findsNothing);
     expect(find.byType(EventDetailScreen), findsNothing);
     await tester.pumpWidget(const SizedBox.shrink());
   });
@@ -215,8 +216,8 @@ void main() {
     messaging.emitForegroundMessage(_message);
     await tester.pumpAndSettle();
     auth.setSession(_otherOrganizer);
-    await tester.tap(find.text('Ver'));
     await tester.pumpAndSettle();
+    expect(find.text('Ver'), findsNothing);
     expect(find.byType(EventDetailScreen), findsNothing);
     await tester.pumpWidget(const SizedBox.shrink());
   });
@@ -248,6 +249,20 @@ void main() {
     messaging.emitMessageOpened(_message);
     await tester.idle();
     auth.setSession(_otherOrganizer);
+    await tester.pumpAndSettle();
+    expect(find.byType(EventDetailScreen), findsNothing);
+    await tester.pumpWidget(const SizedBox.shrink());
+  });
+
+  testWidgets('cierra el detalle abierto desde push al cambiar la sesión', (
+    tester,
+  ) async {
+    auth.setSession(_organizer);
+    await showApp(tester);
+    messaging.emitMessageOpened(_message);
+    await tester.pumpAndSettle();
+    expect(find.byType(EventDetailScreen), findsOneWidget);
+    auth.setSession(_anonymous);
     await tester.pumpAndSettle();
     expect(find.byType(EventDetailScreen), findsNothing);
     await tester.pumpWidget(const SizedBox.shrink());

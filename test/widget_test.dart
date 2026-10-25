@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/providers/core_providers.dart';
@@ -15,6 +16,30 @@ import 'package:planify/features/home/presentation/screens/registered_home_shell
 import 'package:planify/features/home/presentation/screens/participant_home_screen.dart';
 
 void main() {
+  testWidgets('la app inicia sin Firebase en plataformas fuera de Android', (
+    tester,
+  ) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+    try {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authRepositoryProvider.overrideWithValue(
+              FakeAuthRepository(delay: Duration.zero),
+            ),
+            secureStorageProvider.overrideWithValue(FakeSecureStorage()),
+          ],
+          child: const MyApp(),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pumpAndSettle();
+      expect(find.byType(PlanifyLogo), findsOneWidget);
+      await tester.pumpWidget(const SizedBox.shrink());
+    } finally {
+      debugDefaultTargetPlatformOverride = null;
+    }
+  });
   for (final anonymous in [false, true]) {
     testWidgets(
       anonymous

@@ -26,7 +26,7 @@ Future<void> main() async {
   final startupClock = Stopwatch()..start();
   final binding = WidgetsFlutterBinding.ensureInitialized();
   binding.deferFirstFrame();
-  if (defaultTargetPlatform == TargetPlatform.android) {
+  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
     await Firebase.initializeApp();
   }
   var firstFrameAllowed = false;
@@ -78,6 +78,10 @@ class MyApp extends ConsumerStatefulWidget {
 class _MyAppState extends ConsumerState<MyApp> {
   final _navigatorKey = GlobalKey<NavigatorState>();
   final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+  bool get _pushEnabled =>
+      widget.startPushRegistration &&
+      !kIsWeb &&
+      defaultTargetPlatform == TargetPlatform.android;
 
   @override
   void initState() {
@@ -88,7 +92,7 @@ class _MyAppState extends ConsumerState<MyApp> {
         if (next != SplashPhase.brand) widget.onSplashFinished?.call();
       }, fireImmediately: true);
     }
-    if (widget.startPushRegistration) {
+    if (_pushEnabled) {
       ref.read(pushRegistrationNotifierProvider);
     }
     // Inicia la escucha centralizada de deep links al arrancar la app
@@ -121,7 +125,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       theme: AppTheme.light,
       navigatorKey: _navigatorKey,
       scaffoldMessengerKey: _scaffoldMessengerKey,
-      builder: widget.startPushRegistration
+      builder: _pushEnabled
           ? (context, child) => ForegroundPushListener(
               navigatorKey: _navigatorKey,
               scaffoldMessengerKey: _scaffoldMessengerKey,

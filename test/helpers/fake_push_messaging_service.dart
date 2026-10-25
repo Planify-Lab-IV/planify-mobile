@@ -11,6 +11,7 @@ class FakePushMessagingService implements PushMessagingService {
       StreamController<PushMessage>.broadcast();
 
   bool permissionGranted;
+  bool permissionCurrentlyGranted;
   String? token;
   PushMessage? initialMessage;
   int requestPermissionCalls = 0;
@@ -19,13 +20,18 @@ class FakePushMessagingService implements PushMessagingService {
 
   FakePushMessagingService({
     this.permissionGranted = true,
+    this.permissionCurrentlyGranted = false,
     this.token = 'fake-push-token',
     this.initialMessage,
   });
 
   @override
+  Future<bool> hasPermission() async => permissionCurrentlyGranted;
+
+  @override
   Future<bool> requestPermission() async {
     requestPermissionCalls++;
+    permissionCurrentlyGranted = permissionGranted;
     return permissionGranted;
   }
 
