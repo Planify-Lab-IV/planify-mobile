@@ -17,6 +17,7 @@ import 'package:planify/features/home/presentation/screens/registered_home_shell
 import 'package:planify/features/invitations/presentation/controllers/invitation_providers.dart';
 import 'package:planify/features/invitations/presentation/controllers/invitation_state.dart';
 import 'package:planify/features/notifications/presentation/controllers/push_registration_notifier.dart';
+import 'package:planify/features/notifications/presentation/widgets/foreground_push_listener.dart';
 import 'package:planify/features/splash/presentation/controllers/splash_providers.dart';
 import 'package:planify/features/splash/presentation/screens/splash_screen.dart';
 
@@ -74,6 +75,9 @@ class MyApp extends ConsumerStatefulWidget {
 }
 
 class _MyAppState extends ConsumerState<MyApp> {
+  final _navigatorKey = GlobalKey<NavigatorState>();
+  final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
   @override
   void initState() {
     super.initState();
@@ -114,6 +118,15 @@ class _MyAppState extends ConsumerState<MyApp> {
     return MaterialApp(
       title: 'Planify',
       theme: AppTheme.light,
+      navigatorKey: _navigatorKey,
+      scaffoldMessengerKey: _scaffoldMessengerKey,
+      builder: widget.startPushRegistration
+          ? (context, child) => ForegroundPushListener(
+              navigatorKey: _navigatorKey,
+              scaffoldMessengerKey: _scaffoldMessengerKey,
+              child: child!,
+            )
+          : null,
 
       // Configuración de idiomas
       localizationsDelegates: const [

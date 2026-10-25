@@ -149,6 +149,7 @@
   "assignedGroupLabel": "Assigned group",
   "backToHomeButton": "Back to home",
   "viewEventDetailButton": "View event details",
+  "pushNotificationViewAction": "View",
   "draftSummaryTitle": "Draft summary",
   "draftEventName": "Name",
   "draftEventLocation": "Location",

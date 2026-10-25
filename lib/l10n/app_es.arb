@@ -149,6 +149,7 @@
   "assignedGroupLabel": "Grupo asignado",
   "backToHomeButton": "Volver al inicio",
   "viewEventDetailButton": "Ver detalle del evento",
+  "pushNotificationViewAction": "Ver",
   "draftSummaryTitle": "Resumen del borrador",
   "draftEventName": "Nombre",
   "draftEventLocation": "Lugar",

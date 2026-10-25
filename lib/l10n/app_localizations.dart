@@ -880,6 +880,12 @@ abstract class AppLocalizations {
   /// **'Ver detalle del evento'**
   String get viewEventDetailButton;
 
+  /// No description provided for @pushNotificationViewAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver'**
+  String get pushNotificationViewAction;
+
   /// No description provided for @draftSummaryTitle.
   ///
   /// In es, this message translates to:
