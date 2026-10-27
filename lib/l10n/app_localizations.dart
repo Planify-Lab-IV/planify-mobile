@@ -517,8 +517,14 @@ abstract class AppLocalizations {
   /// No description provided for @resetPasswordInvalidCodeError.
   ///
   /// In es, this message translates to:
-  /// **'El código es inválido o venció. Revisalo e intentá nuevamente.'**
+  /// **'El código no es válido o venció. Pedí uno nuevo.'**
   String get resetPasswordInvalidCodeError;
+
+  /// No description provided for @resetPasswordRequestNewCode.
+  ///
+  /// In es, this message translates to:
+  /// **'Pedir un código nuevo'**
+  String get resetPasswordRequestNewCode;
 
   /// No description provided for @resetPasswordNetworkError.
   ///

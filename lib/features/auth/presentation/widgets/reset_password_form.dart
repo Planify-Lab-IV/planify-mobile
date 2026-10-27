@@ -71,6 +71,19 @@ class _ResetPasswordFormState extends ConsumerState<ResetPasswordForm> {
           code: _code,
           newPassword: _passwordController.text,
         );
+
+    if (!mounted) return;
+
+    final state = ref.read(passwordRecoveryNotifierProvider);
+    if (state is PasswordRecoveryError &&
+        state.operation == PasswordRecoveryOperation.reset &&
+        state.reason == PasswordRecoveryFailureReason.invalidResetCode) {
+      for (final controller in _codeControllers) {
+        controller.clear();
+      }
+      _codeFocusNodes.first.requestFocus();
+      setState(() {});
+    }
   }
 
   void _onCodeChanged(int index, String value) {
@@ -277,6 +290,13 @@ class _ResetPasswordFormState extends ConsumerState<ResetPasswordForm> {
                     ],
                   ),
                 ),
+                if (error.reason ==
+                    PasswordRecoveryFailureReason.invalidResetCode)
+                  TextButton(
+                    key: const Key('reset_password_request_new_code_button'),
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text(i18n.resetPasswordRequestNewCode),
+                  ),
                 const SizedBox(height: AppSpacing.md),
               ],
               if (isSuccess) ...[

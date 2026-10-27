@@ -256,7 +256,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resetPasswordInvalidCodeError =>
-      'The code is invalid or expired. Check it and try again.';
+      'The code is invalid or expired. Request a new one.';
+
+  @override
+  String get resetPasswordRequestNewCode => 'Request a new code';
 
   @override
   String get resetPasswordNetworkError =>

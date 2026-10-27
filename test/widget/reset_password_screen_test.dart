@@ -130,10 +130,25 @@ void main() {
         findsOneWidget,
       );
       expect(
-        find.text(
-          'El código es inválido o venció. Revisalo e intentá nuevamente.',
-        ),
+        find.text('El código no es válido o venció. Pedí uno nuevo.'),
         findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('reset_password_request_new_code_button')),
+        findsOneWidget,
+      );
+      for (var index = 0; index < 6; index++) {
+        final field = find.byKey(Key('reset_password_code_digit_$index'));
+        expect(tester.widget<TextFormField>(field).controller?.text, isEmpty);
+      }
+      expect(
+        tester
+            .widget<TextFormField>(
+              find.byKey(const Key('reset_password_new_password_input')),
+            )
+            .controller
+            ?.text,
+        'contraseña-segura',
       );
     });
 
