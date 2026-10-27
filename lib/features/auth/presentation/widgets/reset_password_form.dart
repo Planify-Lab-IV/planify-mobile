@@ -127,20 +127,6 @@ class _ResetPasswordFormState extends ConsumerState<ResetPasswordForm> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                i18n.resetPasswordTitle,
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                i18n.resetPasswordDescription,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
               TextFormField(
                 key: const Key('reset_password_email_input'),
                 initialValue: widget.email,
@@ -220,6 +206,7 @@ class _ResetPasswordFormState extends ConsumerState<ResetPasswordForm> {
                 decoration: InputDecoration(
                   hintText: i18n.resetPasswordNewPasswordLabel,
                   helperText: i18n.resetPasswordNewPasswordHelp,
+                  helperMaxLines: 2,
                   prefixIcon: const Icon(Icons.lock_outline_rounded),
                   suffixIcon: IconButton(
                     icon: Icon(

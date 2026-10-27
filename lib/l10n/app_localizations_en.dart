@@ -201,14 +201,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get forgotPasswordDescription =>
-      'Enter your email address to receive a recovery code.';
+      'Enter your email address to receive\na recovery code.';
 
   @override
   String get forgotPasswordSubmitButton => 'Send';
 
   @override
   String get forgotPasswordSuccessMessage =>
-      'If that email is registered, you will receive a 6-digit code to reset your password.';
+      'If the email is registered, we\'ll send a\nsix-digit code.';
+
+  @override
+  String get forgotPasswordResendButton => 'Resend';
 
   @override
   String get forgotPasswordNetworkError =>
@@ -222,14 +225,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forgotPasswordLoginLink => 'Forgot your password?';
 
   @override
-  String get forgotPasswordHaveCode => 'I already have the code';
+  String get forgotPasswordHaveCode => 'I have the code';
 
   @override
   String get resetPasswordTitle => 'Reset password';
 
   @override
   String get resetPasswordDescription =>
-      'Enter the 6-digit code you received and choose a new password.';
+      'Enter the 6-digit code you received and\nchoose a new password.';
 
   @override
   String get resetPasswordCodeLabel => 'Recovery code';
@@ -239,7 +242,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resetPasswordNewPasswordHelp =>
-      'It must be between 8 and 72 characters';
+      'Password must be between 8 and 72 characters';
 
   @override
   String get resetPasswordSubmitButton => 'Reset password';

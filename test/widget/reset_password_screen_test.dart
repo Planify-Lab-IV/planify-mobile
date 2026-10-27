@@ -51,6 +51,7 @@ void main() {
         );
         expect(find.text('organizador@planify.com'), findsOneWidget);
         expect(tester.widget<ElevatedButton>(submitButton).onPressed, isNull);
+        expect(find.text('Debe tener entre 8 y 72 caracteres'), findsOneWidget);
 
         await _enterCode(tester, '123456');
         await tester.enterText(

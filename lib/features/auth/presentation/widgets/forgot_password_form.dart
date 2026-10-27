@@ -78,20 +78,6 @@ class _ForgotPasswordFormState extends ConsumerState<ForgotPasswordForm> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                i18n.forgotPasswordTitle,
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                i18n.forgotPasswordDescription,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
               if (error != null) ...[
                 Container(
                   key: const Key('forgot_password_error_banner'),
@@ -125,34 +111,25 @@ class _ForgotPasswordFormState extends ConsumerState<ForgotPasswordForm> {
                 ),
                 const SizedBox(height: AppSpacing.md),
               ],
-              if (isSuccess) ...[
-                Container(
-                  key: const Key('forgot_password_success_message'),
-                  padding: const EdgeInsets.all(AppSpacing.sm),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(AppRadius.sm),
-                  ),
-                  child: Text(
-                    i18n.forgotPasswordSuccessMessage,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onPrimaryContainer,
-                    ),
+              Container(
+                key: const Key('forgot_password_success_message'),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.xs,
+                ),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                ),
+                child: Text(
+                  i18n.forgotPasswordSuccessMessage,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onPrimaryContainer,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.md),
-                TextButton(
-                  key: const Key('forgot_password_have_code_button'),
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) => ResetPasswordScreen(
-                        email: _emailController.text.trim(),
-                      ),
-                    ),
-                  ),
-                  child: Text(i18n.forgotPasswordHaveCode),
-                ),
-              ],
+              ),
+              const SizedBox(height: AppSpacing.md),
               TextFormField(
                 key: const Key('forgot_password_email_input'),
                 controller: _emailController,
@@ -185,8 +162,26 @@ class _ForgotPasswordFormState extends ConsumerState<ForgotPasswordForm> {
                           color: Colors.white,
                         ),
                       )
-                    : Text(i18n.forgotPasswordSubmitButton),
+                    : Text(
+                        isSuccess
+                            ? i18n.forgotPasswordResendButton
+                            : i18n.forgotPasswordSubmitButton,
+                      ),
               ),
+              if (isSuccess) ...[
+                const SizedBox(height: AppSpacing.sm),
+                TextButton(
+                  key: const Key('forgot_password_have_code_button'),
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => ResetPasswordScreen(
+                        email: _emailController.text.trim(),
+                      ),
+                    ),
+                  ),
+                  child: Text(i18n.forgotPasswordHaveCode),
+                ),
+              ],
             ],
           ),
         ),

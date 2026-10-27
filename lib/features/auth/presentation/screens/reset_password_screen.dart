@@ -48,18 +48,20 @@ class ResetPasswordScreen extends StatelessWidget {
                   const PlanifyLogo(),
                   const SizedBox(height: AppSpacing.md),
                   Text(
-                    'Planify',
+                    i18n.resetPasswordTitle,
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: AppColors.darkBlue,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    i18n.appTagline,
+                    i18n.resetPasswordDescription,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: AppSpacing.xl),
                   ResetPasswordForm(email: email),

@@ -212,6 +212,9 @@ class AppLocalizationsEs extends AppLocalizations {
       'Si ese email está registrado, vas a recibir un código de 6 dígitos para restablecer tu contraseña.';
 
   @override
+  String get forgotPasswordResendButton => 'Reenviar';
+
+  @override
   String get forgotPasswordNetworkError =>
       'No pudimos enviar el código por un problema de conexión. Intentá nuevamente.';
 
@@ -223,7 +226,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get forgotPasswordLoginLink => '¿Olvidaste tu contraseña?';
 
   @override
-  String get forgotPasswordHaveCode => 'Ya tengo el código';
+  String get forgotPasswordHaveCode => 'Tengo el código';
 
   @override
   String get resetPasswordTitle => 'Restablecer contraseña';
