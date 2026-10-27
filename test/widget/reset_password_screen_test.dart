@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/features/auth/data/fake_auth_repository.dart';
+import 'package:planify/features/auth/data/auth_exceptions.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
 import 'package:planify/features/auth/presentation/screens/reset_password_screen.dart';
 import 'package:planify/l10n/app_localizations.dart';
@@ -49,7 +50,10 @@ void main() {
         final submitButton = find.byKey(
           const Key('reset_password_submit_button'),
         );
-        expect(find.text('organizador@planify.com'), findsOneWidget);
+        expect(
+          find.text('Código enviado a organizador@planify.com'),
+          findsOneWidget,
+        );
         expect(tester.widget<ElevatedButton>(submitButton).onPressed, isNull);
         expect(find.text('Debe tener entre 8 y 72 caracteres'), findsOneWidget);
 
@@ -137,6 +141,16 @@ void main() {
         find.byKey(const Key('reset_password_request_new_code_button')),
         findsOneWidget,
       );
+      expect(
+        tester
+            .getRect(find.byKey(const Key('reset_password_error_banner')))
+            .top,
+        greaterThan(
+          tester
+              .getRect(find.byKey(const Key('reset_password_submit_button')))
+              .bottom,
+        ),
+      );
       for (var index = 0; index < 6; index++) {
         final field = find.byKey(Key('reset_password_code_digit_$index'));
         expect(tester.widget<TextFormField>(field).controller?.text, isEmpty);
@@ -150,6 +164,33 @@ void main() {
             ?.text,
         'contraseña-segura',
       );
+    });
+
+    testWidgets('informa cuando la contraseña no es válida en el backend', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _buildTestApp(
+          repository: _InvalidResetDataRepository(delay: Duration.zero),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await _enterCode(tester, '123456');
+      await tester.enterText(
+        find.byKey(const Key('reset_password_new_password_input')),
+        'contraseña-segura',
+      );
+      await tester.pump();
+
+      final submitButton = find.byKey(
+        const Key('reset_password_submit_button'),
+      );
+      await tester.ensureVisible(submitButton);
+      await tester.tap(submitButton);
+      await tester.pumpAndSettle();
+
+      expect(find.text('La contraseña no es válida'), findsOneWidget);
     });
 
     testWidgets('confirma el restablecimiento con un código válido', (
@@ -181,4 +222,17 @@ void main() {
       expect(find.text('Volver a iniciar sesión'), findsOneWidget);
     });
   });
+}
+
+class _InvalidResetDataRepository extends FakeAuthRepository {
+  _InvalidResetDataRepository({super.delay});
+
+  @override
+  Future<void> resetPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    throw const InvalidResetDataException();
+  }
 }

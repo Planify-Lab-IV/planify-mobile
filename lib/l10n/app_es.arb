@@ -66,6 +66,12 @@
   "forgotPasswordHaveCode": "Tengo el código",
   "resetPasswordTitle": "Restablecer contraseña",
   "resetPasswordDescription": "Ingresá el código de 6 dígitos que recibiste y elegí una nueva contraseña.",
+  "resetPasswordEmailSent": "Código enviado a {email}",
+  "@resetPasswordEmailSent": {
+    "placeholders": {
+      "email": {}
+    }
+  },
   "resetPasswordCodeLabel": "Código de recuperación",
   "resetPasswordNewPasswordLabel": "Nueva contraseña",
   "resetPasswordNewPasswordHelp": "Debe tener entre 8 y 72 caracteres",
@@ -73,6 +79,7 @@
   "resetPasswordSuccessMessage": "Tu contraseña se actualizó correctamente. Ya podés iniciar sesión.",
   "resetPasswordBackToLogin": "Volver a iniciar sesión",
   "resetPasswordInvalidCodeError": "El código no es válido o venció. Pedí uno nuevo.",
+  "resetPasswordInvalidDataError": "La contraseña no es válida",
   "resetPasswordRequestNewCode": "Pedir un código nuevo",
   "resetPasswordNetworkError": "No pudimos restablecer la contraseña por un problema de conexión. Intentá nuevamente.",
   "resetPasswordGenericError": "No pudimos restablecer la contraseña. Intentá nuevamente.",

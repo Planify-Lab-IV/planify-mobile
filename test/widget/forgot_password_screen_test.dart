@@ -118,10 +118,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(
-        find.byKey(const Key('reset_password_email_input')),
+        find.byKey(const Key('reset_password_email_sent')),
         findsOneWidget,
       );
-      expect(find.text('missing@planify.com'), findsOneWidget);
+      expect(find.text('Código enviado a missing@planify.com'), findsOneWidget);
     });
 
     testWidgets('muestra un error de red y conserva el email escrito', (
@@ -202,10 +202,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(
-        find.byKey(const Key('reset_password_email_input')),
+        find.byKey(const Key('reset_password_email_sent')),
         findsOneWidget,
       );
-      expect(find.text('ultimo@planify.com'), findsOneWidget);
+      expect(find.text('Código enviado a ultimo@planify.com'), findsOneWidget);
     });
 
     testWidgets('muestra los textos de recuperación en inglés', (tester) async {

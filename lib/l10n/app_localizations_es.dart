@@ -236,6 +236,11 @@ class AppLocalizationsEs extends AppLocalizations {
       'Ingresá el código de 6 dígitos que recibiste y elegí una nueva contraseña.';
 
   @override
+  String resetPasswordEmailSent(Object email) {
+    return 'Código enviado a $email';
+  }
+
+  @override
   String get resetPasswordCodeLabel => 'Código de recuperación';
 
   @override
@@ -258,6 +263,9 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get resetPasswordInvalidCodeError =>
       'El código no es válido o venció. Pedí uno nuevo.';
+
+  @override
+  String get resetPasswordInvalidDataError => 'La contraseña no es válida';
 
   @override
   String get resetPasswordRequestNewCode => 'Pedir un código nuevo';

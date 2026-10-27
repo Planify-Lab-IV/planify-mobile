@@ -478,6 +478,12 @@ abstract class AppLocalizations {
   /// **'Ingresá el código de 6 dígitos que recibiste y elegí una nueva contraseña.'**
   String get resetPasswordDescription;
 
+  /// No description provided for @resetPasswordEmailSent.
+  ///
+  /// In es, this message translates to:
+  /// **'Código enviado a {email}'**
+  String resetPasswordEmailSent(Object email);
+
   /// No description provided for @resetPasswordCodeLabel.
   ///
   /// In es, this message translates to:
@@ -519,6 +525,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'El código no es válido o venció. Pedí uno nuevo.'**
   String get resetPasswordInvalidCodeError;
+
+  /// No description provided for @resetPasswordInvalidDataError.
+  ///
+  /// In es, this message translates to:
+  /// **'La contraseña no es válida'**
+  String get resetPasswordInvalidDataError;
 
   /// No description provided for @resetPasswordRequestNewCode.
   ///

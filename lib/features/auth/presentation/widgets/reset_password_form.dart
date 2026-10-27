@@ -127,6 +127,8 @@ class _ResetPasswordFormState extends ConsumerState<ResetPasswordForm> {
     return switch (reason) {
       PasswordRecoveryFailureReason.invalidResetCode =>
         i18n.resetPasswordInvalidCodeError,
+      PasswordRecoveryFailureReason.invalidResetData =>
+        i18n.resetPasswordInvalidDataError,
       PasswordRecoveryFailureReason.networkError =>
         i18n.resetPasswordNetworkError,
       _ => i18n.resetPasswordGenericError,
@@ -160,15 +162,13 @@ class _ResetPasswordFormState extends ConsumerState<ResetPasswordForm> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              TextFormField(
-                key: const Key('reset_password_email_input'),
-                initialValue: widget.email,
-                readOnly: true,
-                enableInteractiveSelection: false,
-                decoration: InputDecoration(
-                  labelText: i18n.registrationEmailLabel,
-                  prefixIcon: const Icon(Icons.email_outlined),
+              Text(
+                key: const Key('reset_password_email_sent'),
+                i18n.resetPasswordEmailSent(widget.email),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
                 ),
+                textAlign: TextAlign.left,
               ),
               const SizedBox(height: AppSpacing.lg),
               Text(
@@ -259,46 +259,6 @@ class _ResetPasswordFormState extends ConsumerState<ResetPasswordForm> {
                 onChanged: (_) => setState(() {}),
               ),
               const SizedBox(height: AppSpacing.lg),
-              if (error != null) ...[
-                Container(
-                  key: const Key('reset_password_error_banner'),
-                  padding: const EdgeInsets.all(AppSpacing.sm),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.errorContainer,
-                    borderRadius: BorderRadius.circular(AppRadius.sm),
-                    border: Border.all(
-                      color: theme.colorScheme.error.withValues(alpha: 0.5),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.error_outline_rounded,
-                        color: theme.colorScheme.error,
-                        size: 20,
-                      ),
-                      const SizedBox(width: AppSpacing.sm),
-                      Expanded(
-                        child: Text(
-                          _getErrorMessage(error.reason, i18n),
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onErrorContainer,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                if (error.reason ==
-                    PasswordRecoveryFailureReason.invalidResetCode)
-                  TextButton(
-                    key: const Key('reset_password_request_new_code_button'),
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text(i18n.resetPasswordRequestNewCode),
-                  ),
-                const SizedBox(height: AppSpacing.md),
-              ],
               if (isSuccess) ...[
                 Container(
                   key: const Key('reset_password_success_message'),
@@ -338,6 +298,46 @@ class _ResetPasswordFormState extends ConsumerState<ResetPasswordForm> {
                       )
                     : Text(i18n.resetPasswordSubmitButton),
               ),
+              if (error != null) ...[
+                const SizedBox(height: AppSpacing.md),
+                Container(
+                  key: const Key('reset_password_error_banner'),
+                  padding: const EdgeInsets.all(AppSpacing.sm),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.errorContainer,
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
+                    border: Border.all(
+                      color: theme.colorScheme.error.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.error_outline_rounded,
+                        color: theme.colorScheme.error,
+                        size: 20,
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      Expanded(
+                        child: Text(
+                          _getErrorMessage(error.reason, i18n),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onErrorContainer,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (error.reason ==
+                    PasswordRecoveryFailureReason.invalidResetCode)
+                  TextButton(
+                    key: const Key('reset_password_request_new_code_button'),
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text(i18n.resetPasswordRequestNewCode),
+                  ),
+              ],
             ],
           ),
         ),
