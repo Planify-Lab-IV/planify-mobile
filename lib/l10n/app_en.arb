@@ -54,6 +54,12 @@
   "registrationErrorNetwork": "We could not create the account because of a connection problem. Please try again.",
   "registrationErrorGeneric": "We could not create the account. Please try again.",
   "registrationBackToLogin": "Already have an account? Sign in",
+  "forgotPasswordTitle": "Reset password",
+  "forgotPasswordDescription": "Enter your email address to receive a recovery code.",
+  "forgotPasswordSubmitButton": "Send",
+  "forgotPasswordSuccessMessage": "If that email is registered, you will receive a 6-digit code to reset your password.",
+  "forgotPasswordNetworkError": "We could not send the code because of a connection problem. Please try again.",
+  "forgotPasswordGenericError": "We could not send the code. Please try again.",
   "logoutButton": "Sign Out",
   "welcomeOrganizer": "Welcome, {name}!",
   "@welcomeOrganizer": {

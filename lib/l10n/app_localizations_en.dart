@@ -195,6 +195,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registrationBackToLogin => 'Already have an account? Sign in';
 
   @override
+  String get forgotPasswordTitle => 'Reset password';
+
+  @override
+  String get forgotPasswordDescription =>
+      'Enter your email address to receive a recovery code.';
+
+  @override
+  String get forgotPasswordSubmitButton => 'Send';
+
+  @override
+  String get forgotPasswordSuccessMessage =>
+      'If that email is registered, you will receive a 6-digit code to reset your password.';
+
+  @override
+  String get forgotPasswordNetworkError =>
+      'We could not send the code because of a connection problem. Please try again.';
+
+  @override
+  String get forgotPasswordGenericError =>
+      'We could not send the code. Please try again.';
+
+  @override
   String get logoutButton => 'Sign Out';
 
   @override

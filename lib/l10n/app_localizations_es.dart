@@ -195,6 +195,28 @@ class AppLocalizationsEs extends AppLocalizations {
   String get registrationBackToLogin => '¿Ya tenés cuenta? Iniciá sesión';
 
   @override
+  String get forgotPasswordTitle => 'Recuperar contraseña';
+
+  @override
+  String get forgotPasswordDescription =>
+      'Ingresá tu correo electrónico para recibir un código de recuperación.';
+
+  @override
+  String get forgotPasswordSubmitButton => 'Enviar';
+
+  @override
+  String get forgotPasswordSuccessMessage =>
+      'Si ese email está registrado, vas a recibir un código de 6 dígitos para restablecer tu contraseña.';
+
+  @override
+  String get forgotPasswordNetworkError =>
+      'No pudimos enviar el código por un problema de conexión. Intentá nuevamente.';
+
+  @override
+  String get forgotPasswordGenericError =>
+      'No pudimos enviar el código. Intentá nuevamente.';
+
+  @override
   String get logoutButton => 'Cerrar Sesión';
 
   @override

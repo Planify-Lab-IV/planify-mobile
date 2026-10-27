@@ -406,6 +406,42 @@ abstract class AppLocalizations {
   /// **'¿Ya tenés cuenta? Iniciá sesión'**
   String get registrationBackToLogin;
 
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Recuperar contraseña'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @forgotPasswordDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá tu correo electrónico para recibir un código de recuperación.'**
+  String get forgotPasswordDescription;
+
+  /// No description provided for @forgotPasswordSubmitButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar'**
+  String get forgotPasswordSubmitButton;
+
+  /// No description provided for @forgotPasswordSuccessMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Si ese email está registrado, vas a recibir un código de 6 dígitos para restablecer tu contraseña.'**
+  String get forgotPasswordSuccessMessage;
+
+  /// No description provided for @forgotPasswordNetworkError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos enviar el código por un problema de conexión. Intentá nuevamente.'**
+  String get forgotPasswordNetworkError;
+
+  /// No description provided for @forgotPasswordGenericError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos enviar el código. Intentá nuevamente.'**
+  String get forgotPasswordGenericError;
+
   /// No description provided for @logoutButton.
   ///
   /// In es, this message translates to:
