@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "304641530217",
+    "project_id": "planify-austral",
+    "storage_bucket": "planify-austral.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:304641530217:android:313de890ac0b52fd8dc5f8",
+        "android_client_info": {
+          "package_name": "com.planify.planify"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBz7kye6tiMwwfmeh7_4YW-5g_Var0VL4w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

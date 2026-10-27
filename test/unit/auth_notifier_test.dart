@@ -1,24 +1,50 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dio/dio.dart';
 import 'package:planify/data/secure_storage.dart';
 import 'package:planify/features/auth/data/auth_exceptions.dart';
 import 'package:planify/features/auth/data/fake_auth_repository.dart';
 import 'package:planify/features/auth/data/http_auth_repository.dart';
+import 'package:planify/features/auth/domain/auth_repository.dart';
 import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_notifier.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_state.dart';
+import 'package:planify/features/notifications/data/fake_notifications_repository.dart';
+
+import '../helpers/fake_push_messaging_service.dart';
 
 void main() {
   group('AuthNotifier', () {
     late FakeAuthRepository repository;
     late FakeSecureStorage storage;
+    late FakeNotificationsRepository notificationsRepository;
+    late FakePushMessagingService pushMessagingService;
     late AuthNotifier notifier;
+
+    AuthNotifier createNotifier(
+      AuthRepository authRepository,
+      SecureStorage authStorage,
+    ) {
+      return AuthNotifier(
+        authRepository,
+        authStorage,
+        notificationsRepository: notificationsRepository,
+        getPushToken: pushMessagingService.getToken,
+      );
+    }
 
     setUp(() {
       storage = FakeSecureStorage();
       repository = FakeAuthRepository(storage: storage, delay: Duration.zero);
-      notifier = AuthNotifier(repository, storage);
+      notificationsRepository = FakeNotificationsRepository(
+        delay: Duration.zero,
+      );
+      pushMessagingService = FakePushMessagingService();
+      notifier = createNotifier(repository, storage);
     });
+
+    tearDown(() => pushMessagingService.dispose());
 
     test('estado inicial es AuthInitial', () {
       expect(notifier.state, isA<AuthInitial>());
@@ -153,7 +179,7 @@ void main() {
       'register con conflicto conserva el token y cambia a AuthError específico',
       () async {
         await storage.saveToken('existing-token');
-        notifier = AuthNotifier(
+        notifier = createNotifier(
           FakeAuthRepository(
             storage: storage,
             delay: Duration.zero,
@@ -210,7 +236,7 @@ void main() {
     test(
       'register con error desconocido cambia a AuthError desconocido',
       () async {
-        notifier = AuthNotifier(
+        notifier = createNotifier(
           _ThrowingRegisterRepository(
             storage: storage,
             exception: const UnknownAuthException(),
@@ -241,7 +267,46 @@ void main() {
       expect(notifier.state, isA<AuthUnauthenticated>());
       final storedToken = await storage.getToken();
       expect(storedToken, isNull);
+      expect(notificationsRepository.unregisteredPushTokens, [
+        'fake-push-token',
+      ]);
     });
+
+    test('logout continúa si no puede desregistrar el dispositivo', () async {
+      notificationsRepository = FakeNotificationsRepository(
+        delay: Duration.zero,
+        shouldThrowError: true,
+      );
+      notifier = createNotifier(repository, storage);
+      await notifier.login(
+        identifier: 'lucas@gmail.com',
+        password: 'password123',
+      );
+
+      await notifier.logout();
+
+      expect(notifier.state, isA<AuthUnauthenticated>());
+      expect(await storage.getToken(), isNull);
+    });
+
+    test(
+      'no inicia un desregistro tardío si obtener el token excede el timeout',
+      () async {
+        final token = Completer<String?>();
+        notifier = AuthNotifier(
+          repository,
+          storage,
+          notificationsRepository: notificationsRepository,
+          getPushToken: () => token.future,
+        );
+        await notifier.login(identifier: 'lucas', password: 'password123');
+        await notifier.logout();
+        expect(notifier.state, isA<AuthUnauthenticated>());
+        token.complete('late-token');
+        await Future<void>.delayed(Duration.zero);
+        expect(notificationsRepository.unregisteredPushTokens, isEmpty);
+      },
+    );
 
     test('logout informa un error si no puede borrar el token local', () async {
       final failingStorage = _FailingDeleteSecureStorage();
@@ -249,7 +314,7 @@ void main() {
         storage: failingStorage,
         delay: Duration.zero,
       );
-      notifier = AuthNotifier(failingRepository, failingStorage);
+      notifier = createNotifier(failingRepository, failingStorage);
 
       await notifier.login(
         identifier: 'lucas@gmail.com',
@@ -264,7 +329,7 @@ void main() {
 
     test('checkAuthStatus clears an invalid stored token', () async {
       await storage.saveToken('expired-jwt-token');
-      notifier = AuthNotifier(
+      notifier = createNotifier(
         _ThrowingCurrentSessionRepository(
           storage: storage,
           exception: const InvalidStoredSessionException(),
@@ -280,7 +345,7 @@ void main() {
 
     test('checkAuthStatus keeps the token after a network failure', () async {
       await storage.saveToken('stored-jwt-token');
-      notifier = AuthNotifier(
+      notifier = createNotifier(
         _ThrowingCurrentSessionRepository(
           storage: storage,
           exception: const NetworkAuthException(),
@@ -299,7 +364,7 @@ void main() {
       () async {
         final failingStorage = _FailingDeleteSecureStorage();
         await failingStorage.saveToken('expired-jwt-token');
-        notifier = AuthNotifier(
+        notifier = createNotifier(
           _ThrowingCurrentSessionRepository(
             storage: failingStorage,
             exception: const InvalidStoredSessionException(),
@@ -337,7 +402,7 @@ void main() {
             ),
           ),
         );
-        notifier = AuthNotifier(
+        notifier = createNotifier(
           HttpAuthRepository(dio: dio, storage: storage),
           storage,
         );
@@ -374,7 +439,7 @@ void main() {
             ),
           ),
         );
-        notifier = AuthNotifier(
+        notifier = createNotifier(
           HttpAuthRepository(dio: dio, storage: storage),
           storage,
         );
@@ -411,7 +476,7 @@ void main() {
             ),
           ),
         );
-        notifier = AuthNotifier(
+        notifier = createNotifier(
           HttpAuthRepository(dio: dio, storage: storage),
           storage,
         );

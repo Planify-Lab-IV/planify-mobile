@@ -450,6 +450,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get viewEventDetailButton => 'Ver detalle del evento';
 
   @override
+  String get pushNotificationViewAction => 'Ver';
+
+  @override
   String get draftSummaryTitle => 'Resumen del borrador';
 
   @override
