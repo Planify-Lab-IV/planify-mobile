@@ -14,6 +14,14 @@ class InvalidRegistrationDataException extends AuthException {
   const InvalidRegistrationDataException();
 }
 
+class InvalidResetCodeException extends AuthException {
+  const InvalidResetCodeException();
+}
+
+class InvalidResetDataException extends AuthException {
+  const InvalidResetDataException();
+}
+
 class InvalidStoredSessionException extends AuthException {
   const InvalidStoredSessionException();
 }

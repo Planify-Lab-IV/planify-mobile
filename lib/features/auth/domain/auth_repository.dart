@@ -17,6 +17,14 @@ abstract class AuthRepository {
     );
   }
 
+  Future<void> requestPasswordReset({required String email});
+
+  Future<void> resetPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+  });
+
   Future<UserSession> loginAnonymously({
     required String name,
     required String pin,
