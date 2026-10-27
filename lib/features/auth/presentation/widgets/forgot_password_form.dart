@@ -19,6 +19,7 @@ class ForgotPasswordForm extends ConsumerStatefulWidget {
 class _ForgotPasswordFormState extends ConsumerState<ForgotPasswordForm> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
+  String? _requestedEmail;
 
   bool get _isFormValid =>
       isValidRegistrationEmail(_emailController.text.trim());
@@ -34,10 +35,19 @@ class _ForgotPasswordFormState extends ConsumerState<ForgotPasswordForm> {
       return;
     }
 
+    final email = _emailController.text.trim();
     FocusScope.of(context).unfocus();
     await ref
         .read(passwordRecoveryNotifierProvider.notifier)
-        .requestPasswordReset(email: _emailController.text.trim());
+        .requestPasswordReset(email: email);
+
+    if (!mounted) return;
+
+    final state = ref.read(passwordRecoveryNotifierProvider);
+    if (state is PasswordRecoverySuccess &&
+        state.operation == PasswordRecoveryOperation.request) {
+      setState(() => _requestedEmail = email);
+    }
   }
 
   String _getErrorMessage(
@@ -62,6 +72,8 @@ class _ForgotPasswordFormState extends ConsumerState<ForgotPasswordForm> {
     final isSuccess =
         state is PasswordRecoverySuccess &&
         state.operation == PasswordRecoveryOperation.request;
+    final hasCodeForCurrentEmail =
+        isSuccess && _requestedEmail == _emailController.text.trim();
     final error =
         state is PasswordRecoveryError &&
             state.operation == PasswordRecoveryOperation.request
@@ -163,20 +175,19 @@ class _ForgotPasswordFormState extends ConsumerState<ForgotPasswordForm> {
                         ),
                       )
                     : Text(
-                        isSuccess
+                        hasCodeForCurrentEmail
                             ? i18n.forgotPasswordResendButton
                             : i18n.forgotPasswordSubmitButton,
                       ),
               ),
-              if (isSuccess) ...[
+              if (hasCodeForCurrentEmail) ...[
                 const SizedBox(height: AppSpacing.sm),
                 TextButton(
                   key: const Key('forgot_password_have_code_button'),
                   onPressed: () => Navigator.of(context).push(
                     MaterialPageRoute<void>(
-                      builder: (_) => ResetPasswordScreen(
-                        email: _emailController.text.trim(),
-                      ),
+                      builder: (_) =>
+                          ResetPasswordScreen(email: _requestedEmail!),
                     ),
                   ),
                   child: Text(i18n.forgotPasswordHaveCode),

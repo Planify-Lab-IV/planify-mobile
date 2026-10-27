@@ -165,6 +165,49 @@ void main() {
       );
     });
 
+    testWidgets('oculta el acceso al código al cambiar el email solicitado', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _buildTestApp(repository: FakeAuthRepository(delay: Duration.zero)),
+      );
+      await tester.pumpAndSettle();
+
+      final emailInput = find.byKey(const Key('forgot_password_email_input'));
+      final submitButton = find.byKey(
+        const Key('forgot_password_submit_button'),
+      );
+      final haveCodeButton = find.byKey(
+        const Key('forgot_password_have_code_button'),
+      );
+
+      await tester.enterText(emailInput, 'primero@planify.com');
+      await tester.pump();
+      await tester.tap(submitButton);
+      await tester.pumpAndSettle();
+
+      expect(haveCodeButton, findsOneWidget);
+      expect(find.text('Reenviar'), findsOneWidget);
+
+      await tester.enterText(emailInput, 'ultimo@planify.com');
+      await tester.pump();
+
+      expect(haveCodeButton, findsNothing);
+      expect(find.text('Enviar'), findsOneWidget);
+
+      await tester.tap(submitButton);
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(haveCodeButton);
+      await tester.tap(haveCodeButton);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('reset_password_email_input')),
+        findsOneWidget,
+      );
+      expect(find.text('ultimo@planify.com'), findsOneWidget);
+    });
+
     testWidgets('muestra los textos de recuperación en inglés', (tester) async {
       await tester.pumpWidget(
         _buildTestApp(
