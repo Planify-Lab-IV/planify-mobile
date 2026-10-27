@@ -9,6 +9,7 @@ class FakeAuthRepository implements AuthRepository {
   final Duration delay;
   final Set<String> _usedUsernames;
   final Set<String> _usedEmails;
+  final String validResetCode;
   UserSession? _currentSession;
 
   FakeAuthRepository({
@@ -16,6 +17,7 @@ class FakeAuthRepository implements AuthRepository {
     this.delay = const Duration(milliseconds: 800),
     Iterable<String> usedUsernames = const [],
     Iterable<String> usedEmails = const [],
+    this.validResetCode = '123456',
   }) : _storage = storage ?? FakeSecureStorage(delay: delay),
        _usedUsernames = usedUsernames
            .map((username) => username.trim())
@@ -23,6 +25,40 @@ class FakeAuthRepository implements AuthRepository {
        _usedEmails = usedEmails
            .map((email) => email.trim().toLowerCase())
            .toSet();
+
+  @override
+  Future<void> requestPasswordReset({required String email}) async {
+    if (delay > Duration.zero) {
+      await Future.delayed(delay);
+    }
+
+    if (email.trim().toLowerCase() == 'network.error@planify.com') {
+      throw const NetworkAuthException();
+    }
+  }
+
+  @override
+  Future<void> resetPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    if (delay > Duration.zero) {
+      await Future.delayed(delay);
+    }
+
+    if (email.trim().toLowerCase() == 'network.error@planify.com') {
+      throw const NetworkAuthException();
+    }
+
+    if (code != validResetCode) {
+      throw const InvalidResetCodeException();
+    }
+
+    if (!isValidRegistrationPassword(newPassword)) {
+      throw const InvalidResetDataException();
+    }
+  }
 
   @override
   Future<UserSession> login({
