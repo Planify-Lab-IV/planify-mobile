@@ -74,6 +74,26 @@ class _ResetPasswordFormState extends ConsumerState<ResetPasswordForm> {
   }
 
   void _onCodeChanged(int index, String value) {
+    if (value.length > 1) {
+      final digits = value.substring(0, _codeLength - index);
+      for (var offset = 0; offset < digits.length; offset++) {
+        _codeControllers[index + offset].value = TextEditingValue(
+          text: digits[offset],
+          selection: const TextSelection.collapsed(offset: 1),
+        );
+      }
+
+      final lastFilledIndex = index + digits.length - 1;
+      if (lastFilledIndex == _codeLength - 1) {
+        _passwordFocusNode.requestFocus();
+      } else {
+        _codeFocusNodes[lastFilledIndex + 1].requestFocus();
+      }
+
+      setState(() {});
+      return;
+    }
+
     if (value.isNotEmpty) {
       if (index == _codeLength - 1) {
         _passwordFocusNode.requestFocus();
@@ -175,7 +195,6 @@ class _ResetPasswordFormState extends ConsumerState<ResetPasswordForm> {
                           textInputAction: TextInputAction.next,
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly,
-                            LengthLimitingTextInputFormatter(1),
                           ],
                           decoration: InputDecoration(
                             counterText: '',

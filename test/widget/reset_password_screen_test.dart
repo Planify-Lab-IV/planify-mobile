@@ -82,6 +82,29 @@ void main() {
       expect(tester.widget<TextFormField>(codeField).controller?.text, '1');
     });
 
+    testWidgets('reparte un código pegado entre los seis casilleros', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _buildTestApp(repository: FakeAuthRepository(delay: Duration.zero)),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byKey(const Key('reset_password_code_digit_0')),
+        '12 34\n56',
+      );
+      await tester.pump();
+
+      for (var index = 0; index < 6; index++) {
+        final field = find.byKey(Key('reset_password_code_digit_$index'));
+        expect(
+          tester.widget<TextFormField>(field).controller?.text,
+          '${index + 1}',
+        );
+      }
+    });
+
     testWidgets('informa cuando el código no es válido', (tester) async {
       await tester.pumpWidget(
         _buildTestApp(repository: FakeAuthRepository(delay: Duration.zero)),
