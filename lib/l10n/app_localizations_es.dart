@@ -217,6 +217,48 @@ class AppLocalizationsEs extends AppLocalizations {
       'No pudimos enviar el código. Intentá nuevamente.';
 
   @override
+  String get forgotPasswordHaveCode => 'Ya tengo el código';
+
+  @override
+  String get resetPasswordTitle => 'Restablecer contraseña';
+
+  @override
+  String get resetPasswordDescription =>
+      'Ingresá el código de 6 dígitos que recibiste y elegí una nueva contraseña.';
+
+  @override
+  String get resetPasswordCodeLabel => 'Código de recuperación';
+
+  @override
+  String get resetPasswordNewPasswordLabel => 'Nueva contraseña';
+
+  @override
+  String get resetPasswordNewPasswordHelp =>
+      'Debe tener entre 8 y 72 caracteres';
+
+  @override
+  String get resetPasswordSubmitButton => 'Restablecer contraseña';
+
+  @override
+  String get resetPasswordSuccessMessage =>
+      'Tu contraseña se actualizó correctamente. Ya podés iniciar sesión.';
+
+  @override
+  String get resetPasswordBackToLogin => 'Volver a iniciar sesión';
+
+  @override
+  String get resetPasswordInvalidCodeError =>
+      'El código es inválido o venció. Revisalo e intentá nuevamente.';
+
+  @override
+  String get resetPasswordNetworkError =>
+      'No pudimos restablecer la contraseña por un problema de conexión. Intentá nuevamente.';
+
+  @override
+  String get resetPasswordGenericError =>
+      'No pudimos restablecer la contraseña. Intentá nuevamente.';
+
+  @override
   String get logoutButton => 'Cerrar Sesión';
 
   @override

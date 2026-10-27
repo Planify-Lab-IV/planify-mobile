@@ -442,6 +442,78 @@ abstract class AppLocalizations {
   /// **'No pudimos enviar el código. Intentá nuevamente.'**
   String get forgotPasswordGenericError;
 
+  /// No description provided for @forgotPasswordHaveCode.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya tengo el código'**
+  String get forgotPasswordHaveCode;
+
+  /// No description provided for @resetPasswordTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Restablecer contraseña'**
+  String get resetPasswordTitle;
+
+  /// No description provided for @resetPasswordDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá el código de 6 dígitos que recibiste y elegí una nueva contraseña.'**
+  String get resetPasswordDescription;
+
+  /// No description provided for @resetPasswordCodeLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Código de recuperación'**
+  String get resetPasswordCodeLabel;
+
+  /// No description provided for @resetPasswordNewPasswordLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva contraseña'**
+  String get resetPasswordNewPasswordLabel;
+
+  /// No description provided for @resetPasswordNewPasswordHelp.
+  ///
+  /// In es, this message translates to:
+  /// **'Debe tener entre 8 y 72 caracteres'**
+  String get resetPasswordNewPasswordHelp;
+
+  /// No description provided for @resetPasswordSubmitButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Restablecer contraseña'**
+  String get resetPasswordSubmitButton;
+
+  /// No description provided for @resetPasswordSuccessMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu contraseña se actualizó correctamente. Ya podés iniciar sesión.'**
+  String get resetPasswordSuccessMessage;
+
+  /// No description provided for @resetPasswordBackToLogin.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a iniciar sesión'**
+  String get resetPasswordBackToLogin;
+
+  /// No description provided for @resetPasswordInvalidCodeError.
+  ///
+  /// In es, this message translates to:
+  /// **'El código es inválido o venció. Revisalo e intentá nuevamente.'**
+  String get resetPasswordInvalidCodeError;
+
+  /// No description provided for @resetPasswordNetworkError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos restablecer la contraseña por un problema de conexión. Intentá nuevamente.'**
+  String get resetPasswordNetworkError;
+
+  /// No description provided for @resetPasswordGenericError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos restablecer la contraseña. Intentá nuevamente.'**
+  String get resetPasswordGenericError;
+
   /// No description provided for @logoutButton.
   ///
   /// In es, this message translates to:

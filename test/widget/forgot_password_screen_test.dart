@@ -82,6 +82,21 @@ void main() {
         ),
         findsOneWidget,
       );
+      expect(
+        find.byKey(const Key('forgot_password_have_code_button')),
+        findsOneWidget,
+      );
+
+      await tester.tap(
+        find.byKey(const Key('forgot_password_have_code_button')),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('reset_password_email_input')),
+        findsOneWidget,
+      );
+      expect(find.text('missing@planify.com'), findsOneWidget);
     });
 
     testWidgets('muestra un error de red y conserva el email escrito', (

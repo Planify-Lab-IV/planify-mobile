@@ -7,6 +7,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/registration_rules.dart';
 import '../controllers/password_recovery_providers.dart';
 import '../controllers/password_recovery_state.dart';
+import '../screens/reset_password_screen.dart';
 
 class ForgotPasswordForm extends ConsumerStatefulWidget {
   const ForgotPasswordForm({super.key});
@@ -140,6 +141,17 @@ class _ForgotPasswordFormState extends ConsumerState<ForgotPasswordForm> {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.md),
+                TextButton(
+                  key: const Key('forgot_password_have_code_button'),
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => ResetPasswordScreen(
+                        email: _emailController.text.trim(),
+                      ),
+                    ),
+                  ),
+                  child: Text(i18n.forgotPasswordHaveCode),
+                ),
               ],
               TextFormField(
                 key: const Key('forgot_password_email_input'),
