@@ -10,6 +10,9 @@ import 'package:planify/features/auth/data/fake_auth_repository.dart';
 import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_state.dart';
+import 'package:planify/features/friends/data/fake_friends_repository.dart';
+import 'package:planify/features/friends/presentation/controllers/friends_providers.dart';
+import 'package:planify/features/friends/presentation/screens/friends_screen.dart';
 import 'package:planify/features/profile/data/avatar_picker.dart';
 import 'package:planify/features/profile/data/fake_profile_repository.dart';
 import 'package:planify/features/profile/data/profile_exceptions.dart';
@@ -33,7 +36,6 @@ void main() {
 
     expect(find.byKey(const Key('profile_identity_header')), findsOneWidget);
     expect(find.byKey(const Key('profile_content_card')), findsOneWidget);
-    expect(find.byKey(const Key('profile_username_field')), findsOneWidget);
     expect(find.byKey(const Key('profile_email_field')), findsOneWidget);
     expect(
       find.descendant(
@@ -46,22 +48,24 @@ void main() {
     final appBar = tester.widget<AppBar>(find.byType(AppBar));
     expect(appBar.backgroundColor, AppTheme.light.colorScheme.primaryContainer);
 
-    ElevatedButton saveButton() => tester.widget<ElevatedButton>(
-      find.byKey(const Key('profile_save_button')),
-    );
-
-    expect(saveButton().onPressed, isNull);
+    expect(find.byKey(const Key('profile_save_button')), findsNothing);
 
     await tester.enterText(
       find.byKey(const Key('profile_name_field')),
       'Alice Personal',
     );
     await tester.pump();
-    expect(saveButton().onPressed, isNotNull);
+    expect(find.byKey(const Key('profile_save_button')), findsOneWidget);
+    expect(
+      tester
+          .widget<ElevatedButton>(find.byKey(const Key('profile_save_button')))
+          .onPressed,
+      isNotNull,
+    );
 
     await tester.enterText(find.byKey(const Key('profile_name_field')), '   ');
     await tester.pump();
-    expect(saveButton().onPressed, isNull);
+    expect(find.byKey(const Key('profile_save_button')), findsNothing);
   });
 
   testWidgets('guardar solo un avatar no cambia el nombre de la sesión', (
@@ -127,15 +131,12 @@ void main() {
     await tester.pump();
 
     final avatar = tester.widget<CircleAvatar>(find.byType(CircleAvatar));
-    final saveButton = tester.widget<ElevatedButton>(
-      find.byKey(const Key('profile_save_button')),
-    );
     expect(avatar.foregroundImage, isNull);
     expect(
       container.read(profileNotifierProvider).pendingAvatarFilePath,
       isNull,
     );
-    expect(saveButton.onPressed, isNull);
+    expect(find.byKey(const Key('profile_save_button')), findsNothing);
   });
 
   testWidgets(
@@ -271,6 +272,30 @@ void main() {
     );
     expect(container.read(profileNotifierProvider).draftName, 'Alice Personal');
   });
+
+  testWidgets(
+    'muestra el acceso a Amigos y navega a FriendsScreen al tocarlo',
+    (tester) async {
+      final container = await _buildContainer(
+        avatarPicker: const _AvatarPicker(null),
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(_buildScreen(container));
+      await tester.pump();
+      await tester.pump();
+
+      final friendsButton = find.byKey(const Key('profile_friends_button'));
+      expect(friendsButton, findsOneWidget);
+      expect(find.text('Mis amigos'), findsOneWidget);
+
+      await tester.ensureVisible(friendsButton);
+      await tester.tap(friendsButton);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(FriendsScreen), findsOneWidget);
+    },
+  );
 }
 
 Future<ProviderContainer> _buildContainer({
@@ -288,6 +313,9 @@ Future<ProviderContainer> _buildContainer({
       secureStorageProvider.overrideWithValue(storage),
       profileRepositoryProvider.overrideWithValue(
         profileRepository ?? FakeProfileRepository(delay: Duration.zero),
+      ),
+      friendsRepositoryProvider.overrideWithValue(
+        FakeFriendsRepository(delay: Duration.zero),
       ),
       avatarPickerProvider.overrideWithValue(avatarPicker),
     ],

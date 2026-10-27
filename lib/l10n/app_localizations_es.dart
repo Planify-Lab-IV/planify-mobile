@@ -1137,4 +1137,67 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get profileDiscardAvatarAndSaveName =>
       'Descartar foto y guardar nombre';
+
+  @override
+  String get profileFriendsAction => 'Mis amigos';
+
+  @override
+  String get friendsTitle => 'Amigos';
+
+  @override
+  String get friendsSearchLabel => 'Buscar personas';
+
+  @override
+  String get friendsSearchHint => 'Nombre o usuario';
+
+  @override
+  String get friendsSearchEmpty => 'No encontramos personas.';
+
+  @override
+  String get friendsSearchError =>
+      'No se pudieron buscar personas. Intentá nuevamente.';
+
+  @override
+  String get friendsRequestsTitle => 'Solicitudes';
+
+  @override
+  String get friendsReceivedRequestsTitle => 'Recibidas';
+
+  @override
+  String get friendsSentRequestsTitle => 'Enviadas';
+
+  @override
+  String get friendsReceivedRequestsEmpty => 'No tenés solicitudes pendientes.';
+
+  @override
+  String get friendsFriendsTitle => 'Mis amigos';
+
+  @override
+  String get friendsFriendsEmpty => 'Todavía no tenés amigos.';
+
+  @override
+  String get friendsLoadError =>
+      'No se pudo cargar esta sección. Intentá nuevamente.';
+
+  @override
+  String get friendAddAction => 'Agregar';
+
+  @override
+  String get friendAcceptAction => 'Aceptar';
+
+  @override
+  String get friendRejectAction => 'Rechazar';
+
+  @override
+  String get friendCancelAction => 'Cancelar';
+
+  @override
+  String get friendRequestSent => 'Solicitud enviada';
+
+  @override
+  String get friendsActionError =>
+      'No se pudo actualizar la solicitud. Intentá nuevamente.';
+
+  @override
+  String get friendRequestUnavailable => 'Esa solicitud ya no está disponible';
 }

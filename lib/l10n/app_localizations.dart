@@ -2081,6 +2081,126 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Descartar foto y guardar nombre'**
   String get profileDiscardAvatarAndSaveName;
+
+  /// No description provided for @profileFriendsAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis amigos'**
+  String get profileFriendsAction;
+
+  /// No description provided for @friendsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Amigos'**
+  String get friendsTitle;
+
+  /// No description provided for @friendsSearchLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar personas'**
+  String get friendsSearchLabel;
+
+  /// No description provided for @friendsSearchHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre o usuario'**
+  String get friendsSearchHint;
+
+  /// No description provided for @friendsSearchEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos personas.'**
+  String get friendsSearchEmpty;
+
+  /// No description provided for @friendsSearchError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron buscar personas. Intentá nuevamente.'**
+  String get friendsSearchError;
+
+  /// No description provided for @friendsRequestsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitudes'**
+  String get friendsRequestsTitle;
+
+  /// No description provided for @friendsReceivedRequestsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Recibidas'**
+  String get friendsReceivedRequestsTitle;
+
+  /// No description provided for @friendsSentRequestsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviadas'**
+  String get friendsSentRequestsTitle;
+
+  /// No description provided for @friendsReceivedRequestsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'No tenés solicitudes pendientes.'**
+  String get friendsReceivedRequestsEmpty;
+
+  /// No description provided for @friendsFriendsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis amigos'**
+  String get friendsFriendsTitle;
+
+  /// No description provided for @friendsFriendsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no tenés amigos.'**
+  String get friendsFriendsEmpty;
+
+  /// No description provided for @friendsLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cargar esta sección. Intentá nuevamente.'**
+  String get friendsLoadError;
+
+  /// No description provided for @friendAddAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar'**
+  String get friendAddAction;
+
+  /// No description provided for @friendAcceptAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptar'**
+  String get friendAcceptAction;
+
+  /// No description provided for @friendRejectAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazar'**
+  String get friendRejectAction;
+
+  /// No description provided for @friendCancelAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar'**
+  String get friendCancelAction;
+
+  /// No description provided for @friendRequestSent.
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitud enviada'**
+  String get friendRequestSent;
+
+  /// No description provided for @friendsActionError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo actualizar la solicitud. Intentá nuevamente.'**
+  String get friendsActionError;
+
+  /// No description provided for @friendRequestUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'Esa solicitud ya no está disponible'**
+  String get friendRequestUnavailable;
 }
 
 class _AppLocalizationsDelegate
