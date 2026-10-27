@@ -142,8 +142,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registrationTitle => 'Create account';
 
   @override
-  String get registrationCreateAccountLink =>
-      'Don\'t have an account? Create one';
+  String get registrationCreateAccountPrompt => 'Don\'t have an account?';
+
+  @override
+  String get registrationCreateAccountAction => 'Create one';
 
   @override
   String get registrationNameLabel => 'Name';
@@ -215,6 +217,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get forgotPasswordGenericError =>
       'We could not send the code. Please try again.';
+
+  @override
+  String get forgotPasswordLoginLink => 'Forgot your password?';
 
   @override
   String get forgotPasswordHaveCode => 'I already have the code';

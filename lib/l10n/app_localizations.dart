@@ -316,11 +316,17 @@ abstract class AppLocalizations {
   /// **'Crear cuenta'**
   String get registrationTitle;
 
-  /// No description provided for @registrationCreateAccountLink.
+  /// No description provided for @registrationCreateAccountPrompt.
   ///
   /// In es, this message translates to:
-  /// **'¿No tenés cuenta? Crear cuenta'**
-  String get registrationCreateAccountLink;
+  /// **'¿No tenés cuenta?'**
+  String get registrationCreateAccountPrompt;
+
+  /// No description provided for @registrationCreateAccountAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear una'**
+  String get registrationCreateAccountAction;
 
   /// No description provided for @registrationNameLabel.
   ///
@@ -441,6 +447,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No pudimos enviar el código. Intentá nuevamente.'**
   String get forgotPasswordGenericError;
+
+  /// No description provided for @forgotPasswordLoginLink.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Olvidaste tu contraseña?'**
+  String get forgotPasswordLoginLink;
 
   /// No description provided for @forgotPasswordHaveCode.
   ///

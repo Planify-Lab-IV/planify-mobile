@@ -3,12 +3,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/providers/core_providers.dart';
+import 'package:planify/core/theme/app_colors.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/core/widgets/planify_logo.dart';
 import 'package:planify/data/secure_storage.dart';
 import 'package:planify/features/auth/data/fake_auth_repository.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
 import 'package:planify/features/auth/presentation/screens/login_screen.dart';
+import 'package:planify/features/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:planify/features/auth/presentation/screens/register_screen.dart';
 import 'package:planify/features/home/presentation/screens/organizer_home_screen.dart';
 import 'package:planify/l10n/app_localizations.dart';
@@ -69,7 +71,37 @@ void main() {
         expect(find.byKey(const Key('identifier_input')), findsOneWidget);
         expect(find.byKey(const Key('password_input')), findsOneWidget);
         expect(find.byKey(const Key('login_submit_button')), findsOneWidget);
+        expect(
+          find.byKey(const Key('go_to_forgot_password_button')),
+          findsOneWidget,
+        );
         expect(find.byKey(const Key('go_to_register_button')), findsOneWidget);
+        expect(find.text('¿No tenés cuenta?'), findsOneWidget);
+        expect(
+          find.descendant(
+            of: find.byKey(const Key('go_to_register_button')),
+            matching: find.text('Crear una'),
+          ),
+          findsOneWidget,
+        );
+        expect(
+          tester.widget<Text>(find.text('¿No tenés cuenta?')).style?.color,
+          AppColors.onSurface,
+        );
+        final createAccountText = tester.widget<Text>(
+          find.descendant(
+            of: find.byKey(const Key('go_to_register_button')),
+            matching: find.text('Crear una'),
+          ),
+        );
+        final forgotPasswordText = tester.widget<Text>(
+          find.descendant(
+            of: find.byKey(const Key('go_to_forgot_password_button')),
+            matching: find.text('¿Olvidaste tu contraseña?'),
+          ),
+        );
+        expect(createAccountText.style?.color, AppColors.primary);
+        expect(forgotPasswordText.style?.color, AppColors.primary);
         expect(find.byKey(const Key('guest_login_button')), findsNothing);
       },
     );
@@ -80,11 +112,57 @@ void main() {
       await tester.pumpWidget(_buildTestApp());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const Key('go_to_register_button')));
+      final registerButton = find.byKey(const Key('go_to_register_button'));
+      await tester.ensureVisible(registerButton);
+      await tester.tap(registerButton);
       await tester.pumpAndSettle();
 
       expect(find.byType(RegisterScreen), findsOneWidget);
     });
+
+    testWidgets(
+      'abre la recuperación y limpia los errores de login al volver',
+      (tester) async {
+        await tester.pumpWidget(_buildTestApp());
+        await tester.pumpAndSettle();
+
+        await tester.enterText(
+          find.byKey(const Key('identifier_input')),
+          'network.error@planify.com',
+        );
+        await tester.enterText(
+          find.byKey(const Key('password_input')),
+          'password-segura',
+        );
+        await tester.tap(find.byKey(const Key('login_submit_button')));
+        await tester.pumpAndSettle();
+
+        expect(
+          find.text('No se pudo iniciar sesión. Intenta nuevamente.'),
+          findsOneWidget,
+        );
+
+        final forgotPasswordButton = find.byKey(
+          const Key('go_to_forgot_password_button'),
+        );
+        await tester.ensureVisible(forgotPasswordButton);
+        await tester.tap(forgotPasswordButton);
+        await tester.pumpAndSettle();
+
+        expect(find.byType(ForgotPasswordScreen), findsOneWidget);
+
+        final backButton = find.byKey(const Key('forgot_password_back_button'));
+        await tester.ensureVisible(backButton);
+        await tester.tap(backButton);
+        await tester.pumpAndSettle();
+
+        expect(find.byType(LoginScreen), findsOneWidget);
+        expect(
+          find.text('No se pudo iniciar sesión. Intenta nuevamente.'),
+          findsNothing,
+        );
+      },
+    );
 
     testWidgets(
       'renderiza botón de invitado y separador cuando eventId está presente',
@@ -311,7 +389,9 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.byKey(const Key('invitation_event_badge')), findsOneWidget);
 
-        await tester.tap(find.byKey(const Key('go_to_register_button')));
+        final registerButton = find.byKey(const Key('go_to_register_button'));
+        await tester.ensureVisible(registerButton);
+        await tester.tap(registerButton);
         await tester.pumpAndSettle();
         await tester.enterText(
           find.byKey(const Key('registration_name_input')),
