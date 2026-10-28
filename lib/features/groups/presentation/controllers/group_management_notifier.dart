@@ -20,13 +20,17 @@ class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
     final normalizedUserId = userId.trim();
     if (normalizedGroupId.isEmpty ||
         normalizedUserId.isEmpty ||
-        state.isMemberBeingAdded(normalizedUserId)) {
+        state.isMemberBeingAdded(
+          groupId: normalizedGroupId,
+          userId: normalizedUserId,
+        )) {
       return false;
     }
 
+    final member = (groupId: normalizedGroupId, userId: normalizedUserId);
     state = state.copyWith(
       addMemberStatus: GroupManagementActionStatus.loading,
-      addingMemberIds: {...state.addingMemberIds, normalizedUserId},
+      addingMembers: {...state.addingMembers, member},
     );
     try {
       await repository.addMember(
@@ -35,26 +39,24 @@ class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
       );
       if (!mounted) return false;
 
-      final pendingMemberIds = {...state.addingMemberIds}
-        ..remove(normalizedUserId);
+      final pendingMembers = {...state.addingMembers}..remove(member);
       state = state.copyWith(
-        addMemberStatus: pendingMemberIds.isEmpty
+        addMemberStatus: pendingMembers.isEmpty
             ? GroupManagementActionStatus.success
             : GroupManagementActionStatus.loading,
-        addedMemberIds: {...state.addedMemberIds, normalizedUserId},
-        addingMemberIds: pendingMemberIds,
+        addedMembers: {...state.addedMembers, member},
+        addingMembers: pendingMembers,
       );
       onGroupManagementSucceeded?.call();
       return true;
     } catch (_) {
       if (!mounted) return false;
-      final pendingMemberIds = {...state.addingMemberIds}
-        ..remove(normalizedUserId);
+      final pendingMembers = {...state.addingMembers}..remove(member);
       state = state.copyWith(
-        addMemberStatus: pendingMemberIds.isEmpty
+        addMemberStatus: pendingMembers.isEmpty
             ? GroupManagementActionStatus.error
             : GroupManagementActionStatus.loading,
-        addingMemberIds: pendingMemberIds,
+        addingMembers: pendingMembers,
       );
       return false;
     }

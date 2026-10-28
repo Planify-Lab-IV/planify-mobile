@@ -38,7 +38,13 @@ void main() {
           groupNotifier.state.addMemberStatus,
           GroupManagementActionStatus.success,
         );
-        expect(groupNotifier.state.isMemberAdded('user-1'), isTrue);
+        expect(
+          groupNotifier.state.isMemberAdded(
+            groupId: 'group-1',
+            userId: 'user-1',
+          ),
+          isTrue,
+        );
         expect(repository.addMemberRequests, [
           (groupId: 'group-1', userId: 'user-1'),
         ]);
@@ -88,7 +94,7 @@ void main() {
         groupNotifier.state.addMemberStatus,
         GroupManagementActionStatus.error,
       );
-      expect(groupNotifier.state.addedMemberIds, isEmpty);
+      expect(groupNotifier.state.addedMembers, isEmpty);
       expect(successfulActions, isZero);
       groupNotifier.dispose();
     });
@@ -128,7 +134,13 @@ void main() {
       await Future<void>.delayed(Duration.zero);
 
       expect(groupNotifier.state.isAddingMember, isTrue);
-      expect(groupNotifier.state.isMemberBeingAdded('user-1'), isTrue);
+      expect(
+        groupNotifier.state.isMemberBeingAdded(
+          groupId: 'group-1',
+          userId: 'user-1',
+        ),
+        isTrue,
+      );
       expect(
         await groupNotifier.addMember(groupId: 'group-1', userId: 'user-1'),
         isFalse,
@@ -158,8 +170,20 @@ void main() {
         await Future<void>.delayed(Duration.zero);
 
         expect(repository.addMemberRequests, hasLength(2));
-        expect(groupNotifier.state.isMemberBeingAdded('user-1'), isTrue);
-        expect(groupNotifier.state.isMemberBeingAdded('user-2'), isTrue);
+        expect(
+          groupNotifier.state.isMemberBeingAdded(
+            groupId: 'group-1',
+            userId: 'user-1',
+          ),
+          isTrue,
+        );
+        expect(
+          groupNotifier.state.isMemberBeingAdded(
+            groupId: 'group-1',
+            userId: 'user-2',
+          ),
+          isTrue,
+        );
 
         repository.addMemberCompletion!.complete();
         expect(await firstAdd, isTrue);
@@ -167,6 +191,23 @@ void main() {
         groupNotifier.dispose();
       },
     );
+
+    test('mantiene el alta asociada al grupo correcto', () async {
+      final repository = _RecordingGroupManagementRepository();
+      final groupNotifier = notifier(repository);
+
+      await groupNotifier.addMember(groupId: 'group-1', userId: 'user-1');
+
+      expect(
+        groupNotifier.state.isMemberAdded(groupId: 'group-1', userId: 'user-1'),
+        isTrue,
+      );
+      expect(
+        groupNotifier.state.isMemberAdded(groupId: 'group-2', userId: 'user-1'),
+        isFalse,
+      );
+      groupNotifier.dispose();
+    });
   });
 }
 

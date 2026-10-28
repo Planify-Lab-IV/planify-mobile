@@ -183,7 +183,8 @@ class _GroupAddMemberSheetState extends ConsumerState<GroupAddMemberSheet> {
                             itemBuilder: (context, index) {
                               final friend = filteredFriends[index];
                               final wasAdded = managementState.isMemberAdded(
-                                friend.id,
+                                groupId: widget.group.id,
+                                userId: friend.id,
                               );
                               return PersonRow(
                                 person: friend,
@@ -195,7 +196,8 @@ class _GroupAddMemberSheetState extends ConsumerState<GroupAddMemberSheet> {
                                         ),
                                         onPressed:
                                             managementState.isMemberBeingAdded(
-                                              friend.id,
+                                              groupId: widget.group.id,
+                                              userId: friend.id,
                                             )
                                             ? null
                                             : () => _addMember(friend),

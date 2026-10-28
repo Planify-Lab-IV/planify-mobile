@@ -132,6 +132,11 @@ void main() {
     await tester.tap(find.byKey(const Key('group_member_selector_back')));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('group_manage_rename')), findsOneWidget);
+
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    await openSelector(tester);
+    expect(find.text('Added'), findsOneWidget);
   });
 
   testWidgets('explica cómo destrabarse cuando no hay amigos', (tester) async {

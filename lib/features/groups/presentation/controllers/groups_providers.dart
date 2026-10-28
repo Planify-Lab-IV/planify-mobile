@@ -53,10 +53,7 @@ final groupManagementRepositoryProvider = Provider<GroupManagementRepository>((
 });
 
 final groupManagementNotifierProvider =
-    StateNotifierProvider.autoDispose<
-      GroupManagementNotifier,
-      GroupManagementState
-    >((ref) {
+    StateNotifierProvider<GroupManagementNotifier, GroupManagementState>((ref) {
       return GroupManagementNotifier(
         repository: ref.watch(groupManagementRepositoryProvider),
         onGroupManagementSucceeded: () =>
