@@ -143,7 +143,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get registrationTitle => 'Crear cuenta';
 
   @override
-  String get registrationCreateAccountLink => '¿No tenés cuenta? Crear cuenta';
+  String get registrationCreateAccountPrompt => '¿No tenés cuenta?';
+
+  @override
+  String get registrationCreateAccountAction => 'Crear una';
 
   @override
   String get registrationNameLabel => 'Nombre';
@@ -193,6 +196,87 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get registrationBackToLogin => '¿Ya tenés cuenta? Iniciá sesión';
+
+  @override
+  String get forgotPasswordTitle => 'Recuperar contraseña';
+
+  @override
+  String get forgotPasswordDescription =>
+      'Ingresá tu correo electrónico para recibir un código de recuperación.';
+
+  @override
+  String get forgotPasswordSubmitButton => 'Enviar';
+
+  @override
+  String get forgotPasswordSuccessMessage =>
+      'Si ese email está registrado,\nvas a recibir un código de 6 dígitos.';
+
+  @override
+  String get forgotPasswordResendButton => 'Reenviar';
+
+  @override
+  String get forgotPasswordNetworkError =>
+      'No pudimos enviar el código por un problema de conexión. Intentá nuevamente.';
+
+  @override
+  String get forgotPasswordGenericError =>
+      'No pudimos enviar el código. Intentá nuevamente.';
+
+  @override
+  String get forgotPasswordLoginLink => '¿Olvidaste tu contraseña?';
+
+  @override
+  String get forgotPasswordHaveCode => 'Tengo el código';
+
+  @override
+  String get resetPasswordTitle => 'Restablecer contraseña';
+
+  @override
+  String get resetPasswordDescription =>
+      'Ingresá el código de 6 dígitos que recibiste y elegí una nueva contraseña.';
+
+  @override
+  String resetPasswordEmailSent(Object email) {
+    return 'Código enviado a $email';
+  }
+
+  @override
+  String get resetPasswordCodeLabel => 'Código de recuperación';
+
+  @override
+  String get resetPasswordNewPasswordLabel => 'Nueva contraseña';
+
+  @override
+  String get resetPasswordNewPasswordHelp =>
+      'Debe tener entre 8 y 72 caracteres';
+
+  @override
+  String get resetPasswordSubmitButton => 'Restablecer contraseña';
+
+  @override
+  String get resetPasswordSuccessMessage =>
+      'Tu contraseña se actualizó correctamente. Ya podés iniciar sesión.';
+
+  @override
+  String get resetPasswordBackToLogin => 'Volver a iniciar sesión';
+
+  @override
+  String get resetPasswordInvalidCodeError =>
+      'El código no es válido o venció. Pedí uno nuevo.';
+
+  @override
+  String get resetPasswordInvalidDataError => 'La contraseña no es válida';
+
+  @override
+  String get resetPasswordRequestNewCode => 'Pedir un código nuevo';
+
+  @override
+  String get resetPasswordNetworkError =>
+      'No pudimos restablecer la contraseña por un problema de conexión. Intentá nuevamente.';
+
+  @override
+  String get resetPasswordGenericError =>
+      'No pudimos restablecer la contraseña. Intentá nuevamente.';
 
   @override
   String get logoutButton => 'Cerrar Sesión';

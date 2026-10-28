@@ -142,8 +142,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registrationTitle => 'Create account';
 
   @override
-  String get registrationCreateAccountLink =>
-      'Don\'t have an account? Create one';
+  String get registrationCreateAccountPrompt => 'Don\'t have an account?';
+
+  @override
+  String get registrationCreateAccountAction => 'Create one';
 
   @override
   String get registrationNameLabel => 'Name';
@@ -193,6 +195,87 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get registrationBackToLogin => 'Already have an account? Sign in';
+
+  @override
+  String get forgotPasswordTitle => 'Reset password';
+
+  @override
+  String get forgotPasswordDescription =>
+      'Enter your email address to receive\na recovery code.';
+
+  @override
+  String get forgotPasswordSubmitButton => 'Send';
+
+  @override
+  String get forgotPasswordSuccessMessage =>
+      'If that email is registered,\nyou\'ll get a six-digit code.';
+
+  @override
+  String get forgotPasswordResendButton => 'Resend';
+
+  @override
+  String get forgotPasswordNetworkError =>
+      'We could not send the code because of a connection problem. Please try again.';
+
+  @override
+  String get forgotPasswordGenericError =>
+      'We could not send the code. Please try again.';
+
+  @override
+  String get forgotPasswordLoginLink => 'Forgot your password?';
+
+  @override
+  String get forgotPasswordHaveCode => 'I have the code';
+
+  @override
+  String get resetPasswordTitle => 'Reset password';
+
+  @override
+  String get resetPasswordDescription =>
+      'Enter the 6-digit code you received and\nchoose a new password.';
+
+  @override
+  String resetPasswordEmailSent(Object email) {
+    return 'Code sent to $email';
+  }
+
+  @override
+  String get resetPasswordCodeLabel => 'Recovery code';
+
+  @override
+  String get resetPasswordNewPasswordLabel => 'New password';
+
+  @override
+  String get resetPasswordNewPasswordHelp =>
+      'Password must be between 8 and 72 characters';
+
+  @override
+  String get resetPasswordSubmitButton => 'Reset password';
+
+  @override
+  String get resetPasswordSuccessMessage =>
+      'Your password was updated successfully. You can now sign in.';
+
+  @override
+  String get resetPasswordBackToLogin => 'Back to sign in';
+
+  @override
+  String get resetPasswordInvalidCodeError =>
+      'The code is invalid or expired. Request a new one.';
+
+  @override
+  String get resetPasswordInvalidDataError => 'The password is not valid';
+
+  @override
+  String get resetPasswordRequestNewCode => 'Request a new code';
+
+  @override
+  String get resetPasswordNetworkError =>
+      'We could not reset the password because of a connection problem. Please try again.';
+
+  @override
+  String get resetPasswordGenericError =>
+      'We could not reset the password. Please try again.';
 
   @override
   String get logoutButton => 'Sign Out';

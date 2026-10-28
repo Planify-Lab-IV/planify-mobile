@@ -54,7 +54,7 @@ void main() {
       return dioResolvingWithStatus(200, body, inspect);
     }
 
-    Dio dioRejectingWithStatus(int statusCode) {
+    Dio dioRejectingWithStatus(int statusCode, {dynamic data}) {
       final dio = Dio();
       dio.interceptors.add(
         InterceptorsWrapper(
@@ -64,6 +64,7 @@ void main() {
               response: Response<dynamic>(
                 requestOptions: options,
                 statusCode: statusCode,
+                data: data,
               ),
             ),
           ),
@@ -127,6 +128,91 @@ void main() {
           password: 'DevPass123!',
         ),
         throwsA(isA<InvalidRegistrationDataException>()),
+      );
+    });
+
+    test('requests a password reset with the supplied email', () async {
+      RequestOptions? request;
+      final repository = repositoryWith(
+        dioResolvingWithStatus(200, {}, (options) => request = options),
+      );
+
+      await repository.requestPasswordReset(email: 'dev1@planify.dev');
+
+      expect(request?.method, 'POST');
+      expect(request?.path, '/auth/forgot-password');
+      expect(request?.data, {'email': 'dev1@planify.dev'});
+    });
+
+    test('resets a password with the supplied email and code', () async {
+      RequestOptions? request;
+      final repository = repositoryWith(
+        dioResolvingWithStatus(204, {}, (options) => request = options),
+      );
+
+      await repository.resetPassword(
+        email: 'dev1@planify.dev',
+        code: '123456',
+        newPassword: 'DevPass123!',
+      );
+
+      expect(request?.method, 'POST');
+      expect(request?.path, '/auth/reset-password');
+      expect(request?.data, {
+        'email': 'dev1@planify.dev',
+        'code': '123456',
+        'newPassword': 'DevPass123!',
+      });
+    });
+
+    test(
+      'maps invalid reset codes separately from other invalid data',
+      () async {
+        expect(
+          () =>
+              repositoryWith(
+                dioRejectingWithStatus(
+                  400,
+                  data: {'error': 'INVALID_RESET_CODE'},
+                ),
+              ).resetPassword(
+                email: 'dev1@planify.dev',
+                code: '000000',
+                newPassword: 'DevPass123!',
+              ),
+          throwsA(isA<InvalidResetCodeException>()),
+        );
+        expect(
+          () =>
+              repositoryWith(
+                dioRejectingWithStatus(400, data: {'error': 'INVALID_DATA'}),
+              ).resetPassword(
+                email: 'dev1@planify.dev',
+                code: '123456',
+                newPassword: 'DevPass123!',
+              ),
+          throwsA(isA<InvalidResetDataException>()),
+        );
+      },
+    );
+
+    test('maps network failures during password recovery', () async {
+      final dio = Dio();
+      dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) => handler.reject(
+            DioException(
+              requestOptions: options,
+              type: DioExceptionType.connectionError,
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        () =>
+            repositoryWith(dio).requestPasswordReset(email: 'dev1@planify.dev'),
+        throwsA(isA<NetworkAuthException>()),
       );
     });
 

@@ -316,11 +316,17 @@ abstract class AppLocalizations {
   /// **'Crear cuenta'**
   String get registrationTitle;
 
-  /// No description provided for @registrationCreateAccountLink.
+  /// No description provided for @registrationCreateAccountPrompt.
   ///
   /// In es, this message translates to:
-  /// **'¿No tenés cuenta? Crear cuenta'**
-  String get registrationCreateAccountLink;
+  /// **'¿No tenés cuenta?'**
+  String get registrationCreateAccountPrompt;
+
+  /// No description provided for @registrationCreateAccountAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear una'**
+  String get registrationCreateAccountAction;
 
   /// No description provided for @registrationNameLabel.
   ///
@@ -405,6 +411,144 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'¿Ya tenés cuenta? Iniciá sesión'**
   String get registrationBackToLogin;
+
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Recuperar contraseña'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @forgotPasswordDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá tu correo electrónico para recibir un código de recuperación.'**
+  String get forgotPasswordDescription;
+
+  /// No description provided for @forgotPasswordSubmitButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar'**
+  String get forgotPasswordSubmitButton;
+
+  /// No description provided for @forgotPasswordSuccessMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Si ese email está registrado,\nvas a recibir un código de 6 dígitos.'**
+  String get forgotPasswordSuccessMessage;
+
+  /// No description provided for @forgotPasswordResendButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Reenviar'**
+  String get forgotPasswordResendButton;
+
+  /// No description provided for @forgotPasswordNetworkError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos enviar el código por un problema de conexión. Intentá nuevamente.'**
+  String get forgotPasswordNetworkError;
+
+  /// No description provided for @forgotPasswordGenericError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos enviar el código. Intentá nuevamente.'**
+  String get forgotPasswordGenericError;
+
+  /// No description provided for @forgotPasswordLoginLink.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Olvidaste tu contraseña?'**
+  String get forgotPasswordLoginLink;
+
+  /// No description provided for @forgotPasswordHaveCode.
+  ///
+  /// In es, this message translates to:
+  /// **'Tengo el código'**
+  String get forgotPasswordHaveCode;
+
+  /// No description provided for @resetPasswordTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Restablecer contraseña'**
+  String get resetPasswordTitle;
+
+  /// No description provided for @resetPasswordDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá el código de 6 dígitos que recibiste y elegí una nueva contraseña.'**
+  String get resetPasswordDescription;
+
+  /// No description provided for @resetPasswordEmailSent.
+  ///
+  /// In es, this message translates to:
+  /// **'Código enviado a {email}'**
+  String resetPasswordEmailSent(Object email);
+
+  /// No description provided for @resetPasswordCodeLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Código de recuperación'**
+  String get resetPasswordCodeLabel;
+
+  /// No description provided for @resetPasswordNewPasswordLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva contraseña'**
+  String get resetPasswordNewPasswordLabel;
+
+  /// No description provided for @resetPasswordNewPasswordHelp.
+  ///
+  /// In es, this message translates to:
+  /// **'Debe tener entre 8 y 72 caracteres'**
+  String get resetPasswordNewPasswordHelp;
+
+  /// No description provided for @resetPasswordSubmitButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Restablecer contraseña'**
+  String get resetPasswordSubmitButton;
+
+  /// No description provided for @resetPasswordSuccessMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu contraseña se actualizó correctamente. Ya podés iniciar sesión.'**
+  String get resetPasswordSuccessMessage;
+
+  /// No description provided for @resetPasswordBackToLogin.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a iniciar sesión'**
+  String get resetPasswordBackToLogin;
+
+  /// No description provided for @resetPasswordInvalidCodeError.
+  ///
+  /// In es, this message translates to:
+  /// **'El código no es válido o venció. Pedí uno nuevo.'**
+  String get resetPasswordInvalidCodeError;
+
+  /// No description provided for @resetPasswordInvalidDataError.
+  ///
+  /// In es, this message translates to:
+  /// **'La contraseña no es válida'**
+  String get resetPasswordInvalidDataError;
+
+  /// No description provided for @resetPasswordRequestNewCode.
+  ///
+  /// In es, this message translates to:
+  /// **'Pedir un código nuevo'**
+  String get resetPasswordRequestNewCode;
+
+  /// No description provided for @resetPasswordNetworkError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos restablecer la contraseña por un problema de conexión. Intentá nuevamente.'**
+  String get resetPasswordNetworkError;
+
+  /// No description provided for @resetPasswordGenericError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos restablecer la contraseña. Intentá nuevamente.'**
+  String get resetPasswordGenericError;
 
   /// No description provided for @logoutButton.
   ///
