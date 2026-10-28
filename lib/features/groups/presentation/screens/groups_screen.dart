@@ -7,6 +7,7 @@ import '../../../activity_log/presentation/controllers/activity_log_providers.da
 import '../controllers/groups_providers.dart';
 import '../widgets/group_avatar.dart';
 import '../widgets/group_event_tile.dart';
+import '../widgets/group_manage_sheet.dart';
 
 class GroupsScreen extends ConsumerWidget {
   const GroupsScreen({super.key});
@@ -148,6 +149,13 @@ class GroupsScreen extends ConsumerWidget {
                               ),
                             ],
                           ),
+                        ),
+                        IconButton(
+                          key: const Key('group_manage_button'),
+                          tooltip: i18n.groupManageTitle,
+                          icon: const Icon(Icons.more_vert_rounded),
+                          onPressed: () =>
+                              GroupManageSheet.show(context, group: selected),
                         ),
                       ],
                     ),

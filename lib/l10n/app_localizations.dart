@@ -146,6 +146,30 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{1 miembro} other{{count} miembros}}'**
   String groupsMembers(int count);
 
+  /// No description provided for @groupManageTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Gestionar grupo'**
+  String get groupManageTitle;
+
+  /// No description provided for @groupManageAddMember.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar miembro'**
+  String get groupManageAddMember;
+
+  /// No description provided for @groupManageRename.
+  ///
+  /// In es, this message translates to:
+  /// **'Renombrar grupo'**
+  String get groupManageRename;
+
+  /// No description provided for @groupManageLeave.
+  ///
+  /// In es, this message translates to:
+  /// **'Abandonar grupo'**
+  String get groupManageLeave;
+
   /// No description provided for @settleDebtAction.
   ///
   /// In es, this message translates to:

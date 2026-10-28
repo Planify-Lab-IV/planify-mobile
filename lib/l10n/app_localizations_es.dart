@@ -43,6 +43,18 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get groupManageTitle => 'Gestionar grupo';
+
+  @override
+  String get groupManageAddMember => 'Agregar miembro';
+
+  @override
+  String get groupManageRename => 'Renombrar grupo';
+
+  @override
+  String get groupManageLeave => 'Abandonar grupo';
+
+  @override
   String get settleDebtAction => 'Saldar';
 
   @override

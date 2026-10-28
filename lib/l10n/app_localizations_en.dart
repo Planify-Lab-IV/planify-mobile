@@ -43,6 +43,18 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get groupManageTitle => 'Manage group';
+
+  @override
+  String get groupManageAddMember => 'Add member';
+
+  @override
+  String get groupManageRename => 'Rename group';
+
+  @override
+  String get groupManageLeave => 'Leave group';
+
+  @override
   String get settleDebtAction => 'Settle up';
 
   @override
