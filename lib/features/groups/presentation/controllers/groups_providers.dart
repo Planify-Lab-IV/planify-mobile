@@ -30,13 +30,6 @@ final groupsOverviewProvider = FutureProvider.autoDispose<List<GroupOverview>>(
   (ref) => ref.watch(groupsOverviewRepositoryProvider).getMyGroupsOverview(),
 );
 
-/// PLANIFY-105 only supports the shared fake overview. HTTP management is
-/// intentionally deferred to PLANIFY-106.
-final groupManagementAvailableProvider = Provider<bool>((ref) {
-  return ref.watch(groupsOverviewRepositoryProvider)
-      is FakeGroupsOverviewRepository;
-});
-
 final groupManagementFallbackOverviewProvider =
     Provider<FakeGroupsOverviewRepository>(
       (ref) => FakeGroupsOverviewRepository(),
