@@ -112,6 +112,10 @@ class FriendsNotifier extends StateNotifier<FriendsState> {
       );
       _refreshPendingSearch();
       return FriendActionResult.success;
+    } on FriendshipAlreadyExistsException {
+      if (!mounted) return FriendActionResult.ignored;
+      await refresh();
+      return mounted ? FriendActionResult.success : FriendActionResult.ignored;
     } catch (_) {
       return mounted ? FriendActionResult.failure : FriendActionResult.ignored;
     } finally {
