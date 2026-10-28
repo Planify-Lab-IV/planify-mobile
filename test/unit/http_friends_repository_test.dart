@@ -187,7 +187,7 @@ void main() {
     });
 
     test(
-      'rejects malformed responses and pending relationships without an id',
+      'rejects malformed responses, invalid relationships, and pending relationships without an id',
       () async {
         final malformedRepository = HttpFriendsRepository(
           dio: resolving({'users': 'not-a-list'}),
@@ -199,6 +199,18 @@ void main() {
             ],
           }),
         );
+        final missingRelationshipRepository = HttpFriendsRepository(
+          dio: resolving({
+            'users': [person],
+          }),
+        );
+        final nonStringRelationshipRepository = HttpFriendsRepository(
+          dio: resolving({
+            'users': [
+              {...person, 'relationship': 1},
+            ],
+          }),
+        );
 
         await expectLater(
           malformedRepository.search('de'),
@@ -206,6 +218,14 @@ void main() {
         );
         await expectLater(
           missingRequestIdRepository.search('de'),
+          throwsA(isA<InvalidFriendsResponseException>()),
+        );
+        await expectLater(
+          missingRelationshipRepository.search('de'),
+          throwsA(isA<InvalidFriendsResponseException>()),
+        );
+        await expectLater(
+          nonStringRelationshipRepository.search('de'),
           throwsA(isA<InvalidFriendsResponseException>()),
         );
       },

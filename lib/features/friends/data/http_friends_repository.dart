@@ -221,6 +221,8 @@ class HttpFriendsRepository implements FriendsRepository {
   }
 
   FriendRelationship _relationshipFromResponse(dynamic value) {
+    if (value is! String) throw const InvalidFriendsResponseException();
+
     return switch (value) {
       'request_sent' => FriendRelationship.requestSent,
       'request_received' => FriendRelationship.requestReceived,

@@ -93,6 +93,12 @@ class FriendsNotifier extends StateNotifier<FriendsState> {
     await Future.wait(operations);
   }
 
+  bool _refreshHasError() {
+    return state.requestsStatus == FriendsLoadStatus.error ||
+        state.friendsStatus == FriendsLoadStatus.error ||
+        (state.isSearchActive && state.searchStatus == FriendsLoadStatus.error);
+  }
+
   Future<FriendActionResult> sendRequest(Person person) async {
     if (person.relationship != FriendRelationship.none ||
         !_beginOperation(person.id)) {
@@ -115,7 +121,10 @@ class FriendsNotifier extends StateNotifier<FriendsState> {
     } on FriendshipAlreadyExistsException {
       if (!mounted) return FriendActionResult.ignored;
       await refresh();
-      return mounted ? FriendActionResult.success : FriendActionResult.ignored;
+      if (!mounted) return FriendActionResult.ignored;
+      return _refreshHasError()
+          ? FriendActionResult.failure
+          : FriendActionResult.success;
     } catch (_) {
       return mounted ? FriendActionResult.failure : FriendActionResult.ignored;
     } finally {

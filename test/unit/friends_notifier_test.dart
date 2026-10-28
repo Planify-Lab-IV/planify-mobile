@@ -240,6 +240,27 @@ void main() {
       friendsNotifier.dispose();
     });
 
+    test(
+      'informa falla si no puede recargar después de un conflicto',
+      () async {
+        final repository = _FriendshipConflictRepository(failRefresh: true);
+        final friendsNotifier = notifier(repository);
+        await settle();
+        friendsNotifier.updateSearchQuery('diego');
+        await settle();
+
+        final result = await friendsNotifier.sendRequest(
+          friendsNotifier.state.searchResults.single,
+        );
+
+        expect(result, FriendActionResult.failure);
+        expect(friendsNotifier.state.requestsStatus, FriendsLoadStatus.error);
+        expect(friendsNotifier.state.searchStatus, FriendsLoadStatus.error);
+        expect(friendsNotifier.state.pendingPersonIds, isEmpty);
+        friendsNotifier.dispose();
+      },
+    );
+
     test('conserva las solicitudes cuando aceptar o eliminar fallan', () async {
       final repository = FakeFriendsRepository(delay: Duration.zero);
       final friendsNotifier = notifier(repository);
@@ -486,10 +507,16 @@ class _PendingSearchActionRepository implements FriendsRepository {
 }
 
 class _FriendshipConflictRepository implements FriendsRepository {
+  final bool failRefresh;
   var _relationshipAlreadyExists = false;
+
+  _FriendshipConflictRepository({this.failRefresh = false});
 
   @override
   Future<List<Person>> search(String query) async {
+    if (_relationshipAlreadyExists && failRefresh) {
+      throw const FriendsOperationException();
+    }
     return [
       _diego.copyWith(
         relationship: _relationshipAlreadyExists
@@ -509,6 +536,9 @@ class _FriendshipConflictRepository implements FriendsRepository {
 
   @override
   Future<FriendRequests> getRequests() async {
+    if (_relationshipAlreadyExists && failRefresh) {
+      throw const FriendsOperationException();
+    }
     if (!_relationshipAlreadyExists) return FriendRequests();
     return FriendRequests(
       sent: [
