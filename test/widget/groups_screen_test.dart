@@ -367,6 +367,19 @@ void main() {
     expect(find.byKey(const Key('group_manage_leave')), findsOneWidget);
   });
 
+  testWidgets('oculta la gestión mientras el overview sea HTTP', (
+    tester,
+  ) async {
+    final fakeOverview = FakeGroupsOverviewRepository(delay: Duration.zero);
+    final overview = MutableOverviewRepository(
+      await fakeOverview.getMyGroupsOverview(),
+    );
+    await tester.pumpWidget(app(overview));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('group_manage_button')), findsNothing);
+  });
+
   testWidgets('English copy and cancelled-event exclusion', (tester) async {
     final group = GroupOverview(
       id: 'g',

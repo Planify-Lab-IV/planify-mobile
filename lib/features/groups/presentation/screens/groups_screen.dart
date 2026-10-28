@@ -18,6 +18,9 @@ class GroupsScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final overview = ref.watch(groupsOverviewProvider);
     final selected = ref.watch(selectedGroupOverviewProvider);
+    final isGroupManagementAvailable = ref.watch(
+      groupManagementAvailableProvider,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -150,13 +153,14 @@ class GroupsScreen extends ConsumerWidget {
                             ],
                           ),
                         ),
-                        IconButton(
-                          key: const Key('group_manage_button'),
-                          tooltip: i18n.groupManageTitle,
-                          icon: const Icon(Icons.more_vert_rounded),
-                          onPressed: () =>
-                              GroupManageSheet.show(context, group: selected),
-                        ),
+                        if (isGroupManagementAvailable)
+                          IconButton(
+                            key: const Key('group_manage_button'),
+                            tooltip: i18n.groupManageTitle,
+                            icon: const Icon(Icons.more_vert_rounded),
+                            onPressed: () =>
+                                GroupManageSheet.show(context, group: selected),
+                          ),
                       ],
                     ),
                     const SizedBox(height: AppSpacing.lg),
