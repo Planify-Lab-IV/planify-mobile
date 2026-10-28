@@ -13,61 +13,111 @@ class HttpFriendsRepository implements FriendsRepository {
 
   @override
   Future<List<Person>> search(String query) async {
-    final response = await dio.get<dynamic>(
-      '/friends/search',
-      queryParameters: {'q': query},
-    );
-    return _peopleFromResponse(response.data, 'users');
+    return _execute(() async {
+      final response = await dio.get<dynamic>(
+        '/friends/search',
+        queryParameters: {'q': query},
+      );
+      return _peopleFromResponse(response.data, 'users');
+    });
   }
 
   @override
   Future<FriendRequest> sendRequest(String userId) async {
-    final response = await dio.post<dynamic>(
-      '/friends/requests',
-      data: {'userId': userId},
-    );
-    final data = _mapFromResponse(response.data);
-    return _requestFromResponse(
-      data['request'],
-      relationship: FriendRelationship.requestSent,
-    );
+    return _execute(() async {
+      final response = await dio.post<dynamic>(
+        '/friends/requests',
+        data: {'userId': userId},
+      );
+      final data = _mapFromResponse(response.data);
+      return _requestFromResponse(
+        data['request'],
+        relationship: FriendRelationship.requestSent,
+      );
+    });
   }
 
   @override
   Future<FriendRequests> getRequests() async {
-    final data = _mapFromResponse(
-      (await dio.get<dynamic>('/friends/requests')).data,
-    );
-    return FriendRequests(
-      received: _requestsFromResponse(
-        data['received'],
-        relationship: FriendRelationship.requestReceived,
-      ),
-      sent: _requestsFromResponse(
-        data['sent'],
-        relationship: FriendRelationship.requestSent,
-      ),
-    );
+    return _execute(() async {
+      final data = _mapFromResponse(
+        (await dio.get<dynamic>('/friends/requests')).data,
+      );
+      return FriendRequests(
+        received: _requestsFromResponse(
+          data['received'],
+          relationship: FriendRelationship.requestReceived,
+        ),
+        sent: _requestsFromResponse(
+          data['sent'],
+          relationship: FriendRelationship.requestSent,
+        ),
+      );
+    });
   }
 
   @override
   Future<void> acceptRequest(String requestId) async {
-    await dio.post<void>('/friends/requests/$requestId/accept');
+    await _execute(() => dio.post<void>('/friends/requests/$requestId/accept'));
   }
 
   @override
   Future<void> removeRequest(String requestId) async {
-    await dio.delete<void>('/friends/requests/$requestId');
+    await _execute(() => dio.delete<void>('/friends/requests/$requestId'));
   }
 
   @override
   Future<List<Person>> getFriends() async {
-    final response = await dio.get<dynamic>('/friends');
-    return _peopleFromResponse(
-      response.data,
-      'friends',
-      relationship: FriendRelationship.friend,
-    );
+    return _execute(() async {
+      final response = await dio.get<dynamic>('/friends');
+      return _peopleFromResponse(
+        response.data,
+        'friends',
+        relationship: FriendRelationship.friend,
+      );
+    });
+  }
+
+  Future<T> _execute<T>(Future<T> Function() operation) async {
+    try {
+      return await operation();
+    } on DioException catch (error) {
+      throw _exceptionFromDio(error);
+    } on FriendsException {
+      rethrow;
+    } catch (_) {
+      throw const InvalidFriendsResponseException();
+    }
+  }
+
+  FriendsException _exceptionFromDio(DioException error) {
+    if (_isNetworkError(error)) return const NetworkFriendsException();
+
+    final statusCode = error.response?.statusCode;
+    final errorCode = _errorCode(error.response?.data);
+    if (statusCode == 409 && errorCode == 'FRIENDSHIP_ALREADY_EXISTS') {
+      return const FriendshipAlreadyExistsException();
+    }
+    if (statusCode == 404 && errorCode == 'FRIEND_REQUEST_NOT_FOUND') {
+      return const FriendRequestNotFoundException();
+    }
+    return const InvalidFriendsResponseException();
+  }
+
+  String? _errorCode(dynamic data) {
+    if (data is! Map) return null;
+    final error = data['error'];
+    return error is String ? error : null;
+  }
+
+  bool _isNetworkError(DioException error) {
+    return switch (error.type) {
+      DioExceptionType.connectionTimeout ||
+      DioExceptionType.sendTimeout ||
+      DioExceptionType.receiveTimeout ||
+      DioExceptionType.connectionError => true,
+      _ => false,
+    };
   }
 
   List<Person> _peopleFromResponse(
