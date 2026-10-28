@@ -128,6 +128,7 @@ void main() {
       await Future<void>.delayed(Duration.zero);
 
       expect(groupNotifier.state.isAddingMember, isTrue);
+      expect(groupNotifier.state.isMemberBeingAdded('user-1'), isTrue);
       expect(
         await groupNotifier.addMember(groupId: 'group-1', userId: 'user-1'),
         isFalse,
@@ -138,6 +139,34 @@ void main() {
       expect(await firstAdd, isTrue);
       groupNotifier.dispose();
     });
+
+    test(
+      'permite agregar otro miembro mientras el primero está en curso',
+      () async {
+        final repository = _RecordingGroupManagementRepository()
+          ..addMemberCompletion = Completer<void>();
+        final groupNotifier = notifier(repository);
+
+        final firstAdd = groupNotifier.addMember(
+          groupId: 'group-1',
+          userId: 'user-1',
+        );
+        final secondAdd = groupNotifier.addMember(
+          groupId: 'group-1',
+          userId: 'user-2',
+        );
+        await Future<void>.delayed(Duration.zero);
+
+        expect(repository.addMemberRequests, hasLength(2));
+        expect(groupNotifier.state.isMemberBeingAdded('user-1'), isTrue);
+        expect(groupNotifier.state.isMemberBeingAdded('user-2'), isTrue);
+
+        repository.addMemberCompletion!.complete();
+        expect(await firstAdd, isTrue);
+        expect(await secondAdd, isTrue);
+        groupNotifier.dispose();
+      },
+    );
   });
 }
 

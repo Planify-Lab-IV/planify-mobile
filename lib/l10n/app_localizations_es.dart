@@ -55,6 +55,33 @@ class AppLocalizationsEs extends AppLocalizations {
   String get groupManageLeave => 'Abandonar grupo';
 
   @override
+  String get groupManageFriendsLoadError =>
+      'No pudimos cargar tus amigos. Intentá nuevamente.';
+
+  @override
+  String get groupManageNoFriends => 'Todavía no tenés amigos para agregar';
+
+  @override
+  String get groupManageGoToFriends => 'Ir a Amigos';
+
+  @override
+  String get groupManageMemberAdded => 'Miembro agregado correctamente.';
+
+  @override
+  String get groupManageMemberAddedLabel => 'Agregado';
+
+  @override
+  String get groupManageActionError =>
+      'No se pudo actualizar el grupo. Intentá nuevamente.';
+
+  @override
+  String get groupManageSearchFriends => 'Buscar amigos';
+
+  @override
+  String get groupManageSearchEmpty =>
+      'No encontramos amigos\ncon ese nombre o usuario.';
+
+  @override
   String get settleDebtAction => 'Saldar';
 
   @override

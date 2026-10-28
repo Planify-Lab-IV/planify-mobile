@@ -7,16 +7,20 @@ class GroupManagementState {
   final GroupManagementActionStatus renameStatus;
   final GroupManagementActionStatus leaveStatus;
   final Set<String> addedMemberIds;
+  final Set<String>? _addingMemberIds;
 
   GroupManagementState({
     this.addMemberStatus = GroupManagementActionStatus.idle,
     this.renameStatus = GroupManagementActionStatus.idle,
     this.leaveStatus = GroupManagementActionStatus.idle,
     Set<String> addedMemberIds = const {},
-  }) : addedMemberIds = Set.unmodifiable(addedMemberIds);
+    Set<String> addingMemberIds = const {},
+  }) : addedMemberIds = Set.unmodifiable(addedMemberIds),
+       _addingMemberIds = Set.unmodifiable(addingMemberIds);
 
-  bool get isAddingMember =>
-      addMemberStatus == GroupManagementActionStatus.loading;
+  Set<String> get addingMemberIds => _addingMemberIds ?? const {};
+
+  bool get isAddingMember => addingMemberIds.isNotEmpty;
 
   bool get isRenaming => renameStatus == GroupManagementActionStatus.loading;
 
@@ -24,17 +28,21 @@ class GroupManagementState {
 
   bool isMemberAdded(String userId) => addedMemberIds.contains(userId);
 
+  bool isMemberBeingAdded(String userId) => addingMemberIds.contains(userId);
+
   GroupManagementState copyWith({
     GroupManagementActionStatus? addMemberStatus,
     GroupManagementActionStatus? renameStatus,
     GroupManagementActionStatus? leaveStatus,
     Set<String>? addedMemberIds,
+    Set<String>? addingMemberIds,
   }) {
     return GroupManagementState(
       addMemberStatus: addMemberStatus ?? this.addMemberStatus,
       renameStatus: renameStatus ?? this.renameStatus,
       leaveStatus: leaveStatus ?? this.leaveStatus,
       addedMemberIds: addedMemberIds ?? this.addedMemberIds,
+      addingMemberIds: addingMemberIds ?? this.addingMemberIds,
     );
   }
 
@@ -46,7 +54,8 @@ class GroupManagementState {
           addMemberStatus == other.addMemberStatus &&
           renameStatus == other.renameStatus &&
           leaveStatus == other.leaveStatus &&
-          setEquals(addedMemberIds, other.addedMemberIds);
+          setEquals(addedMemberIds, other.addedMemberIds) &&
+          setEquals(addingMemberIds, other.addingMemberIds);
 
   @override
   int get hashCode => Object.hash(
@@ -54,5 +63,6 @@ class GroupManagementState {
     renameStatus,
     leaveStatus,
     Object.hashAll(addedMemberIds),
+    Object.hashAll(addingMemberIds),
   );
 }

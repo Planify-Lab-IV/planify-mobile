@@ -170,6 +170,54 @@ abstract class AppLocalizations {
   /// **'Abandonar grupo'**
   String get groupManageLeave;
 
+  /// No description provided for @groupManageFriendsLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tus amigos. Intentá nuevamente.'**
+  String get groupManageFriendsLoadError;
+
+  /// No description provided for @groupManageNoFriends.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no tenés amigos para agregar'**
+  String get groupManageNoFriends;
+
+  /// No description provided for @groupManageGoToFriends.
+  ///
+  /// In es, this message translates to:
+  /// **'Ir a Amigos'**
+  String get groupManageGoToFriends;
+
+  /// No description provided for @groupManageMemberAdded.
+  ///
+  /// In es, this message translates to:
+  /// **'Miembro agregado correctamente.'**
+  String get groupManageMemberAdded;
+
+  /// No description provided for @groupManageMemberAddedLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregado'**
+  String get groupManageMemberAddedLabel;
+
+  /// No description provided for @groupManageActionError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo actualizar el grupo. Intentá nuevamente.'**
+  String get groupManageActionError;
+
+  /// No description provided for @groupManageSearchFriends.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar amigos'**
+  String get groupManageSearchFriends;
+
+  /// No description provided for @groupManageSearchEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos amigos\ncon ese nombre o usuario.'**
+  String get groupManageSearchEmpty;
+
   /// No description provided for @settleDebtAction.
   ///
   /// In es, this message translates to:

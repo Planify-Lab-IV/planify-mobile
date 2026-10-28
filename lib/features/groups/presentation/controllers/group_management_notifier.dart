@@ -20,12 +20,13 @@ class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
     final normalizedUserId = userId.trim();
     if (normalizedGroupId.isEmpty ||
         normalizedUserId.isEmpty ||
-        state.isAddingMember) {
+        state.isMemberBeingAdded(normalizedUserId)) {
       return false;
     }
 
     state = state.copyWith(
       addMemberStatus: GroupManagementActionStatus.loading,
+      addingMemberIds: {...state.addingMemberIds, normalizedUserId},
     );
     try {
       await repository.addMember(
@@ -34,16 +35,26 @@ class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
       );
       if (!mounted) return false;
 
+      final pendingMemberIds = {...state.addingMemberIds}
+        ..remove(normalizedUserId);
       state = state.copyWith(
-        addMemberStatus: GroupManagementActionStatus.success,
+        addMemberStatus: pendingMemberIds.isEmpty
+            ? GroupManagementActionStatus.success
+            : GroupManagementActionStatus.loading,
         addedMemberIds: {...state.addedMemberIds, normalizedUserId},
+        addingMemberIds: pendingMemberIds,
       );
       onGroupManagementSucceeded?.call();
       return true;
     } catch (_) {
       if (!mounted) return false;
+      final pendingMemberIds = {...state.addingMemberIds}
+        ..remove(normalizedUserId);
       state = state.copyWith(
-        addMemberStatus: GroupManagementActionStatus.error,
+        addMemberStatus: pendingMemberIds.isEmpty
+            ? GroupManagementActionStatus.error
+            : GroupManagementActionStatus.loading,
+        addingMemberIds: pendingMemberIds,
       );
       return false;
     }

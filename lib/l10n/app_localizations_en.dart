@@ -55,6 +55,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get groupManageLeave => 'Leave group';
 
   @override
+  String get groupManageFriendsLoadError =>
+      'We couldn\'t load your friends. Please try again.';
+
+  @override
+  String get groupManageNoFriends => 'You don\'t have friends to add yet.';
+
+  @override
+  String get groupManageGoToFriends => 'Go to Friends';
+
+  @override
+  String get groupManageMemberAdded => 'Member added successfully.';
+
+  @override
+  String get groupManageMemberAddedLabel => 'Added';
+
+  @override
+  String get groupManageActionError =>
+      'We couldn\'t update the group. Please try again.';
+
+  @override
+  String get groupManageSearchFriends => 'Search friends';
+
+  @override
+  String get groupManageSearchEmpty =>
+      'We couldn\'t find friends\nwith that name or username.';
+
+  @override
   String get settleDebtAction => 'Settle up';
 
   @override
