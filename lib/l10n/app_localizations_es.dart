@@ -209,7 +209,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get forgotPasswordSuccessMessage =>
-      'Si ese email está registrado, vas a recibir un código de 6 dígitos para restablecer tu contraseña.';
+      'Si ese email está registrado,\nvas a recibir un código de 6 dígitos.';
 
   @override
   String get forgotPasswordResendButton => 'Reenviar';

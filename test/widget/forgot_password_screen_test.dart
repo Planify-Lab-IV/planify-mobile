@@ -43,13 +43,7 @@ void main() {
       expect(find.text('Recuperar contraseña'), findsOneWidget);
       expect(
         find.byKey(const Key('forgot_password_success_message')),
-        findsOneWidget,
-      );
-      expect(
-        find.text(
-          'Si ese email está registrado, vas a recibir un código de 6 dígitos para restablecer tu contraseña.',
-        ),
-        findsOneWidget,
+        findsNothing,
       );
       expect(tester.widget<ElevatedButton>(submitButton).onPressed, isNull);
 
@@ -88,7 +82,7 @@ void main() {
       );
       expect(
         find.text(
-          'Si ese email está registrado, vas a recibir un código de 6 dígitos para restablecer tu contraseña.',
+          'Si ese email está registrado,\nvas a recibir un código de 6 dígitos.',
         ),
         findsOneWidget,
       );
@@ -155,6 +149,10 @@ void main() {
         findsOneWidget,
       );
       expect(
+        find.byKey(const Key('forgot_password_success_message')),
+        findsNothing,
+      );
+      expect(
         tester
             .widget<TextFormField>(
               find.byKey(const Key('forgot_password_email_input')),
@@ -194,6 +192,10 @@ void main() {
 
       expect(haveCodeButton, findsNothing);
       expect(find.text('Enviar'), findsOneWidget);
+      expect(
+        find.byKey(const Key('forgot_password_success_message')),
+        findsNothing,
+      );
 
       await tester.tap(submitButton);
       await tester.pumpAndSettle();
@@ -220,8 +222,8 @@ void main() {
       expect(find.text('Reset password'), findsOneWidget);
       expect(find.text('Send'), findsOneWidget);
       expect(
-        find.text('If the email is registered, we\'ll send a\nsix-digit code.'),
-        findsOneWidget,
+        find.byKey(const Key('forgot_password_success_message')),
+        findsNothing,
       );
     });
   });

@@ -123,25 +123,27 @@ class _ForgotPasswordFormState extends ConsumerState<ForgotPasswordForm> {
                 ),
                 const SizedBox(height: AppSpacing.md),
               ],
-              Container(
-                key: const Key('forgot_password_success_message'),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.sm,
-                  vertical: AppSpacing.xs,
-                ),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(AppRadius.sm),
-                ),
-                child: Text(
-                  i18n.forgotPasswordSuccessMessage,
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onPrimaryContainer,
+              if (hasCodeForCurrentEmail) ...[
+                Container(
+                  key: const Key('forgot_password_success_message'),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
+                  ),
+                  child: Text(
+                    i18n.forgotPasswordSuccessMessage,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onPrimaryContainer,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: AppSpacing.md),
+                const SizedBox(height: AppSpacing.md),
+              ],
               TextFormField(
                 key: const Key('forgot_password_email_input'),
                 controller: _emailController,

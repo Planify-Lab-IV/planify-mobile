@@ -58,7 +58,7 @@
   "forgotPasswordTitle": "Recuperar contraseña",
   "forgotPasswordDescription": "Ingresá tu correo electrónico para recibir un código de recuperación.",
   "forgotPasswordSubmitButton": "Enviar",
-  "forgotPasswordSuccessMessage": "Si ese email está registrado, vas a recibir un código de 6 dígitos para restablecer tu contraseña.",
+  "forgotPasswordSuccessMessage": "Si ese email está registrado,\nvas a recibir un código de 6 dígitos.",
   "forgotPasswordResendButton": "Reenviar",
   "forgotPasswordNetworkError": "No pudimos enviar el código por un problema de conexión. Intentá nuevamente.",
   "forgotPasswordGenericError": "No pudimos enviar el código. Intentá nuevamente.",

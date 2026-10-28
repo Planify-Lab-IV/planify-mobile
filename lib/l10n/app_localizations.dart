@@ -433,7 +433,7 @@ abstract class AppLocalizations {
   /// No description provided for @forgotPasswordSuccessMessage.
   ///
   /// In es, this message translates to:
-  /// **'Si ese email está registrado, vas a recibir un código de 6 dígitos para restablecer tu contraseña.'**
+  /// **'Si ese email está registrado,\nvas a recibir un código de 6 dígitos.'**
   String get forgotPasswordSuccessMessage;
 
   /// No description provided for @forgotPasswordResendButton.

@@ -58,7 +58,7 @@
   "forgotPasswordTitle": "Reset password",
   "forgotPasswordDescription": "Enter your email address to receive\na recovery code.",
   "forgotPasswordSubmitButton": "Send",
-  "forgotPasswordSuccessMessage": "If the email is registered, we'll send a\nsix-digit code.",
+  "forgotPasswordSuccessMessage": "If that email is registered,\nyou'll get a six-digit code.",
   "forgotPasswordResendButton": "Resend",
   "forgotPasswordNetworkError": "We could not send the code because of a connection problem. Please try again.",
   "forgotPasswordGenericError": "We could not send the code. Please try again.",

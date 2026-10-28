@@ -208,7 +208,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get forgotPasswordSuccessMessage =>
-      'If the email is registered, we\'ll send a\nsix-digit code.';
+      'If that email is registered,\nyou\'ll get a six-digit code.';
 
   @override
   String get forgotPasswordResendButton => 'Resend';
