@@ -218,6 +218,48 @@ abstract class AppLocalizations {
   /// **'No encontramos amigos\ncon ese nombre o usuario.'**
   String get groupManageSearchEmpty;
 
+  /// No description provided for @groupRenameDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Renombrar grupo'**
+  String get groupRenameDialogTitle;
+
+  /// No description provided for @groupRenameFieldLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre del grupo'**
+  String get groupRenameFieldLabel;
+
+  /// No description provided for @groupRenameSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar'**
+  String get groupRenameSave;
+
+  /// No description provided for @groupRenameError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo renombrar el grupo. Intentá nuevamente.'**
+  String get groupRenameError;
+
+  /// No description provided for @groupLeaveDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Abandonar {groupName}?'**
+  String groupLeaveDialogTitle(String groupName);
+
+  /// No description provided for @groupLeaveDialogDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Vas a dejar de ver este grupo. Seguís participando de los eventos en los que ya estabas.'**
+  String get groupLeaveDialogDescription;
+
+  /// No description provided for @groupLeaveError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo abandonar el grupo. Intentá nuevamente.'**
+  String get groupLeaveError;
+
   /// No description provided for @settleDebtAction.
   ///
   /// In es, this message translates to:

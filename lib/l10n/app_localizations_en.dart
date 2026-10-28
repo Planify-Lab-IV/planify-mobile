@@ -82,6 +82,32 @@ class AppLocalizationsEn extends AppLocalizations {
       'We couldn\'t find friends\nwith that name or username.';
 
   @override
+  String get groupRenameDialogTitle => 'Rename group';
+
+  @override
+  String get groupRenameFieldLabel => 'Group name';
+
+  @override
+  String get groupRenameSave => 'Save';
+
+  @override
+  String get groupRenameError =>
+      'We couldn\'t rename the group. Please try again.';
+
+  @override
+  String groupLeaveDialogTitle(String groupName) {
+    return 'Leave $groupName?';
+  }
+
+  @override
+  String get groupLeaveDialogDescription =>
+      'You will no longer see this group. You\'ll still participate in the events you were already part of.';
+
+  @override
+  String get groupLeaveError =>
+      'We couldn\'t leave the group. Please try again.';
+
+  @override
   String get settleDebtAction => 'Settle up';
 
   @override

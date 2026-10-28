@@ -63,11 +63,13 @@ Widget app({
 }
 
 FakeGroupManagementRepository managementRepository(
-  FakeGroupsOverviewRepository overview,
-) {
+  FakeGroupsOverviewRepository overview, {
+  bool shouldThrowError = false,
+}) {
   return FakeGroupManagementRepository(
     overviewRepository: overview,
     delay: Duration.zero,
+    shouldThrowError: shouldThrowError,
   );
 }
 
@@ -188,5 +190,113 @@ void main() {
       find.byKey(const Key('group_member_selector_retry')),
       findsOneWidget,
     );
+  });
+
+  testWidgets('renombra solo con un nombre válido y cierra al guardar', (
+    tester,
+  ) async {
+    final overview = FakeGroupsOverviewRepository(
+      delay: Duration.zero,
+      initialGroups: [_group],
+    );
+    await tester.pumpWidget(
+      app(
+        friendsRepository: FakeFriendsRepository(delay: Duration.zero),
+        managementRepository: managementRepository(overview),
+      ),
+    );
+
+    await tester.tap(find.text('Abrir'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('group_manage_rename')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('group_manage_add_member')), findsNothing);
+
+    final nameField = find.byKey(const Key('group_rename_field'));
+    expect(tester.widget<TextField>(nameField).controller!.text, 'Amigos');
+    expect(
+      tester
+          .widget<FilledButton>(
+            find.byKey(const Key('group_rename_save_button')),
+          )
+          .onPressed,
+      isNull,
+    );
+
+    await tester.enterText(nameField, 'Familia');
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('group_rename_save_button')));
+    await tester.pumpAndSettle();
+
+    expect((await overview.getMyGroupsOverview()).single.name, 'Familia');
+    expect(find.byKey(const Key('group_rename_field')), findsNothing);
+  });
+
+  testWidgets('conserva el nombre escrito si renombrar falla', (tester) async {
+    final overview = FakeGroupsOverviewRepository(
+      delay: Duration.zero,
+      initialGroups: [_group],
+    );
+    await tester.pumpWidget(
+      app(
+        friendsRepository: FakeFriendsRepository(delay: Duration.zero),
+        managementRepository: managementRepository(
+          overview,
+          shouldThrowError: true,
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Abrir'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('group_manage_rename')));
+    await tester.pumpAndSettle();
+    final nameField = find.byKey(const Key('group_rename_field'));
+    await tester.enterText(nameField, 'Familia');
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('group_rename_save_button')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('group_rename_field')), findsOneWidget);
+    expect(tester.widget<TextField>(nameField).controller!.text, 'Familia');
+    expect(
+      find.text("We couldn't rename the group. Please try again."),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('permite cancelar o confirmar que abandona un grupo', (
+    tester,
+  ) async {
+    final overview = FakeGroupsOverviewRepository(
+      delay: Duration.zero,
+      initialGroups: [_group],
+    );
+    await tester.pumpWidget(
+      app(
+        friendsRepository: FakeFriendsRepository(delay: Duration.zero),
+        managementRepository: managementRepository(overview),
+      ),
+    );
+
+    await tester.tap(find.text('Abrir'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('group_manage_leave')));
+    await tester.pumpAndSettle();
+    expect(find.text('Leave Amigos?'), findsOneWidget);
+
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('group_manage_leave')), findsNothing);
+
+    await tester.tap(find.text('Abrir'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('group_manage_leave')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('group_leave_confirm_button')));
+    await tester.pumpAndSettle();
+
+    expect(await overview.getMyGroupsOverview(), isEmpty);
+    expect(find.byKey(const Key('group_manage_leave')), findsNothing);
   });
 }

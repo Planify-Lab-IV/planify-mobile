@@ -21,6 +21,16 @@
   "groupManageActionError": "No se pudo actualizar el grupo. Intentá nuevamente.",
   "groupManageSearchFriends": "Buscar amigos",
   "groupManageSearchEmpty": "No encontramos amigos\ncon ese nombre o usuario.",
+  "groupRenameDialogTitle": "Renombrar grupo",
+  "groupRenameFieldLabel": "Nombre del grupo",
+  "groupRenameSave": "Guardar",
+  "groupRenameError": "No se pudo renombrar el grupo. Intentá nuevamente.",
+  "groupLeaveDialogTitle": "¿Abandonar {groupName}?",
+  "@groupLeaveDialogTitle": {
+    "placeholders": {"groupName": {"type": "String", "example": "Amigos"}}
+  },
+  "groupLeaveDialogDescription": "Vas a dejar de ver este grupo. Seguís participando de los eventos en los que ya estabas.",
+  "groupLeaveError": "No se pudo abandonar el grupo. Intentá nuevamente.",
   "settleDebtAction": "Saldar",
   "settleAllAction": "Saldar todo",
   "settleInProgress": "Saldando…",
