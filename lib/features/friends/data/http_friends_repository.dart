@@ -226,7 +226,6 @@ class HttpFriendsRepository implements FriendsRepository {
     return switch (value) {
       'request_sent' => FriendRelationship.requestSent,
       'request_received' => FriendRelationship.requestReceived,
-      'none' => FriendRelationship.none,
       _ => FriendRelationship.none,
     };
   }
