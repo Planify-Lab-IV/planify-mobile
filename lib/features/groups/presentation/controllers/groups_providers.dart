@@ -1,11 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../../core/providers/core_providers.dart';
+import '../../data/fake_group_management_repository.dart';
+import '../../data/fake_groups_overview_repository.dart';
 import '../../data/http_groups_repository.dart';
 import '../../data/http_groups_overview_repository.dart';
 import '../../domain/group.dart';
+import '../../domain/group_management_repository.dart';
 import '../../domain/groups_repository.dart';
 import '../../domain/group_overview.dart';
 import '../../domain/groups_overview_repository.dart';
+import 'group_management_notifier.dart';
+import 'group_management_state.dart';
 
 final groupsRepositoryProvider = Provider<GroupsRepository>((ref) {
   return HttpGroupsRepository(dio: ref.watch(dioClientProvider));
@@ -23,6 +29,33 @@ final groupsOverviewRepositoryProvider = Provider<GroupsOverviewRepository>(
 final groupsOverviewProvider = FutureProvider.autoDispose<List<GroupOverview>>(
   (ref) => ref.watch(groupsOverviewRepositoryProvider).getMyGroupsOverview(),
 );
+
+final groupManagementFallbackOverviewProvider =
+    Provider<FakeGroupsOverviewRepository>(
+      (ref) => FakeGroupsOverviewRepository(),
+    );
+
+final groupManagementRepositoryProvider = Provider<GroupManagementRepository>((
+  ref,
+) {
+  final overviewRepository = ref.watch(groupsOverviewRepositoryProvider);
+  final fakeOverview = overviewRepository is FakeGroupsOverviewRepository
+      ? overviewRepository
+      : ref.watch(groupManagementFallbackOverviewProvider);
+  return FakeGroupManagementRepository(overviewRepository: fakeOverview);
+});
+
+final groupManagementNotifierProvider =
+    StateNotifierProvider.autoDispose<
+      GroupManagementNotifier,
+      GroupManagementState
+    >((ref) {
+      return GroupManagementNotifier(
+        repository: ref.watch(groupManagementRepositoryProvider),
+        onGroupManagementSucceeded: () =>
+            ref.invalidate(groupsOverviewProvider),
+      );
+    });
 
 final selectedGroupIdProvider = StateProvider<String?>((ref) => null);
 
