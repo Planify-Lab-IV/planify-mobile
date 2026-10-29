@@ -26,6 +26,7 @@ class GroupAddMemberSheet extends ConsumerStatefulWidget {
 }
 
 class _GroupAddMemberSheetState extends ConsumerState<GroupAddMemberSheet> {
+  final _sheetMessengerKey = GlobalKey<ScaffoldMessengerState>();
   late Future<List<Person>> _friends;
   var _searchQuery = '';
 
@@ -59,32 +60,18 @@ class _GroupAddMemberSheetState extends ConsumerState<GroupAddMemberSheet> {
     final added = await ref
         .read(groupManagementNotifierProvider.notifier)
         .addMember(groupId: widget.group.id, userId: person.id);
-    if (!mounted || added) {
-      if (mounted && added) {
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(
-              content: Text(
-                AppLocalizations.of(context)!.groupManageMemberAdded,
-              ),
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
-      }
-      return;
-    }
+    if (!mounted) return;
 
-    if (mounted) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.groupManageActionError),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-    }
+    final message = added
+        ? AppLocalizations.of(context)!.groupManageMemberAdded
+        : AppLocalizations.of(context)!.groupManageActionError;
+    final messenger = _sheetMessengerKey.currentState;
+    if (messenger == null) return;
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
+      );
   }
 
   @override
@@ -103,113 +90,126 @@ class _GroupAddMemberSheetState extends ConsumerState<GroupAddMemberSheet> {
         ),
         child: SizedBox(
           height: 440,
-          child: FutureBuilder<List<Person>>(
-            future: _friends,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) {
-                return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(AppSpacing.xl),
-                    child: CircularProgressIndicator(
-                      key: Key('group_member_selector_loading'),
-                    ),
-                  ),
-                );
-              }
-
-              if (snapshot.hasError) {
-                return _LoadError(
-                  message: i18n.groupManageFriendsLoadError,
-                  retryLabel: i18n.retryButton,
-                  onRetry: _retry,
-                );
-              }
-
-              final friends = snapshot.data ?? const <Person>[];
-              if (friends.isEmpty) {
-                return _EmptyFriends(
-                  message: i18n.groupManageNoFriends,
-                  actionLabel: i18n.groupManageGoToFriends,
-                  onGoToFriends: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (_) => const FriendsScreen(),
-                      ),
-                    );
-                  },
-                );
-              }
-
-              final filteredFriends = _filterFriends(friends);
-
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    children: [
-                      IconButton(
-                        key: const Key('group_member_selector_back'),
-                        onPressed: widget.onBack,
-                        icon: const Icon(Icons.arrow_back_rounded),
-                        tooltip: MaterialLocalizations.of(
-                          context,
-                        ).backButtonTooltip,
-                      ),
-                      Expanded(
-                        child: Text(
-                          i18n.groupManageAddMember,
-                          style: Theme.of(context).textTheme.titleLarge
-                              ?.copyWith(fontWeight: FontWeight.w700),
+          child: ScaffoldMessenger(
+            key: _sheetMessengerKey,
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: FutureBuilder<List<Person>>(
+                future: _friends,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(AppSpacing.xl),
+                        child: CircularProgressIndicator(
+                          key: Key('group_member_selector_loading'),
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  TextField(
-                    key: const Key('group_member_search_input'),
-                    onChanged: (value) => setState(() => _searchQuery = value),
-                    decoration: InputDecoration(
-                      labelText: i18n.groupManageSearchFriends,
-                      hintText: i18n.friendsSearchHint,
-                      prefixIcon: const Icon(Icons.search_rounded),
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Expanded(
-                    child: filteredFriends.isEmpty
-                        ? _NoFriendResults(message: i18n.groupManageSearchEmpty)
-                        : ListView.builder(
-                            itemCount: filteredFriends.length,
-                            itemBuilder: (context, index) {
-                              final friend = filteredFriends[index];
-                              final wasAdded = managementState.isMemberAdded(
-                                groupId: widget.group.id,
-                                userId: friend.id,
-                              );
-                              return PersonRow(
-                                person: friend,
-                                trailing: wasAdded
-                                    ? Text(i18n.groupManageMemberAddedLabel)
-                                    : FilledButton(
-                                        key: Key(
-                                          'group_member_add_button_${friend.id}',
-                                        ),
-                                        onPressed:
-                                            managementState.isMemberBeingAdded(
-                                              groupId: widget.group.id,
-                                              userId: friend.id,
-                                            )
-                                            ? null
-                                            : () => _addMember(friend),
-                                        child: Text(i18n.groupManageAddMember),
-                                      ),
-                              );
-                            },
+                    );
+                  }
+
+                  if (snapshot.hasError) {
+                    return _LoadError(
+                      message: i18n.groupManageFriendsLoadError,
+                      retryLabel: i18n.retryButton,
+                      onRetry: _retry,
+                    );
+                  }
+
+                  final friends = snapshot.data ?? const <Person>[];
+                  if (friends.isEmpty) {
+                    return _EmptyFriends(
+                      message: i18n.groupManageNoFriends,
+                      actionLabel: i18n.groupManageGoToFriends,
+                      onGoToFriends: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => const FriendsScreen(),
                           ),
-                  ),
-                ],
-              );
-            },
+                        );
+                      },
+                    );
+                  }
+
+                  final filteredFriends = _filterFriends(friends);
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        children: [
+                          IconButton(
+                            key: const Key('group_member_selector_back'),
+                            onPressed: widget.onBack,
+                            icon: const Icon(Icons.arrow_back_rounded),
+                            tooltip: MaterialLocalizations.of(
+                              context,
+                            ).backButtonTooltip,
+                          ),
+                          Expanded(
+                            child: Text(
+                              i18n.groupManageAddMember,
+                              style: Theme.of(context).textTheme.titleLarge
+                                  ?.copyWith(fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      TextField(
+                        key: const Key('group_member_search_input'),
+                        onChanged: (value) =>
+                            setState(() => _searchQuery = value),
+                        decoration: InputDecoration(
+                          labelText: i18n.groupManageSearchFriends,
+                          hintText: i18n.friendsSearchHint,
+                          prefixIcon: const Icon(Icons.search_rounded),
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Expanded(
+                        child: filteredFriends.isEmpty
+                            ? _NoFriendResults(
+                                message: i18n.groupManageSearchEmpty,
+                              )
+                            : ListView.builder(
+                                itemCount: filteredFriends.length,
+                                itemBuilder: (context, index) {
+                                  final friend = filteredFriends[index];
+                                  final wasAdded = managementState
+                                      .isMemberAdded(
+                                        groupId: widget.group.id,
+                                        userId: friend.id,
+                                      );
+                                  return PersonRow(
+                                    person: friend,
+                                    trailing: wasAdded
+                                        ? Text(i18n.groupManageMemberAddedLabel)
+                                        : FilledButton(
+                                            key: Key(
+                                              'group_member_add_button_${friend.id}',
+                                            ),
+                                            onPressed:
+                                                managementState
+                                                    .isMemberBeingAdded(
+                                                      groupId: widget.group.id,
+                                                      userId: friend.id,
+                                                    )
+                                                ? null
+                                                : () => _addMember(friend),
+                                            child: Text(
+                                              i18n.groupManageAddMember,
+                                            ),
+                                          ),
+                                  );
+                                },
+                              ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
           ),
         ),
       ),

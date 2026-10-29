@@ -13,6 +13,7 @@ import 'package:planify/features/groups/data/fake_groups_overview_repository.dar
 import 'package:planify/features/groups/domain/group_management_repository.dart';
 import 'package:planify/features/groups/domain/group_overview.dart';
 import 'package:planify/features/groups/presentation/controllers/groups_providers.dart';
+import 'package:planify/features/groups/presentation/widgets/group_add_member_sheet.dart';
 import 'package:planify/features/groups/presentation/widgets/group_manage_sheet.dart';
 import 'package:planify/l10n/app_localizations.dart';
 
@@ -124,9 +125,16 @@ void main() {
     );
     await tester.pump();
     await tester.tap(find.byKey(const Key('group_member_add_button_friend-1')));
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     expect(find.text('Added'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(GroupAddMemberSheet),
+        matching: find.text('Member added successfully.'),
+      ),
+      findsOneWidget,
+    );
     expect((await overview.getMyGroupsOverview()).single.memberCount, 3);
 
     await tester.tap(find.byKey(const Key('group_member_selector_back')));
@@ -137,6 +145,44 @@ void main() {
     await tester.pumpAndSettle();
     await openSelector(tester);
     expect(find.text('Added'), findsOneWidget);
+  });
+
+  testWidgets('muestra el error de alta dentro de la hoja', (tester) async {
+    final overview = FakeGroupsOverviewRepository(
+      delay: Duration.zero,
+      initialGroups: [_group],
+    );
+    await tester.pumpWidget(
+      app(
+        friendsRepository: FakeFriendsRepository(
+          delay: Duration.zero,
+          searchablePeople: const [_friend],
+          initialReceivedRequests: const [],
+          initialSentRequests: const [],
+          initialFriends: const [_friend],
+        ),
+        managementRepository: managementRepository(
+          overview,
+          shouldThrowError: true,
+        ),
+      ),
+    );
+
+    await openSelector(tester);
+    await tester.tap(find.byKey(const Key('group_member_add_button_friend-1')));
+    await tester.pump();
+
+    expect(
+      find.descendant(
+        of: find.byType(GroupAddMemberSheet),
+        matching: find.text("We couldn't update the group. Please try again."),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('group_member_add_button_friend-1')),
+      findsOneWidget,
+    );
   });
 
   testWidgets('explica cómo destrabarse cuando no hay amigos', (tester) async {
