@@ -121,6 +121,9 @@ class GroupRenameDialog extends ConsumerStatefulWidget {
     BuildContext context, {
     required GroupOverview group,
   }) {
+    ProviderScope.containerOf(
+      context,
+    ).read(groupManagementNotifierProvider.notifier).resetRenameStatus();
     return showDialog<bool>(
       context: context,
       builder: (_) => GroupRenameDialog(group: group),
@@ -224,6 +227,9 @@ class GroupLeaveConfirmationDialog extends ConsumerWidget {
     BuildContext context, {
     required GroupOverview group,
   }) {
+    ProviderScope.containerOf(
+      context,
+    ).read(groupManagementNotifierProvider.notifier).resetLeaveStatus();
     return showDialog<bool>(
       context: context,
       builder: (_) => GroupLeaveConfirmationDialog(group: group),

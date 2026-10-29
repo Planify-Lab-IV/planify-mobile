@@ -314,6 +314,59 @@ void main() {
       find.text("We couldn't rename the group. Please try again."),
       findsOneWidget,
     );
+
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Abrir'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('group_manage_rename')));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text("We couldn't rename the group. Please try again."),
+      findsNothing,
+    );
+  });
+
+  testWidgets('no conserva el error al reabrir abandonar grupo', (
+    tester,
+  ) async {
+    final overview = FakeGroupsOverviewRepository(
+      delay: Duration.zero,
+      initialGroups: [_group],
+    );
+    await tester.pumpWidget(
+      app(
+        friendsRepository: FakeFriendsRepository(delay: Duration.zero),
+        managementRepository: managementRepository(
+          overview,
+          shouldThrowError: true,
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Abrir'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('group_manage_leave')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('group_leave_confirm_button')));
+    await tester.pumpAndSettle();
+    expect(
+      find.text("We couldn't leave the group. Please try again."),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Abrir'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('group_manage_leave')));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text("We couldn't leave the group. Please try again."),
+      findsNothing,
+    );
   });
 
   testWidgets('permite cancelar o confirmar que abandona un grupo', (

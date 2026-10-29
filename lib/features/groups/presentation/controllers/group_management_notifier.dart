@@ -12,6 +12,22 @@ class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
     this.onGroupManagementSucceeded,
   }) : super(GroupManagementState());
 
+  void resetRenameStatus() {
+    if (state.isRenaming ||
+        state.renameStatus == GroupManagementActionStatus.idle) {
+      return;
+    }
+    state = state.copyWith(renameStatus: GroupManagementActionStatus.idle);
+  }
+
+  void resetLeaveStatus() {
+    if (state.isLeaving ||
+        state.leaveStatus == GroupManagementActionStatus.idle) {
+      return;
+    }
+    state = state.copyWith(leaveStatus: GroupManagementActionStatus.idle);
+  }
+
   Future<bool> addMember({
     required String groupId,
     required String userId,
