@@ -41,7 +41,18 @@ class _GroupAddMemberSheetState extends ConsumerState<GroupAddMemberSheet> {
   }
 
   void _retry() {
-    setState(() => _friends = _loadFriends());
+    final friends = _loadFriends();
+    setState(() {
+      _friends = friends;
+    });
+  }
+
+  Future<void> _goToFriends() async {
+    await Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => const FriendsScreen()));
+    if (!mounted) return;
+    _retry();
   }
 
   List<Person> _filterFriends(List<Person> friends) {
@@ -94,125 +105,143 @@ class _GroupAddMemberSheetState extends ConsumerState<GroupAddMemberSheet> {
             key: _sheetMessengerKey,
             child: Scaffold(
               backgroundColor: Colors.transparent,
-              body: FutureBuilder<List<Person>>(
-                future: _friends,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState != ConnectionState.done) {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(AppSpacing.xl),
-                        child: CircularProgressIndicator(
-                          key: Key('group_member_selector_loading'),
-                        ),
-                      ),
-                    );
-                  }
+              body: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _SelectorHeader(
+                    title: i18n.groupManageAddMember,
+                    onBack: widget.onBack,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  Expanded(
+                    child: FutureBuilder<List<Person>>(
+                      future: _friends,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState != ConnectionState.done) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(AppSpacing.xl),
+                              child: CircularProgressIndicator(
+                                key: Key('group_member_selector_loading'),
+                              ),
+                            ),
+                          );
+                        }
 
-                  if (snapshot.hasError) {
-                    return _LoadError(
-                      message: i18n.groupManageFriendsLoadError,
-                      retryLabel: i18n.retryButton,
-                      onRetry: _retry,
-                    );
-                  }
+                        if (snapshot.hasError) {
+                          return _LoadError(
+                            message: i18n.groupManageFriendsLoadError,
+                            retryLabel: i18n.retryButton,
+                            onRetry: _retry,
+                          );
+                        }
 
-                  final friends = snapshot.data ?? const <Person>[];
-                  if (friends.isEmpty) {
-                    return _EmptyFriends(
-                      message: i18n.groupManageNoFriends,
-                      actionLabel: i18n.groupManageGoToFriends,
-                      onGoToFriends: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder: (_) => const FriendsScreen(),
-                          ),
+                        final friends = snapshot.data ?? const <Person>[];
+                        if (friends.isEmpty) {
+                          return _EmptyFriends(
+                            message: i18n.groupManageNoFriends,
+                            actionLabel: i18n.groupManageGoToFriends,
+                            onGoToFriends: _goToFriends,
+                          );
+                        }
+
+                        final filteredFriends = _filterFriends(friends);
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            TextField(
+                              key: const Key('group_member_search_input'),
+                              onChanged: (value) =>
+                                  setState(() => _searchQuery = value),
+                              decoration: InputDecoration(
+                                labelText: i18n.groupManageSearchFriends,
+                                hintText: i18n.friendsSearchHint,
+                                prefixIcon: const Icon(Icons.search_rounded),
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.sm),
+                            Expanded(
+                              child: filteredFriends.isEmpty
+                                  ? _NoFriendResults(
+                                      message: i18n.groupManageSearchEmpty,
+                                    )
+                                  : ListView.builder(
+                                      itemCount: filteredFriends.length,
+                                      itemBuilder: (context, index) {
+                                        final friend = filteredFriends[index];
+                                        final wasAdded = managementState
+                                            .isMemberAdded(
+                                              groupId: widget.group.id,
+                                              userId: friend.id,
+                                            );
+                                        return PersonRow(
+                                          person: friend,
+                                          trailing: wasAdded
+                                              ? Text(
+                                                  i18n.groupManageMemberAddedLabel,
+                                                )
+                                              : FilledButton(
+                                                  key: Key(
+                                                    'group_member_add_button_${friend.id}',
+                                                  ),
+                                                  onPressed:
+                                                      managementState
+                                                          .isMemberBeingAdded(
+                                                            groupId:
+                                                                widget.group.id,
+                                                            userId: friend.id,
+                                                          )
+                                                      ? null
+                                                      : () =>
+                                                            _addMember(friend),
+                                                  child: Text(
+                                                    i18n.groupManageAddMember,
+                                                  ),
+                                                ),
+                                        );
+                                      },
+                                    ),
+                            ),
+                          ],
                         );
                       },
-                    );
-                  }
-
-                  final filteredFriends = _filterFriends(friends);
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Row(
-                        children: [
-                          IconButton(
-                            key: const Key('group_member_selector_back'),
-                            onPressed: widget.onBack,
-                            icon: const Icon(Icons.arrow_back_rounded),
-                            tooltip: MaterialLocalizations.of(
-                              context,
-                            ).backButtonTooltip,
-                          ),
-                          Expanded(
-                            child: Text(
-                              i18n.groupManageAddMember,
-                              style: Theme.of(context).textTheme.titleLarge
-                                  ?.copyWith(fontWeight: FontWeight.w700),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                      TextField(
-                        key: const Key('group_member_search_input'),
-                        onChanged: (value) =>
-                            setState(() => _searchQuery = value),
-                        decoration: InputDecoration(
-                          labelText: i18n.groupManageSearchFriends,
-                          hintText: i18n.friendsSearchHint,
-                          prefixIcon: const Icon(Icons.search_rounded),
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Expanded(
-                        child: filteredFriends.isEmpty
-                            ? _NoFriendResults(
-                                message: i18n.groupManageSearchEmpty,
-                              )
-                            : ListView.builder(
-                                itemCount: filteredFriends.length,
-                                itemBuilder: (context, index) {
-                                  final friend = filteredFriends[index];
-                                  final wasAdded = managementState
-                                      .isMemberAdded(
-                                        groupId: widget.group.id,
-                                        userId: friend.id,
-                                      );
-                                  return PersonRow(
-                                    person: friend,
-                                    trailing: wasAdded
-                                        ? Text(i18n.groupManageMemberAddedLabel)
-                                        : FilledButton(
-                                            key: Key(
-                                              'group_member_add_button_${friend.id}',
-                                            ),
-                                            onPressed:
-                                                managementState
-                                                    .isMemberBeingAdded(
-                                                      groupId: widget.group.id,
-                                                      userId: friend.id,
-                                                    )
-                                                ? null
-                                                : () => _addMember(friend),
-                                            child: Text(
-                                              i18n.groupManageAddMember,
-                                            ),
-                                          ),
-                                  );
-                                },
-                              ),
-                      ),
-                    ],
-                  );
-                },
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _SelectorHeader extends StatelessWidget {
+  final String title;
+  final VoidCallback onBack;
+
+  const _SelectorHeader({required this.title, required this.onBack});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        IconButton(
+          key: const Key('group_member_selector_back'),
+          onPressed: onBack,
+          icon: const Icon(Icons.arrow_back_rounded),
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+        ),
+        Expanded(
+          child: Text(
+            title,
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+          ),
+        ),
+      ],
     );
   }
 }

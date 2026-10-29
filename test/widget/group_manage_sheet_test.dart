@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/core/widgets/person_row.dart';
 import 'package:planify/features/friends/data/fake_friends_repository.dart';
+import 'package:planify/features/friends/domain/friend_request.dart';
 import 'package:planify/features/friends/domain/person.dart';
 import 'package:planify/features/friends/presentation/controllers/friends_providers.dart';
 import 'package:planify/features/friends/presentation/screens/friends_screen.dart';
@@ -185,20 +186,27 @@ void main() {
     );
   });
 
-  testWidgets('explica cómo destrabarse cuando no hay amigos', (tester) async {
+  testWidgets('recarga amigos al volver desde Amigos', (tester) async {
     final overview = FakeGroupsOverviewRepository(
       delay: Duration.zero,
       initialGroups: [_group],
     );
+    final friendsRepository = FakeFriendsRepository(
+      delay: Duration.zero,
+      searchablePeople: const [_friend],
+      initialReceivedRequests: [
+        FriendRequest(
+          id: 'request-1',
+          user: _friend,
+          createdAt: DateTime(2026),
+        ),
+      ],
+      initialSentRequests: const [],
+      initialFriends: const [],
+    );
     await tester.pumpWidget(
       app(
-        friendsRepository: FakeFriendsRepository(
-          delay: Duration.zero,
-          searchablePeople: const [],
-          initialReceivedRequests: const [],
-          initialSentRequests: const [],
-          initialFriends: const [],
-        ),
+        friendsRepository: friendsRepository,
         managementRepository: managementRepository(overview),
       ),
     );
@@ -209,11 +217,25 @@ void main() {
       find.byKey(const Key('group_member_selector_empty')),
       findsOneWidget,
     );
+    expect(find.byKey(const Key('group_member_selector_back')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('group_member_selector_back')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('group_manage_add_member')), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('group_manage_add_member')));
+    await tester.pumpAndSettle();
     await tester.tap(
       find.byKey(const Key('group_member_selector_go_to_friends')),
     );
     await tester.pumpAndSettle();
     expect(find.byType(FriendsScreen), findsOneWidget);
+
+    await friendsRepository.acceptRequest('request-1');
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+
+    expect(find.byType(PersonRow), findsOneWidget);
+    expect(find.text('Ana Pérez'), findsOneWidget);
   });
 
   testWidgets('muestra un reintento si no puede cargar amigos', (tester) async {
@@ -241,6 +263,9 @@ void main() {
       find.byKey(const Key('group_member_selector_retry')),
       findsOneWidget,
     );
+    await tester.tap(find.byKey(const Key('group_member_selector_back')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('group_manage_rename')), findsOneWidget);
   });
 
   testWidgets('renombra solo con un nombre válido y cierra al guardar', (
