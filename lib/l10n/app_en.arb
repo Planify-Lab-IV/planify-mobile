@@ -19,6 +19,7 @@
   "groupManageMemberAdded": "Member added successfully.",
   "groupManageMemberAddedLabel": "Added",
   "groupManageActionError": "We couldn't update the group. Please try again.",
+  "groupManageForbiddenError": "You no longer have access to this group. Your groups list was refreshed.",
   "groupManageSearchFriends": "Search friends",
   "groupManageSearchEmpty": "We couldn't find friends\nwith that name or username.",
   "groupRenameDialogTitle": "Rename group",

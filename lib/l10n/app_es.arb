@@ -19,6 +19,7 @@
   "groupManageMemberAdded": "Miembro agregado correctamente.",
   "groupManageMemberAddedLabel": "Agregado",
   "groupManageActionError": "No se pudo actualizar el grupo. Intentá nuevamente.",
+  "groupManageForbiddenError": "Ya no tenés acceso a este grupo. Actualizamos tu lista de grupos.",
   "groupManageSearchFriends": "Buscar amigos",
   "groupManageSearchEmpty": "No encontramos amigos\ncon ese nombre o usuario.",
   "groupRenameDialogTitle": "Renombrar grupo",

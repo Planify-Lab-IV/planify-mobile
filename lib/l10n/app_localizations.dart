@@ -206,6 +206,12 @@ abstract class AppLocalizations {
   /// **'No se pudo actualizar el grupo. Intentá nuevamente.'**
   String get groupManageActionError;
 
+  /// No description provided for @groupManageForbiddenError.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya no tenés acceso a este grupo. Actualizamos tu lista de grupos.'**
+  String get groupManageForbiddenError;
+
   /// No description provided for @groupManageSearchFriends.
   ///
   /// In es, this message translates to:

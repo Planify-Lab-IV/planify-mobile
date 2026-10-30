@@ -11,6 +11,7 @@ import 'package:planify/features/friends/presentation/controllers/friends_provid
 import 'package:planify/features/friends/presentation/screens/friends_screen.dart';
 import 'package:planify/features/groups/data/fake_group_management_repository.dart';
 import 'package:planify/features/groups/data/fake_groups_overview_repository.dart';
+import 'package:planify/features/groups/data/group_exceptions.dart';
 import 'package:planify/features/groups/domain/group_management_repository.dart';
 import 'package:planify/features/groups/domain/group_overview.dart';
 import 'package:planify/features/groups/presentation/controllers/groups_providers.dart';
@@ -35,10 +36,13 @@ const _friend = Person(
 Widget app({
   required FakeFriendsRepository friendsRepository,
   required GroupManagementRepository managementRepository,
+  FakeGroupsOverviewRepository? overviewRepository,
 }) {
   return ProviderScope(
     overrides: [
       friendsRepositoryProvider.overrideWithValue(friendsRepository),
+      if (overviewRepository != null)
+        groupsOverviewRepositoryProvider.overrideWithValue(overviewRepository),
       groupManagementRepositoryProvider.overrideWithValue(managementRepository),
     ],
     child: MaterialApp(
@@ -182,6 +186,39 @@ void main() {
     );
     expect(
       find.byKey(const Key('group_member_add_button_friend-1')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('avisa y refresca la lista si ya no puede gestionar el grupo', (
+    tester,
+  ) async {
+    final overview = FakeGroupsOverviewRepository(
+      delay: Duration.zero,
+      initialGroups: [_group],
+    );
+    await tester.pumpWidget(
+      app(
+        friendsRepository: FakeFriendsRepository(
+          delay: Duration.zero,
+          searchablePeople: const [_friend],
+          initialReceivedRequests: const [],
+          initialSentRequests: const [],
+          initialFriends: const [_friend],
+        ),
+        managementRepository: _ForbiddenGroupManagementRepository(),
+        overviewRepository: overview,
+      ),
+    );
+
+    await openSelector(tester);
+    await tester.tap(find.byKey(const Key('group_member_add_button_friend-1')));
+    await tester.pump();
+
+    expect(
+      find.text(
+        'You no longer have access to this group. Your groups list was refreshed.',
+      ),
       findsOneWidget,
     );
   });
@@ -466,4 +503,21 @@ void main() {
     expect(await overview.getMyGroupsOverview(), isEmpty);
     expect(find.byKey(const Key('group_manage_leave')), findsNothing);
   });
+}
+
+class _ForbiddenGroupManagementRepository implements GroupManagementRepository {
+  @override
+  Future<void> addMember({required String groupId, required String userId}) {
+    throw const GroupForbiddenException();
+  }
+
+  @override
+  Future<void> leaveGroup(String groupId) {
+    throw const GroupForbiddenException();
+  }
+
+  @override
+  Future<void> renameGroup({required String groupId, required String name}) {
+    throw const GroupForbiddenException();
+  }
 }
