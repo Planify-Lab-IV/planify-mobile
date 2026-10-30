@@ -186,6 +186,44 @@ void main() {
     );
   });
 
+  testWidgets(
+    'eleva el selector al abrir el teclado sin recortar el buscador',
+    (tester) async {
+      final overview = FakeGroupsOverviewRepository(
+        delay: Duration.zero,
+        initialGroups: [_group],
+      );
+      await tester.pumpWidget(
+        app(
+          friendsRepository: FakeFriendsRepository(
+            delay: Duration.zero,
+            searchablePeople: const [_friend],
+            initialReceivedRequests: const [],
+            initialSentRequests: const [],
+            initialFriends: const [_friend],
+          ),
+          managementRepository: managementRepository(overview),
+        ),
+      );
+
+      await openSelector(tester);
+      final searchInput = find.byKey(const Key('group_member_search_input'));
+      final searchTopBeforeKeyboard = tester.getTopLeft(searchInput).dy;
+      addTearDown(tester.view.resetViewInsets);
+      tester.view.viewInsets = const FakeViewPadding(bottom: 320);
+      await tester.tap(searchInput);
+      await tester.enterText(searchInput, 'dev');
+      await tester.pumpAndSettle();
+
+      expect(searchInput, findsOneWidget);
+      expect(
+        tester.getTopLeft(searchInput).dy,
+        lessThan(searchTopBeforeKeyboard),
+      );
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('recarga amigos al volver desde Amigos', (tester) async {
     final overview = FakeGroupsOverviewRepository(
       delay: Duration.zero,

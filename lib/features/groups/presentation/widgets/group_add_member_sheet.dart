@@ -89,125 +89,135 @@ class _GroupAddMemberSheetState extends ConsumerState<GroupAddMemberSheet> {
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context)!;
     final managementState = ref.watch(groupManagementNotifierProvider);
+    final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
 
-    return SafeArea(
-      top: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          AppSpacing.lg,
-          AppSpacing.sm,
-          AppSpacing.lg,
-          AppSpacing.xl,
-        ),
-        child: SizedBox(
-          height: 440,
-          child: ScaffoldMessenger(
-            key: _sheetMessengerKey,
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              body: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _SelectorHeader(
-                    title: i18n.groupManageAddMember,
-                    onBack: widget.onBack,
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  Expanded(
-                    child: FutureBuilder<List<Person>>(
-                      future: _friends,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState != ConnectionState.done) {
-                          return const Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(AppSpacing.xl),
-                              child: CircularProgressIndicator(
-                                key: Key('group_member_selector_loading'),
-                              ),
-                            ),
-                          );
-                        }
-
-                        if (snapshot.hasError) {
-                          return _LoadError(
-                            message: i18n.groupManageFriendsLoadError,
-                            retryLabel: i18n.retryButton,
-                            onRetry: _retry,
-                          );
-                        }
-
-                        final friends = snapshot.data ?? const <Person>[];
-                        if (friends.isEmpty) {
-                          return _EmptyFriends(
-                            message: i18n.groupManageNoFriends,
-                            actionLabel: i18n.groupManageGoToFriends,
-                            onGoToFriends: _goToFriends,
-                          );
-                        }
-
-                        final filteredFriends = _filterFriends(friends);
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            TextField(
-                              key: const Key('group_member_search_input'),
-                              onChanged: (value) =>
-                                  setState(() => _searchQuery = value),
-                              decoration: InputDecoration(
-                                labelText: i18n.groupManageSearchFriends,
-                                hintText: i18n.friendsSearchHint,
-                                prefixIcon: const Icon(Icons.search_rounded),
-                              ),
-                            ),
-                            const SizedBox(height: AppSpacing.sm),
-                            Expanded(
-                              child: filteredFriends.isEmpty
-                                  ? _NoFriendResults(
-                                      message: i18n.groupManageSearchEmpty,
-                                    )
-                                  : ListView.builder(
-                                      itemCount: filteredFriends.length,
-                                      itemBuilder: (context, index) {
-                                        final friend = filteredFriends[index];
-                                        final wasAdded = managementState
-                                            .isMemberAdded(
-                                              groupId: widget.group.id,
-                                              userId: friend.id,
-                                            );
-                                        return PersonRow(
-                                          person: friend,
-                                          trailing: wasAdded
-                                              ? Text(
-                                                  i18n.groupManageMemberAddedLabel,
-                                                )
-                                              : FilledButton(
-                                                  key: Key(
-                                                    'group_member_add_button_${friend.id}',
-                                                  ),
-                                                  onPressed:
-                                                      managementState
-                                                          .isMemberBeingAdded(
-                                                            groupId:
-                                                                widget.group.id,
-                                                            userId: friend.id,
-                                                          )
-                                                      ? null
-                                                      : () =>
-                                                            _addMember(friend),
-                                                  child: Text(
-                                                    i18n.groupManageAddMember,
-                                                  ),
-                                                ),
-                                        );
-                                      },
-                                    ),
-                            ),
-                          ],
-                        );
-                      },
+    return AnimatedPadding(
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeOut,
+      padding: EdgeInsets.only(bottom: keyboardInset),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.lg,
+            AppSpacing.sm,
+            AppSpacing.lg,
+            AppSpacing.xl,
+          ),
+          child: SizedBox(
+            height: 440,
+            child: ScaffoldMessenger(
+              key: _sheetMessengerKey,
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                resizeToAvoidBottomInset: false,
+                body: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _SelectorHeader(
+                      title: i18n.groupManageAddMember,
+                      onBack: widget.onBack,
                     ),
-                  ),
-                ],
+                    const SizedBox(height: AppSpacing.md),
+                    Expanded(
+                      child: FutureBuilder<List<Person>>(
+                        future: _friends,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState !=
+                              ConnectionState.done) {
+                            return const Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(AppSpacing.xl),
+                                child: CircularProgressIndicator(
+                                  key: Key('group_member_selector_loading'),
+                                ),
+                              ),
+                            );
+                          }
+
+                          if (snapshot.hasError) {
+                            return _LoadError(
+                              message: i18n.groupManageFriendsLoadError,
+                              retryLabel: i18n.retryButton,
+                              onRetry: _retry,
+                            );
+                          }
+
+                          final friends = snapshot.data ?? const <Person>[];
+                          if (friends.isEmpty) {
+                            return _EmptyFriends(
+                              message: i18n.groupManageNoFriends,
+                              actionLabel: i18n.groupManageGoToFriends,
+                              onGoToFriends: _goToFriends,
+                            );
+                          }
+
+                          final filteredFriends = _filterFriends(friends);
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              TextField(
+                                key: const Key('group_member_search_input'),
+                                onChanged: (value) =>
+                                    setState(() => _searchQuery = value),
+                                decoration: InputDecoration(
+                                  labelText: i18n.groupManageSearchFriends,
+                                  hintText: i18n.friendsSearchHint,
+                                  prefixIcon: const Icon(Icons.search_rounded),
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.sm),
+                              Expanded(
+                                child: filteredFriends.isEmpty
+                                    ? _NoFriendResults(
+                                        message: i18n.groupManageSearchEmpty,
+                                      )
+                                    : ListView.builder(
+                                        itemCount: filteredFriends.length,
+                                        itemBuilder: (context, index) {
+                                          final friend = filteredFriends[index];
+                                          final wasAdded = managementState
+                                              .isMemberAdded(
+                                                groupId: widget.group.id,
+                                                userId: friend.id,
+                                              );
+                                          return PersonRow(
+                                            person: friend,
+                                            trailing: wasAdded
+                                                ? Text(
+                                                    i18n.groupManageMemberAddedLabel,
+                                                  )
+                                                : FilledButton(
+                                                    key: Key(
+                                                      'group_member_add_button_${friend.id}',
+                                                    ),
+                                                    onPressed:
+                                                        managementState
+                                                            .isMemberBeingAdded(
+                                                              groupId: widget
+                                                                  .group
+                                                                  .id,
+                                                              userId: friend.id,
+                                                            )
+                                                        ? null
+                                                        : () => _addMember(
+                                                            friend,
+                                                          ),
+                                                    child: Text(
+                                                      i18n.groupManageAddMember,
+                                                    ),
+                                                  ),
+                                          );
+                                        },
+                                      ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
