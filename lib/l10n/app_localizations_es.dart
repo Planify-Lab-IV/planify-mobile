@@ -43,6 +43,71 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get groupManageTitle => 'Gestionar grupo';
+
+  @override
+  String get groupManageAddMember => 'Agregar miembro';
+
+  @override
+  String get groupManageRename => 'Renombrar grupo';
+
+  @override
+  String get groupManageLeave => 'Abandonar grupo';
+
+  @override
+  String get groupManageFriendsLoadError =>
+      'No pudimos cargar tus amigos. Intentá nuevamente.';
+
+  @override
+  String get groupManageNoFriends => 'Todavía no tenés amigos para agregar';
+
+  @override
+  String get groupManageGoToFriends => 'Ir a Amigos';
+
+  @override
+  String get groupManageMemberAdded => 'Miembro agregado correctamente.';
+
+  @override
+  String get groupManageMemberAddedLabel => 'Agregado';
+
+  @override
+  String get groupManageActionError =>
+      'No se pudo actualizar el grupo. Intentá nuevamente.';
+
+  @override
+  String get groupManageSearchFriends => 'Buscar amigos';
+
+  @override
+  String get groupManageSearchEmpty =>
+      'No encontramos amigos\ncon ese nombre o usuario.';
+
+  @override
+  String get groupRenameDialogTitle => 'Renombrar grupo';
+
+  @override
+  String get groupRenameFieldLabel => 'Nombre del grupo';
+
+  @override
+  String get groupRenameSave => 'Guardar';
+
+  @override
+  String get groupRenameError =>
+      'No se pudo renombrar el grupo. Intentá nuevamente.';
+
+  @override
+  String groupLeaveDialogTitle(String groupName) {
+    return '¿Abandonar $groupName?';
+  }
+
+  @override
+  String get groupLeaveDialogDescription =>
+      'Vas a dejar de ver este grupo. Seguís participando de los eventos en los que ya estabas.';
+
+  @override
+  String get groupLeaveError =>
+      'No se pudo abandonar el grupo. Intentá nuevamente.';
+
+  @override
   String get settleDebtAction => 'Saldar';
 
   @override

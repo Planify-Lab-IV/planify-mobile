@@ -43,6 +43,71 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get groupManageTitle => 'Manage group';
+
+  @override
+  String get groupManageAddMember => 'Add member';
+
+  @override
+  String get groupManageRename => 'Rename group';
+
+  @override
+  String get groupManageLeave => 'Leave group';
+
+  @override
+  String get groupManageFriendsLoadError =>
+      'We couldn\'t load your friends. Please try again.';
+
+  @override
+  String get groupManageNoFriends => 'You don\'t have friends to add yet.';
+
+  @override
+  String get groupManageGoToFriends => 'Go to Friends';
+
+  @override
+  String get groupManageMemberAdded => 'Member added successfully.';
+
+  @override
+  String get groupManageMemberAddedLabel => 'Added';
+
+  @override
+  String get groupManageActionError =>
+      'We couldn\'t update the group. Please try again.';
+
+  @override
+  String get groupManageSearchFriends => 'Search friends';
+
+  @override
+  String get groupManageSearchEmpty =>
+      'We couldn\'t find friends\nwith that name or username.';
+
+  @override
+  String get groupRenameDialogTitle => 'Rename group';
+
+  @override
+  String get groupRenameFieldLabel => 'Group name';
+
+  @override
+  String get groupRenameSave => 'Save';
+
+  @override
+  String get groupRenameError =>
+      'We couldn\'t rename the group. Please try again.';
+
+  @override
+  String groupLeaveDialogTitle(String groupName) {
+    return 'Leave $groupName?';
+  }
+
+  @override
+  String get groupLeaveDialogDescription =>
+      'You will no longer see this group. You\'ll still participate in the events you were already part of.';
+
+  @override
+  String get groupLeaveError =>
+      'We couldn\'t leave the group. Please try again.';
+
+  @override
   String get settleDebtAction => 'Settle up';
 
   @override

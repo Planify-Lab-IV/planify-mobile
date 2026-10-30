@@ -146,6 +146,120 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{1 miembro} other{{count} miembros}}'**
   String groupsMembers(int count);
 
+  /// No description provided for @groupManageTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Gestionar grupo'**
+  String get groupManageTitle;
+
+  /// No description provided for @groupManageAddMember.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar miembro'**
+  String get groupManageAddMember;
+
+  /// No description provided for @groupManageRename.
+  ///
+  /// In es, this message translates to:
+  /// **'Renombrar grupo'**
+  String get groupManageRename;
+
+  /// No description provided for @groupManageLeave.
+  ///
+  /// In es, this message translates to:
+  /// **'Abandonar grupo'**
+  String get groupManageLeave;
+
+  /// No description provided for @groupManageFriendsLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tus amigos. Intentá nuevamente.'**
+  String get groupManageFriendsLoadError;
+
+  /// No description provided for @groupManageNoFriends.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no tenés amigos para agregar'**
+  String get groupManageNoFriends;
+
+  /// No description provided for @groupManageGoToFriends.
+  ///
+  /// In es, this message translates to:
+  /// **'Ir a Amigos'**
+  String get groupManageGoToFriends;
+
+  /// No description provided for @groupManageMemberAdded.
+  ///
+  /// In es, this message translates to:
+  /// **'Miembro agregado correctamente.'**
+  String get groupManageMemberAdded;
+
+  /// No description provided for @groupManageMemberAddedLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregado'**
+  String get groupManageMemberAddedLabel;
+
+  /// No description provided for @groupManageActionError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo actualizar el grupo. Intentá nuevamente.'**
+  String get groupManageActionError;
+
+  /// No description provided for @groupManageSearchFriends.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar amigos'**
+  String get groupManageSearchFriends;
+
+  /// No description provided for @groupManageSearchEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos amigos\ncon ese nombre o usuario.'**
+  String get groupManageSearchEmpty;
+
+  /// No description provided for @groupRenameDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Renombrar grupo'**
+  String get groupRenameDialogTitle;
+
+  /// No description provided for @groupRenameFieldLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre del grupo'**
+  String get groupRenameFieldLabel;
+
+  /// No description provided for @groupRenameSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar'**
+  String get groupRenameSave;
+
+  /// No description provided for @groupRenameError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo renombrar el grupo. Intentá nuevamente.'**
+  String get groupRenameError;
+
+  /// No description provided for @groupLeaveDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Abandonar {groupName}?'**
+  String groupLeaveDialogTitle(String groupName);
+
+  /// No description provided for @groupLeaveDialogDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Vas a dejar de ver este grupo. Seguís participando de los eventos en los que ya estabas.'**
+  String get groupLeaveDialogDescription;
+
+  /// No description provided for @groupLeaveError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo abandonar el grupo. Intentá nuevamente.'**
+  String get groupLeaveError;
+
   /// No description provided for @settleDebtAction.
   ///
   /// In es, this message translates to:

@@ -352,6 +352,21 @@ void main() {
     expect(find.byKey(const Key('event_activity_loading')), findsNothing);
   });
 
+  testWidgets('abre la hoja de gestión del grupo elegido', (tester) async {
+    await tester.pumpWidget(
+      app(FakeGroupsOverviewRepository(delay: Duration.zero)),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('group_manage_button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Gestionar grupo'), findsOneWidget);
+    expect(find.byKey(const Key('group_manage_add_member')), findsOneWidget);
+    expect(find.byKey(const Key('group_manage_rename')), findsOneWidget);
+    expect(find.byKey(const Key('group_manage_leave')), findsOneWidget);
+  });
+
   testWidgets('English copy and cancelled-event exclusion', (tester) async {
     final group = GroupOverview(
       id: 'g',
