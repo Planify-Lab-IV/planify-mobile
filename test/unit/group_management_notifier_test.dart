@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:planify/features/groups/data/group_exceptions.dart';
 import 'package:planify/features/groups/domain/group_management_repository.dart';
 import 'package:planify/features/groups/presentation/controllers/group_management_notifier.dart';
 import 'package:planify/features/groups/presentation/controllers/group_management_state.dart';
@@ -9,10 +10,12 @@ void main() {
   GroupManagementNotifier notifier(
     _RecordingGroupManagementRepository repository, {
     void Function()? onSuccess,
+    void Function()? onForbidden,
   }) {
     return GroupManagementNotifier(
       repository: repository,
       onGroupManagementSucceeded: onSuccess,
+      onGroupManagementForbidden: onForbidden,
     );
   }
 
@@ -95,6 +98,31 @@ void main() {
         GroupManagementActionStatus.error,
       );
       expect(groupNotifier.state.addedMembers, isEmpty);
+      expect(successfulActions, isZero);
+      groupNotifier.dispose();
+    });
+
+    test('refreshes the overview after a forbidden group action', () async {
+      final repository = _RecordingGroupManagementRepository()
+        ..failure = const GroupForbiddenException();
+      var forbiddenActions = 0;
+      var successfulActions = 0;
+      final groupNotifier = notifier(
+        repository,
+        onSuccess: () => successfulActions++,
+        onForbidden: () => forbiddenActions++,
+      );
+
+      expect(await groupNotifier.leaveGroup('group-1'), isFalse);
+      expect(
+        groupNotifier.state.leaveStatus,
+        GroupManagementActionStatus.error,
+      );
+      expect(
+        groupNotifier.state.leaveErrorReason,
+        GroupManagementErrorReason.forbidden,
+      );
+      expect(forbiddenActions, 1);
       expect(successfulActions, isZero);
       groupNotifier.dispose();
     });
@@ -216,6 +244,7 @@ class _RecordingGroupManagementRepository implements GroupManagementRepository {
   final List<({String groupId, String name})> renameRequests = [];
   final List<String> leaveRequests = [];
   bool shouldFail = false;
+  Object? failure;
   Completer<void>? addMemberCompletion;
 
   @override
@@ -225,12 +254,14 @@ class _RecordingGroupManagementRepository implements GroupManagementRepository {
   }) async {
     addMemberRequests.add((groupId: groupId, userId: userId));
     await addMemberCompletion?.future;
+    if (failure != null) throw failure!;
     if (shouldFail) throw Exception('failure');
   }
 
   @override
   Future<void> leaveGroup(String groupId) async {
     leaveRequests.add(groupId);
+    if (failure != null) throw failure!;
     if (shouldFail) throw Exception('failure');
   }
 
@@ -240,6 +271,7 @@ class _RecordingGroupManagementRepository implements GroupManagementRepository {
     required String name,
   }) async {
     renameRequests.add((groupId: groupId, name: name));
+    if (failure != null) throw failure!;
     if (shouldFail) throw Exception('failure');
   }
 }

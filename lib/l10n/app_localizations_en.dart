@@ -75,6 +75,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'We couldn\'t update the group. Please try again.';
 
   @override
+  String get groupManageForbiddenError =>
+      'You no longer have access to this group. Your groups list was refreshed.';
+
+  @override
   String get groupManageSearchFriends => 'Search friends';
 
   @override

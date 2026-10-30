@@ -1,15 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/group_exceptions.dart';
 import '../../domain/group_management_repository.dart';
 import 'group_management_state.dart';
 
 class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
   final GroupManagementRepository repository;
   final void Function()? onGroupManagementSucceeded;
+  final void Function()? onGroupManagementForbidden;
 
   GroupManagementNotifier({
     required this.repository,
     this.onGroupManagementSucceeded,
+    this.onGroupManagementForbidden,
   }) : super(GroupManagementState());
 
   void resetRenameStatus() {
@@ -17,7 +20,10 @@ class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
         state.renameStatus == GroupManagementActionStatus.idle) {
       return;
     }
-    state = state.copyWith(renameStatus: GroupManagementActionStatus.idle);
+    state = state.copyWith(
+      renameStatus: GroupManagementActionStatus.idle,
+      renameErrorReason: GroupManagementErrorReason.none,
+    );
   }
 
   void resetLeaveStatus() {
@@ -25,7 +31,10 @@ class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
         state.leaveStatus == GroupManagementActionStatus.idle) {
       return;
     }
-    state = state.copyWith(leaveStatus: GroupManagementActionStatus.idle);
+    state = state.copyWith(
+      leaveStatus: GroupManagementActionStatus.idle,
+      leaveErrorReason: GroupManagementErrorReason.none,
+    );
   }
 
   Future<bool> addMember({
@@ -46,6 +55,7 @@ class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
     final member = (groupId: normalizedGroupId, userId: normalizedUserId);
     state = state.copyWith(
       addMemberStatus: GroupManagementActionStatus.loading,
+      addMemberErrorReason: GroupManagementErrorReason.none,
       addingMembers: {...state.addingMembers, member},
     );
     try {
@@ -65,15 +75,19 @@ class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
       );
       onGroupManagementSucceeded?.call();
       return true;
-    } catch (_) {
+    } catch (error) {
       if (!mounted) return false;
       final pendingMembers = {...state.addingMembers}..remove(member);
       state = state.copyWith(
         addMemberStatus: pendingMembers.isEmpty
             ? GroupManagementActionStatus.error
             : GroupManagementActionStatus.loading,
+        addMemberErrorReason: _errorReason(error),
         addingMembers: pendingMembers,
       );
+      if (error is GroupForbiddenException) {
+        onGroupManagementForbidden?.call();
+      }
       return false;
     }
   }
@@ -91,7 +105,10 @@ class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
       return false;
     }
 
-    state = state.copyWith(renameStatus: GroupManagementActionStatus.loading);
+    state = state.copyWith(
+      renameStatus: GroupManagementActionStatus.loading,
+      renameErrorReason: GroupManagementErrorReason.none,
+    );
     try {
       await repository.renameGroup(
         groupId: normalizedGroupId,
@@ -102,9 +119,15 @@ class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
       state = state.copyWith(renameStatus: GroupManagementActionStatus.success);
       onGroupManagementSucceeded?.call();
       return true;
-    } catch (_) {
+    } catch (error) {
       if (!mounted) return false;
-      state = state.copyWith(renameStatus: GroupManagementActionStatus.error);
+      state = state.copyWith(
+        renameStatus: GroupManagementActionStatus.error,
+        renameErrorReason: _errorReason(error),
+      );
+      if (error is GroupForbiddenException) {
+        onGroupManagementForbidden?.call();
+      }
       return false;
     }
   }
@@ -113,7 +136,10 @@ class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
     final normalizedGroupId = groupId.trim();
     if (normalizedGroupId.isEmpty || state.isLeaving) return false;
 
-    state = state.copyWith(leaveStatus: GroupManagementActionStatus.loading);
+    state = state.copyWith(
+      leaveStatus: GroupManagementActionStatus.loading,
+      leaveErrorReason: GroupManagementErrorReason.none,
+    );
     try {
       await repository.leaveGroup(normalizedGroupId);
       if (!mounted) return false;
@@ -121,10 +147,22 @@ class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
       state = state.copyWith(leaveStatus: GroupManagementActionStatus.success);
       onGroupManagementSucceeded?.call();
       return true;
-    } catch (_) {
+    } catch (error) {
       if (!mounted) return false;
-      state = state.copyWith(leaveStatus: GroupManagementActionStatus.error);
+      state = state.copyWith(
+        leaveStatus: GroupManagementActionStatus.error,
+        leaveErrorReason: _errorReason(error),
+      );
+      if (error is GroupForbiddenException) {
+        onGroupManagementForbidden?.call();
+      }
       return false;
     }
+  }
+
+  GroupManagementErrorReason _errorReason(Object error) {
+    return error is GroupForbiddenException
+        ? GroupManagementErrorReason.forbidden
+        : GroupManagementErrorReason.none;
   }
 }

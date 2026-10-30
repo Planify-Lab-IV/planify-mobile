@@ -32,6 +32,14 @@ class HttpGroupManagementRepository implements GroupManagementRepository {
     try {
       await operation();
     } on DioException catch (error) {
+      switch (error.response?.statusCode) {
+        case 400:
+          throw const InvalidGroupDataException();
+        case 403:
+          throw const GroupForbiddenException();
+        case 404:
+          throw const GroupNotFoundException();
+      }
       if (_isNetworkError(error)) {
         throw const NetworkGroupsException();
       }
