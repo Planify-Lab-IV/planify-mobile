@@ -1,15 +1,23 @@
+import '../../domain/avatar_upload.dart';
 import '../../domain/user_profile.dart';
 
 enum ProfileLoadStatus { loading, success, error }
 
 enum ProfileSaveStatus { idle, saving, error }
 
-enum ProfileSaveFailure { none, generic, avatarStorageUnavailable }
+enum ProfileSaveFailure {
+  none,
+  generic,
+  network,
+  avatarInvalidFormat,
+  avatarTooLarge,
+  avatarStorageUnavailable,
+}
 
 class ProfileState {
   final UserProfile? profile;
   final String draftName;
-  final String? pendingAvatarFilePath;
+  final AvatarUpload? pendingAvatar;
   final ProfileLoadStatus loadStatus;
   final ProfileSaveStatus saveStatus;
   final ProfileSaveFailure saveFailure;
@@ -17,7 +25,7 @@ class ProfileState {
   const ProfileState({
     this.profile,
     this.draftName = '',
-    this.pendingAvatarFilePath,
+    this.pendingAvatar,
     this.loadStatus = ProfileLoadStatus.loading,
     this.saveStatus = ProfileSaveStatus.idle,
     this.saveFailure = ProfileSaveFailure.none,
@@ -34,8 +42,7 @@ class ProfileState {
     final savedProfile = profile;
     if (savedProfile == null) return false;
 
-    return trimmedDraftName != savedProfile.name ||
-        pendingAvatarFilePath != null;
+    return trimmedDraftName != savedProfile.name || pendingAvatar != null;
   }
 
   bool get canSave =>
@@ -47,7 +54,7 @@ class ProfileState {
   ProfileState copyWith({
     UserProfile? profile,
     String? draftName,
-    String? pendingAvatarFilePath,
+    AvatarUpload? pendingAvatar,
     bool clearPendingAvatar = false,
     ProfileLoadStatus? loadStatus,
     ProfileSaveStatus? saveStatus,
@@ -56,9 +63,9 @@ class ProfileState {
     return ProfileState(
       profile: profile ?? this.profile,
       draftName: draftName ?? this.draftName,
-      pendingAvatarFilePath: clearPendingAvatar
+      pendingAvatar: clearPendingAvatar
           ? null
-          : pendingAvatarFilePath ?? this.pendingAvatarFilePath,
+          : pendingAvatar ?? this.pendingAvatar,
       loadStatus: loadStatus ?? this.loadStatus,
       saveStatus: saveStatus ?? this.saveStatus,
       saveFailure: saveFailure ?? this.saveFailure,

@@ -1,5 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/profile/data/fake_profile_repository.dart';
+import 'package:planify/features/profile/domain/avatar_upload.dart';
 import 'package:planify/features/profile/domain/user_profile.dart';
 
 void main() {
@@ -32,20 +35,24 @@ void main() {
       },
     );
 
-    test(
-      'guarda la ruta local de avatar y conserva el nombre actual',
-      () async {
-        final repository = FakeProfileRepository(delay: Duration.zero);
+    test('guarda una URL de avatar y conserva el nombre actual', () async {
+      final repository = FakeProfileRepository(delay: Duration.zero);
 
-        final updated = await repository.updateProfile(
-          avatarFilePath: '/tmp/profile.webp',
-        );
+      final updated = await repository.updateProfile(
+        avatar: AvatarUpload(
+          bytes: Uint8List.fromList([1]),
+          filename: 'profile.webp',
+          mimeType: 'image/webp',
+        ),
+      );
 
-        expect(updated.name, 'Juan Pérez');
-        expect(updated.avatarUrl, '/tmp/profile.webp');
-        expect(await repository.getMyProfile(), updated);
-      },
-    );
+      expect(updated.name, 'Juan Pérez');
+      expect(
+        updated.avatarUrl,
+        'https://fake.planify.test/avatars/profile.webp',
+      );
+      expect(await repository.getMyProfile(), updated);
+    });
 
     test('simula errores tanto al cargar como al guardar', () async {
       final repository = FakeProfileRepository(

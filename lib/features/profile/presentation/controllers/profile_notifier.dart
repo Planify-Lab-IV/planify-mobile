@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/profile_exceptions.dart';
+import '../../domain/avatar_upload.dart';
 import '../../domain/profile_repository.dart';
 import 'profile_state.dart';
 
@@ -43,18 +44,18 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     );
   }
 
-  void selectAvatar(String avatarFilePath) {
+  void selectAvatar(AvatarUpload avatar) {
     if (state.profile == null) return;
 
     state = state.copyWith(
-      pendingAvatarFilePath: avatarFilePath,
+      pendingAvatar: avatar,
       saveStatus: ProfileSaveStatus.idle,
       saveFailure: ProfileSaveFailure.none,
     );
   }
 
   void discardPendingAvatar() {
-    if (state.pendingAvatarFilePath == null) return;
+    if (state.pendingAvatar == null) return;
 
     state = state.copyWith(
       clearPendingAvatar: true,
@@ -69,7 +70,7 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
 
     final name = state.trimmedDraftName;
     final requestedName = name == savedProfile.name ? null : name;
-    final avatarFilePath = state.pendingAvatarFilePath;
+    final avatar = state.pendingAvatar;
 
     state = state.copyWith(
       saveStatus: ProfileSaveStatus.saving,
@@ -78,7 +79,7 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     try {
       final updatedProfile = await repository.updateProfile(
         name: requestedName,
-        avatarFilePath: avatarFilePath,
+        avatar: avatar,
       );
       if (!mounted) return;
 
@@ -86,6 +87,23 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
         profile: updatedProfile,
         draftName: updatedProfile.name,
         loadStatus: ProfileLoadStatus.success,
+      );
+    } on InvalidAvatarFileException catch (error) {
+      if (!mounted) return;
+      state = state.copyWith(
+        saveStatus: ProfileSaveStatus.error,
+        saveFailure: switch (error.reason) {
+          AvatarUploadValidationError.unsupportedFormat =>
+            ProfileSaveFailure.avatarInvalidFormat,
+          AvatarUploadValidationError.tooLarge =>
+            ProfileSaveFailure.avatarTooLarge,
+        },
+      );
+    } on NetworkProfileException {
+      if (!mounted) return;
+      state = state.copyWith(
+        saveStatus: ProfileSaveStatus.error,
+        saveFailure: ProfileSaveFailure.network,
       );
     } on AvatarStorageUnavailableException {
       if (!mounted) return;
