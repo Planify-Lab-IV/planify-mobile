@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -128,7 +127,10 @@ void main() {
       find.byKey(const Key('profile_name_field')),
       'Alice Personal',
     );
-    await tester.tap(find.byKey(const Key('profile_save_button')));
+    await tester.pump();
+    final saveButton = find.byKey(const Key('profile_save_button'));
+    expect(saveButton, findsOneWidget);
+    await tester.tap(saveButton);
     await tester.pump();
     await tester.pump();
 

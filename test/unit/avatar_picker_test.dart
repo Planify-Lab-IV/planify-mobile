@@ -14,6 +14,7 @@ void main() {
         final gallery = _FakeGalleryImagePicker(
           XFile.fromData(
             Uint8List.fromList([1, 2, 3]),
+            path: 'avatar.jpg',
             name: 'avatar.jpg',
             mimeType: 'image/jpeg',
           ),
@@ -38,7 +39,11 @@ void main() {
       () async {
         final picker = ImagePickerAvatarPicker(
           galleryImagePicker: _FakeGalleryImagePicker(
-            XFile.fromData(Uint8List(1), name: 'avatar.webp'),
+            XFile.fromData(
+              Uint8List(1),
+              path: 'avatar.webp',
+              name: 'avatar.webp',
+            ),
           ),
         );
 
@@ -61,6 +66,7 @@ void main() {
           galleryImagePicker: _FakeGalleryImagePicker(
             XFile.fromData(
               Uint8List(1),
+              path: 'avatar.gif',
               name: 'avatar.gif',
               mimeType: 'image/gif',
             ),
@@ -70,6 +76,7 @@ void main() {
           galleryImagePicker: _FakeGalleryImagePicker(
             XFile.fromData(
               Uint8List(AvatarUpload.maxBytes + 1),
+              path: 'avatar.png',
               name: 'avatar.png',
               mimeType: 'image/png',
             ),

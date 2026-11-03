@@ -173,7 +173,7 @@ class _ProfileContent extends StatelessWidget {
     final theme = Theme.of(context);
     final profile = state.profile!;
     final pendingAvatar = state.pendingAvatar;
-    final imageProvider = pendingAvatar != null
+    final ImageProvider<Object>? imageProvider = pendingAvatar != null
         ? MemoryImage(pendingAvatar.bytes)
         : profile.avatarUrl == null
         ? null
