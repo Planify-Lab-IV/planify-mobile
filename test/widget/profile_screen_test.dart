@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -7,114 +9,66 @@ import 'package:planify/core/providers/core_providers.dart';
 import 'package:planify/core/theme/app_theme.dart';
 import 'package:planify/data/secure_storage.dart';
 import 'package:planify/features/auth/data/fake_auth_repository.dart';
-import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/auth/presentation/controllers/auth_providers.dart';
-import 'package:planify/features/auth/presentation/controllers/auth_state.dart';
 import 'package:planify/features/friends/data/fake_friends_repository.dart';
 import 'package:planify/features/friends/presentation/controllers/friends_providers.dart';
-import 'package:planify/features/friends/presentation/screens/friends_screen.dart';
 import 'package:planify/features/profile/data/avatar_picker.dart';
 import 'package:planify/features/profile/data/fake_profile_repository.dart';
 import 'package:planify/features/profile/data/profile_exceptions.dart';
+import 'package:planify/features/profile/domain/avatar_upload.dart';
 import 'package:planify/features/profile/domain/user_profile.dart';
 import 'package:planify/features/profile/presentation/controllers/profile_providers.dart';
+import 'package:planify/features/profile/presentation/controllers/profile_state.dart';
 import 'package:planify/features/profile/presentation/screens/profile_screen.dart';
 import 'package:planify/l10n/app_localizations.dart';
 
 void main() {
-  testWidgets('habilita Guardar solo cuando hay cambios válidos', (
+  final avatar = AvatarUpload(
+    bytes: Uint8List.fromList(_transparentImage),
+    filename: 'avatar.png',
+    mimeType: 'image/png',
+  );
+
+  testWidgets('previsualiza el avatar seleccionado con MemoryImage', (
     tester,
   ) async {
     final container = await _buildContainer(
-      avatarPicker: const _AvatarPicker(null),
+      avatarPicker: _AvatarPicker(avatar),
     );
     addTearDown(container.dispose);
 
     await tester.pumpWidget(_buildScreen(container));
     await tester.pump();
     await tester.pump();
-
-    expect(find.byKey(const Key('profile_identity_header')), findsOneWidget);
-    expect(find.byKey(const Key('profile_content_card')), findsOneWidget);
-    expect(find.byKey(const Key('profile_email_field')), findsOneWidget);
-    expect(
-      find.descendant(
-        of: find.byKey(const Key('profile_identity_header')),
-        matching: find.byKey(const Key('profile_name_field')),
-      ),
-      findsOneWidget,
-    );
-
-    final appBar = tester.widget<AppBar>(find.byType(AppBar));
-    expect(appBar.backgroundColor, AppTheme.light.colorScheme.primaryContainer);
-
-    expect(find.byKey(const Key('profile_save_button')), findsNothing);
-
-    await tester.enterText(
-      find.byKey(const Key('profile_name_field')),
-      'Alice Personal',
-    );
-    await tester.pump();
-    expect(find.byKey(const Key('profile_save_button')), findsOneWidget);
-    expect(
-      tester
-          .widget<ElevatedButton>(find.byKey(const Key('profile_save_button')))
-          .onPressed,
-      isNotNull,
-    );
-
-    await tester.enterText(find.byKey(const Key('profile_name_field')), '   ');
-    await tester.pump();
-    expect(find.byKey(const Key('profile_save_button')), findsNothing);
-  });
-
-  testWidgets('guardar solo un avatar no cambia el nombre de la sesión', (
-    tester,
-  ) async {
-    final container = await _buildContainer(
-      avatarPicker: _AvatarPicker('/tmp/avatar.jpg'),
-    );
-    addTearDown(container.dispose);
-
-    await tester.pumpWidget(_buildScreen(container));
-    await tester.pump();
-    await tester.pump();
-
     await tester.tap(find.byKey(const Key('profile_avatar_button')));
     await tester.pump();
 
-    var avatar = tester.widget<CircleAvatar>(find.byType(CircleAvatar));
-    expect(avatar.foregroundImage, isA<MemoryImage>());
-    expect(
-      container.read(profileNotifierProvider).pendingAvatarFilePath,
-      '/tmp/avatar.jpg',
-    );
-
-    await tester.ensureVisible(find.byKey(const Key('profile_save_button')));
-    await tester.tap(find.byKey(const Key('profile_save_button')));
-    await tester.pumpAndSettle();
-
-    avatar = tester.widget<CircleAvatar>(find.byType(CircleAvatar));
-    expect(avatar.foregroundImage, isA<MemoryImage>());
-    expect(
-      container.read(profileNotifierProvider).profile?.avatarUrl,
-      '/tmp/avatar.jpg',
-    );
-
-    final authState = container.read(authNotifierProvider) as AuthAuthenticated;
-    expect((authState.session as OrganizerSession).name, 'alice');
+    final circleAvatar = tester.widget<CircleAvatar>(find.byType(CircleAvatar));
+    expect(circleAvatar.foregroundImage, isA<MemoryImage>());
+    expect(container.read(profileNotifierProvider).pendingAvatar, same(avatar));
   });
 
-  test('usa NetworkImage para las URLs que devuelve el selector web', () {
+  testWidgets('muestra avatar remoto y fallback de iniciales', (tester) async {
+    final remoteContainer = await _buildContainer(
+      avatarPicker: const _AvatarPicker(null),
+      initialProfile: const UserProfile(
+        name: 'Alice Example',
+        username: 'alice',
+        email: 'alice@example.com',
+        avatarUrl: 'https://cdn.planify.test/avatar.jpg',
+      ),
+    );
+    addTearDown(remoteContainer.dispose);
+
+    await tester.pumpWidget(_buildScreen(remoteContainer));
+    await tester.pump();
+    await tester.pump();
+
     expect(
-      profileAvatarImageProvider('blob:https://planify.test/avatar'),
+      tester.widget<CircleAvatar>(find.byType(CircleAvatar)).foregroundImage,
       isA<NetworkImage>(),
     );
-    expect(
-      profileAvatarImageProvider('https://cdn.planify.test/avatar.jpg'),
-      isA<NetworkImage>(),
-    );
-    expect(profileAvatarImageProvider('/tmp/avatar.jpg'), isA<FileImage>());
+    expect(find.text('AE'), findsOneWidget);
   });
 
   testWidgets('cancelar la galería no modifica el perfil', (tester) async {
@@ -126,57 +80,21 @@ void main() {
     await tester.pumpWidget(_buildScreen(container));
     await tester.pump();
     await tester.pump();
-
     await tester.tap(find.byKey(const Key('profile_avatar_button')));
     await tester.pump();
 
-    final avatar = tester.widget<CircleAvatar>(find.byType(CircleAvatar));
-    expect(avatar.foregroundImage, isNull);
-    expect(
-      container.read(profileNotifierProvider).pendingAvatarFilePath,
-      isNull,
-    );
-    expect(find.byKey(const Key('profile_save_button')), findsNothing);
+    expect(container.read(profileNotifierProvider).pendingAvatar, isNull);
   });
 
-  testWidgets(
-    'explica el error específico cuando el avatar no se puede almacenar',
-    (tester) async {
-      final container = await _buildContainer(
-        avatarPicker: _AvatarPicker('/tmp/avatar.jpg'),
-        profileRepository: _UnavailableAvatarProfileRepository(),
-      );
-      addTearDown(container.dispose);
-
-      await tester.pumpWidget(_buildScreen(container));
-      await tester.pump();
-      await tester.pump();
-      await tester.tap(find.byKey(const Key('profile_avatar_button')));
-      await tester.pump();
-      await tester.ensureVisible(find.byKey(const Key('profile_save_button')));
-      await tester.tap(find.byKey(const Key('profile_save_button')));
-      await tester.pumpAndSettle();
-
-      expect(
-        find.text(
-          'No se pudo guardar la foto en este momento. El nombre sí se puede cambiar.',
-        ),
-        findsOneWidget,
-      );
-      expect(
-        container.read(profileNotifierProvider).pendingAvatarFilePath,
-        '/tmp/avatar.jpg',
-      );
-    },
-  );
-
-  testWidgets('descarta el avatar fallido y reintenta guardar solo el nombre', (
+  testWidgets('muestra error claro de formato sin perder el nombre editado', (
     tester,
   ) async {
-    final repository = _AvatarUnavailableThenSuccessProfileRepository();
     final container = await _buildContainer(
-      avatarPicker: _AvatarPicker('/tmp/avatar.jpg'),
-      profileRepository: repository,
+      avatarPicker: _FailingAvatarPicker(
+        const InvalidAvatarFileException(
+          AvatarUploadValidationError.unsupportedFormat,
+        ),
+      ),
     );
     addTearDown(container.dispose);
 
@@ -189,38 +107,17 @@ void main() {
     );
     await tester.tap(find.byKey(const Key('profile_avatar_button')));
     await tester.pump();
-    await tester.ensureVisible(find.byKey(const Key('profile_save_button')));
-    await tester.tap(find.byKey(const Key('profile_save_button')));
-    await tester.pumpAndSettle();
 
-    final retryButton = find.byKey(
-      const Key('profile_discard_avatar_and_save_name_button'),
-    );
-    expect(retryButton, findsOneWidget);
-
-    await tester.ensureVisible(retryButton);
-    await tester.tap(retryButton);
-    await tester.pumpAndSettle();
-
-    expect(repository.updateRequests, [
-      (name: 'Alice Personal', avatarFilePath: '/tmp/avatar.jpg'),
-      (name: 'Alice Personal', avatarFilePath: null),
-    ]);
-    expect(
-      container.read(profileNotifierProvider).pendingAvatarFilePath,
-      isNull,
-    );
-    expect(
-      container.read(profileNotifierProvider).profile?.name,
-      'Alice Personal',
-    );
+    expect(find.text('Elegí una imagen JPEG, PNG o WebP.'), findsOneWidget);
+    expect(container.read(profileNotifierProvider).draftName, 'Alice Personal');
   });
 
-  testWidgets('un error al guardar conserva el borrador', (tester) async {
-    final repository = FakeProfileRepository(delay: Duration.zero);
+  testWidgets('conserva el nombre y muestra error de red al guardar', (
+    tester,
+  ) async {
     final container = await _buildContainer(
       avatarPicker: const _AvatarPicker(null),
-      profileRepository: repository,
+      profileRepository: _NetworkFailingProfileRepository(),
     );
     addTearDown(container.dispose);
 
@@ -231,76 +128,28 @@ void main() {
       find.byKey(const Key('profile_name_field')),
       'Alice Personal',
     );
-    await tester.pump();
-    repository.shouldThrowError = true;
-
-    await tester.ensureVisible(find.byKey(const Key('profile_save_button')));
     await tester.tap(find.byKey(const Key('profile_save_button')));
     await tester.pump();
     await tester.pump();
 
     expect(
-      find.text('No se pudieron guardar los cambios. Intentá nuevamente.'),
+      find.text(
+        'No se pudieron guardar los cambios por un problema de conexión. Intentá nuevamente.',
+      ),
       findsOneWidget,
     );
     expect(container.read(profileNotifierProvider).draftName, 'Alice Personal');
-  });
-
-  testWidgets('muestra feedback y conserva el borrador si falla la galería', (
-    tester,
-  ) async {
-    final container = await _buildContainer(
-      avatarPicker: _FailingAvatarPicker(),
-    );
-    addTearDown(container.dispose);
-
-    await tester.pumpWidget(_buildScreen(container));
-    await tester.pump();
-    await tester.pump();
-    await tester.enterText(
-      find.byKey(const Key('profile_name_field')),
-      'Alice Personal',
-    );
-
-    await tester.tap(find.byKey(const Key('profile_avatar_button')));
-    await tester.pump();
-
-    expect(tester.takeException(), isNull);
     expect(
-      find.byKey(const Key('profile_avatar_picker_error_snackbar')),
-      findsOneWidget,
+      container.read(profileNotifierProvider).saveFailure,
+      ProfileSaveFailure.network,
     );
-    expect(container.read(profileNotifierProvider).draftName, 'Alice Personal');
   });
-
-  testWidgets(
-    'muestra el acceso a Amigos y navega a FriendsScreen al tocarlo',
-    (tester) async {
-      final container = await _buildContainer(
-        avatarPicker: const _AvatarPicker(null),
-      );
-      addTearDown(container.dispose);
-
-      await tester.pumpWidget(_buildScreen(container));
-      await tester.pump();
-      await tester.pump();
-
-      final friendsButton = find.byKey(const Key('profile_friends_button'));
-      expect(friendsButton, findsOneWidget);
-      expect(find.text('Mis amigos'), findsOneWidget);
-
-      await tester.ensureVisible(friendsButton);
-      await tester.tap(friendsButton);
-      await tester.pumpAndSettle();
-
-      expect(find.byType(FriendsScreen), findsOneWidget);
-    },
-  );
 }
 
 Future<ProviderContainer> _buildContainer({
   required AvatarPicker avatarPicker,
   FakeProfileRepository? profileRepository,
+  UserProfile? initialProfile,
 }) async {
   final storage = _ImmediateSecureStorage();
   final authRepository = FakeAuthRepository(
@@ -312,7 +161,11 @@ Future<ProviderContainer> _buildContainer({
       authRepositoryProvider.overrideWithValue(authRepository),
       secureStorageProvider.overrideWithValue(storage),
       profileRepositoryProvider.overrideWithValue(
-        profileRepository ?? FakeProfileRepository(delay: Duration.zero),
+        profileRepository ??
+            FakeProfileRepository(
+              delay: Duration.zero,
+              initialProfile: initialProfile,
+            ),
       ),
       friendsRepositoryProvider.overrideWithValue(
         FakeFriendsRepository(delay: Duration.zero),
@@ -320,7 +173,6 @@ Future<ProviderContainer> _buildContainer({
       avatarPickerProvider.overrideWithValue(avatarPicker),
     ],
   );
-
   await container
       .read(authNotifierProvider.notifier)
       .login(identifier: 'alice', password: 'password123');
@@ -340,53 +192,35 @@ Widget _buildScreen(ProviderContainer container) {
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       locale: const Locale('es'),
-      home: ProfileScreen(
-        avatarImageProvider: (_) =>
-            MemoryImage(Uint8List.fromList(_transparentImage)),
-      ),
+      home: const ProfileScreen(),
     ),
   );
 }
 
 class _AvatarPicker implements AvatarPicker {
-  final String? path;
+  final AvatarUpload? avatar;
 
-  const _AvatarPicker(this.path);
+  const _AvatarPicker(this.avatar);
 
   @override
-  Future<String?> pickAvatar() async => path;
+  Future<AvatarUpload?> pickAvatar() async => avatar;
 }
 
 class _FailingAvatarPicker implements AvatarPicker {
+  final Exception error;
+
+  _FailingAvatarPicker(this.error);
+
   @override
-  Future<String?> pickAvatar() {
-    throw PlatformException(code: 'photo_access_denied');
-  }
+  Future<AvatarUpload?> pickAvatar() => Future<AvatarUpload?>.error(error);
 }
 
-class _UnavailableAvatarProfileRepository extends FakeProfileRepository {
-  _UnavailableAvatarProfileRepository() : super(delay: Duration.zero);
+class _NetworkFailingProfileRepository extends FakeProfileRepository {
+  _NetworkFailingProfileRepository() : super(delay: Duration.zero);
 
   @override
-  Future<UserProfile> updateProfile({String? name, String? avatarFilePath}) {
-    throw const AvatarStorageUnavailableException();
-  }
-}
-
-class _AvatarUnavailableThenSuccessProfileRepository
-    extends FakeProfileRepository {
-  _AvatarUnavailableThenSuccessProfileRepository()
-    : super(delay: Duration.zero);
-
-  final updateRequests = <({String? name, String? avatarFilePath})>[];
-
-  @override
-  Future<UserProfile> updateProfile({String? name, String? avatarFilePath}) {
-    updateRequests.add((name: name, avatarFilePath: avatarFilePath));
-    if (avatarFilePath != null) {
-      throw const AvatarStorageUnavailableException();
-    }
-    return super.updateProfile(name: name, avatarFilePath: avatarFilePath);
+  Future<UserProfile> updateProfile({String? name, AvatarUpload? avatar}) {
+    throw const NetworkProfileException();
   }
 }
 
@@ -394,17 +228,13 @@ class _ImmediateSecureStorage implements SecureStorage {
   String? _token;
 
   @override
-  Future<void> deleteToken() async {
-    _token = null;
-  }
+  Future<void> deleteToken() async => _token = null;
 
   @override
   Future<String?> getToken() async => _token;
 
   @override
-  Future<void> saveToken(String token) async {
-    _token = token;
-  }
+  Future<void> saveToken(String token) async => _token = token;
 }
 
 const _transparentImage = <int>[

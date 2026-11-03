@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -8,23 +6,14 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/initials_avatar.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/controllers/auth_providers.dart';
+import '../../data/profile_exceptions.dart';
+import '../../domain/avatar_upload.dart';
 import '../../../friends/presentation/screens/friends_screen.dart';
 import '../controllers/profile_providers.dart';
 import '../controllers/profile_state.dart';
 
-ImageProvider<Object> profileAvatarImageProvider(String path) {
-  final scheme = Uri.tryParse(path)?.scheme.toLowerCase();
-  if (scheme == 'blob' || scheme == 'http' || scheme == 'https') {
-    return NetworkImage(path);
-  }
-
-  return FileImage(File(path));
-}
-
 class ProfileScreen extends ConsumerStatefulWidget {
-  final ImageProvider<Object>? Function(String filePath)? avatarImageProvider;
-
-  const ProfileScreen({super.key, this.avatarImageProvider});
+  const ProfileScreen({super.key});
 
   @override
   ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
@@ -86,7 +75,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ProfileLoadStatus.success => _ProfileContent(
             state: state,
             nameController: _nameController,
-            avatarImageProvider: widget.avatarImageProvider,
             onNameChanged: ref
                 .read(profileNotifierProvider.notifier)
                 .updateDraftName,
@@ -101,9 +89,27 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   Future<void> _pickAvatar() async {
     final i18n = AppLocalizations.of(context)!;
-    String? path;
+    final avatarPicker = ref.read(avatarPickerProvider);
     try {
-      path = await ref.read(avatarPickerProvider).pickAvatar();
+      final avatar = await avatarPicker.pickAvatar();
+      if (avatar == null || !mounted) return;
+      ref.read(profileNotifierProvider.notifier).selectAvatar(avatar);
+    } on InvalidAvatarFileException catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            key: const Key('profile_avatar_picker_error_snackbar'),
+            content: Text(switch (error.reason) {
+              AvatarUploadValidationError.unsupportedFormat =>
+                i18n.profileAvatarInvalidFormat,
+              AvatarUploadValidationError.tooLarge =>
+                i18n.profileAvatarTooLarge,
+            }),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context)
@@ -115,12 +121,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             behavior: SnackBarBehavior.floating,
           ),
         );
-      return;
     }
-
-    if (path == null || !mounted) return;
-
-    ref.read(profileNotifierProvider.notifier).selectAvatar(path);
   }
 
   Future<void> _save() async {
@@ -152,7 +153,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 class _ProfileContent extends StatelessWidget {
   final ProfileState state;
   final TextEditingController nameController;
-  final ImageProvider<Object>? Function(String filePath)? avatarImageProvider;
   final ValueChanged<String> onNameChanged;
   final Future<void> Function() onAvatarPressed;
   final Future<void> Function() onSave;
@@ -161,7 +161,6 @@ class _ProfileContent extends StatelessWidget {
   const _ProfileContent({
     required this.state,
     required this.nameController,
-    required this.avatarImageProvider,
     required this.onNameChanged,
     required this.onAvatarPressed,
     required this.onSave,
@@ -173,14 +172,12 @@ class _ProfileContent extends StatelessWidget {
     final i18n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final profile = state.profile!;
-    final pendingAvatarPath = state.pendingAvatarFilePath;
-    final imageProvider = pendingAvatarPath != null
-        ? avatarImageProvider?.call(pendingAvatarPath) ??
-              FileImage(File(pendingAvatarPath))
+    final pendingAvatar = state.pendingAvatar;
+    final imageProvider = pendingAvatar != null
+        ? MemoryImage(pendingAvatar.bytes)
         : profile.avatarUrl == null
         ? null
-        : avatarImageProvider?.call(profile.avatarUrl!) ??
-              NetworkImage(profile.avatarUrl!);
+        : NetworkImage(profile.avatarUrl!);
 
     return Align(
       alignment: Alignment.topCenter,
@@ -310,10 +307,16 @@ class _ProfileContent extends StatelessWidget {
               if (state.hasSaveError) ...[
                 const SizedBox(height: AppSpacing.md),
                 Text(
-                  state.saveFailure ==
-                          ProfileSaveFailure.avatarStorageUnavailable
-                      ? i18n.profileAvatarStorageUnavailable
-                      : i18n.profileSaveError,
+                  switch (state.saveFailure) {
+                    ProfileSaveFailure.avatarInvalidFormat =>
+                      i18n.profileAvatarInvalidFormat,
+                    ProfileSaveFailure.avatarTooLarge =>
+                      i18n.profileAvatarTooLarge,
+                    ProfileSaveFailure.network => i18n.profileSaveNetworkError,
+                    ProfileSaveFailure.avatarStorageUnavailable =>
+                      i18n.profileAvatarStorageUnavailable,
+                    _ => i18n.profileSaveError,
+                  },
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.error,
                   ),
@@ -321,7 +324,7 @@ class _ProfileContent extends StatelessWidget {
                 ),
                 if (state.saveFailure ==
                         ProfileSaveFailure.avatarStorageUnavailable &&
-                    pendingAvatarPath != null) ...[
+                    pendingAvatar != null) ...[
                   const SizedBox(height: AppSpacing.sm),
                   OutlinedButton(
                     key: const Key(

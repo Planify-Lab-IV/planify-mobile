@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -1281,6 +1282,16 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get profileSaveError =>
       'No se pudieron guardar los cambios. Intentá nuevamente.';
+
+  @override
+  String get profileSaveNetworkError =>
+      'No se pudieron guardar los cambios por un problema de conexión. Intentá nuevamente.';
+
+  @override
+  String get profileAvatarInvalidFormat => 'Elegí una imagen JPEG, PNG o WebP.';
+
+  @override
+  String get profileAvatarTooLarge => 'La imagen no puede superar los 2 MB.';
 
   @override
   String get profileAvatarStorageUnavailable =>
