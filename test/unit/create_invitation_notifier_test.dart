@@ -17,7 +17,7 @@ void main() {
 
       expect(notifier.state, isA<CreateInvitationSuccess>());
       expect(
-        (notifier.state as CreateInvitationSuccess).invitationUrl,
+        (notifier.state as CreateInvitationSuccess).shareUrl,
         'planify://invite/token-valid-123',
       );
       expect(repository.createInvitationCalls, 1);

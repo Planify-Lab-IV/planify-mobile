@@ -67,8 +67,8 @@ class _CreateInvitationSheetState extends ConsumerState<CreateInvitationSheet> {
           child: switch (state) {
             CreateInvitationInitial() || CreateInvitationLoading() =>
               _LoadingContent(message: i18n.invitationCreateLoading),
-            CreateInvitationSuccess(:final invitationUrl) => _SuccessContent(
-              invitationUrl: invitationUrl,
+            CreateInvitationSuccess(:final shareUrl) => _SuccessContent(
+              shareUrl: shareUrl,
               title: i18n.invitationCreateTitle,
               copyLabel: i18n.invitationCreateCopy,
               copiedMessage: i18n.invitationCreateCopied,
@@ -116,13 +116,14 @@ class _LoadingContent extends StatelessWidget {
 }
 
 class _SuccessContent extends StatefulWidget {
-  final String invitationUrl;
+  /// Valor canónico producido por el notifier para la plataforma actual.
+  final String shareUrl;
   final String title;
   final String copyLabel;
   final String copiedMessage;
 
   const _SuccessContent({
-    required this.invitationUrl,
+    required this.shareUrl,
     required this.title,
     required this.copyLabel,
     required this.copiedMessage,
@@ -137,7 +138,7 @@ class _SuccessContentState extends State<_SuccessContent> {
   Timer? _resetCopyStateTimer;
 
   Future<void> _copy() async {
-    await Clipboard.setData(ClipboardData(text: widget.invitationUrl));
+    await Clipboard.setData(ClipboardData(text: widget.shareUrl));
     if (!mounted) return;
     setState(() => _copied = true);
     _resetCopyStateTimer?.cancel();
@@ -169,7 +170,7 @@ class _SuccessContentState extends State<_SuccessContent> {
         ),
         const SizedBox(height: AppSpacing.md),
         SelectableText(
-          widget.invitationUrl,
+          widget.shareUrl,
           key: const Key('create_invitation_url'),
           style: theme.textTheme.bodyMedium?.copyWith(
             color: AppColors.onSurfaceVariant,

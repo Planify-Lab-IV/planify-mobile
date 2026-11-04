@@ -26,13 +26,13 @@ class CreateInvitationNotifier extends StateNotifier<CreateInvitationState> {
     state = const CreateInvitationLoading();
     try {
       final backendInvitationUrl = await _repository.createInvitation(_eventId);
-      final invitationUrl = InvitationLinkParser.buildShareUrl(
+      final shareUrl = InvitationLinkParser.buildShareUrl(
         invitationUrl: backendInvitationUrl,
         isWeb: kIsWeb,
         webBaseUri: kIsWeb ? Uri.base : null,
       );
       if (!mounted) return;
-      state = CreateInvitationSuccess(invitationUrl);
+      state = CreateInvitationSuccess(shareUrl);
     } on InvitationException catch (error) {
       if (!mounted) return;
       state = CreateInvitationError(error);

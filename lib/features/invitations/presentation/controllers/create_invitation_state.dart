@@ -13,17 +13,18 @@ class CreateInvitationLoading extends CreateInvitationState {
 }
 
 class CreateInvitationSuccess extends CreateInvitationState {
-  final String invitationUrl;
+  /// URL ya preparada para mostrar y compartir en la plataforma actual.
+  final String shareUrl;
 
-  const CreateInvitationSuccess(this.invitationUrl);
+  const CreateInvitationSuccess(this.shareUrl);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is CreateInvitationSuccess && other.invitationUrl == invitationUrl;
+      other is CreateInvitationSuccess && other.shareUrl == shareUrl;
 
   @override
-  int get hashCode => invitationUrl.hashCode;
+  int get hashCode => shareUrl.hashCode;
 }
 
 class CreateInvitationError extends CreateInvitationState {
