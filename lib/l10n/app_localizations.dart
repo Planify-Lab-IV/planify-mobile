@@ -209,7 +209,7 @@ abstract class AppLocalizations {
   /// No description provided for @groupManageForbiddenError.
   ///
   /// In es, this message translates to:
-  /// **'Ya no tenés acceso a este grupo. Actualizamos tu lista de grupos.'**
+  /// **'Esta acción ya no está disponible para este grupo. Actualizamos tu lista de grupos.'**
   String get groupManageForbiddenError;
 
   /// No description provided for @groupManageSearchFriends.

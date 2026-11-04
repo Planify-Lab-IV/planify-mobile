@@ -217,7 +217,7 @@ void main() {
 
     expect(
       find.text(
-        'You no longer have access to this group. Your groups list was refreshed.',
+        'This action is no longer available for this group. Your groups list was refreshed.',
       ),
       findsOneWidget,
     );
