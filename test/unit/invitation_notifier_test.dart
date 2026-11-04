@@ -50,6 +50,20 @@ void main() {
     });
 
     test(
+      'link Web con token inválido muestra el error de formato existente',
+      () async {
+        await notifier.handleDeepLink(
+          Uri.parse('https://planify.web.app/?invite=token-invalid'),
+        );
+
+        expect(
+          notifier.state,
+          const InvitationError(InvitationErrorReason.invalidFormat),
+        );
+      },
+    );
+
+    test(
       'link planify://invite sin token cambia estado a InvitationError(invalidFormat)',
       () async {
         await notifier.handleDeepLink(Uri.parse('planify://invite'));
