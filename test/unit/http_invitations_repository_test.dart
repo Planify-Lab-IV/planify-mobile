@@ -268,6 +268,25 @@ void main() {
       expect(result, 'planify://invite/token-new');
     });
 
+    test('rejects invitation URLs without a valid token', () async {
+      for (final invitationUrl in [
+        'planify://invite',
+        'planify://events/token-new',
+        'not a URI',
+      ]) {
+        expect(
+          () => HttpInvitationsRepository(
+            dio: dioResolving(
+              {'invitationUrl': invitationUrl},
+              null,
+              statusCode: 201,
+            ),
+          ).createInvitation('evt-123'),
+          throwsA(isA<UnknownInvitationException>()),
+        );
+      }
+    });
+
     test('maps invitation creation authorization and event errors', () async {
       final cases = <({int statusCode, dynamic body, Type matcher})>[
         (

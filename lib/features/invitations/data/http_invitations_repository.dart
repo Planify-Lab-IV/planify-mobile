@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import '../domain/invitation_link_parser.dart';
 import '../domain/invitations_repository.dart';
 import 'invitation_exceptions.dart';
 
@@ -91,7 +92,13 @@ class HttpInvitationsRepository implements InvitationsRepository {
     if (invitationUrl is! String || invitationUrl.trim().isEmpty) {
       throw const UnknownInvitationException();
     }
-    return invitationUrl.trim();
+
+    final normalizedUrl = invitationUrl.trim();
+    final uri = Uri.tryParse(normalizedUrl);
+    if (uri == null || InvitationLinkParser.parseToken(uri) == null) {
+      throw const UnknownInvitationException();
+    }
+    return normalizedUrl;
   }
 
   bool _isNetworkError(DioException error) {
