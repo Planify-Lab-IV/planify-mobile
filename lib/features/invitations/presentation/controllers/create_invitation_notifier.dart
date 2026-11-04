@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/invitation_exceptions.dart';
+import '../../domain/invitation_link_parser.dart';
 import '../../domain/invitations_repository.dart';
 import 'create_invitation_state.dart';
 
@@ -23,7 +25,12 @@ class CreateInvitationNotifier extends StateNotifier<CreateInvitationState> {
 
     state = const CreateInvitationLoading();
     try {
-      final invitationUrl = await _repository.createInvitation(_eventId);
+      final backendInvitationUrl = await _repository.createInvitation(_eventId);
+      final invitationUrl = InvitationLinkParser.buildShareUrl(
+        invitationUrl: backendInvitationUrl,
+        isWeb: kIsWeb,
+        webBaseUri: kIsWeb ? Uri.base : null,
+      );
       if (!mounted) return;
       state = CreateInvitationSuccess(invitationUrl);
     } on InvitationException catch (error) {

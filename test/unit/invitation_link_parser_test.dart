@@ -128,7 +128,6 @@ void main() {
           InvitationLinkParser.buildShareUrl(
             invitationUrl: nativeUrl,
             isWeb: false,
-            webBaseUri: webBaseUri,
           ),
           nativeUrl,
         );

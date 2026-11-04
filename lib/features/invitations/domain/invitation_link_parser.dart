@@ -32,7 +32,7 @@ class InvitationLinkParser {
   static String buildShareUrl({
     required String invitationUrl,
     required bool isWeb,
-    required Uri webBaseUri,
+    Uri? webBaseUri,
   }) {
     final invitationUri = Uri.tryParse(invitationUrl);
     final token = invitationUri == null
@@ -44,7 +44,9 @@ class InvitationLinkParser {
 
     if (!isWeb) return invitationUrl;
 
-    if (webBaseUri.scheme.toLowerCase() != 'https' || webBaseUri.host.isEmpty) {
+    if (webBaseUri == null ||
+        webBaseUri.scheme.toLowerCase() != 'https' ||
+        webBaseUri.host.isEmpty) {
       throw ArgumentError.value(
         webBaseUri,
         'webBaseUri',
