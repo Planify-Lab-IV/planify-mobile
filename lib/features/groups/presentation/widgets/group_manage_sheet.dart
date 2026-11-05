@@ -191,7 +191,9 @@ class _GroupRenameDialogState extends ConsumerState<GroupRenameDialog> {
             Padding(
               padding: const EdgeInsets.only(top: AppSpacing.sm),
               child: Text(
-                i18n.groupRenameError,
+                managementState.renameErrorReason.requiresOverviewRefresh
+                    ? i18n.groupManageForbiddenError
+                    : i18n.groupRenameError,
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             ),
@@ -260,7 +262,9 @@ class GroupLeaveConfirmationDialog extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.only(top: AppSpacing.sm),
               child: Text(
-                i18n.groupLeaveError,
+                managementState.leaveErrorReason.requiresOverviewRefresh
+                    ? i18n.groupManageForbiddenError
+                    : i18n.groupLeaveError,
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             ),
