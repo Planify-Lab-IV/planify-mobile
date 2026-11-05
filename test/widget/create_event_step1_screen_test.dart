@@ -64,7 +64,7 @@ void main() {
       expect(find.byKey(const Key('event_name_input')), findsOneWidget);
       expect(find.byKey(const Key('event_location_input')), findsOneWidget);
       expect(find.byKey(const Key('wizard_continue_button')), findsOneWidget);
-      expect(find.byKey(const Key('generate_with_ai_button')), findsNothing);
+      expect(find.byIcon(Icons.auto_awesome_rounded), findsNothing);
     });
 
     testWidgets('muestra errores de validación si los campos están vacíos', (
