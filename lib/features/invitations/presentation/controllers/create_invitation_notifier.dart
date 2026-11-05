@@ -9,14 +9,27 @@ import 'create_invitation_state.dart';
 class CreateInvitationNotifier extends StateNotifier<CreateInvitationState> {
   final InvitationsRepository _repository;
   final String _eventId;
+  final bool _isWeb;
+  final Uri Function() _webBaseUriProvider;
 
   CreateInvitationNotifier({
     required InvitationsRepository repository,
     required String eventId,
-  }) : this._(repository, eventId);
+    bool? isWeb,
+    Uri Function()? webBaseUriProvider,
+  }) : this._(
+         repository,
+         eventId,
+         isWeb ?? kIsWeb,
+         webBaseUriProvider ?? (() => Uri.base),
+       );
 
-  CreateInvitationNotifier._(this._repository, this._eventId)
-    : super(const CreateInvitationInitial());
+  CreateInvitationNotifier._(
+    this._repository,
+    this._eventId,
+    this._isWeb,
+    this._webBaseUriProvider,
+  ) : super(const CreateInvitationInitial());
 
   Future<void> createInvitation() async {
     if (state is CreateInvitationLoading || state is CreateInvitationSuccess) {
@@ -28,8 +41,8 @@ class CreateInvitationNotifier extends StateNotifier<CreateInvitationState> {
       final backendInvitationUrl = await _repository.createInvitation(_eventId);
       final shareUrl = InvitationLinkParser.buildShareUrl(
         invitationUrl: backendInvitationUrl,
-        isWeb: kIsWeb,
-        webBaseUri: kIsWeb ? Uri.base : null,
+        isWeb: _isWeb,
+        webBaseUri: _isWeb ? _webBaseUriProvider() : null,
       );
       if (!mounted) return;
       state = CreateInvitationSuccess(shareUrl);

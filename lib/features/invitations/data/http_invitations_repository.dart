@@ -95,7 +95,7 @@ class HttpInvitationsRepository implements InvitationsRepository {
 
     final normalizedUrl = invitationUrl.trim();
     final uri = Uri.tryParse(normalizedUrl);
-    if (uri == null || InvitationLinkParser.parseToken(uri) == null) {
+    if (uri == null || InvitationLinkParser.parseNativeToken(uri) == null) {
       throw const UnknownInvitationException();
     }
     return normalizedUrl;

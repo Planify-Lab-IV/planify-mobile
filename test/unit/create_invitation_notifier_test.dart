@@ -44,5 +44,43 @@ void main() {
         isA<InvitationEventUnavailableException>(),
       );
     });
+
+    test('construye un enlace HTTPS al crear una invitación en Web', () async {
+      final notifier = CreateInvitationNotifier(
+        repository: FakeInvitationsRepository(delay: Duration.zero),
+        eventId: 'evt-123',
+        isWeb: true,
+        webBaseUriProvider: () => Uri.parse('https://planify-austral.web.app'),
+      );
+
+      await notifier.createInvitation();
+
+      expect(
+        notifier.state,
+        const CreateInvitationSuccess(
+          'https://planify-austral.web.app/?invite=token-valid-123',
+        ),
+      );
+    });
+
+    test(
+      'mapea errores al construir el enlace Web a un error conocido',
+      () async {
+        final notifier = CreateInvitationNotifier(
+          repository: FakeInvitationsRepository(delay: Duration.zero),
+          eventId: 'evt-123',
+          isWeb: true,
+          webBaseUriProvider: () => Uri.parse('http://localhost:8080'),
+        );
+
+        await notifier.createInvitation();
+
+        expect(notifier.state, isA<CreateInvitationError>());
+        expect(
+          (notifier.state as CreateInvitationError).exception,
+          isA<UnknownInvitationException>(),
+        );
+      },
+    );
   });
 }

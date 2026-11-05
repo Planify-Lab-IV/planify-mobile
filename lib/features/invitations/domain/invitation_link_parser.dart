@@ -26,9 +26,20 @@ class InvitationLinkParser {
     return null;
   }
 
+  /// Extrae un token solamente del formato que devuelve el backend actual.
+  ///
+  /// El repositorio usa este parser más estricto para conservar el contrato
+  /// `planify://invite/<token>` aunque [parseToken] también acepte enlaces Web
+  /// que la app recibe al abrirse.
+  static String? parseNativeToken(Uri uri) => _parseNativeToken(uri);
+
   /// Construye el enlace que debe compartirse a partir de la URL que devuelve
   /// el backend. En Android conserva el deep link existente; en Web crea una
   /// URL HTTPS de raíz con el token como query parameter.
+  ///
+  /// La raíz y el origen de [webBaseUri] son intencionales: PLANIFY-161 define
+  /// que un enlace compartido cargue la app desde raíz y que los previews de
+  /// Hosting compartan su propio origen. La app no se sirve bajo subpaths.
   static String buildShareUrl({
     required String invitationUrl,
     required bool isWeb,
@@ -88,6 +99,10 @@ class InvitationLinkParser {
     return uri.scheme.toLowerCase() == scheme && uri.host.toLowerCase() == host;
   }
 
+  /// Acepta cualquier origen HTTPS para que el mismo parser funcione tanto en
+  /// producción como en previews de Hosting. No redirige ni navega a ese
+  /// origen: solo extrae el token para resolverlo contra la API configurada.
+  /// Restringir hosts requeriría una configuración canónica de entornos.
   static bool _isWebInvitationLink(Uri uri) {
     return uri.scheme.toLowerCase() == 'https' &&
         (uri.path.isEmpty || uri.path == '/') &&
