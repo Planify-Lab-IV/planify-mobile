@@ -102,7 +102,7 @@ void main() {
       groupNotifier.dispose();
     });
 
-    test('refreshes the overview after a forbidden group action', () async {
+    test('refreshes the overview after adding a member is forbidden', () async {
       final repository = _RecordingGroupManagementRepository()
         ..failure = const GroupForbiddenException();
       var forbiddenActions = 0;
@@ -110,6 +110,60 @@ void main() {
       final groupNotifier = notifier(
         repository,
         onSuccess: () => successfulActions++,
+        onForbidden: () => forbiddenActions++,
+      );
+
+      expect(
+        await groupNotifier.addMember(groupId: 'group-1', userId: 'user-1'),
+        isFalse,
+      );
+      expect(
+        groupNotifier.state.addMemberStatus,
+        GroupManagementActionStatus.error,
+      );
+      expect(
+        groupNotifier.state.addMemberErrorReason,
+        GroupManagementErrorReason.forbidden,
+      );
+      expect(forbiddenActions, 1);
+      expect(successfulActions, isZero);
+      groupNotifier.dispose();
+    });
+
+    test(
+      'refreshes the overview after renaming a group is forbidden',
+      () async {
+        final repository = _RecordingGroupManagementRepository()
+          ..failure = const GroupForbiddenException();
+        var forbiddenActions = 0;
+        final groupNotifier = notifier(
+          repository,
+          onForbidden: () => forbiddenActions++,
+        );
+
+        expect(
+          await groupNotifier.renameGroup(groupId: 'group-1', name: 'Familia'),
+          isFalse,
+        );
+        expect(
+          groupNotifier.state.renameStatus,
+          GroupManagementActionStatus.error,
+        );
+        expect(
+          groupNotifier.state.renameErrorReason,
+          GroupManagementErrorReason.forbidden,
+        );
+        expect(forbiddenActions, 1);
+        groupNotifier.dispose();
+      },
+    );
+
+    test('refreshes the overview after leaving a group is forbidden', () async {
+      final repository = _RecordingGroupManagementRepository()
+        ..failure = const GroupForbiddenException();
+      var forbiddenActions = 0;
+      final groupNotifier = notifier(
+        repository,
         onForbidden: () => forbiddenActions++,
       );
 
@@ -123,7 +177,6 @@ void main() {
         GroupManagementErrorReason.forbidden,
       );
       expect(forbiddenActions, 1);
-      expect(successfulActions, isZero);
       groupNotifier.dispose();
     });
 

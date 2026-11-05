@@ -101,24 +101,39 @@ void main() {
       expect(request?.data, isNull);
     });
 
-    test('maps 400, 403, and 404 to group management exceptions', () async {
+    test('maps 400 to invalid group data', () async {
       await expectLater(
         HttpGroupManagementRepository(
           dio: rejecting(statusCode: 400),
         ).addMember(groupId: 'group-1', userId: 'user-2'),
         throwsA(isA<InvalidGroupDataException>()),
       );
+    });
+
+    test('maps 403 to a forbidden group action', () async {
       await expectLater(
         HttpGroupManagementRepository(
           dio: rejecting(statusCode: 403),
         ).renameGroup(groupId: 'group-1', name: 'Viaje'),
         throwsA(isA<GroupForbiddenException>()),
       );
+    });
+
+    test('maps 404 to a missing group', () async {
       await expectLater(
         HttpGroupManagementRepository(
           dio: rejecting(statusCode: 404),
         ).leaveGroup('group-1'),
         throwsA(isA<GroupNotFoundException>()),
+      );
+    });
+
+    test('maps unexpected HTTP errors to an invalid response', () async {
+      await expectLater(
+        HttpGroupManagementRepository(
+          dio: rejecting(statusCode: 500),
+        ).leaveGroup('group-1'),
+        throwsA(isA<InvalidGroupsResponseException>()),
       );
     });
 
