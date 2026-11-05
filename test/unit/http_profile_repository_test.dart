@@ -50,7 +50,12 @@ void main() {
       _ => 'image/gif',
     };
     return AvatarUpload(
-      bytes: Uint8List.fromList([0, 1, 2]),
+      bytes: Uint8List.fromList(switch (extension) {
+        'jpg' => [0xff, 0xd8, 0xff],
+        'png' => [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a],
+        'webp' => [0x52, 0x49, 0x46, 0x46, 0, 0, 0, 0, 0x57, 0x45, 0x42, 0x50],
+        _ => [0x47, 0x49, 0x46],
+      }),
       filename: 'avatar.$extension',
       mimeType: mimeType,
     );
@@ -178,7 +183,7 @@ void main() {
           expect(Map.fromEntries(form.fields), {'name': 'Dev One Updated'});
           expect(file.key, 'avatar');
           expect(file.value.filename, 'avatar.$extension');
-          expect(file.value.length, 3);
+          expect(file.value.length, greaterThan(0));
           expect(
             file.value.contentType.toString(),
             extension == 'jpg' ? 'image/jpeg' : 'image/$extension',
@@ -196,6 +201,22 @@ void main() {
 
         expect(
           repository.updateProfile(avatar: avatar('gif')),
+          throwsA(
+            isA<InvalidAvatarFileException>().having(
+              (error) => error.reason,
+              'reason',
+              AvatarUploadValidationError.unsupportedFormat,
+            ),
+          ),
+        );
+        expect(
+          repository.updateProfile(
+            avatar: AvatarUpload(
+              bytes: Uint8List.fromList([0x47, 0x49, 0x46, 0x38]),
+              filename: 'avatar.jpg',
+              mimeType: 'image/jpeg',
+            ),
+          ),
           throwsA(
             isA<InvalidAvatarFileException>().having(
               (error) => error.reason,

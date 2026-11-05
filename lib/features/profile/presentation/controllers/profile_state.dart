@@ -18,6 +18,7 @@ class ProfileState {
   final UserProfile? profile;
   final String draftName;
   final AvatarUpload? pendingAvatar;
+  final AvatarUpload? savedAvatarPreview;
   final ProfileLoadStatus loadStatus;
   final ProfileSaveStatus saveStatus;
   final ProfileSaveFailure saveFailure;
@@ -26,6 +27,7 @@ class ProfileState {
     this.profile,
     this.draftName = '',
     this.pendingAvatar,
+    this.savedAvatarPreview,
     this.loadStatus = ProfileLoadStatus.loading,
     this.saveStatus = ProfileSaveStatus.idle,
     this.saveFailure = ProfileSaveFailure.none,
@@ -55,6 +57,7 @@ class ProfileState {
     UserProfile? profile,
     String? draftName,
     AvatarUpload? pendingAvatar,
+    AvatarUpload? savedAvatarPreview,
     bool clearPendingAvatar = false,
     ProfileLoadStatus? loadStatus,
     ProfileSaveStatus? saveStatus,
@@ -66,6 +69,7 @@ class ProfileState {
       pendingAvatar: clearPendingAvatar
           ? null
           : pendingAvatar ?? this.pendingAvatar,
+      savedAvatarPreview: savedAvatarPreview ?? this.savedAvatarPreview,
       loadStatus: loadStatus ?? this.loadStatus,
       saveStatus: saveStatus ?? this.saveStatus,
       saveFailure: saveFailure ?? this.saveFailure,

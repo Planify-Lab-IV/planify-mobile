@@ -38,15 +38,29 @@ class ImagePickerAvatarPicker implements AvatarPicker {
     );
     if (image == null) return null;
 
+    final length = await image.length();
+    if (length > AvatarUpload.maxBytes) {
+      throw const InvalidAvatarFileException(
+        AvatarUploadValidationError.tooLarge,
+      );
+    }
+
+    final bytes = await image.readAsBytes();
+    final mimeType =
+        AvatarUpload.detectMimeType(bytes) ??
+        AvatarUpload.resolveMimeType(
+          filename: image.name,
+          reportedMimeType: image.mimeType,
+        ) ??
+        '';
+
     final avatar = AvatarUpload(
-      bytes: await image.readAsBytes(),
-      filename: image.name,
-      mimeType:
-          AvatarUpload.resolveMimeType(
-            filename: image.name,
-            reportedMimeType: image.mimeType,
-          ) ??
-          '',
+      bytes: bytes,
+      filename: AvatarUpload.filenameForMimeType(
+        filename: image.name,
+        mimeType: mimeType,
+      ),
+      mimeType: mimeType,
     );
     final validationError = avatar.validationError;
     if (validationError != null) {

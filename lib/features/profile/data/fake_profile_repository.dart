@@ -30,9 +30,10 @@ class FakeProfileRepository implements ProfileRepository {
 
     _profile = _profile.copyWith(
       name: name,
-      avatarUrl: avatar == null
-          ? null
-          : 'https://fake.planify.test/avatars/${avatar.filename}',
+      // El fake no sube bytes a un servidor: inventar una URL HTTPS haría que
+      // NetworkImage intente cargar un recurso inexistente. En producción la
+      // URL persistida la devuelve la API tras el PATCH.
+      avatarUrl: _profile.avatarUrl,
     );
     return _profile;
   }

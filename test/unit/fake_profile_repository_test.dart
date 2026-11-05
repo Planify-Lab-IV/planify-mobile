@@ -35,24 +35,24 @@ void main() {
       },
     );
 
-    test('guarda una URL de avatar y conserva el nombre actual', () async {
-      final repository = FakeProfileRepository(delay: Duration.zero);
+    test(
+      'no inventa una URL remota de avatar y conserva el nombre actual',
+      () async {
+        final repository = FakeProfileRepository(delay: Duration.zero);
 
-      final updated = await repository.updateProfile(
-        avatar: AvatarUpload(
-          bytes: Uint8List.fromList([1]),
-          filename: 'profile.webp',
-          mimeType: 'image/webp',
-        ),
-      );
+        final updated = await repository.updateProfile(
+          avatar: AvatarUpload(
+            bytes: Uint8List.fromList([1]),
+            filename: 'profile.webp',
+            mimeType: 'image/webp',
+          ),
+        );
 
-      expect(updated.name, 'Juan Pérez');
-      expect(
-        updated.avatarUrl,
-        'https://fake.planify.test/avatars/profile.webp',
-      );
-      expect(await repository.getMyProfile(), updated);
-    });
+        expect(updated.name, 'Juan Pérez');
+        expect(updated.avatarUrl, isNull);
+        expect(await repository.getMyProfile(), updated);
+      },
+    );
 
     test('simula errores tanto al cargar como al guardar', () async {
       final repository = FakeProfileRepository(
