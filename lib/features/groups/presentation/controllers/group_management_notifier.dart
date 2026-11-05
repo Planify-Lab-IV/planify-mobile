@@ -7,12 +7,12 @@ import 'group_management_state.dart';
 class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
   final GroupManagementRepository repository;
   final void Function()? onGroupManagementSucceeded;
-  final void Function()? onGroupManagementForbidden;
+  final void Function()? onGroupManagementUnavailable;
 
   GroupManagementNotifier({
     required this.repository,
     this.onGroupManagementSucceeded,
-    this.onGroupManagementForbidden,
+    this.onGroupManagementUnavailable,
   }) : super(GroupManagementState());
 
   void resetRenameStatus() {
@@ -37,7 +37,7 @@ class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
     );
   }
 
-  Future<bool> addMember({
+  Future<GroupMemberAdditionResult> addMember({
     required String groupId,
     required String userId,
   }) async {
@@ -49,13 +49,12 @@ class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
           groupId: normalizedGroupId,
           userId: normalizedUserId,
         )) {
-      return false;
+      return GroupMemberAdditionResult.ignored;
     }
 
     final member = (groupId: normalizedGroupId, userId: normalizedUserId);
     state = state.copyWith(
       addMemberStatus: GroupManagementActionStatus.loading,
-      addMemberErrorReason: GroupManagementErrorReason.none,
       addingMembers: {...state.addingMembers, member},
     );
     try {
@@ -63,7 +62,7 @@ class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
         groupId: normalizedGroupId,
         userId: normalizedUserId,
       );
-      if (!mounted) return false;
+      if (!mounted) return GroupMemberAdditionResult.ignored;
 
       final pendingMembers = {...state.addingMembers}..remove(member);
       state = state.copyWith(
@@ -74,21 +73,20 @@ class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
         addingMembers: pendingMembers,
       );
       onGroupManagementSucceeded?.call();
-      return true;
+      return GroupMemberAdditionResult.added;
     } catch (error) {
-      if (!mounted) return false;
+      if (!mounted) return GroupMemberAdditionResult.ignored;
       final pendingMembers = {...state.addingMembers}..remove(member);
       state = state.copyWith(
         addMemberStatus: pendingMembers.isEmpty
             ? GroupManagementActionStatus.error
             : GroupManagementActionStatus.loading,
-        addMemberErrorReason: _errorReason(error),
         addingMembers: pendingMembers,
       );
-      if (error is GroupForbiddenException) {
-        onGroupManagementForbidden?.call();
+      if (_requiresOverviewRefresh(error)) {
+        onGroupManagementUnavailable?.call();
       }
-      return false;
+      return _additionResult(error);
     }
   }
 
@@ -125,8 +123,8 @@ class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
         renameStatus: GroupManagementActionStatus.error,
         renameErrorReason: _errorReason(error),
       );
-      if (error is GroupForbiddenException) {
-        onGroupManagementForbidden?.call();
+      if (_requiresOverviewRefresh(error)) {
+        onGroupManagementUnavailable?.call();
       }
       return false;
     }
@@ -153,16 +151,26 @@ class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
         leaveStatus: GroupManagementActionStatus.error,
         leaveErrorReason: _errorReason(error),
       );
-      if (error is GroupForbiddenException) {
-        onGroupManagementForbidden?.call();
+      if (_requiresOverviewRefresh(error)) {
+        onGroupManagementUnavailable?.call();
       }
       return false;
     }
   }
 
   GroupManagementErrorReason _errorReason(Object error) {
-    return error is GroupForbiddenException
-        ? GroupManagementErrorReason.forbidden
+    return _requiresOverviewRefresh(error)
+        ? GroupManagementErrorReason.unavailable
         : GroupManagementErrorReason.none;
+  }
+
+  GroupMemberAdditionResult _additionResult(Object error) {
+    return _requiresOverviewRefresh(error)
+        ? GroupMemberAdditionResult.unavailable
+        : GroupMemberAdditionResult.failure;
+  }
+
+  bool _requiresOverviewRefresh(Object error) {
+    return error is GroupForbiddenException || error is GroupNotFoundException;
   }
 }

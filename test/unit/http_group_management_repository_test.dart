@@ -101,6 +101,26 @@ void main() {
       expect(request?.data, isNull);
     });
 
+    test('encodes group IDs in every endpoint path', () async {
+      final paths = <String>[];
+      final repository = HttpGroupManagementRepository(
+        dio: resolving(
+          statusCode: 204,
+          inspect: (options) => paths.add(options.path),
+        ),
+      );
+
+      await repository.addMember(groupId: 'group/one', userId: 'user-2');
+      await repository.renameGroup(groupId: 'group/one', name: 'Viaje');
+      await repository.leaveGroup('group/one');
+
+      expect(paths, [
+        '/groups/group%2Fone/members',
+        '/groups/group%2Fone',
+        '/groups/group%2Fone/members/me',
+      ]);
+    });
+
     test('maps 400 to invalid group data', () async {
       await expectLater(
         HttpGroupManagementRepository(
@@ -128,12 +148,21 @@ void main() {
       );
     });
 
-    test('maps unexpected HTTP errors to an invalid response', () async {
+    test('maps 401 to an unexpected group management operation', () async {
+      await expectLater(
+        HttpGroupManagementRepository(
+          dio: rejecting(statusCode: 401),
+        ).leaveGroup('group-1'),
+        throwsA(isA<GroupManagementOperationException>()),
+      );
+    });
+
+    test('maps 500 to an unexpected group management operation', () async {
       await expectLater(
         HttpGroupManagementRepository(
           dio: rejecting(statusCode: 500),
         ).leaveGroup('group-1'),
-        throwsA(isA<InvalidGroupsResponseException>()),
+        throwsA(isA<GroupManagementOperationException>()),
       );
     });
 

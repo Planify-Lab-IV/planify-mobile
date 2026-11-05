@@ -10,12 +10,12 @@ void main() {
   GroupManagementNotifier notifier(
     _RecordingGroupManagementRepository repository, {
     void Function()? onSuccess,
-    void Function()? onForbidden,
+    void Function()? onUnavailable,
   }) {
     return GroupManagementNotifier(
       repository: repository,
       onGroupManagementSucceeded: onSuccess,
-      onGroupManagementForbidden: onForbidden,
+      onGroupManagementUnavailable: onUnavailable,
     );
   }
 
@@ -35,7 +35,7 @@ void main() {
             groupId: ' group-1 ',
             userId: ' user-1 ',
           ),
-          isTrue,
+          GroupMemberAdditionResult.added,
         );
         expect(
           groupNotifier.state.addMemberStatus,
@@ -90,7 +90,7 @@ void main() {
 
       expect(
         await groupNotifier.addMember(groupId: 'group-1', userId: 'user-1'),
-        isFalse,
+        GroupMemberAdditionResult.failure,
       );
 
       expect(
@@ -105,27 +105,23 @@ void main() {
     test('refreshes the overview after adding a member is forbidden', () async {
       final repository = _RecordingGroupManagementRepository()
         ..failure = const GroupForbiddenException();
-      var forbiddenActions = 0;
+      var unavailableActions = 0;
       var successfulActions = 0;
       final groupNotifier = notifier(
         repository,
         onSuccess: () => successfulActions++,
-        onForbidden: () => forbiddenActions++,
+        onUnavailable: () => unavailableActions++,
       );
 
       expect(
         await groupNotifier.addMember(groupId: 'group-1', userId: 'user-1'),
-        isFalse,
+        GroupMemberAdditionResult.unavailable,
       );
       expect(
         groupNotifier.state.addMemberStatus,
         GroupManagementActionStatus.error,
       );
-      expect(
-        groupNotifier.state.addMemberErrorReason,
-        GroupManagementErrorReason.forbidden,
-      );
-      expect(forbiddenActions, 1);
+      expect(unavailableActions, 1);
       expect(successfulActions, isZero);
       groupNotifier.dispose();
     });
@@ -135,10 +131,10 @@ void main() {
       () async {
         final repository = _RecordingGroupManagementRepository()
           ..failure = const GroupForbiddenException();
-        var forbiddenActions = 0;
+        var unavailableActions = 0;
         final groupNotifier = notifier(
           repository,
-          onForbidden: () => forbiddenActions++,
+          onUnavailable: () => unavailableActions++,
         );
 
         expect(
@@ -151,9 +147,9 @@ void main() {
         );
         expect(
           groupNotifier.state.renameErrorReason,
-          GroupManagementErrorReason.forbidden,
+          GroupManagementErrorReason.unavailable,
         );
-        expect(forbiddenActions, 1);
+        expect(unavailableActions, 1);
         groupNotifier.dispose();
       },
     );
@@ -161,10 +157,10 @@ void main() {
     test('refreshes the overview after leaving a group is forbidden', () async {
       final repository = _RecordingGroupManagementRepository()
         ..failure = const GroupForbiddenException();
-      var forbiddenActions = 0;
+      var unavailableActions = 0;
       final groupNotifier = notifier(
         repository,
-        onForbidden: () => forbiddenActions++,
+        onUnavailable: () => unavailableActions++,
       );
 
       expect(await groupNotifier.leaveGroup('group-1'), isFalse);
@@ -174,9 +170,39 @@ void main() {
       );
       expect(
         groupNotifier.state.leaveErrorReason,
-        GroupManagementErrorReason.forbidden,
+        GroupManagementErrorReason.unavailable,
       );
-      expect(forbiddenActions, 1);
+      expect(unavailableActions, 1);
+      groupNotifier.dispose();
+    });
+
+    test('refreshes the overview after a group is no longer found', () async {
+      final repository = _RecordingGroupManagementRepository()
+        ..failure = const GroupNotFoundException();
+      var unavailableActions = 0;
+      final groupNotifier = notifier(
+        repository,
+        onUnavailable: () => unavailableActions++,
+      );
+
+      expect(
+        await groupNotifier.addMember(groupId: 'group-1', userId: 'user-1'),
+        GroupMemberAdditionResult.unavailable,
+      );
+      expect(
+        await groupNotifier.renameGroup(groupId: 'group-1', name: 'Familia'),
+        isFalse,
+      );
+      expect(await groupNotifier.leaveGroup('group-1'), isFalse);
+      expect(
+        groupNotifier.state.renameErrorReason,
+        GroupManagementErrorReason.unavailable,
+      );
+      expect(
+        groupNotifier.state.leaveErrorReason,
+        GroupManagementErrorReason.unavailable,
+      );
+      expect(unavailableActions, 3);
       groupNotifier.dispose();
     });
 
@@ -186,7 +212,7 @@ void main() {
 
       expect(
         await groupNotifier.addMember(groupId: ' ', userId: 'user-1'),
-        isFalse,
+        GroupMemberAdditionResult.ignored,
       );
       expect(
         await groupNotifier.renameGroup(groupId: 'group-1', name: ' '),
@@ -224,12 +250,12 @@ void main() {
       );
       expect(
         await groupNotifier.addMember(groupId: 'group-1', userId: 'user-1'),
-        isFalse,
+        GroupMemberAdditionResult.ignored,
       );
       expect(repository.addMemberRequests, hasLength(1));
 
       repository.addMemberCompletion!.complete();
-      expect(await firstAdd, isTrue);
+      expect(await firstAdd, GroupMemberAdditionResult.added);
       groupNotifier.dispose();
     });
 
@@ -267,11 +293,46 @@ void main() {
         );
 
         repository.addMemberCompletion!.complete();
-        expect(await firstAdd, isTrue);
-        expect(await secondAdd, isTrue);
+        expect(await firstAdd, GroupMemberAdditionResult.added);
+        expect(await secondAdd, GroupMemberAdditionResult.added);
         groupNotifier.dispose();
       },
     );
+
+    test('returns the result associated with each concurrent member', () async {
+      final firstMember = (groupId: 'group-1', userId: 'user-1');
+      final secondMember = (groupId: 'group-1', userId: 'user-2');
+      final firstCompletion = Completer<void>();
+      final secondCompletion = Completer<void>();
+      final repository = _RecordingGroupManagementRepository()
+        ..addMemberCompletions = {
+          firstMember: firstCompletion,
+          secondMember: secondCompletion,
+        }
+        ..addMemberFailures = {
+          firstMember: const GroupForbiddenException(),
+          secondMember: Exception('failure'),
+        };
+      final groupNotifier = notifier(repository);
+
+      final firstAdd = groupNotifier.addMember(
+        groupId: firstMember.groupId,
+        userId: firstMember.userId,
+      );
+      final secondAdd = groupNotifier.addMember(
+        groupId: secondMember.groupId,
+        userId: secondMember.userId,
+      );
+      await Future<void>.delayed(Duration.zero);
+
+      firstCompletion.complete();
+      await Future<void>.delayed(Duration.zero);
+      secondCompletion.complete();
+
+      expect(await firstAdd, GroupMemberAdditionResult.unavailable);
+      expect(await secondAdd, GroupMemberAdditionResult.failure);
+      groupNotifier.dispose();
+    });
 
     test('mantiene el alta asociada al grupo correcto', () async {
       final repository = _RecordingGroupManagementRepository();
@@ -299,14 +360,20 @@ class _RecordingGroupManagementRepository implements GroupManagementRepository {
   bool shouldFail = false;
   Object? failure;
   Completer<void>? addMemberCompletion;
+  Map<GroupMemberKey, Completer<void>>? addMemberCompletions;
+  Map<GroupMemberKey, Object>? addMemberFailures;
 
   @override
   Future<void> addMember({
     required String groupId,
     required String userId,
   }) async {
-    addMemberRequests.add((groupId: groupId, userId: userId));
-    await addMemberCompletion?.future;
+    final member = (groupId: groupId, userId: userId);
+    addMemberRequests.add(member);
+    await (addMemberCompletions?[member]?.future ??
+        addMemberCompletion?.future);
+    final memberFailure = addMemberFailures?[member];
+    if (memberFailure != null) throw memberFailure;
     if (failure != null) throw failure!;
     if (shouldFail) throw Exception('failure');
   }

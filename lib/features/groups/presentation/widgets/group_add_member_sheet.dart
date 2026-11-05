@@ -69,19 +69,17 @@ class _GroupAddMemberSheetState extends ConsumerState<GroupAddMemberSheet> {
   }
 
   Future<void> _addMember(Person person) async {
-    final added = await ref
+    final result = await ref
         .read(groupManagementNotifierProvider.notifier)
         .addMember(groupId: widget.group.id, userId: person.id);
     if (!mounted) return;
 
     final i18n = AppLocalizations.of(context)!;
-    final managementState = ref.read(groupManagementNotifierProvider);
-    final message = added
-        ? i18n.groupManageMemberAdded
-        : managementState.addMemberErrorReason ==
-              GroupManagementErrorReason.forbidden
-        ? i18n.groupManageForbiddenError
-        : i18n.groupManageActionError;
+    final message = switch (result) {
+      GroupMemberAdditionResult.added => i18n.groupManageMemberAdded,
+      GroupMemberAdditionResult.unavailable => i18n.groupManageForbiddenError,
+      _ => i18n.groupManageActionError,
+    };
     final messenger = _sheetMessengerKey.currentState;
     if (messenger == null) return;
     messenger

@@ -39,7 +39,7 @@ final groupManagementNotifierProvider =
         repository: ref.watch(groupManagementRepositoryProvider),
         onGroupManagementSucceeded: () =>
             ref.invalidate(groupsOverviewProvider),
-        onGroupManagementForbidden: () =>
+        onGroupManagementUnavailable: () =>
             ref.invalidate(groupsOverviewProvider),
       );
     });

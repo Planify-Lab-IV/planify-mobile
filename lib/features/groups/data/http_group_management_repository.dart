@@ -10,22 +10,29 @@ class HttpGroupManagementRepository implements GroupManagementRepository {
 
   @override
   Future<void> addMember({required String groupId, required String userId}) {
+    final encodedGroupId = Uri.encodeComponent(groupId);
     return _execute(
-      () =>
-          dio.post<void>('/groups/$groupId/members', data: {'userId': userId}),
+      () => dio.post<void>(
+        '/groups/$encodedGroupId/members',
+        data: {'userId': userId},
+      ),
     );
   }
 
   @override
   Future<void> renameGroup({required String groupId, required String name}) {
+    final encodedGroupId = Uri.encodeComponent(groupId);
     return _execute(
-      () => dio.patch<void>('/groups/$groupId', data: {'name': name}),
+      () => dio.patch<void>('/groups/$encodedGroupId', data: {'name': name}),
     );
   }
 
   @override
   Future<void> leaveGroup(String groupId) {
-    return _execute(() => dio.delete<void>('/groups/$groupId/members/me'));
+    final encodedGroupId = Uri.encodeComponent(groupId);
+    return _execute(
+      () => dio.delete<void>('/groups/$encodedGroupId/members/me'),
+    );
   }
 
   Future<void> _execute(Future<Object?> Function() operation) async {
@@ -43,11 +50,11 @@ class HttpGroupManagementRepository implements GroupManagementRepository {
       if (_isNetworkError(error)) {
         throw const NetworkGroupsException();
       }
-      throw const InvalidGroupsResponseException();
+      throw const GroupManagementOperationException();
     } on GroupsException {
       rethrow;
     } catch (_) {
-      throw const InvalidGroupsResponseException();
+      throw const GroupManagementOperationException();
     }
   }
 

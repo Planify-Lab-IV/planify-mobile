@@ -21,3 +21,7 @@ class GroupNotFoundException extends GroupsException {
 class InvalidGroupDataException extends GroupsException {
   const InvalidGroupDataException();
 }
+
+class GroupManagementOperationException extends GroupsException {
+  const GroupManagementOperationException();
+}

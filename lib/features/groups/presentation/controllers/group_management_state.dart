@@ -2,7 +2,21 @@ import 'package:flutter/foundation.dart';
 
 enum GroupManagementActionStatus { idle, loading, success, error }
 
-enum GroupManagementErrorReason { none, forbidden }
+enum GroupManagementErrorReason {
+  none,
+  unavailable;
+
+  bool get requiresOverviewRefresh => this == unavailable;
+}
+
+enum GroupMemberAdditionResult {
+  added,
+  unavailable,
+  failure,
+  ignored;
+
+  bool get succeeded => this == added;
+}
 
 typedef GroupMemberKey = ({String groupId, String userId});
 
@@ -10,7 +24,6 @@ class GroupManagementState {
   final GroupManagementActionStatus addMemberStatus;
   final GroupManagementActionStatus renameStatus;
   final GroupManagementActionStatus leaveStatus;
-  final GroupManagementErrorReason addMemberErrorReason;
   final GroupManagementErrorReason renameErrorReason;
   final GroupManagementErrorReason leaveErrorReason;
   final Set<GroupMemberKey> addedMembers;
@@ -20,7 +33,6 @@ class GroupManagementState {
     this.addMemberStatus = GroupManagementActionStatus.idle,
     this.renameStatus = GroupManagementActionStatus.idle,
     this.leaveStatus = GroupManagementActionStatus.idle,
-    this.addMemberErrorReason = GroupManagementErrorReason.none,
     this.renameErrorReason = GroupManagementErrorReason.none,
     this.leaveErrorReason = GroupManagementErrorReason.none,
     Set<GroupMemberKey> addedMembers = const {},
@@ -48,7 +60,6 @@ class GroupManagementState {
     GroupManagementActionStatus? addMemberStatus,
     GroupManagementActionStatus? renameStatus,
     GroupManagementActionStatus? leaveStatus,
-    GroupManagementErrorReason? addMemberErrorReason,
     GroupManagementErrorReason? renameErrorReason,
     GroupManagementErrorReason? leaveErrorReason,
     Set<GroupMemberKey>? addedMembers,
@@ -58,7 +69,6 @@ class GroupManagementState {
       addMemberStatus: addMemberStatus ?? this.addMemberStatus,
       renameStatus: renameStatus ?? this.renameStatus,
       leaveStatus: leaveStatus ?? this.leaveStatus,
-      addMemberErrorReason: addMemberErrorReason ?? this.addMemberErrorReason,
       renameErrorReason: renameErrorReason ?? this.renameErrorReason,
       leaveErrorReason: leaveErrorReason ?? this.leaveErrorReason,
       addedMembers: addedMembers ?? this.addedMembers,
@@ -74,7 +84,6 @@ class GroupManagementState {
           addMemberStatus == other.addMemberStatus &&
           renameStatus == other.renameStatus &&
           leaveStatus == other.leaveStatus &&
-          addMemberErrorReason == other.addMemberErrorReason &&
           renameErrorReason == other.renameErrorReason &&
           leaveErrorReason == other.leaveErrorReason &&
           setEquals(addedMembers, other.addedMembers) &&
@@ -85,7 +94,6 @@ class GroupManagementState {
     addMemberStatus,
     renameStatus,
     leaveStatus,
-    addMemberErrorReason,
     renameErrorReason,
     leaveErrorReason,
     Object.hashAll(addedMembers),
