@@ -66,6 +66,23 @@ void main() {
       },
     );
 
+    test('en Web despacha Uri.base una vez y no escucha el stream', () async {
+      final webUri = Uri.parse('https://planify.web.app/?invite=token-web');
+      final webService = DeepLinkService(
+        appLinks: fakeAppLinks,
+        isWeb: true,
+        webUriProvider: () => webUri,
+      );
+      addTearDown(webService.dispose);
+
+      final receivedUris = <Uri>[];
+      await webService.listen(receivedUris.add);
+      fakeAppLinks.emitUri(Uri.parse('planify://invite/token-runtime'));
+      await pumpEventQueue();
+
+      expect(receivedUris, [webUri]);
+    });
+
     test(
       'despacha links entrantes desde el stream mientras la app está corriendo',
       () async {

@@ -18,7 +18,7 @@ void main() {
     });
 
     test(
-      'ignora links que no son del esquema o host de planify://invite',
+      'ignora links que no tienen formato de invitación nativo ni Web',
       () async {
         await notifier.handleDeepLink(
           Uri.parse('https://planify.app/invite/token-123'),
@@ -27,6 +27,39 @@ void main() {
 
         await notifier.handleDeepLink(Uri.parse('planify://events/123'));
         expect(notifier.state, isA<InvitationInitial>());
+      },
+    );
+
+    test('link Web válido resuelve el eventId con el token recibido', () async {
+      await notifier.handleDeepLink(
+        Uri.parse('https://planify.web.app/?invite=token-valid-123'),
+      );
+
+      expect(notifier.state, const InvitationResolved('evt-123'));
+    });
+
+    test('link Web sin token muestra el error de formato existente', () async {
+      await notifier.handleDeepLink(
+        Uri.parse('https://planify.web.app/?invite='),
+      );
+
+      expect(
+        notifier.state,
+        const InvitationError(InvitationErrorReason.invalidFormat),
+      );
+    });
+
+    test(
+      'link Web con token inválido muestra el error de formato existente',
+      () async {
+        await notifier.handleDeepLink(
+          Uri.parse('https://planify.web.app/?invite=token-invalid'),
+        );
+
+        expect(
+          notifier.state,
+          const InvitationError(InvitationErrorReason.invalidFormat),
+        );
       },
     );
 

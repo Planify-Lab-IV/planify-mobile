@@ -89,6 +89,7 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('create_invitation_url')), findsOneWidget);
+    expect(find.text('planify://invite/token-valid-123'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('create_invitation_copy_button')));
     await tester.pump();
