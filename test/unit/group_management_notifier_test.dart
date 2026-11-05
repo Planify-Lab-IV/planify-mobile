@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:planify/features/groups/data/group_exceptions.dart';
+import 'package:planify/features/groups/domain/group_management_exceptions.dart';
 import 'package:planify/features/groups/domain/group_management_repository.dart';
 import 'package:planify/features/groups/presentation/controllers/group_management_notifier.dart';
 import 'package:planify/features/groups/presentation/controllers/group_management_state.dart';

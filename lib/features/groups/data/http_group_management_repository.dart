@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+import '../domain/group_management_exceptions.dart';
 import '../domain/group_management_repository.dart';
 import 'group_exceptions.dart';
 
@@ -51,7 +52,7 @@ class HttpGroupManagementRepository implements GroupManagementRepository {
         throw const NetworkGroupsException();
       }
       throw const GroupManagementOperationException();
-    } on GroupsException {
+    } on GroupManagementException {
       rethrow;
     } catch (_) {
       throw const GroupManagementOperationException();

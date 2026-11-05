@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/groups/data/group_exceptions.dart';
 import 'package:planify/features/groups/data/http_group_management_repository.dart';
+import 'package:planify/features/groups/domain/group_management_exceptions.dart';
 
 void main() {
   Dio resolving({

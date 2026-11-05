@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../data/group_exceptions.dart';
+import '../../domain/group_management_exceptions.dart';
 import '../../domain/group_management_repository.dart';
 import 'group_management_state.dart';
 

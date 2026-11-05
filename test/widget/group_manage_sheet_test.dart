@@ -11,7 +11,7 @@ import 'package:planify/features/friends/presentation/controllers/friends_provid
 import 'package:planify/features/friends/presentation/screens/friends_screen.dart';
 import 'package:planify/features/groups/data/fake_group_management_repository.dart';
 import 'package:planify/features/groups/data/fake_groups_overview_repository.dart';
-import 'package:planify/features/groups/data/group_exceptions.dart';
+import 'package:planify/features/groups/domain/group_management_exceptions.dart';
 import 'package:planify/features/groups/domain/group_management_repository.dart';
 import 'package:planify/features/groups/domain/group_overview.dart';
 import 'package:planify/features/groups/presentation/controllers/groups_providers.dart';
