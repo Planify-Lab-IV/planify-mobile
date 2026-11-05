@@ -205,8 +205,6 @@
   "draftSummaryTitle": "Draft summary",
   "draftEventName": "Name",
   "draftEventLocation": "Location",
-  "generateWithAi": "Generate with AI",
-  "generateWithAiComingSoon": "AI event generation coming soon",
   "eventDetailTitle": "Event Details",
   "eventStatusLabel": "Status",
   "eventStatusActive": "Planning",

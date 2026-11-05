@@ -205,8 +205,6 @@
   "draftSummaryTitle": "Resumen del borrador",
   "draftEventName": "Nombre",
   "draftEventLocation": "Lugar",
-  "generateWithAi": "Generar con IA",
-  "generateWithAiComingSoon": "Generación de eventos con IA disponible próximamente",
   "eventDetailTitle": "Detalle del evento",
     "eventStatusLabel": "Estado",
     "eventStatusActive": "En planificación",
