@@ -1274,6 +1274,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileSaveError => 'Could not save changes. Please try again.';
 
   @override
+  String get profileSaveNetworkError =>
+      'Could not save changes because of a connection problem. Please try again.';
+
+  @override
+  String get profileAvatarInvalidFormat => 'Choose a JPEG, PNG, or WebP image.';
+
+  @override
+  String get profileAvatarTooLarge => 'The image cannot exceed 2 MB.';
+
+  @override
   String get profileAvatarStorageUnavailable =>
       'The profile picture could not be saved right now. You can still change your name.';
 

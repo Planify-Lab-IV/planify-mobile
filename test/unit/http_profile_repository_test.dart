@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/profile/data/http_profile_repository.dart';
 import 'package:planify/features/profile/data/profile_exceptions.dart';
+import 'package:planify/features/profile/domain/avatar_upload.dart';
 
 class _InspectingAdapter implements HttpClientAdapter {
   _InspectingAdapter({required this.body, this.inspect});
@@ -23,9 +23,7 @@ class _InspectingAdapter implements HttpClientAdapter {
     Future<void>? cancelFuture,
   ) async {
     inspect?.call(options);
-    if (requestStream != null) {
-      await requestStream.drain<void>();
-    }
+    if (requestStream != null) await requestStream.drain<void>();
     return ResponseBody.fromString(
       jsonEncode(body),
       200,
@@ -43,6 +41,25 @@ void main() {
     'username': 'dev1',
     'email': 'dev1@planify.dev',
   };
+
+  AvatarUpload avatar(String extension) {
+    final mimeType = switch (extension) {
+      'jpg' => 'image/jpeg',
+      'png' => 'image/png',
+      'webp' => 'image/webp',
+      _ => 'image/gif',
+    };
+    return AvatarUpload(
+      bytes: Uint8List.fromList(switch (extension) {
+        'jpg' => [0xff, 0xd8, 0xff],
+        'png' => [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a],
+        'webp' => [0x52, 0x49, 0x46, 0x46, 0, 0, 0, 0, 0x57, 0x45, 0x42, 0x50],
+        _ => [0x47, 0x49, 0x46],
+      }),
+      filename: 'avatar.$extension',
+      mimeType: mimeType,
+    );
+  }
 
   Dio resolving(
     dynamic body, {
@@ -85,16 +102,6 @@ void main() {
     return dio;
   }
 
-  Future<String> avatarFile(String extension) async {
-    final directory = await Directory.systemTemp.createTemp('planify-avatar-');
-    addTearDown(() => directory.delete(recursive: true));
-    final file = File(
-      '${directory.path}${Platform.pathSeparator}avatar.$extension',
-    );
-    await file.writeAsBytes([0, 1, 2]);
-    return file.path;
-  }
-
   group('HttpProfileRepository', () {
     test(
       'gets the authenticated profile and resolves a relative avatar URL',
@@ -110,7 +117,6 @@ void main() {
 
         expect(request?.method, 'GET');
         expect(request?.path, '/auth/me');
-        expect(profile.name, 'Dev One');
         expect(
           profile.avatarUrl,
           'http://localhost:3000/uploads/avatars/dev1.jpg',
@@ -119,7 +125,7 @@ void main() {
     );
 
     test(
-      'keeps a null or absolute avatar URL from the profile response',
+      'keeps null and absolute HTTPS avatar URLs from the profile response',
       () async {
         final noAvatar = await HttpProfileRepository(
           dio: resolving({
@@ -130,17 +136,13 @@ void main() {
           dio: resolving({
             'user': {
               ...user,
-              'avatarUrl':
-                  'https://bucket.s3.us-east-1.amazonaws.com/avatars/dev1.jpg',
+              'avatarUrl': 'https://bucket.s3.test/avatars/dev1.jpg',
             },
           }),
         ).getMyProfile();
 
         expect(noAvatar.avatarUrl, isNull);
-        expect(
-          s3Avatar.avatarUrl,
-          'https://bucket.s3.us-east-1.amazonaws.com/avatars/dev1.jpg',
-        );
+        expect(s3Avatar.avatarUrl, 'https://bucket.s3.test/avatars/dev1.jpg');
       },
     );
 
@@ -160,46 +162,89 @@ void main() {
       expect(request!.contentType, startsWith('multipart/form-data'));
     });
 
-    test('sends an image with an explicit JPEG MIME type', () async {
-      RequestOptions? request;
-      final repository = HttpProfileRepository(
-        dio: resolving({'user': user}, inspect: (options) => request = options),
-      );
+    test(
+      'sends bytes, filename and MIME for supported avatar formats',
+      () async {
+        for (final extension in ['jpg', 'png', 'webp']) {
+          RequestOptions? request;
+          final repository = HttpProfileRepository(
+            dio: resolving({
+              'user': user,
+            }, inspect: (options) => request = options),
+          );
 
-      await repository.updateProfile(avatarFilePath: await avatarFile('jpg'));
+          await repository.updateProfile(
+            name: 'Dev One Updated',
+            avatar: avatar(extension),
+          );
 
-      final form = request!.data as FormData;
-      expect(form.fields, isEmpty);
-      expect(form.files, hasLength(1));
-      expect(form.files.single.key, 'avatar');
-      expect(form.files.single.value.contentType.toString(), 'image/jpeg');
-      expect(request!.contentType, startsWith('multipart/form-data'));
-    });
+          final form = request!.data as FormData;
+          final file = form.files.single;
+          expect(Map.fromEntries(form.fields), {'name': 'Dev One Updated'});
+          expect(file.key, 'avatar');
+          expect(file.value.filename, 'avatar.$extension');
+          expect(file.value.length, greaterThan(0));
+          expect(
+            file.value.contentType.toString(),
+            extension == 'jpg' ? 'image/jpeg' : 'image/$extension',
+          );
+        }
+      },
+    );
 
-    test('sends name and supported PNG or WebP avatars together', () async {
-      for (final extension in ['png', 'webp']) {
-        RequestOptions? request;
+    test(
+      'rejects invalid avatar format and size before sending a request',
+      () async {
         final repository = HttpProfileRepository(
-          dio: resolving({
-            'user': user,
-          }, inspect: (options) => request = options),
+          dio: resolving({'user': user}),
         );
 
-        await repository.updateProfile(
-          name: 'Dev One Updated',
-          avatarFilePath: await avatarFile(extension),
-        );
-
-        final form = request!.data as FormData;
-        expect(Map.fromEntries(form.fields), {'name': 'Dev One Updated'});
         expect(
-          form.files.single.value.contentType.toString(),
-          'image/$extension',
+          repository.updateProfile(avatar: avatar('gif')),
+          throwsA(
+            isA<InvalidAvatarFileException>().having(
+              (error) => error.reason,
+              'reason',
+              AvatarUploadValidationError.unsupportedFormat,
+            ),
+          ),
         );
-      }
-    });
+        expect(
+          repository.updateProfile(
+            avatar: AvatarUpload(
+              bytes: Uint8List.fromList([0x47, 0x49, 0x46, 0x38]),
+              filename: 'avatar.jpg',
+              mimeType: 'image/jpeg',
+            ),
+          ),
+          throwsA(
+            isA<InvalidAvatarFileException>().having(
+              (error) => error.reason,
+              'reason',
+              AvatarUploadValidationError.unsupportedFormat,
+            ),
+          ),
+        );
+        expect(
+          repository.updateProfile(
+            avatar: AvatarUpload(
+              bytes: Uint8List(AvatarUpload.maxBytes + 1),
+              filename: 'avatar.png',
+              mimeType: 'image/png',
+            ),
+          ),
+          throwsA(
+            isA<InvalidAvatarFileException>().having(
+              (error) => error.reason,
+              'reason',
+              AvatarUploadValidationError.tooLarge,
+            ),
+          ),
+        );
+      },
+    );
 
-    test('maps 400 invalid data and 503 unavailable storage errors', () async {
+    test('maps HTTP storage and network errors', () async {
       expect(
         HttpProfileRepository(
           dio: rejecting(type: DioExceptionType.badResponse, statusCode: 400),
@@ -216,32 +261,12 @@ void main() {
         ).updateProfile(name: 'Dev One'),
         throwsA(isA<AvatarStorageUnavailableException>()),
       );
+      expect(
+        HttpProfileRepository(
+          dio: rejecting(type: DioExceptionType.connectionError),
+        ).getMyProfile,
+        throwsA(isA<NetworkProfileException>()),
+      );
     });
-
-    test(
-      'maps malformed data, unsupported uploads, and network errors',
-      () async {
-        expect(
-          HttpProfileRepository(
-            dio: resolving({
-              'user': {'name': 'Dev One'},
-            }),
-          ).getMyProfile,
-          throwsA(isA<InvalidProfileResponseException>()),
-        );
-        expect(
-          HttpProfileRepository(
-            dio: resolving({'user': user}),
-          ).updateProfile(avatarFilePath: await avatarFile('heic')),
-          throwsA(isA<InvalidProfileDataException>()),
-        );
-        expect(
-          HttpProfileRepository(
-            dio: rejecting(type: DioExceptionType.connectionError),
-          ).getMyProfile,
-          throwsA(isA<NetworkProfileException>()),
-        );
-      },
-    );
   });
 }

@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 
+import '../domain/avatar_upload.dart';
 import '../domain/profile_repository.dart';
 import '../domain/user_profile.dart';
 import 'avatar_url_resolver.dart';
@@ -29,18 +28,20 @@ class HttpProfileRepository implements ProfileRepository {
   @override
   Future<UserProfile> updateProfile({
     String? name,
-    String? avatarFilePath,
+    AvatarUpload? avatar,
   }) async {
     try {
       final formData = FormData();
       if (name != null) formData.fields.add(MapEntry('name', name));
-      if (avatarFilePath != null) {
+      if (avatar != null) {
+        _throwIfInvalidAvatar(avatar);
         formData.files.add(
           MapEntry(
             'avatar',
-            await MultipartFile.fromFile(
-              avatarFilePath,
-              contentType: _avatarContentType(avatarFilePath),
+            MultipartFile.fromBytes(
+              avatar.bytes,
+              filename: avatar.filename,
+              contentType: _avatarContentType(avatar.mimeType),
             ),
           ),
         );
@@ -52,8 +53,6 @@ class HttpProfileRepository implements ProfileRepository {
       throw _exceptionFromDio(error);
     } on ProfileException {
       rethrow;
-    } on FileSystemException {
-      throw const InvalidProfileDataException();
     } catch (_) {
       throw const InvalidProfileResponseException();
     }
@@ -90,12 +89,21 @@ class HttpProfileRepository implements ProfileRepository {
     );
   }
 
-  DioMediaType _avatarContentType(String path) {
-    return switch (path.toLowerCase().split('.').last) {
-      'jpg' || 'jpeg' => DioMediaType('image', 'jpeg'),
-      'png' => DioMediaType('image', 'png'),
-      'webp' => DioMediaType('image', 'webp'),
-      _ => throw const InvalidProfileDataException(),
+  void _throwIfInvalidAvatar(AvatarUpload avatar) {
+    final validationError = avatar.validationError;
+    if (validationError != null) {
+      throw InvalidAvatarFileException(validationError);
+    }
+  }
+
+  DioMediaType _avatarContentType(String mimeType) {
+    return switch (mimeType) {
+      'image/jpeg' => DioMediaType('image', 'jpeg'),
+      'image/png' => DioMediaType('image', 'png'),
+      'image/webp' => DioMediaType('image', 'webp'),
+      _ => throw const InvalidAvatarFileException(
+        AvatarUploadValidationError.unsupportedFormat,
+      ),
     };
   }
 
