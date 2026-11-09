@@ -83,10 +83,14 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
       );
       if (!mounted) return;
 
-      state = ProfileState(
+      state = state.copyWith(
         profile: updatedProfile,
         draftName: updatedProfile.name,
+        clearPendingAvatar: true,
+        clearSavedAvatarPreview: updatedProfile.avatarUrl != null,
         loadStatus: ProfileLoadStatus.success,
+        saveStatus: ProfileSaveStatus.idle,
+        saveFailure: ProfileSaveFailure.none,
         // La API normalmente devuelve la URL persistida. Si no lo hace (como
         // el fake en memoria), mantenemos los bytes confirmados hasta la
         // próxima carga en lugar de intentar cargar una URL ficticia.

@@ -59,6 +59,7 @@ class ProfileState {
     AvatarUpload? pendingAvatar,
     AvatarUpload? savedAvatarPreview,
     bool clearPendingAvatar = false,
+    bool clearSavedAvatarPreview = false,
     ProfileLoadStatus? loadStatus,
     ProfileSaveStatus? saveStatus,
     ProfileSaveFailure? saveFailure,
@@ -69,7 +70,9 @@ class ProfileState {
       pendingAvatar: clearPendingAvatar
           ? null
           : pendingAvatar ?? this.pendingAvatar,
-      savedAvatarPreview: savedAvatarPreview ?? this.savedAvatarPreview,
+      savedAvatarPreview: clearSavedAvatarPreview
+          ? null
+          : savedAvatarPreview ?? this.savedAvatarPreview,
       loadStatus: loadStatus ?? this.loadStatus,
       saveStatus: saveStatus ?? this.saveStatus,
       saveFailure: saveFailure ?? this.saveFailure,

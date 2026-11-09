@@ -94,6 +94,14 @@ void main() {
       expect(tooLong.canSave, isFalse);
       expect(saving.canSave, isFalse);
     });
+
+    test('puede limpiar el preview de avatar guardado', () {
+      final state = ProfileState(savedAvatarPreview: avatar);
+
+      final updatedState = state.copyWith(clearSavedAvatarPreview: true);
+
+      expect(updatedState.savedAvatarPreview, isNull);
+    });
   });
 
   group('ProfileNotifier', () {
