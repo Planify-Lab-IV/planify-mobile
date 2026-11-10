@@ -1,5 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/features/profile/data/fake_profile_repository.dart';
+import 'package:planify/features/profile/domain/avatar_upload.dart';
 import 'package:planify/features/profile/domain/user_profile.dart';
 
 void main() {
@@ -33,16 +36,20 @@ void main() {
     );
 
     test(
-      'guarda la ruta local de avatar y conserva el nombre actual',
+      'no inventa una URL remota de avatar y conserva el nombre actual',
       () async {
         final repository = FakeProfileRepository(delay: Duration.zero);
 
         final updated = await repository.updateProfile(
-          avatarFilePath: '/tmp/profile.webp',
+          avatar: AvatarUpload(
+            bytes: Uint8List.fromList([1]),
+            filename: 'profile.webp',
+            mimeType: 'image/webp',
+          ),
         );
 
         expect(updated.name, 'Juan Pérez');
-        expect(updated.avatarUrl, '/tmp/profile.webp');
+        expect(updated.avatarUrl, isNull);
         expect(await repository.getMyProfile(), updated);
       },
     );

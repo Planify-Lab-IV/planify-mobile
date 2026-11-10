@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,6 +12,7 @@ import 'package:planify/features/auth/domain/user_session.dart';
 import 'package:planify/features/profile/data/fake_profile_repository.dart';
 import 'package:planify/features/profile/presentation/controllers/profile_providers.dart';
 import 'package:planify/features/profile/data/http_profile_repository.dart';
+import 'package:planify/features/profile/domain/avatar_upload.dart';
 import 'package:planify/features/profile/domain/user_profile.dart';
 
 void main() {
@@ -68,7 +71,13 @@ void main() {
 
     final aliceNotifier = container.read(profileNotifierProvider.notifier);
     aliceNotifier.updateDraftName('Alice Personal');
-    aliceNotifier.selectAvatar('/tmp/alice-avatar.jpg');
+    aliceNotifier.selectAvatar(
+      AvatarUpload(
+        bytes: Uint8List.fromList([1]),
+        filename: 'alice-avatar.jpg',
+        mimeType: 'image/jpeg',
+      ),
+    );
 
     await container.read(authNotifierProvider.notifier).logout();
     await container
@@ -79,6 +88,6 @@ void main() {
     final bobState = container.read(profileNotifierProvider);
     expect(bobState.profile?.name, 'bob');
     expect(bobState.draftName, 'bob');
-    expect(bobState.pendingAvatarFilePath, isNull);
+    expect(bobState.pendingAvatar, isNull);
   });
 }

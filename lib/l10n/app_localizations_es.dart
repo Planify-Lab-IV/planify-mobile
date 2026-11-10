@@ -1280,6 +1280,16 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudieron guardar los cambios. Intentá nuevamente.';
 
   @override
+  String get profileSaveNetworkError =>
+      'No se pudieron guardar los cambios por un problema de conexión. Intentá nuevamente.';
+
+  @override
+  String get profileAvatarInvalidFormat => 'Elegí una imagen JPEG, PNG o WebP.';
+
+  @override
+  String get profileAvatarTooLarge => 'La imagen no puede superar los 2 MB.';
+
+  @override
   String get profileAvatarStorageUnavailable =>
       'No se pudo guardar la foto en este momento. El nombre sí se puede cambiar.';
 

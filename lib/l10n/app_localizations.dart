@@ -2328,6 +2328,24 @@ abstract class AppLocalizations {
   /// **'No se pudieron guardar los cambios. Intentá nuevamente.'**
   String get profileSaveError;
 
+  /// No description provided for @profileSaveNetworkError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron guardar los cambios por un problema de conexión. Intentá nuevamente.'**
+  String get profileSaveNetworkError;
+
+  /// No description provided for @profileAvatarInvalidFormat.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegí una imagen JPEG, PNG o WebP.'**
+  String get profileAvatarInvalidFormat;
+
+  /// No description provided for @profileAvatarTooLarge.
+  ///
+  /// In es, this message translates to:
+  /// **'La imagen no puede superar los 2 MB.'**
+  String get profileAvatarTooLarge;
+
   /// No description provided for @profileAvatarStorageUnavailable.
   ///
   /// In es, this message translates to:
