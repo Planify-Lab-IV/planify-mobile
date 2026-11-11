@@ -104,9 +104,21 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // Al autenticarse, limpia cualquier invitación pendiente para que no quede en memoria
+    ref.listen<InvitationState>(invitationNotifierProvider, (previous, next) {
+      if (next is InvitationResolved &&
+          ref.read(authNotifierProvider) is AuthAuthenticated) {
+        ref.read(webInvitationUrlCleanerProvider).clearInviteQuery();
+      }
+    });
+
+    // Al autenticarse, elimina el token de la URL y la invitación pendiente.
+    // La URL se conserva hasta este punto para que el login de invitado pueda
+    // usar el eventId que resolvió la invitación.
     ref.listen<AuthState>(authNotifierProvider, (previous, next) {
       if (next is AuthAuthenticated) {
+        if (ref.read(invitationNotifierProvider) is InvitationResolved) {
+          ref.read(webInvitationUrlCleanerProvider).clearInviteQuery();
+        }
         ref.read(invitationNotifierProvider.notifier).clearInvitation();
       }
       if (next is AuthUnauthenticated) {

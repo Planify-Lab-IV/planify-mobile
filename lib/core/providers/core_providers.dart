@@ -7,6 +7,7 @@ import '../../data/dio_client.dart';
 import '../../data/secure_storage.dart';
 import '../services/deep_link_service.dart';
 import '../services/push_messaging_service.dart';
+import '../services/web_invitation_url_cleaner.dart';
 
 final secureStorageProvider = Provider<SecureStorage>((ref) {
   return FlutterSecureStorageImpl();
@@ -26,6 +27,12 @@ final deepLinkServiceProvider = Provider<DeepLinkService>((ref) {
   final service = DeepLinkService(appLinks: appLinks);
   ref.onDispose(() => service.dispose());
   return service;
+});
+
+final webInvitationUrlCleanerProvider = Provider<WebInvitationUrlCleaner>((
+  ref,
+) {
+  return WebInvitationUrlCleaner();
 });
 
 final firebaseMessagingProvider = Provider<FirebaseMessaging>((ref) {
