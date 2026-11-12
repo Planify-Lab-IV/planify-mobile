@@ -82,8 +82,8 @@ void main() {
           }),
         );
 
-        expect(
-          () => repository.resolveInvitationToken('   '),
+        await expectLater(
+          repository.resolveInvitationToken('   '),
           throwsA(isA<InvalidInvitationException>()),
         );
         expect(called, isFalse);
@@ -98,8 +98,8 @@ void main() {
         }),
       );
 
-      expect(
-        () => repository.resolveInvitationToken(validToken),
+      await expectLater(
+        repository.resolveInvitationToken(validToken),
         throwsA(isA<InvalidInvitationException>()),
       );
     });
@@ -114,8 +114,8 @@ void main() {
           }),
         );
 
-        expect(
-          () => repository.resolveInvitationToken(validToken),
+        await expectLater(
+          repository.resolveInvitationToken(validToken),
           throwsA(isA<InvitationNotFoundException>()),
         );
       },
@@ -131,8 +131,8 @@ void main() {
           }),
         );
 
-        expect(
-          () => repository.resolveInvitationToken(validToken),
+        await expectLater(
+          repository.resolveInvitationToken(validToken),
           throwsA(isA<InvitationExpiredException>()),
         );
       },
@@ -145,8 +145,8 @@ void main() {
           dio: dioRejecting(404, null),
         );
 
-        expect(
-          () => repository.resolveInvitationToken(validToken),
+        await expectLater(
+          repository.resolveInvitationToken(validToken),
           throwsA(isA<InvitationNotFoundException>()),
         );
       },
@@ -166,8 +166,8 @@ void main() {
       );
       final repository = HttpInvitationsRepository(dio: dio);
 
-      expect(
-        () => repository.resolveInvitationToken(validToken),
+      await expectLater(
+        repository.resolveInvitationToken(validToken),
         throwsA(isA<NetworkInvitationException>()),
       );
     });
@@ -188,8 +188,8 @@ void main() {
         );
         final repository = HttpInvitationsRepository(dio: dio);
 
-        expect(
-          () => repository.resolveInvitationToken(validToken),
+        await expectLater(
+          repository.resolveInvitationToken(validToken),
           throwsA(isA<NetworkInvitationException>()),
         );
       }
@@ -202,8 +202,8 @@ void main() {
           dio: dioRejecting(500, {'error': 'INTERNAL_ERROR'}),
         );
 
-        expect(
-          () => repository.resolveInvitationToken(validToken),
+        await expectLater(
+          repository.resolveInvitationToken(validToken),
           throwsA(isA<UnknownInvitationException>()),
         );
       },
@@ -217,8 +217,8 @@ void main() {
             dio: dioRejecting(statusCode, 'Bad Gateway'),
           );
 
-          expect(
-            () => repository.resolveInvitationToken(validToken),
+          await expectLater(
+            repository.resolveInvitationToken(validToken),
             throwsA(isA<UnknownInvitationException>()),
           );
         }
@@ -242,8 +242,8 @@ void main() {
             dio: dioResolving(body, null),
           );
 
-          expect(
-            () => repository.resolveInvitationToken(validToken),
+          await expectLater(
+            repository.resolveInvitationToken(validToken),
             throwsA(isA<UnknownInvitationException>()),
           );
         }
@@ -267,6 +267,29 @@ void main() {
       expect(request?.data, isEmpty);
       expect(result, 'planify://invite/token-new');
     });
+
+    test(
+      'rejects invitation URLs outside the native backend contract',
+      () async {
+        for (final invitationUrl in [
+          'planify://invite',
+          'planify://events/token-new',
+          'https://planify.web.app/?invite=token-new',
+          'not a URI',
+        ]) {
+          await expectLater(
+            HttpInvitationsRepository(
+              dio: dioResolving(
+                {'invitationUrl': invitationUrl},
+                null,
+                statusCode: 201,
+              ),
+            ).createInvitation('evt-123'),
+            throwsA(isA<UnknownInvitationException>()),
+          );
+        }
+      },
+    );
 
     test('maps invitation creation authorization and event errors', () async {
       final cases = <({int statusCode, dynamic body, Type matcher})>[
@@ -292,8 +315,8 @@ void main() {
           dio: dioRejecting(testCase.statusCode, testCase.body),
         );
 
-        expect(
-          () => repository.createInvitation('evt-123'),
+        await expectLater(
+          repository.createInvitation('evt-123'),
           throwsA(
             isA<InvitationException>().having(
               (exception) => exception.runtimeType,
@@ -318,10 +341,8 @@ void main() {
         ),
       );
 
-      expect(
-        () => HttpInvitationsRepository(
-          dio: networkDio,
-        ).createInvitation('evt-123'),
+      await expectLater(
+        HttpInvitationsRepository(dio: networkDio).createInvitation('evt-123'),
         throwsA(isA<NetworkInvitationException>()),
       );
 
@@ -331,8 +352,8 @@ void main() {
         {'invitationUrl': ''},
         {'url': 'value'},
       ]) {
-        expect(
-          () => HttpInvitationsRepository(
+        await expectLater(
+          HttpInvitationsRepository(
             dio: dioResolving(body, null, statusCode: 201),
           ).createInvitation('evt-123'),
           throwsA(isA<UnknownInvitationException>()),
