@@ -1,13 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../data/fake_debts_repository.dart';
+import '../../../../core/providers/core_providers.dart';
+import '../../data/http_debts_repository.dart';
 import '../../domain/debts_repository.dart';
 import 'event_debts_notifier.dart';
 import 'event_debts_state.dart';
-import '../../../../core/providers/fake_settlement_provider.dart';
 
 final debtsRepositoryProvider = Provider<DebtsRepository>((ref) {
-  return FakeDebtsRepository(store: ref.watch(fakeSettlementStoreProvider));
+  return HttpDebtsRepository(dio: ref.watch(dioClientProvider));
 });
 
 // Existing subscribed views refresh after any settlement, without recreating
@@ -21,11 +21,6 @@ final eventDebtsNotifierProvider = StateNotifierProvider.autoDispose
         repository: repository,
         eventId: eventId,
         onSettled: () => ref.read(settlementRevisionProvider.notifier).state++,
-        onFixturePrepared: () =>
-            ref.read(settlementRevisionProvider.notifier).state++,
-        prepareFixture: repository is FakeDebtsRepository
-            ? repository.ensureEventFixture
-            : null,
       );
       void Function()? releaseOperation;
       ref.onDispose(

@@ -177,7 +177,7 @@ class HttpEventsRepository implements EventsRepository {
       location: _requiredString(data, 'location'),
       organizerId: _requiredString(data, 'organizerId'),
       groupId: _requiredString(data, 'groupId'),
-      status: _eventStatus(data['status']),
+      status: EventStatus.fromApi(data['status'] as String),
       createdAt: _requiredDateTime(data, 'createdAt'),
       updatedAt: _requiredDateTime(data, 'updatedAt'),
       startDateTime: _nullableDateTime(data, 'startDateTime'),
@@ -246,15 +246,6 @@ class HttpEventsRepository implements EventsRepository {
     if (value == null) return false;
     if (value is! bool) throw const InvalidEventResponseException();
     return value;
-  }
-
-  EventStatus _eventStatus(dynamic value) {
-    return switch (value) {
-      'active' => EventStatus.active,
-      'confirmed' => EventStatus.confirmed,
-      'cancelled' => EventStatus.cancelled,
-      _ => throw const InvalidEventResponseException(),
-    };
   }
 
   bool _isNetworkError(DioException error) {

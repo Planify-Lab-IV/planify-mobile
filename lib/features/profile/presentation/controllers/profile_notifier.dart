@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/profile_exceptions.dart';
+import '../../domain/avatar_upload.dart';
 import '../../domain/profile_repository.dart';
 import 'profile_state.dart';
 
@@ -14,6 +16,7 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     state = state.copyWith(
       loadStatus: ProfileLoadStatus.loading,
       saveStatus: ProfileSaveStatus.idle,
+      saveFailure: ProfileSaveFailure.none,
     );
 
     try {
@@ -34,15 +37,30 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
   void updateDraftName(String name) {
     if (state.profile == null) return;
 
-    state = state.copyWith(draftName: name, saveStatus: ProfileSaveStatus.idle);
+    state = state.copyWith(
+      draftName: name,
+      saveStatus: ProfileSaveStatus.idle,
+      saveFailure: ProfileSaveFailure.none,
+    );
   }
 
-  void selectAvatar(String avatarFilePath) {
+  void selectAvatar(AvatarUpload avatar) {
     if (state.profile == null) return;
 
     state = state.copyWith(
-      pendingAvatarFilePath: avatarFilePath,
+      pendingAvatar: avatar,
       saveStatus: ProfileSaveStatus.idle,
+      saveFailure: ProfileSaveFailure.none,
+    );
+  }
+
+  void discardPendingAvatar() {
+    if (state.pendingAvatar == null) return;
+
+    state = state.copyWith(
+      clearPendingAvatar: true,
+      saveStatus: ProfileSaveStatus.idle,
+      saveFailure: ProfileSaveFailure.none,
     );
   }
 
@@ -52,24 +70,63 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
 
     final name = state.trimmedDraftName;
     final requestedName = name == savedProfile.name ? null : name;
-    final avatarFilePath = state.pendingAvatarFilePath;
+    final avatar = state.pendingAvatar;
 
-    state = state.copyWith(saveStatus: ProfileSaveStatus.saving);
+    state = state.copyWith(
+      saveStatus: ProfileSaveStatus.saving,
+      saveFailure: ProfileSaveFailure.none,
+    );
     try {
       final updatedProfile = await repository.updateProfile(
         name: requestedName,
-        avatarFilePath: avatarFilePath,
+        avatar: avatar,
       );
       if (!mounted) return;
 
-      state = ProfileState(
+      state = state.copyWith(
         profile: updatedProfile,
         draftName: updatedProfile.name,
+        clearPendingAvatar: true,
+        clearSavedAvatarPreview: updatedProfile.avatarUrl != null,
         loadStatus: ProfileLoadStatus.success,
+        saveStatus: ProfileSaveStatus.idle,
+        saveFailure: ProfileSaveFailure.none,
+        // La API normalmente devuelve la URL persistida. Si no lo hace (como
+        // el fake en memoria), mantenemos los bytes confirmados hasta la
+        // próxima carga en lugar de intentar cargar una URL ficticia.
+        savedAvatarPreview: updatedProfile.avatarUrl == null
+            ? avatar ?? state.savedAvatarPreview
+            : null,
+      );
+    } on InvalidAvatarFileException catch (error) {
+      if (!mounted) return;
+      state = state.copyWith(
+        saveStatus: ProfileSaveStatus.error,
+        saveFailure: switch (error.reason) {
+          AvatarUploadValidationError.unsupportedFormat =>
+            ProfileSaveFailure.avatarInvalidFormat,
+          AvatarUploadValidationError.tooLarge =>
+            ProfileSaveFailure.avatarTooLarge,
+        },
+      );
+    } on NetworkProfileException {
+      if (!mounted) return;
+      state = state.copyWith(
+        saveStatus: ProfileSaveStatus.error,
+        saveFailure: ProfileSaveFailure.network,
+      );
+    } on AvatarStorageUnavailableException {
+      if (!mounted) return;
+      state = state.copyWith(
+        saveStatus: ProfileSaveStatus.error,
+        saveFailure: ProfileSaveFailure.avatarStorageUnavailable,
       );
     } catch (_) {
       if (!mounted) return;
-      state = state.copyWith(saveStatus: ProfileSaveStatus.error);
+      state = state.copyWith(
+        saveStatus: ProfileSaveStatus.error,
+        saveFailure: ProfileSaveFailure.generic,
+      );
     }
   }
 }

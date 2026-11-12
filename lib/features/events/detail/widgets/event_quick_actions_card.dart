@@ -12,6 +12,8 @@ class EventQuickActionsCard extends StatelessWidget {
   final bool isCancelled;
   final bool expensesClosed;
   final List<EventParticipant> participants;
+  final bool canInvite;
+  final VoidCallback onInviteTap;
   final VoidCallback? onAddTask;
   final VoidCallback onSettleTap;
 
@@ -19,6 +21,8 @@ class EventQuickActionsCard extends StatelessWidget {
     super.key,
     required this.eventId,
     required this.participants,
+    required this.canInvite,
+    required this.onInviteTap,
     this.onAddTask,
     required this.onSettleTap,
     this.isCancelled = false,
@@ -27,12 +31,17 @@ class EventQuickActionsCard extends StatelessWidget {
 
   void _handleActionTap(
     BuildContext context, {
+    required bool isInvite,
     required bool isAddExpense,
     required bool isAddTask,
     required bool isSettle,
   }) {
     if (isCancelled || (isAddExpense && expensesClosed)) return;
 
+    if (isInvite) {
+      onInviteTap();
+      return;
+    }
     if (isAddExpense) {
       AddExpenseDialog.show(
         context,
@@ -51,16 +60,6 @@ class EventQuickActionsCard extends StatelessWidget {
       onSettleTap();
       return;
     }
-
-    final i18n = AppLocalizations.of(context)!;
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(i18n.featureUnderDevelopment),
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 2),
-      ),
-    );
   }
 
   @override
@@ -93,7 +92,8 @@ class EventQuickActionsCard extends StatelessWidget {
                   key: const Key('quick_action_invite'),
                   icon: Icons.person_add_outlined,
                   label: i18n.quickActionInvite,
-                  isEnabled: !isCancelled,
+                  isInvite: true,
+                  isEnabled: canInvite && !isCancelled,
                 ),
                 _buildActionButton(
                   context,
@@ -133,6 +133,7 @@ class EventQuickActionsCard extends StatelessWidget {
     required IconData icon,
     required String label,
     required bool isEnabled,
+    bool isInvite = false,
     bool isAddExpense = false,
     bool isAddTask = false,
     bool isSettle = false,
@@ -155,6 +156,7 @@ class EventQuickActionsCard extends StatelessWidget {
         onTap: isEnabled
             ? () => _handleActionTap(
                 context,
+                isInvite: isInvite,
                 isAddExpense: isAddExpense,
                 isAddTask: isAddTask,
                 isSettle: isSettle,

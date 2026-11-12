@@ -14,6 +14,59 @@ void main() {
       repository = FakeAuthRepository(storage: storage, delay: Duration.zero);
     });
 
+    test('solicita un reset sin revelar si el email existe', () async {
+      await repository.requestPasswordReset(email: 'missing@planify.com');
+    });
+
+    test('restablece con el código válido configurable', () async {
+      final repositoryWithCustomCode = FakeAuthRepository(
+        storage: storage,
+        delay: Duration.zero,
+        validResetCode: '654321',
+      );
+
+      await repositoryWithCustomCode.resetPassword(
+        email: 'lucas@planify.com',
+        code: '654321',
+        newPassword: 'password123',
+      );
+    });
+
+    test('rechaza códigos y contraseñas inválidas al restablecer', () async {
+      expect(
+        () => repository.resetPassword(
+          email: 'lucas@planify.com',
+          code: '000000',
+          newPassword: 'password123',
+        ),
+        throwsA(isA<InvalidResetCodeException>()),
+      );
+      expect(
+        () => repository.resetPassword(
+          email: 'lucas@planify.com',
+          code: '123456',
+          newPassword: 'short',
+        ),
+        throwsA(isA<InvalidResetDataException>()),
+      );
+    });
+
+    test('simula error de red en ambos pasos de recuperación', () async {
+      expect(
+        () =>
+            repository.requestPasswordReset(email: 'network.error@planify.com'),
+        throwsA(isA<NetworkAuthException>()),
+      );
+      expect(
+        () => repository.resetPassword(
+          email: 'network.error@planify.com',
+          code: '123456',
+          newPassword: 'password123',
+        ),
+        throwsA(isA<NetworkAuthException>()),
+      );
+    });
+
     test(
       'login exitoso con cualquier usuario y contraseña >= 6 caracteres retorna OrganizerSession',
       () async {

@@ -43,6 +43,75 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get groupManageTitle => 'Gestionar grupo';
+
+  @override
+  String get groupManageAddMember => 'Agregar miembro';
+
+  @override
+  String get groupManageRename => 'Renombrar grupo';
+
+  @override
+  String get groupManageLeave => 'Abandonar grupo';
+
+  @override
+  String get groupManageFriendsLoadError =>
+      'No pudimos cargar tus amigos. Intentá nuevamente.';
+
+  @override
+  String get groupManageNoFriends => 'Todavía no tenés amigos para agregar';
+
+  @override
+  String get groupManageGoToFriends => 'Ir a Amigos';
+
+  @override
+  String get groupManageMemberAdded => 'Miembro agregado correctamente.';
+
+  @override
+  String get groupManageMemberAddedLabel => 'Agregado';
+
+  @override
+  String get groupManageActionError =>
+      'No se pudo actualizar el grupo. Intentá nuevamente.';
+
+  @override
+  String get groupManageForbiddenError =>
+      'Esta acción ya no está disponible para este grupo. Actualizamos tu lista de grupos.';
+
+  @override
+  String get groupManageSearchFriends => 'Buscar amigos';
+
+  @override
+  String get groupManageSearchEmpty =>
+      'No encontramos amigos\ncon ese nombre o usuario.';
+
+  @override
+  String get groupRenameDialogTitle => 'Renombrar grupo';
+
+  @override
+  String get groupRenameFieldLabel => 'Nombre del grupo';
+
+  @override
+  String get groupRenameSave => 'Guardar';
+
+  @override
+  String get groupRenameError =>
+      'No se pudo renombrar el grupo. Intentá nuevamente.';
+
+  @override
+  String groupLeaveDialogTitle(String groupName) {
+    return '¿Abandonar $groupName?';
+  }
+
+  @override
+  String get groupLeaveDialogDescription =>
+      'Vas a dejar de ver este grupo. Seguís participando de los eventos en los que ya estabas.';
+
+  @override
+  String get groupLeaveError =>
+      'No se pudo abandonar el grupo. Intentá nuevamente.';
+
+  @override
   String get settleDebtAction => 'Saldar';
 
   @override
@@ -143,7 +212,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get registrationTitle => 'Crear cuenta';
 
   @override
-  String get registrationCreateAccountLink => '¿No tenés cuenta? Crear cuenta';
+  String get registrationCreateAccountPrompt => '¿No tenés cuenta?';
+
+  @override
+  String get registrationCreateAccountAction => 'Crear una';
 
   @override
   String get registrationNameLabel => 'Nombre';
@@ -195,6 +267,87 @@ class AppLocalizationsEs extends AppLocalizations {
   String get registrationBackToLogin => '¿Ya tenés cuenta? Iniciá sesión';
 
   @override
+  String get forgotPasswordTitle => 'Recuperar contraseña';
+
+  @override
+  String get forgotPasswordDescription =>
+      'Ingresá tu correo electrónico para recibir un código de recuperación.';
+
+  @override
+  String get forgotPasswordSubmitButton => 'Enviar';
+
+  @override
+  String get forgotPasswordSuccessMessage =>
+      'Si ese email está registrado,\nvas a recibir un código de 6 dígitos.';
+
+  @override
+  String get forgotPasswordResendButton => 'Reenviar';
+
+  @override
+  String get forgotPasswordNetworkError =>
+      'No pudimos enviar el código por un problema de conexión. Intentá nuevamente.';
+
+  @override
+  String get forgotPasswordGenericError =>
+      'No pudimos enviar el código. Intentá nuevamente.';
+
+  @override
+  String get forgotPasswordLoginLink => '¿Olvidaste tu contraseña?';
+
+  @override
+  String get forgotPasswordHaveCode => 'Tengo el código';
+
+  @override
+  String get resetPasswordTitle => 'Restablecer contraseña';
+
+  @override
+  String get resetPasswordDescription =>
+      'Ingresá el código de 6 dígitos que recibiste y elegí una nueva contraseña.';
+
+  @override
+  String resetPasswordEmailSent(Object email) {
+    return 'Código enviado a $email';
+  }
+
+  @override
+  String get resetPasswordCodeLabel => 'Código de recuperación';
+
+  @override
+  String get resetPasswordNewPasswordLabel => 'Nueva contraseña';
+
+  @override
+  String get resetPasswordNewPasswordHelp =>
+      'Debe tener entre 8 y 72 caracteres';
+
+  @override
+  String get resetPasswordSubmitButton => 'Restablecer contraseña';
+
+  @override
+  String get resetPasswordSuccessMessage =>
+      'Tu contraseña se actualizó correctamente. Ya podés iniciar sesión.';
+
+  @override
+  String get resetPasswordBackToLogin => 'Volver a iniciar sesión';
+
+  @override
+  String get resetPasswordInvalidCodeError =>
+      'El código no es válido o venció. Pedí uno nuevo.';
+
+  @override
+  String get resetPasswordInvalidDataError => 'La contraseña no es válida';
+
+  @override
+  String get resetPasswordRequestNewCode => 'Pedir un código nuevo';
+
+  @override
+  String get resetPasswordNetworkError =>
+      'No pudimos restablecer la contraseña por un problema de conexión. Intentá nuevamente.';
+
+  @override
+  String get resetPasswordGenericError =>
+      'No pudimos restablecer la contraseña. Intentá nuevamente.';
+
+  @override
   String get logoutButton => 'Cerrar Sesión';
 
   @override
@@ -207,6 +360,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get organizerPanelTitle => 'Panel de Organizador';
+
+  @override
+  String get homeNotificationsTooltip => 'Ver novedades';
 
   @override
   String get sessionActiveDescription =>
@@ -447,6 +603,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get viewEventDetailButton => 'Ver detalle del evento';
 
   @override
+  String get pushNotificationViewAction => 'Ver';
+
+  @override
   String get draftSummaryTitle => 'Resumen del borrador';
 
   @override
@@ -454,13 +613,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get draftEventLocation => 'Lugar';
-
-  @override
-  String get generateWithAi => 'Generar con IA';
-
-  @override
-  String get generateWithAiComingSoon =>
-      'Generación de eventos con IA disponible próximamente';
 
   @override
   String get eventDetailTitle => 'Detalle del evento';
@@ -542,8 +694,35 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get featureUnderDevelopment =>
-      'Esta funcionalidad estará disponible próximamente.';
+  String get invitationCreateTitle => 'Invitar al evento';
+
+  @override
+  String get invitationCreateLoading => 'Creando link de invitación...';
+
+  @override
+  String get invitationCreateCopy => 'Copiar link';
+
+  @override
+  String get invitationCreateCopied => 'Link copiado';
+
+  @override
+  String get invitationCreateForbidden =>
+      'No tenés permiso para invitar a este evento.';
+
+  @override
+  String get invitationCreateNotFound => 'No se encontró el evento.';
+
+  @override
+  String get invitationCreateUnavailable =>
+      'El evento no está activo y no acepta invitaciones.';
+
+  @override
+  String get invitationCreateNetworkError =>
+      'No se pudo crear el link por un problema de conexión. Intentá nuevamente.';
+
+  @override
+  String get invitationCreateError =>
+      'No se pudo crear el link de invitación. Intentá nuevamente.';
 
   @override
   String get cancelEventAction => 'Cancelar evento';
@@ -1099,4 +1278,85 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get profileSaveError =>
       'No se pudieron guardar los cambios. Intentá nuevamente.';
+
+  @override
+  String get profileSaveNetworkError =>
+      'No se pudieron guardar los cambios por un problema de conexión. Intentá nuevamente.';
+
+  @override
+  String get profileAvatarInvalidFormat => 'Elegí una imagen JPEG, PNG o WebP.';
+
+  @override
+  String get profileAvatarTooLarge => 'La imagen no puede superar los 2 MB.';
+
+  @override
+  String get profileAvatarStorageUnavailable =>
+      'No se pudo guardar la foto en este momento. El nombre sí se puede cambiar.';
+
+  @override
+  String get profileDiscardAvatarAndSaveName =>
+      'Descartar foto y guardar nombre';
+
+  @override
+  String get profileFriendsAction => 'Mis amigos';
+
+  @override
+  String get friendsTitle => 'Amigos';
+
+  @override
+  String get friendsSearchLabel => 'Buscar personas';
+
+  @override
+  String get friendsSearchHint => 'Nombre o usuario';
+
+  @override
+  String get friendsSearchEmpty => 'No encontramos personas.';
+
+  @override
+  String get friendsSearchError =>
+      'No se pudieron buscar personas. Intentá nuevamente.';
+
+  @override
+  String get friendsRequestsTitle => 'Solicitudes';
+
+  @override
+  String get friendsReceivedRequestsTitle => 'Recibidas';
+
+  @override
+  String get friendsSentRequestsTitle => 'Enviadas';
+
+  @override
+  String get friendsReceivedRequestsEmpty => 'No tenés solicitudes pendientes.';
+
+  @override
+  String get friendsFriendsTitle => 'Mis amigos';
+
+  @override
+  String get friendsFriendsEmpty => 'Todavía no tenés amigos.';
+
+  @override
+  String get friendsLoadError =>
+      'No se pudo cargar esta sección. Intentá nuevamente.';
+
+  @override
+  String get friendAddAction => 'Agregar';
+
+  @override
+  String get friendAcceptAction => 'Aceptar';
+
+  @override
+  String get friendRejectAction => 'Rechazar';
+
+  @override
+  String get friendCancelAction => 'Cancelar';
+
+  @override
+  String get friendRequestSent => 'Solicitud enviada';
+
+  @override
+  String get friendsActionError =>
+      'No se pudo actualizar la solicitud. Intentá nuevamente.';
+
+  @override
+  String get friendRequestUnavailable => 'Esa solicitud ya no está disponible';
 }

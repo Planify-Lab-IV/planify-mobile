@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../activity_log/presentation/controllers/activity_log_providers.dart';
 import '../controllers/groups_providers.dart';
 import '../widgets/group_avatar.dart';
 import '../widgets/group_event_tile.dart';
+import '../widgets/group_manage_sheet.dart';
 
 class GroupsScreen extends ConsumerWidget {
   const GroupsScreen({super.key});
@@ -31,6 +33,7 @@ class GroupsScreen extends ConsumerWidget {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
+          ref.invalidate(unreadCountsProvider);
           ref.invalidate(groupsOverviewProvider);
           // AsyncValue renders refresh failures; the gesture itself completes.
           try {
@@ -146,6 +149,13 @@ class GroupsScreen extends ConsumerWidget {
                               ),
                             ],
                           ),
+                        ),
+                        IconButton(
+                          key: const Key('group_manage_button'),
+                          tooltip: i18n.groupManageTitle,
+                          icon: const Icon(Icons.more_vert_rounded),
+                          onPressed: () =>
+                              GroupManageSheet.show(context, group: selected),
                         ),
                       ],
                     ),

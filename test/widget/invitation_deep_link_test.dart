@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:planify/core/providers/core_providers.dart';
+import 'package:planify/core/services/web_invitation_url_cleaner.dart';
 import 'package:planify/data/secure_storage.dart';
 import 'package:planify/features/activity_log/data/fake_activity_log_repository.dart';
 import 'package:planify/features/activity_log/presentation/controllers/activity_log_providers.dart';
@@ -43,13 +44,18 @@ void main() {
       );
     });
 
-    Widget createTestApp({AuthRepository? authRepository}) {
+    Widget createTestApp({
+      AuthRepository? authRepository,
+      WebInvitationUrlCleaner? urlCleaner,
+    }) {
       return ProviderScope(
         overrides: [
           activityLogRepositoryProvider.overrideWithValue(
             FakeActivityLogRepository(delay: Duration.zero),
           ),
           appLinksProvider.overrideWithValue(fakeAppLinks),
+          if (urlCleaner != null)
+            webInvitationUrlCleanerProvider.overrideWithValue(urlCleaner),
           secureStorageProvider.overrideWithValue(fakeStorage),
           authRepositoryProvider.overrideWithValue(
             authRepository ?? fakeAuthRepository,
@@ -67,7 +73,7 @@ void main() {
             (ref) => LocaleNotifier()..setLocale(const Locale('es')),
           ),
         ],
-        child: const MyApp(),
+        child: const MyApp(startPushRegistration: false),
       );
     }
 
@@ -123,12 +129,25 @@ void main() {
     testWidgets(
       'Deep link con token válido muestra badge de evento y carga eventId en AnonymousLoginDialog',
       (tester) async {
-        await tester.pumpWidget(createTestApp());
+        final replacedUris = <Uri>[];
+        await tester.pumpWidget(
+          createTestApp(
+            urlCleaner: WebInvitationUrlCleaner(
+              isWeb: true,
+              uriProvider: () =>
+                  Uri.parse('https://planify.web.app/?invite=token-valid-123'),
+              replaceUrl: replacedUris.add,
+            ),
+          ),
+        );
         await tester.pumpAndSettle();
 
         // Emitimos el deep link válido
         fakeAppLinks.emitUri(Uri.parse('planify://invite/token-valid-123'));
         await tester.pumpAndSettle();
+
+        // El token sigue disponible mientras el invitado completa el login.
+        expect(replacedUris, isEmpty);
 
         // Verifica que el badge de invitación se muestre con el texto amigable
         expect(find.byKey(const Key('invitation_event_badge')), findsOneWidget);
@@ -169,6 +188,8 @@ void main() {
         );
         await tester.tap(find.byKey(const Key('anonymous_submit_button')));
         await tester.pumpAndSettle();
+
+        expect(replacedUris, [Uri.parse('https://planify.web.app/')]);
 
         // Debe navegar a ParticipantHomeScreen con la información del evento resuelto
         expect(find.byType(ParticipantHomeScreen), findsOneWidget);

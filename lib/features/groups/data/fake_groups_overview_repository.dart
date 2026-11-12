@@ -5,7 +5,7 @@ import '../domain/groups_overview_repository.dart';
 class FakeGroupsOverviewRepository implements GroupsOverviewRepository {
   final Duration delay;
   final bool shouldThrowError;
-  final List<GroupOverview> _groups;
+  List<GroupOverview> _groups;
 
   FakeGroupsOverviewRepository({
     this.delay = const Duration(milliseconds: 300),
@@ -66,6 +66,48 @@ class FakeGroupsOverviewRepository implements GroupsOverviewRepository {
   Future<List<GroupOverview>> getMyGroupsOverview() async {
     if (delay > Duration.zero) await Future<void>.delayed(delay);
     if (shouldThrowError) throw Exception('Could not load groups overview');
-    return _groups;
+    return List.unmodifiable(_groups);
+  }
+
+  void incrementMemberCount(String groupId) {
+    _replaceGroup(groupId, (group) {
+      return GroupOverview(
+        id: group.id,
+        name: group.name,
+        memberCount: group.memberCount + 1,
+        events: group.events,
+      );
+    });
+  }
+
+  void renameGroup(String groupId, String name) {
+    _replaceGroup(groupId, (group) {
+      return GroupOverview(
+        id: group.id,
+        name: name,
+        memberCount: group.memberCount,
+        events: group.events,
+      );
+    });
+  }
+
+  void removeGroup(String groupId) {
+    final originalLength = _groups.length;
+    _groups = List.unmodifiable(_groups.where((group) => group.id != groupId));
+    if (_groups.length == originalLength) {
+      throw StateError('Group $groupId was not found');
+    }
+  }
+
+  void _replaceGroup(
+    String groupId,
+    GroupOverview Function(GroupOverview group) replacement,
+  ) {
+    final index = _groups.indexWhere((group) => group.id == groupId);
+    if (index == -1) throw StateError('Group $groupId was not found');
+
+    final updatedGroups = List<GroupOverview>.of(_groups);
+    updatedGroups[index] = replacement(_groups[index]);
+    _groups = List.unmodifiable(updatedGroups);
   }
 }

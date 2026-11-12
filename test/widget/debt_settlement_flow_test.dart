@@ -17,7 +17,6 @@ import 'package:planify/features/balances/data/fake_balances_repository.dart';
 import 'package:planify/features/balances/presentation/controllers/balances_providers.dart';
 import 'package:planify/features/balances/presentation/widgets/person_balance_detail_sheet.dart';
 import 'package:planify/features/balances/presentation/screens/balances_screen.dart';
-import 'package:planify/features/events/domain/event_participant.dart';
 import 'package:planify/l10n/app_localizations.dart';
 
 const captureKey = Key('capture');
@@ -59,7 +58,6 @@ Widget card({
   String eventId = 'evt-123',
   String eventName = 'Cumpleaños de Lucas',
   String? actor = 'participant-org-evt-123',
-  List<EventParticipant> participants = const [],
 }) => Scaffold(
   body: SingleChildScrollView(
     child: Padding(
@@ -68,7 +66,6 @@ Widget card({
         eventId: eventId,
         eventName: eventName,
         currentParticipantId: actor,
-        participants: participants,
       ),
     ),
   ),
@@ -112,149 +109,51 @@ void main() {
     }
   });
   group('debt action', () {
-    testWidgets(
-      'a created event with two participants gets one settleable fake debt',
-      (tester) async {
-        final store = FakeSettlementStore();
-        final debts = FakeDebtsRepository(
-          delay: Duration.zero,
-          store: store,
-          initialEventDebts: const {},
-        );
-        const participants = [
-          EventParticipant(
-            id: 'participant-me',
-            eventId: 'created-event',
-            userId: 'user-me',
-            username: 'Lucía',
-            isAnonymous: false,
-            isOrganizer: true,
-          ),
-          EventParticipant(
-            id: 'participant-ana',
-            eventId: 'created-event',
-            userId: 'ana-created',
-            username: 'Ana',
-            isAnonymous: false,
-            isOrganizer: false,
-          ),
-        ];
-
-        await tester.pumpWidget(
-          app(
-            card(
-              eventId: 'created-event',
-              eventName: 'Evento creado',
-              actor: 'participant-me',
-              participants: participants,
-            ),
-            debts: debts,
-          ),
-        );
-        await tester.pumpAndSettle();
-
-        expect(
-          find.byKey(
-            const Key('event_debt_row_fixture-created-event-participant-me'),
-          ),
-          findsOneWidget,
-        );
-        expect(
-          find.byKey(
-            const Key(
-              'settle_debt_button_fixture-created-event-participant-me',
-            ),
-          ),
-          findsOneWidget,
-        );
-        expect(find.textContaining('Ana te debe'), findsOneWidget);
-        expect(
-          (await debts.listEventDebts('created-event')).debts,
-          hasLength(1),
-        );
-      },
-    );
-
-    testWidgets('creating a fixture refreshes subscribed balances', (
-      tester,
-    ) async {
+    testWidgets('shows an explicitly seeded fake debt', (tester) async {
       final store = FakeSettlementStore();
-      final balances = FakeBalancesRepository(
-        delay: Duration.zero,
-        store: store,
-      );
       final debts = FakeDebtsRepository(
         delay: Duration.zero,
         store: store,
         initialEventDebts: const {},
       );
-      var showFixture = false;
+      debts.ensureEventFixture(
+        eventId: 'created-event',
+        eventName: 'Evento creado',
+        currentParticipantId: 'participant-me',
+        counterpartyParticipantId: 'participant-ana',
+        counterpartyPersonKey: 'user:ana-created',
+        counterpartyName: 'Ana',
+      );
 
       await tester.pumpWidget(
         app(
-          Scaffold(
-            body: StatefulBuilder(
-              builder: (context, setState) => Column(
-                children: [
-                  Consumer(
-                    builder: (context, ref, child) {
-                      final people = ref.watch(balancesNotifierProvider).people;
-                      return Text(
-                        '${people.length}:${people.map((person) => person.displayName).join(',')}',
-                        key: const Key('fixture_balance_observer'),
-                      );
-                    },
-                  ),
-                  TextButton(
-                    onPressed: () => setState(() => showFixture = true),
-                    child: const Text('Prepare fixture'),
-                  ),
-                  if (showFixture)
-                    Expanded(
-                      child: EventDebtsCard(
-                        eventId: 'created-event',
-                        eventName: 'Evento creado',
-                        currentParticipantId: 'participant-me',
-                        participants: const [
-                          EventParticipant(
-                            id: 'participant-me',
-                            eventId: 'created-event',
-                            userId: 'user-me',
-                            username: 'Lucía',
-                            isAnonymous: false,
-                            isOrganizer: true,
-                          ),
-                          EventParticipant(
-                            id: 'participant-renata',
-                            eventId: 'created-event',
-                            userId: 'renata-created',
-                            username: 'Renata',
-                            isAnonymous: false,
-                            isOrganizer: false,
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
-              ),
-            ),
+          card(
+            eventId: 'created-event',
+            eventName: 'Evento creado',
+            actor: 'participant-me',
           ),
           debts: debts,
-          balances: balances,
         ),
       );
       await tester.pumpAndSettle();
-      expect(find.text('3:Ana,Martín,Sol'), findsOneWidget);
 
-      await tester.tap(find.text('Prepare fixture'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('4:Ana,Martín,Sol,Renata'), findsOneWidget);
+      expect(
+        find.byKey(
+          const Key('event_debt_row_fixture-created-event-participant-me'),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(
+          const Key('settle_debt_button_fixture-created-event-participant-me'),
+        ),
+        findsOneWidget,
+      );
+      expect(find.textContaining('Ana te debe'), findsOneWidget);
+      expect((await debts.listEventDebts('created-event')).debts, hasLength(1));
     });
 
-    testWidgets('an event with one participant keeps the empty state', (
-      tester,
-    ) async {
+    testWidgets('an empty event keeps the empty state', (tester) async {
       final debts = FakeDebtsRepository(
         delay: Duration.zero,
         initialEventDebts: const {},
@@ -265,16 +164,6 @@ void main() {
             eventId: 'solo-event',
             eventName: 'Evento individual',
             actor: 'participant-me',
-            participants: const [
-              EventParticipant(
-                id: 'participant-me',
-                eventId: 'solo-event',
-                userId: 'user-me',
-                username: 'Lucía',
-                isAnonymous: false,
-                isOrganizer: true,
-              ),
-            ],
           ),
           debts: debts,
         ),

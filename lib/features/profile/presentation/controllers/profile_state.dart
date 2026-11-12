@@ -1,22 +1,36 @@
+import '../../domain/avatar_upload.dart';
 import '../../domain/user_profile.dart';
 
 enum ProfileLoadStatus { loading, success, error }
 
 enum ProfileSaveStatus { idle, saving, error }
 
+enum ProfileSaveFailure {
+  none,
+  generic,
+  network,
+  avatarInvalidFormat,
+  avatarTooLarge,
+  avatarStorageUnavailable,
+}
+
 class ProfileState {
   final UserProfile? profile;
   final String draftName;
-  final String? pendingAvatarFilePath;
+  final AvatarUpload? pendingAvatar;
+  final AvatarUpload? savedAvatarPreview;
   final ProfileLoadStatus loadStatus;
   final ProfileSaveStatus saveStatus;
+  final ProfileSaveFailure saveFailure;
 
   const ProfileState({
     this.profile,
     this.draftName = '',
-    this.pendingAvatarFilePath,
+    this.pendingAvatar,
+    this.savedAvatarPreview,
     this.loadStatus = ProfileLoadStatus.loading,
     this.saveStatus = ProfileSaveStatus.idle,
+    this.saveFailure = ProfileSaveFailure.none,
   });
 
   bool get isLoading => loadStatus == ProfileLoadStatus.loading;
@@ -30,8 +44,7 @@ class ProfileState {
     final savedProfile = profile;
     if (savedProfile == null) return false;
 
-    return trimmedDraftName != savedProfile.name ||
-        pendingAvatarFilePath != null;
+    return trimmedDraftName != savedProfile.name || pendingAvatar != null;
   }
 
   bool get canSave =>
@@ -43,17 +56,26 @@ class ProfileState {
   ProfileState copyWith({
     UserProfile? profile,
     String? draftName,
-    String? pendingAvatarFilePath,
+    AvatarUpload? pendingAvatar,
+    AvatarUpload? savedAvatarPreview,
+    bool clearPendingAvatar = false,
+    bool clearSavedAvatarPreview = false,
     ProfileLoadStatus? loadStatus,
     ProfileSaveStatus? saveStatus,
+    ProfileSaveFailure? saveFailure,
   }) {
     return ProfileState(
       profile: profile ?? this.profile,
       draftName: draftName ?? this.draftName,
-      pendingAvatarFilePath:
-          pendingAvatarFilePath ?? this.pendingAvatarFilePath,
+      pendingAvatar: clearPendingAvatar
+          ? null
+          : pendingAvatar ?? this.pendingAvatar,
+      savedAvatarPreview: clearSavedAvatarPreview
+          ? null
+          : savedAvatarPreview ?? this.savedAvatarPreview,
       loadStatus: loadStatus ?? this.loadStatus,
       saveStatus: saveStatus ?? this.saveStatus,
+      saveFailure: saveFailure ?? this.saveFailure,
     );
   }
 }

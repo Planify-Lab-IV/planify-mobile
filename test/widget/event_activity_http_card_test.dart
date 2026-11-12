@@ -78,8 +78,8 @@ void main() {
         onRequest: (options, handler) => handler.resolve(
           Response<dynamic>(
             requestOptions: options,
-            statusCode: 200,
-            data: body,
+            statusCode: options.method == 'POST' ? 204 : 200,
+            data: options.method == 'POST' ? null : body,
           ),
         ),
       ),
@@ -94,11 +94,27 @@ void main() {
       ) async {
         final dio = DioClient.create(bearerToken: 'test-token-$viewer');
         addTearDown(() => dio.close(force: true));
-        RequestOptions? request;
+        RequestOptions? feedRequest;
         dio.interceptors.add(
           InterceptorsWrapper(
             onRequest: (options, handler) {
-              request = options;
+              if (options.path == '/events/evt-1/activity-log/read') {
+                handler.resolve(
+                  Response<dynamic>(requestOptions: options, statusCode: 204),
+                );
+                return;
+              }
+              if (options.path == '/me/unread-counts') {
+                handler.resolve(
+                  Response<dynamic>(
+                    requestOptions: options,
+                    statusCode: 200,
+                    data: {'events': [], 'groups': []},
+                  ),
+                );
+                return;
+              }
+              feedRequest = options;
               handler.resolve(
                 Response<dynamic>(
                   requestOptions: options,
@@ -113,9 +129,12 @@ void main() {
         await tester.pumpWidget(buildCard(dio));
         await tester.pumpAndSettle();
 
-        expect(request?.method, 'GET');
-        expect(request?.path, '/events/evt-1/activity-log');
-        expect(request?.headers['Authorization'], 'Bearer test-token-$viewer');
+        expect(feedRequest?.method, 'GET');
+        expect(feedRequest?.path, '/events/evt-1/activity-log');
+        expect(
+          feedRequest?.headers['Authorization'],
+          'Bearer test-token-$viewer',
+        );
         expect(find.text('dev1 creó la tarea Comprar bebidas'), findsOneWidget);
         expect(find.text('dev1 actualizó su disponibilidad'), findsOneWidget);
         expect(
@@ -200,6 +219,10 @@ void main() {
                   type: DioExceptionType.connectionError,
                 ),
               );
+            } else if (options.path == '/events/evt-123/activity-log/read') {
+              handler.resolve(
+                Response<dynamic>(requestOptions: options, statusCode: 204),
+              );
             } else {
               handler.resolve(
                 Response<dynamic>(
@@ -221,7 +244,7 @@ void main() {
       await tester.tap(find.byKey(const Key('event_activity_retry_button')));
       await tester.pumpAndSettle();
 
-      expect(requests, 2);
+      expect(requests, 3);
       expect(find.byKey(const Key('event_activity_error')), findsNothing);
       expect(find.text('dev1 creó la tarea Comprar bebidas'), findsOneWidget);
     });

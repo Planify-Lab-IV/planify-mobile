@@ -80,6 +80,109 @@ void main() {
       expect(counts.forGroup('grp-amigos'), 7);
     });
 
+    test(
+      'termina el marcado e invalida contadores aunque se cierre el feed',
+      () async {
+        final repository = _CountingActivityLogRepository()
+          ..pendingMark = Completer<void>()
+          ..markStarted = Completer<void>();
+        final countsRefreshed = Completer<void>();
+        final container = ProviderContainer(
+          overrides: [
+            activityLogRepositoryProvider.overrideWithValue(repository),
+          ],
+        );
+        addTearDown(container.dispose);
+        final countsSubscription = container.listen(unreadCountsProvider, (
+          _,
+          _,
+        ) {
+          if (repository.unreadCountCalls == 2 &&
+              !countsRefreshed.isCompleted) {
+            countsRefreshed.complete();
+          }
+        });
+        addTearDown(countsSubscription.close);
+        await container.read(unreadCountsProvider.future);
+
+        final feedSubscription = container.listen(
+          eventActivityNotifierProvider('evt-123'),
+          (_, _) {},
+        );
+        await repository.markStarted!.future;
+        feedSubscription.close();
+        await container.pump();
+
+        repository.pendingMark!.complete();
+        await countsRefreshed.future.timeout(const Duration(seconds: 1));
+        expect(repository.unreadCountCalls, 2);
+      },
+    );
+
+    test(
+      'un reintento adquiere una retención nueva hasta terminar el marcado',
+      () async {
+        final repository = _CountingActivityLogRepository()..failFeed = true;
+        final countsRefreshed = Completer<void>();
+        final container = ProviderContainer(
+          overrides: [
+            activityLogRepositoryProvider.overrideWithValue(repository),
+          ],
+        );
+        addTearDown(container.dispose);
+        final countsSubscription = container.listen(unreadCountsProvider, (
+          _,
+          _,
+        ) {
+          if (repository.unreadCountCalls == 2 &&
+              !countsRefreshed.isCompleted) {
+            countsRefreshed.complete();
+          }
+        });
+        addTearDown(countsSubscription.close);
+        await container.read(unreadCountsProvider.future);
+        final provider = eventActivityNotifierProvider('evt-123');
+        final feedSubscription = container.listen(provider, (_, _) {});
+        await Future<void>.delayed(Duration.zero);
+        expect(container.read(provider).hasLoadError, isTrue);
+
+        repository
+          ..failFeed = false
+          ..pendingMark = Completer<void>()
+          ..markStarted = Completer<void>();
+        unawaited(container.read(provider.notifier).reload());
+        await repository.markStarted!.future;
+        feedSubscription.close();
+        await container.pump();
+
+        repository.pendingMark!.complete();
+        await countsRefreshed.future.timeout(const Duration(seconds: 1));
+        expect(repository.callCount, 2);
+      },
+    );
+
+    test('no marca leído si se cierra el feed durante su carga', () async {
+      final repository = _CountingActivityLogRepository()
+        ..pendingFeed = Completer<List<ActivityEntry>>();
+      final container = ProviderContainer(
+        overrides: [
+          activityLogRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+      final feedSubscription = container.listen(
+        eventActivityNotifierProvider('evt-123'),
+        (_, _) {},
+      );
+
+      feedSubscription.close();
+      await container.pump();
+      repository.pendingFeed!.complete(const <ActivityEntry>[]);
+      await Future<void>.delayed(Duration.zero);
+
+      expect(repository.readEventIds, isEmpty);
+    });
+
     test('un marcado fallido conserva el feed y no invalida', () async {
       final repository = _CountingActivityLogRepository()..failMark = true;
       var invalidations = 0;
@@ -155,12 +258,15 @@ void main() {
 
 class _CountingActivityLogRepository implements ActivityLogRepository {
   @override
-  Future<UnreadCounts> getUnreadCounts() async =>
-      UnreadCounts(byEvent: {}, byGroup: {});
+  Future<UnreadCounts> getUnreadCounts() async {
+    unreadCountCalls++;
+    return UnreadCounts(byEvent: {}, byGroup: {});
+  }
 
   @override
   Future<void> markEventAsRead(String eventId) async {
     readEventIds.add(eventId);
+    markStarted?.complete();
     if (failMark) throw Exception('mark failed');
     if (pendingMark != null) await pendingMark!.future;
   }
@@ -171,6 +277,8 @@ class _CountingActivityLogRepository implements ActivityLogRepository {
   bool failMark = false;
   Completer<List<ActivityEntry>>? pendingFeed;
   Completer<void>? pendingMark;
+  Completer<void>? markStarted;
+  int unreadCountCalls = 0;
 
   @override
   Future<List<ActivityEntry>> listEventActivity(String eventId) async {

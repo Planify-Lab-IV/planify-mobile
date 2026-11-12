@@ -32,25 +32,32 @@ class FlutterSecureStorageImpl implements SecureStorage {
 }
 
 class FakeSecureStorage implements SecureStorage {
-  // variable privada
+  final Duration delay;
   String? _fakeStorage;
+
+  FakeSecureStorage({this.delay = const Duration(milliseconds: 200)});
 
   @override
   Future<void> saveToken(String token) async {
-    // simula que tarda
-    await Future.delayed(const Duration(milliseconds: 200));
+    if (delay > Duration.zero) {
+      await Future.delayed(delay);
+    }
     _fakeStorage = token;
   }
 
   @override
   Future<String?> getToken() async {
-    await Future.delayed(const Duration(milliseconds: 200));
+    if (delay > Duration.zero) {
+      await Future.delayed(delay);
+    }
     return _fakeStorage;
   }
 
   @override
   Future<void> deleteToken() async {
-    await Future.delayed(const Duration(milliseconds: 200));
+    if (delay > Duration.zero) {
+      await Future.delayed(delay);
+    }
     _fakeStorage = null;
   }
 }

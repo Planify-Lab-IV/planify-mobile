@@ -3,8 +3,28 @@ import 'invitation_exceptions.dart';
 
 class FakeInvitationsRepository implements InvitationsRepository {
   final Duration delay;
+  final InvitationException? createInvitationException;
+  final String invitationUrl;
+  int createInvitationCalls = 0;
 
-  FakeInvitationsRepository({this.delay = const Duration(milliseconds: 400)});
+  FakeInvitationsRepository({
+    this.delay = const Duration(milliseconds: 400),
+    this.createInvitationException,
+    this.invitationUrl = 'planify://invite/token-valid-123',
+  });
+
+  @override
+  Future<String> createInvitation(String eventId) async {
+    createInvitationCalls++;
+    if (delay > Duration.zero) {
+      await Future.delayed(delay);
+    }
+
+    if (createInvitationException != null) {
+      throw createInvitationException!;
+    }
+    return invitationUrl;
+  }
 
   @override
   Future<String> resolveInvitationToken(String token) async {

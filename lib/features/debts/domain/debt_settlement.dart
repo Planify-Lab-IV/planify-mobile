@@ -23,6 +23,14 @@ sealed class DebtException implements Exception {
   const DebtException();
 }
 
+class DebtValidationException extends DebtException {
+  const DebtValidationException();
+}
+
+class DebtAuthenticationException extends DebtException {
+  const DebtAuthenticationException();
+}
+
 class DebtAlreadySettledException extends DebtException {
   const DebtAlreadySettledException();
 }
@@ -37,6 +45,14 @@ class DebtNotFoundException extends DebtException {
 
 class DebtNetworkException extends DebtException {
   const DebtNetworkException();
+}
+
+class InvalidDebtResponseException extends DebtException {
+  const InvalidDebtResponseException();
+}
+
+class DebtOperationException extends DebtException {
+  const DebtOperationException();
 }
 
 DebtSettlementResult settlementError(Object error) => switch (error) {

@@ -6,7 +6,6 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../events/domain/event_participant.dart';
 import '../../domain/debt_status.dart';
 import '../../domain/event_debt.dart';
 import '../controllers/debts_providers.dart';
@@ -19,14 +18,12 @@ class EventDebtsCard extends ConsumerStatefulWidget {
   final String eventId;
   final String? currentParticipantId;
   final String? eventName;
-  final List<EventParticipant> participants;
 
   const EventDebtsCard({
     super.key,
     required this.eventId,
     this.currentParticipantId,
     this.eventName,
-    this.participants = const [],
   });
 
   @override
@@ -35,47 +32,6 @@ class EventDebtsCard extends ConsumerStatefulWidget {
 
 class _EventDebtsCardState extends ConsumerState<EventDebtsCard> {
   bool _confirming = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _scheduleFixturePreparation();
-  }
-
-  @override
-  void didUpdateWidget(covariant EventDebtsCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _scheduleFixturePreparation();
-  }
-
-  void _scheduleFixturePreparation() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final currentParticipantId = widget.currentParticipantId?.trim();
-      if (currentParticipantId == null ||
-          currentParticipantId.isEmpty ||
-          widget.participants.length < 2) {
-        return;
-      }
-      final counterparties = widget.participants.where(
-        (participant) => participant.id != currentParticipantId,
-      );
-      if (counterparties.isEmpty) return;
-      final counterparty = counterparties.first;
-      final personKey = counterparty.userId?.trim().isNotEmpty == true
-          ? 'user:${counterparty.userId!.trim()}'
-          : 'participant:${counterparty.id}';
-      ref
-          .read(eventDebtsNotifierProvider(widget.eventId).notifier)
-          .prepareEventFixture(
-            eventName: widget.eventName ?? widget.eventId,
-            currentParticipantId: currentParticipantId,
-            counterpartyParticipantId: counterparty.id,
-            counterpartyPersonKey: personKey,
-            counterpartyName: counterparty.username,
-          );
-    });
-  }
 
   Future<void> _confirmAndSettle(EventDebt debt) async {
     final state = ref.read(eventDebtsNotifierProvider(widget.eventId));

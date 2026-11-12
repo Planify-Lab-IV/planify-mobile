@@ -146,6 +146,126 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{1 miembro} other{{count} miembros}}'**
   String groupsMembers(int count);
 
+  /// No description provided for @groupManageTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Gestionar grupo'**
+  String get groupManageTitle;
+
+  /// No description provided for @groupManageAddMember.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar miembro'**
+  String get groupManageAddMember;
+
+  /// No description provided for @groupManageRename.
+  ///
+  /// In es, this message translates to:
+  /// **'Renombrar grupo'**
+  String get groupManageRename;
+
+  /// No description provided for @groupManageLeave.
+  ///
+  /// In es, this message translates to:
+  /// **'Abandonar grupo'**
+  String get groupManageLeave;
+
+  /// No description provided for @groupManageFriendsLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tus amigos. Intentá nuevamente.'**
+  String get groupManageFriendsLoadError;
+
+  /// No description provided for @groupManageNoFriends.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no tenés amigos para agregar'**
+  String get groupManageNoFriends;
+
+  /// No description provided for @groupManageGoToFriends.
+  ///
+  /// In es, this message translates to:
+  /// **'Ir a Amigos'**
+  String get groupManageGoToFriends;
+
+  /// No description provided for @groupManageMemberAdded.
+  ///
+  /// In es, this message translates to:
+  /// **'Miembro agregado correctamente.'**
+  String get groupManageMemberAdded;
+
+  /// No description provided for @groupManageMemberAddedLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregado'**
+  String get groupManageMemberAddedLabel;
+
+  /// No description provided for @groupManageActionError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo actualizar el grupo. Intentá nuevamente.'**
+  String get groupManageActionError;
+
+  /// No description provided for @groupManageForbiddenError.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta acción ya no está disponible para este grupo. Actualizamos tu lista de grupos.'**
+  String get groupManageForbiddenError;
+
+  /// No description provided for @groupManageSearchFriends.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar amigos'**
+  String get groupManageSearchFriends;
+
+  /// No description provided for @groupManageSearchEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos amigos\ncon ese nombre o usuario.'**
+  String get groupManageSearchEmpty;
+
+  /// No description provided for @groupRenameDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Renombrar grupo'**
+  String get groupRenameDialogTitle;
+
+  /// No description provided for @groupRenameFieldLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre del grupo'**
+  String get groupRenameFieldLabel;
+
+  /// No description provided for @groupRenameSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar'**
+  String get groupRenameSave;
+
+  /// No description provided for @groupRenameError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo renombrar el grupo. Intentá nuevamente.'**
+  String get groupRenameError;
+
+  /// No description provided for @groupLeaveDialogTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Abandonar {groupName}?'**
+  String groupLeaveDialogTitle(String groupName);
+
+  /// No description provided for @groupLeaveDialogDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Vas a dejar de ver este grupo. Seguís participando de los eventos en los que ya estabas.'**
+  String get groupLeaveDialogDescription;
+
+  /// No description provided for @groupLeaveError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo abandonar el grupo. Intentá nuevamente.'**
+  String get groupLeaveError;
+
   /// No description provided for @settleDebtAction.
   ///
   /// In es, this message translates to:
@@ -316,11 +436,17 @@ abstract class AppLocalizations {
   /// **'Crear cuenta'**
   String get registrationTitle;
 
-  /// No description provided for @registrationCreateAccountLink.
+  /// No description provided for @registrationCreateAccountPrompt.
   ///
   /// In es, this message translates to:
-  /// **'¿No tenés cuenta? Crear cuenta'**
-  String get registrationCreateAccountLink;
+  /// **'¿No tenés cuenta?'**
+  String get registrationCreateAccountPrompt;
+
+  /// No description provided for @registrationCreateAccountAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear una'**
+  String get registrationCreateAccountAction;
 
   /// No description provided for @registrationNameLabel.
   ///
@@ -406,6 +532,144 @@ abstract class AppLocalizations {
   /// **'¿Ya tenés cuenta? Iniciá sesión'**
   String get registrationBackToLogin;
 
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Recuperar contraseña'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @forgotPasswordDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá tu correo electrónico para recibir un código de recuperación.'**
+  String get forgotPasswordDescription;
+
+  /// No description provided for @forgotPasswordSubmitButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar'**
+  String get forgotPasswordSubmitButton;
+
+  /// No description provided for @forgotPasswordSuccessMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Si ese email está registrado,\nvas a recibir un código de 6 dígitos.'**
+  String get forgotPasswordSuccessMessage;
+
+  /// No description provided for @forgotPasswordResendButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Reenviar'**
+  String get forgotPasswordResendButton;
+
+  /// No description provided for @forgotPasswordNetworkError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos enviar el código por un problema de conexión. Intentá nuevamente.'**
+  String get forgotPasswordNetworkError;
+
+  /// No description provided for @forgotPasswordGenericError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos enviar el código. Intentá nuevamente.'**
+  String get forgotPasswordGenericError;
+
+  /// No description provided for @forgotPasswordLoginLink.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Olvidaste tu contraseña?'**
+  String get forgotPasswordLoginLink;
+
+  /// No description provided for @forgotPasswordHaveCode.
+  ///
+  /// In es, this message translates to:
+  /// **'Tengo el código'**
+  String get forgotPasswordHaveCode;
+
+  /// No description provided for @resetPasswordTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Restablecer contraseña'**
+  String get resetPasswordTitle;
+
+  /// No description provided for @resetPasswordDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresá el código de 6 dígitos que recibiste y elegí una nueva contraseña.'**
+  String get resetPasswordDescription;
+
+  /// No description provided for @resetPasswordEmailSent.
+  ///
+  /// In es, this message translates to:
+  /// **'Código enviado a {email}'**
+  String resetPasswordEmailSent(Object email);
+
+  /// No description provided for @resetPasswordCodeLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Código de recuperación'**
+  String get resetPasswordCodeLabel;
+
+  /// No description provided for @resetPasswordNewPasswordLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva contraseña'**
+  String get resetPasswordNewPasswordLabel;
+
+  /// No description provided for @resetPasswordNewPasswordHelp.
+  ///
+  /// In es, this message translates to:
+  /// **'Debe tener entre 8 y 72 caracteres'**
+  String get resetPasswordNewPasswordHelp;
+
+  /// No description provided for @resetPasswordSubmitButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Restablecer contraseña'**
+  String get resetPasswordSubmitButton;
+
+  /// No description provided for @resetPasswordSuccessMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu contraseña se actualizó correctamente. Ya podés iniciar sesión.'**
+  String get resetPasswordSuccessMessage;
+
+  /// No description provided for @resetPasswordBackToLogin.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a iniciar sesión'**
+  String get resetPasswordBackToLogin;
+
+  /// No description provided for @resetPasswordInvalidCodeError.
+  ///
+  /// In es, this message translates to:
+  /// **'El código no es válido o venció. Pedí uno nuevo.'**
+  String get resetPasswordInvalidCodeError;
+
+  /// No description provided for @resetPasswordInvalidDataError.
+  ///
+  /// In es, this message translates to:
+  /// **'La contraseña no es válida'**
+  String get resetPasswordInvalidDataError;
+
+  /// No description provided for @resetPasswordRequestNewCode.
+  ///
+  /// In es, this message translates to:
+  /// **'Pedir un código nuevo'**
+  String get resetPasswordRequestNewCode;
+
+  /// No description provided for @resetPasswordNetworkError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos restablecer la contraseña por un problema de conexión. Intentá nuevamente.'**
+  String get resetPasswordNetworkError;
+
+  /// No description provided for @resetPasswordGenericError.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos restablecer la contraseña. Intentá nuevamente.'**
+  String get resetPasswordGenericError;
+
   /// No description provided for @logoutButton.
   ///
   /// In es, this message translates to:
@@ -429,6 +693,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Panel de Organizador'**
   String get organizerPanelTitle;
+
+  /// No description provided for @homeNotificationsTooltip.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver novedades'**
+  String get homeNotificationsTooltip;
 
   /// No description provided for @sessionActiveDescription.
   ///
@@ -880,6 +1150,12 @@ abstract class AppLocalizations {
   /// **'Ver detalle del evento'**
   String get viewEventDetailButton;
 
+  /// No description provided for @pushNotificationViewAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver'**
+  String get pushNotificationViewAction;
+
   /// No description provided for @draftSummaryTitle.
   ///
   /// In es, this message translates to:
@@ -897,18 +1173,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Lugar'**
   String get draftEventLocation;
-
-  /// No description provided for @generateWithAi.
-  ///
-  /// In es, this message translates to:
-  /// **'Generar con IA'**
-  String get generateWithAi;
-
-  /// No description provided for @generateWithAiComingSoon.
-  ///
-  /// In es, this message translates to:
-  /// **'Generación de eventos con IA disponible próximamente'**
-  String get generateWithAiComingSoon;
 
   /// No description provided for @eventDetailTitle.
   ///
@@ -1040,11 +1304,59 @@ abstract class AppLocalizations {
   /// **'{actor} hizo un cambio en el evento'**
   String activityUnknown(String actor);
 
-  /// No description provided for @featureUnderDevelopment.
+  /// No description provided for @invitationCreateTitle.
   ///
   /// In es, this message translates to:
-  /// **'Esta funcionalidad estará disponible próximamente.'**
-  String get featureUnderDevelopment;
+  /// **'Invitar al evento'**
+  String get invitationCreateTitle;
+
+  /// No description provided for @invitationCreateLoading.
+  ///
+  /// In es, this message translates to:
+  /// **'Creando link de invitación...'**
+  String get invitationCreateLoading;
+
+  /// No description provided for @invitationCreateCopy.
+  ///
+  /// In es, this message translates to:
+  /// **'Copiar link'**
+  String get invitationCreateCopy;
+
+  /// No description provided for @invitationCreateCopied.
+  ///
+  /// In es, this message translates to:
+  /// **'Link copiado'**
+  String get invitationCreateCopied;
+
+  /// No description provided for @invitationCreateForbidden.
+  ///
+  /// In es, this message translates to:
+  /// **'No tenés permiso para invitar a este evento.'**
+  String get invitationCreateForbidden;
+
+  /// No description provided for @invitationCreateNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontró el evento.'**
+  String get invitationCreateNotFound;
+
+  /// No description provided for @invitationCreateUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'El evento no está activo y no acepta invitaciones.'**
+  String get invitationCreateUnavailable;
+
+  /// No description provided for @invitationCreateNetworkError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo crear el link por un problema de conexión. Intentá nuevamente.'**
+  String get invitationCreateNetworkError;
+
+  /// No description provided for @invitationCreateError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo crear el link de invitación. Intentá nuevamente.'**
+  String get invitationCreateError;
 
   /// No description provided for @cancelEventAction.
   ///
@@ -2015,6 +2327,156 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No se pudieron guardar los cambios. Intentá nuevamente.'**
   String get profileSaveError;
+
+  /// No description provided for @profileSaveNetworkError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron guardar los cambios por un problema de conexión. Intentá nuevamente.'**
+  String get profileSaveNetworkError;
+
+  /// No description provided for @profileAvatarInvalidFormat.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegí una imagen JPEG, PNG o WebP.'**
+  String get profileAvatarInvalidFormat;
+
+  /// No description provided for @profileAvatarTooLarge.
+  ///
+  /// In es, this message translates to:
+  /// **'La imagen no puede superar los 2 MB.'**
+  String get profileAvatarTooLarge;
+
+  /// No description provided for @profileAvatarStorageUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo guardar la foto en este momento. El nombre sí se puede cambiar.'**
+  String get profileAvatarStorageUnavailable;
+
+  /// No description provided for @profileDiscardAvatarAndSaveName.
+  ///
+  /// In es, this message translates to:
+  /// **'Descartar foto y guardar nombre'**
+  String get profileDiscardAvatarAndSaveName;
+
+  /// No description provided for @profileFriendsAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis amigos'**
+  String get profileFriendsAction;
+
+  /// No description provided for @friendsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Amigos'**
+  String get friendsTitle;
+
+  /// No description provided for @friendsSearchLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar personas'**
+  String get friendsSearchLabel;
+
+  /// No description provided for @friendsSearchHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre o usuario'**
+  String get friendsSearchHint;
+
+  /// No description provided for @friendsSearchEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos personas.'**
+  String get friendsSearchEmpty;
+
+  /// No description provided for @friendsSearchError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron buscar personas. Intentá nuevamente.'**
+  String get friendsSearchError;
+
+  /// No description provided for @friendsRequestsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitudes'**
+  String get friendsRequestsTitle;
+
+  /// No description provided for @friendsReceivedRequestsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Recibidas'**
+  String get friendsReceivedRequestsTitle;
+
+  /// No description provided for @friendsSentRequestsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviadas'**
+  String get friendsSentRequestsTitle;
+
+  /// No description provided for @friendsReceivedRequestsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'No tenés solicitudes pendientes.'**
+  String get friendsReceivedRequestsEmpty;
+
+  /// No description provided for @friendsFriendsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis amigos'**
+  String get friendsFriendsTitle;
+
+  /// No description provided for @friendsFriendsEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no tenés amigos.'**
+  String get friendsFriendsEmpty;
+
+  /// No description provided for @friendsLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo cargar esta sección. Intentá nuevamente.'**
+  String get friendsLoadError;
+
+  /// No description provided for @friendAddAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar'**
+  String get friendAddAction;
+
+  /// No description provided for @friendAcceptAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptar'**
+  String get friendAcceptAction;
+
+  /// No description provided for @friendRejectAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazar'**
+  String get friendRejectAction;
+
+  /// No description provided for @friendCancelAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar'**
+  String get friendCancelAction;
+
+  /// No description provided for @friendRequestSent.
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitud enviada'**
+  String get friendRequestSent;
+
+  /// No description provided for @friendsActionError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo actualizar la solicitud. Intentá nuevamente.'**
+  String get friendsActionError;
+
+  /// No description provided for @friendRequestUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'Esa solicitud ya no está disponible'**
+  String get friendRequestUnavailable;
 }
 
 class _AppLocalizationsDelegate

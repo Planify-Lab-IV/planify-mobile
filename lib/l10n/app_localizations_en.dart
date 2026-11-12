@@ -43,6 +43,75 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get groupManageTitle => 'Manage group';
+
+  @override
+  String get groupManageAddMember => 'Add member';
+
+  @override
+  String get groupManageRename => 'Rename group';
+
+  @override
+  String get groupManageLeave => 'Leave group';
+
+  @override
+  String get groupManageFriendsLoadError =>
+      'We couldn\'t load your friends. Please try again.';
+
+  @override
+  String get groupManageNoFriends => 'You don\'t have friends to add yet.';
+
+  @override
+  String get groupManageGoToFriends => 'Go to Friends';
+
+  @override
+  String get groupManageMemberAdded => 'Member added successfully.';
+
+  @override
+  String get groupManageMemberAddedLabel => 'Added';
+
+  @override
+  String get groupManageActionError =>
+      'We couldn\'t update the group. Please try again.';
+
+  @override
+  String get groupManageForbiddenError =>
+      'This action is no longer available for this group. Your groups list was refreshed.';
+
+  @override
+  String get groupManageSearchFriends => 'Search friends';
+
+  @override
+  String get groupManageSearchEmpty =>
+      'We couldn\'t find friends\nwith that name or username.';
+
+  @override
+  String get groupRenameDialogTitle => 'Rename group';
+
+  @override
+  String get groupRenameFieldLabel => 'Group name';
+
+  @override
+  String get groupRenameSave => 'Save';
+
+  @override
+  String get groupRenameError =>
+      'We couldn\'t rename the group. Please try again.';
+
+  @override
+  String groupLeaveDialogTitle(String groupName) {
+    return 'Leave $groupName?';
+  }
+
+  @override
+  String get groupLeaveDialogDescription =>
+      'You will no longer see this group. You\'ll still participate in the events you were already part of.';
+
+  @override
+  String get groupLeaveError =>
+      'We couldn\'t leave the group. Please try again.';
+
+  @override
   String get settleDebtAction => 'Settle up';
 
   @override
@@ -142,8 +211,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registrationTitle => 'Create account';
 
   @override
-  String get registrationCreateAccountLink =>
-      'Don\'t have an account? Create one';
+  String get registrationCreateAccountPrompt => 'Don\'t have an account?';
+
+  @override
+  String get registrationCreateAccountAction => 'Create one';
 
   @override
   String get registrationNameLabel => 'Name';
@@ -195,6 +266,87 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registrationBackToLogin => 'Already have an account? Sign in';
 
   @override
+  String get forgotPasswordTitle => 'Reset password';
+
+  @override
+  String get forgotPasswordDescription =>
+      'Enter your email address to receive\na recovery code.';
+
+  @override
+  String get forgotPasswordSubmitButton => 'Send';
+
+  @override
+  String get forgotPasswordSuccessMessage =>
+      'If that email is registered,\nyou\'ll get a six-digit code.';
+
+  @override
+  String get forgotPasswordResendButton => 'Resend';
+
+  @override
+  String get forgotPasswordNetworkError =>
+      'We could not send the code because of a connection problem. Please try again.';
+
+  @override
+  String get forgotPasswordGenericError =>
+      'We could not send the code. Please try again.';
+
+  @override
+  String get forgotPasswordLoginLink => 'Forgot your password?';
+
+  @override
+  String get forgotPasswordHaveCode => 'I have the code';
+
+  @override
+  String get resetPasswordTitle => 'Reset password';
+
+  @override
+  String get resetPasswordDescription =>
+      'Enter the 6-digit code you received and\nchoose a new password.';
+
+  @override
+  String resetPasswordEmailSent(Object email) {
+    return 'Code sent to $email';
+  }
+
+  @override
+  String get resetPasswordCodeLabel => 'Recovery code';
+
+  @override
+  String get resetPasswordNewPasswordLabel => 'New password';
+
+  @override
+  String get resetPasswordNewPasswordHelp =>
+      'Password must be between 8 and 72 characters';
+
+  @override
+  String get resetPasswordSubmitButton => 'Reset password';
+
+  @override
+  String get resetPasswordSuccessMessage =>
+      'Your password was updated successfully. You can now sign in.';
+
+  @override
+  String get resetPasswordBackToLogin => 'Back to sign in';
+
+  @override
+  String get resetPasswordInvalidCodeError =>
+      'The code is invalid or expired. Request a new one.';
+
+  @override
+  String get resetPasswordInvalidDataError => 'The password is not valid';
+
+  @override
+  String get resetPasswordRequestNewCode => 'Request a new code';
+
+  @override
+  String get resetPasswordNetworkError =>
+      'We could not reset the password because of a connection problem. Please try again.';
+
+  @override
+  String get resetPasswordGenericError =>
+      'We could not reset the password. Please try again.';
+
+  @override
   String get logoutButton => 'Sign Out';
 
   @override
@@ -207,6 +359,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get organizerPanelTitle => 'Organizer Dashboard';
+
+  @override
+  String get homeNotificationsTooltip => 'View updates';
 
   @override
   String get sessionActiveDescription =>
@@ -446,6 +601,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewEventDetailButton => 'View event details';
 
   @override
+  String get pushNotificationViewAction => 'View';
+
+  @override
   String get draftSummaryTitle => 'Draft summary';
 
   @override
@@ -453,12 +611,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get draftEventLocation => 'Location';
-
-  @override
-  String get generateWithAi => 'Generate with AI';
-
-  @override
-  String get generateWithAiComingSoon => 'AI event generation coming soon';
 
   @override
   String get eventDetailTitle => 'Event Details';
@@ -540,7 +692,35 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get featureUnderDevelopment => 'This feature will be available soon.';
+  String get invitationCreateTitle => 'Invite to event';
+
+  @override
+  String get invitationCreateLoading => 'Creating invitation link...';
+
+  @override
+  String get invitationCreateCopy => 'Copy link';
+
+  @override
+  String get invitationCreateCopied => 'Link copied';
+
+  @override
+  String get invitationCreateForbidden =>
+      'You do not have permission to invite people to this event.';
+
+  @override
+  String get invitationCreateNotFound => 'The event was not found.';
+
+  @override
+  String get invitationCreateUnavailable =>
+      'The event is not active and does not accept invitations.';
+
+  @override
+  String get invitationCreateNetworkError =>
+      'The link could not be created because of a connection issue. Please try again.';
+
+  @override
+  String get invitationCreateError =>
+      'The invitation link could not be created. Please try again.';
 
   @override
   String get cancelEventAction => 'Cancel event';
@@ -1092,4 +1272,85 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileSaveError => 'Could not save changes. Please try again.';
+
+  @override
+  String get profileSaveNetworkError =>
+      'Could not save changes because of a connection problem. Please try again.';
+
+  @override
+  String get profileAvatarInvalidFormat => 'Choose a JPEG, PNG, or WebP image.';
+
+  @override
+  String get profileAvatarTooLarge => 'The image cannot exceed 2 MB.';
+
+  @override
+  String get profileAvatarStorageUnavailable =>
+      'The profile picture could not be saved right now. You can still change your name.';
+
+  @override
+  String get profileDiscardAvatarAndSaveName => 'Discard picture and save name';
+
+  @override
+  String get profileFriendsAction => 'My friends';
+
+  @override
+  String get friendsTitle => 'Friends';
+
+  @override
+  String get friendsSearchLabel => 'Search people';
+
+  @override
+  String get friendsSearchHint => 'Name or username';
+
+  @override
+  String get friendsSearchEmpty => 'We couldn\'t find anyone.';
+
+  @override
+  String get friendsSearchError =>
+      'Could not search for people. Please try again.';
+
+  @override
+  String get friendsRequestsTitle => 'Requests';
+
+  @override
+  String get friendsReceivedRequestsTitle => 'Received';
+
+  @override
+  String get friendsSentRequestsTitle => 'Sent';
+
+  @override
+  String get friendsReceivedRequestsEmpty =>
+      'You don\'t have any pending requests.';
+
+  @override
+  String get friendsFriendsTitle => 'My friends';
+
+  @override
+  String get friendsFriendsEmpty => 'You don\'t have any friends yet.';
+
+  @override
+  String get friendsLoadError =>
+      'Could not load this section. Please try again.';
+
+  @override
+  String get friendAddAction => 'Add';
+
+  @override
+  String get friendAcceptAction => 'Accept';
+
+  @override
+  String get friendRejectAction => 'Decline';
+
+  @override
+  String get friendCancelAction => 'Cancel';
+
+  @override
+  String get friendRequestSent => 'Request sent';
+
+  @override
+  String get friendsActionError =>
+      'Could not update the request. Please try again.';
+
+  @override
+  String get friendRequestUnavailable => 'That request is no longer available';
 }

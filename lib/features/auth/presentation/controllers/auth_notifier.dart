@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../data/secure_storage.dart';
+import '../../../notifications/domain/notifications_repository.dart';
+import '../../../notifications/presentation/controllers/push_device_operations.dart';
 import '../../data/auth_exceptions.dart';
 import '../../domain/auth_repository.dart';
 import '../../domain/user_session.dart';
@@ -9,8 +13,19 @@ import 'auth_state.dart';
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository _repository;
   final SecureStorage _storage;
+  final PushDeviceOperations _pushDeviceOperations;
+  final Future<String?> Function() getPushToken;
 
-  AuthNotifier(this._repository, this._storage) : super(const AuthInitial());
+  AuthNotifier(
+    this._repository,
+    this._storage, {
+    required NotificationsRepository notificationsRepository,
+    required this.getPushToken,
+    PushDeviceOperations? pushDeviceOperations,
+  }) : _pushDeviceOperations =
+           pushDeviceOperations ??
+           PushDeviceOperations(notificationsRepository),
+       super(const AuthInitial());
 
   Future<void> login({
     required String identifier,
@@ -101,7 +116,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> logout() async {
+    final session = state is AuthAuthenticated
+        ? (state as AuthAuthenticated).session
+        : null;
     state = const AuthLoading();
+    if (session is OrganizerSession) {
+      await _unregisterDevice(session.token);
+    }
     try {
       await _repository.logout();
     } catch (_) {
@@ -114,6 +135,32 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } catch (_) {
       // No confirmamos el logout si el token puede seguir almacenado.
       state = const AuthError(AuthFailureReason.unknown);
+    }
+  }
+
+  Future<void> _unregisterDevice(String sessionToken) async {
+    try {
+      const timeout = Duration(seconds: 2);
+      final elapsed = Stopwatch()..start();
+      String? pushToken;
+      try {
+        pushToken = await getPushToken().timeout(timeout);
+      } on TimeoutException {
+        pushToken = _pushDeviceOperations.lastPushToken;
+      }
+      if (pushToken == null || pushToken.trim().isEmpty) return;
+      final remaining = timeout - elapsed.elapsed;
+      final operation = _pushDeviceOperations.unregister(
+        pushToken,
+        sessionToken,
+      );
+      if (remaining <= Duration.zero) {
+        unawaited(operation.catchError((_) {}));
+      } else {
+        await operation.timeout(remaining);
+      }
+    } catch (_) {
+      // Un fallo de red no debe impedir el cierre local de sesión.
     }
   }
 

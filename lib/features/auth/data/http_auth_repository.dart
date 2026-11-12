@@ -14,6 +14,52 @@ class HttpAuthRepository implements AuthRepository {
   HttpAuthRepository({required this.dio, required this.storage});
 
   @override
+  Future<void> requestPasswordReset({required String email}) async {
+    try {
+      await dio.post<dynamic>('/auth/forgot-password', data: {'email': email});
+    } on DioException catch (error) {
+      if (_isNetworkError(error)) {
+        throw const NetworkAuthException();
+      }
+      throw const UnknownAuthException();
+    } on AuthException {
+      rethrow;
+    } catch (_) {
+      throw const UnknownAuthException();
+    }
+  }
+
+  @override
+  Future<void> resetPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    try {
+      await dio.post<dynamic>(
+        '/auth/reset-password',
+        data: {'email': email, 'code': code, 'newPassword': newPassword},
+      );
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 400) {
+        final data = error.response?.data;
+        if (data is Map && data['error'] == 'INVALID_RESET_CODE') {
+          throw const InvalidResetCodeException();
+        }
+        throw const InvalidResetDataException();
+      }
+      if (_isNetworkError(error)) {
+        throw const NetworkAuthException();
+      }
+      throw const UnknownAuthException();
+    } on AuthException {
+      rethrow;
+    } catch (_) {
+      throw const UnknownAuthException();
+    }
+  }
+
+  @override
   Future<UserSession> login({
     required String identifier,
     required String password,

@@ -17,6 +17,21 @@ class InvitationExpiredException extends InvitationException {
   const InvitationExpiredException();
 }
 
+/// La sesión actual no pertenece al organizador del evento.
+class InvitationCreationForbiddenException extends InvitationException {
+  const InvitationCreationForbiddenException();
+}
+
+/// El evento para el que se quiere crear la invitación no existe.
+class InvitationEventNotFoundException extends InvitationException {
+  const InvitationEventNotFoundException();
+}
+
+/// El evento no acepta nuevas invitaciones, por ejemplo porque fue cancelado.
+class InvitationEventUnavailableException extends InvitationException {
+  const InvitationEventUnavailableException();
+}
+
 /// Ocurrió un error de red al intentar resolver la invitación.
 class NetworkInvitationException extends InvitationException {
   const NetworkInvitationException();

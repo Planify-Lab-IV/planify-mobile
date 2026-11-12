@@ -5,24 +5,71 @@ import '../domain/activity_log_repository.dart';
 import '../domain/activity_type.dart';
 import '../domain/unread_counts.dart';
 import 'activity_log_exceptions.dart';
-import 'fake_activity_log_repository.dart';
 
 class HttpActivityLogRepository implements ActivityLogRepository {
   final Dio dio;
-  final ActivityLogRepository _unreadFallback;
-
-  HttpActivityLogRepository({
-    required this.dio,
-    ActivityLogRepository? unreadFallback,
-  }) : _unreadFallback =
-           unreadFallback ?? FakeActivityLogRepository(delay: Duration.zero);
+  HttpActivityLogRepository({required this.dio});
 
   @override
-  Future<UnreadCounts> getUnreadCounts() => _unreadFallback.getUnreadCounts();
+  Future<UnreadCounts> getUnreadCounts() async {
+    try {
+      final response = await dio.get<dynamic>('/me/unread-counts');
+      final data = response.data;
+      if (data is! Map) {
+        throw const InvalidActivityLogResponseException();
+      }
+      return UnreadCounts(
+        byEvent: _countsFromResponse(data['events'], 'eventId'),
+        byGroup: _countsFromResponse(data['groups'], 'groupId'),
+      );
+    } on DioException catch (error) {
+      if (_isNetworkError(error)) throw const NetworkActivityLogException();
+      throw const InvalidActivityLogResponseException();
+    } on ActivityLogException {
+      rethrow;
+    } catch (_) {
+      throw const InvalidActivityLogResponseException();
+    }
+  }
 
   @override
-  Future<void> markEventAsRead(String eventId) =>
-      _unreadFallback.markEventAsRead(eventId);
+  Future<void> markEventAsRead(String eventId) async {
+    final normalizedEventId = eventId.trim();
+    if (normalizedEventId.isEmpty) {
+      throw const InvalidActivityLogResponseException();
+    }
+    try {
+      final response = await dio.post<void>(
+        '/events/$normalizedEventId/activity-log/read',
+      );
+      if (response.statusCode != 204) {
+        throw const InvalidActivityLogResponseException();
+      }
+    } on DioException catch (error) {
+      if (_isNetworkError(error)) throw const NetworkActivityLogException();
+      throw const InvalidActivityLogResponseException();
+    } on ActivityLogException {
+      rethrow;
+    } catch (_) {
+      throw const InvalidActivityLogResponseException();
+    }
+  }
+
+  Map<String, int> _countsFromResponse(dynamic data, String idKey) {
+    if (data is! List) throw const InvalidActivityLogResponseException();
+    final counts = <String, int>{};
+    for (final entry in data) {
+      if (entry is! Map || !_isNonEmptyString(entry[idKey])) {
+        throw const InvalidActivityLogResponseException();
+      }
+      final count = entry['unreadCount'];
+      if (count is! int || count < 0) {
+        throw const InvalidActivityLogResponseException();
+      }
+      counts[entry[idKey] as String] = count;
+    }
+    return counts;
+  }
 
   @override
   Future<List<ActivityEntry>> listEventActivity(String eventId) async {

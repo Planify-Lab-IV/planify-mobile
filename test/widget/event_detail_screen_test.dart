@@ -23,6 +23,9 @@ import 'package:planify/features/events/detail/screens/event_detail_screen.dart'
 import 'package:planify/features/events/detail/widgets/cancel_event_dialog.dart';
 import 'package:planify/features/events/detail/widgets/close_expenses_dialog.dart';
 import 'package:planify/features/expenses/presentation/widgets/add_expense_dialog.dart';
+import 'package:planify/features/invitations/data/fake_invitations_repository.dart';
+import 'package:planify/features/invitations/presentation/controllers/invitation_providers.dart';
+import 'package:planify/features/invitations/presentation/widgets/create_invitation_sheet.dart';
 import 'package:planify/features/tasks/presentation/widgets/create_task_dialog.dart';
 import 'package:planify/features/tasks/data/fake_tasks_repository.dart';
 import 'package:planify/features/tasks/presentation/controllers/tasks_providers.dart';
@@ -72,6 +75,7 @@ void main() {
       required UserSession? session,
       FakeEventsRepository? customRepo,
       FakeExpensesRepository? customExpensesRepository,
+      FakeInvitationsRepository? customInvitationsRepository,
       String eventId = testEventId,
     }) {
       final repository =
@@ -83,6 +87,9 @@ void main() {
       final expensesRepository =
           customExpensesRepository ??
           FakeExpensesRepository(delay: Duration.zero);
+      final invitationsRepository =
+          customInvitationsRepository ??
+          FakeInvitationsRepository(delay: Duration.zero);
 
       return ProviderScope(
         overrides: [
@@ -104,6 +111,9 @@ void main() {
               delay: Duration.zero,
               initialActivity: const {testEventId: <ActivityEntry>[]},
             ),
+          ),
+          invitationsRepositoryProvider.overrideWithValue(
+            invitationsRepository,
           ),
         ],
         child: MaterialApp(
@@ -182,18 +192,66 @@ void main() {
       },
     );
 
-    testWidgets('las acciones aún no construidas muestran feedback', (
+    testWidgets('organizador abre la hoja de invitación y reutiliza el link', (
       tester,
     ) async {
-      await tester.pumpWidget(buildDetailScreen(session: organizerSession));
+      final invitationsRepository = FakeInvitationsRepository(
+        delay: Duration.zero,
+      );
+      await tester.pumpWidget(
+        buildDetailScreen(
+          session: organizerSession,
+          customInvitationsRepository: invitationsRepository,
+        ),
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key('quick_action_invite')));
       await tester.pumpAndSettle();
-      expect(
-        find.text('Esta funcionalidad estará disponible próximamente.'),
-        findsOneWidget,
+      expect(find.byType(CreateInvitationSheet), findsOneWidget);
+      expect(find.byKey(const Key('create_invitation_url')), findsOneWidget);
+      expect(invitationsRepository.createInvitationCalls, 1);
+
+      Navigator.of(tester.element(find.byType(CreateInvitationSheet))).pop();
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('quick_action_invite')));
+      await tester.pumpAndSettle();
+      expect(invitationsRepository.createInvitationCalls, 1);
+    });
+
+    testWidgets('organizador no puede invitar en un evento confirmado', (
+      tester,
+    ) async {
+      final confirmedEvent = testEvent.copyWith(status: EventStatus.confirmed);
+      final repository = FakeEventsRepository(
+        delay: Duration.zero,
+        initialEvents: [confirmedEvent],
       );
+      final invitationsRepository = FakeInvitationsRepository(
+        delay: Duration.zero,
+      );
+
+      await tester.pumpWidget(
+        buildDetailScreen(
+          session: organizerSession,
+          customRepo: repository,
+          customInvitationsRepository: invitationsRepository,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        tester
+            .widget<InkWell>(find.byKey(const Key('quick_action_invite')))
+            .onTap,
+        isNull,
+      );
+
+      await tester.tap(find.byKey(const Key('quick_action_invite')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(CreateInvitationSheet), findsNothing);
+      expect(invitationsRepository.createInvitationCalls, 0);
     });
 
     testWidgets('Saldar desplaza el detalle hasta la sección de deudas', (

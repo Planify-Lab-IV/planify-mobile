@@ -6,6 +6,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../controllers/auth_providers.dart';
 import '../controllers/auth_state.dart';
+import '../screens/forgot_password_screen.dart';
 import 'anonymous_login_dialog.dart';
 import '../screens/register_screen.dart';
 
@@ -55,6 +56,18 @@ class _LoginFormState extends ConsumerState<LoginForm> {
     await Navigator.of(
       context,
     ).push<void>(MaterialPageRoute(builder: (_) => const RegisterScreen()));
+
+    if (mounted) {
+      ref.read(authNotifierProvider.notifier).clearError();
+    }
+  }
+
+  Future<void> _openPasswordRecovery() async {
+    ref.read(authNotifierProvider.notifier).clearError();
+
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute(builder: (_) => const ForgotPasswordScreen()),
+    );
 
     if (mounted) {
       ref.read(authNotifierProvider.notifier).clearError();
@@ -193,10 +206,55 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                     : Text(i18n.loginButton),
               ),
               const SizedBox(height: AppSpacing.sm),
-              TextButton(
-                key: const Key('go_to_register_button'),
-                onPressed: isLoading ? null : _openRegistration,
-                child: Text(i18n.registrationCreateAccountLink),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      i18n.registrationCreateAccountPrompt,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurface,
+                      ),
+                    ),
+                    TextButton(
+                      key: const Key('go_to_register_button'),
+                      style: TextButton.styleFrom(
+                        minimumSize: const Size(0, 48),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.xs,
+                        ),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      onPressed: isLoading ? null : _openRegistration,
+                      child: Text(
+                        i18n.registrationCreateAccountAction,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Align(
+                alignment: Alignment.center,
+                child: TextButton(
+                  key: const Key('go_to_forgot_password_button'),
+                  style: TextButton.styleFrom(
+                    minimumSize: const Size(0, 32),
+                    padding: EdgeInsets.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  onPressed: isLoading ? null : _openPasswordRecovery,
+                  child: Text(
+                    i18n.forgotPasswordLoginLink,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                ),
               ),
               // Separador "o" y Botón Continuar como Invitado (solo si hay un eventId de invitación)
               if (widget.eventId != null &&

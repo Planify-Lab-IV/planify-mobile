@@ -1,0 +1,176 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../domain/group_management_exceptions.dart';
+import '../../domain/group_management_repository.dart';
+import 'group_management_state.dart';
+
+class GroupManagementNotifier extends StateNotifier<GroupManagementState> {
+  final GroupManagementRepository repository;
+  final void Function()? onGroupManagementSucceeded;
+  final void Function()? onGroupManagementUnavailable;
+
+  GroupManagementNotifier({
+    required this.repository,
+    this.onGroupManagementSucceeded,
+    this.onGroupManagementUnavailable,
+  }) : super(GroupManagementState());
+
+  void resetRenameStatus() {
+    if (state.isRenaming ||
+        state.renameStatus == GroupManagementActionStatus.idle) {
+      return;
+    }
+    state = state.copyWith(
+      renameStatus: GroupManagementActionStatus.idle,
+      renameErrorReason: GroupManagementErrorReason.none,
+    );
+  }
+
+  void resetLeaveStatus() {
+    if (state.isLeaving ||
+        state.leaveStatus == GroupManagementActionStatus.idle) {
+      return;
+    }
+    state = state.copyWith(
+      leaveStatus: GroupManagementActionStatus.idle,
+      leaveErrorReason: GroupManagementErrorReason.none,
+    );
+  }
+
+  Future<GroupMemberAdditionResult> addMember({
+    required String groupId,
+    required String userId,
+  }) async {
+    final normalizedGroupId = groupId.trim();
+    final normalizedUserId = userId.trim();
+    if (normalizedGroupId.isEmpty ||
+        normalizedUserId.isEmpty ||
+        state.isMemberBeingAdded(
+          groupId: normalizedGroupId,
+          userId: normalizedUserId,
+        )) {
+      return GroupMemberAdditionResult.ignored;
+    }
+
+    final member = (groupId: normalizedGroupId, userId: normalizedUserId);
+    state = state.copyWith(
+      addMemberStatus: GroupManagementActionStatus.loading,
+      addingMembers: {...state.addingMembers, member},
+    );
+    try {
+      await repository.addMember(
+        groupId: normalizedGroupId,
+        userId: normalizedUserId,
+      );
+      if (!mounted) return GroupMemberAdditionResult.ignored;
+
+      final pendingMembers = {...state.addingMembers}..remove(member);
+      state = state.copyWith(
+        addMemberStatus: pendingMembers.isEmpty
+            ? GroupManagementActionStatus.success
+            : GroupManagementActionStatus.loading,
+        addedMembers: {...state.addedMembers, member},
+        addingMembers: pendingMembers,
+      );
+      onGroupManagementSucceeded?.call();
+      return GroupMemberAdditionResult.added;
+    } catch (error) {
+      if (!mounted) return GroupMemberAdditionResult.ignored;
+      final pendingMembers = {...state.addingMembers}..remove(member);
+      state = state.copyWith(
+        addMemberStatus: pendingMembers.isEmpty
+            ? GroupManagementActionStatus.error
+            : GroupManagementActionStatus.loading,
+        addingMembers: pendingMembers,
+      );
+      if (_requiresOverviewRefresh(error)) {
+        onGroupManagementUnavailable?.call();
+      }
+      return _additionResult(error);
+    }
+  }
+
+  Future<bool> renameGroup({
+    required String groupId,
+    required String name,
+  }) async {
+    final normalizedGroupId = groupId.trim();
+    final normalizedName = name.trim();
+    if (normalizedGroupId.isEmpty ||
+        normalizedName.isEmpty ||
+        normalizedName.length > 80 ||
+        state.isRenaming) {
+      return false;
+    }
+
+    state = state.copyWith(
+      renameStatus: GroupManagementActionStatus.loading,
+      renameErrorReason: GroupManagementErrorReason.none,
+    );
+    try {
+      await repository.renameGroup(
+        groupId: normalizedGroupId,
+        name: normalizedName,
+      );
+      if (!mounted) return false;
+
+      state = state.copyWith(renameStatus: GroupManagementActionStatus.success);
+      onGroupManagementSucceeded?.call();
+      return true;
+    } catch (error) {
+      if (!mounted) return false;
+      state = state.copyWith(
+        renameStatus: GroupManagementActionStatus.error,
+        renameErrorReason: _errorReason(error),
+      );
+      if (_requiresOverviewRefresh(error)) {
+        onGroupManagementUnavailable?.call();
+      }
+      return false;
+    }
+  }
+
+  Future<bool> leaveGroup(String groupId) async {
+    final normalizedGroupId = groupId.trim();
+    if (normalizedGroupId.isEmpty || state.isLeaving) return false;
+
+    state = state.copyWith(
+      leaveStatus: GroupManagementActionStatus.loading,
+      leaveErrorReason: GroupManagementErrorReason.none,
+    );
+    try {
+      await repository.leaveGroup(normalizedGroupId);
+      if (!mounted) return false;
+
+      state = state.copyWith(leaveStatus: GroupManagementActionStatus.success);
+      onGroupManagementSucceeded?.call();
+      return true;
+    } catch (error) {
+      if (!mounted) return false;
+      state = state.copyWith(
+        leaveStatus: GroupManagementActionStatus.error,
+        leaveErrorReason: _errorReason(error),
+      );
+      if (_requiresOverviewRefresh(error)) {
+        onGroupManagementUnavailable?.call();
+      }
+      return false;
+    }
+  }
+
+  GroupManagementErrorReason _errorReason(Object error) {
+    return _requiresOverviewRefresh(error)
+        ? GroupManagementErrorReason.unavailable
+        : GroupManagementErrorReason.none;
+  }
+
+  GroupMemberAdditionResult _additionResult(Object error) {
+    return _requiresOverviewRefresh(error)
+        ? GroupMemberAdditionResult.unavailable
+        : GroupMemberAdditionResult.failure;
+  }
+
+  bool _requiresOverviewRefresh(Object error) {
+    return error is GroupForbiddenException || error is GroupNotFoundException;
+  }
+}

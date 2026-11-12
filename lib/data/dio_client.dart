@@ -34,7 +34,9 @@ class DioClient {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           // esto se usa principalmente para tests, cuando queres pasar un token fijo
-          if (bearerToken != null) {
+          if (options.headers.containsKey('Authorization')) {
+            // La operación puede estar vinculada a una sesión anterior.
+          } else if (bearerToken != null) {
             options.headers['Authorization'] = 'Bearer $bearerToken';
           }
           // esto se usa cuando la app corre realmente
