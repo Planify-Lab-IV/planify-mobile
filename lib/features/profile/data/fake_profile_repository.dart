@@ -1,3 +1,4 @@
+import '../domain/avatar_upload.dart';
 import '../domain/profile_repository.dart';
 import '../domain/user_profile.dart';
 
@@ -23,11 +24,17 @@ class FakeProfileRepository implements ProfileRepository {
   @override
   Future<UserProfile> updateProfile({
     String? name,
-    String? avatarFilePath,
+    AvatarUpload? avatar,
   }) async {
     await _waitOrThrow();
 
-    _profile = _profile.copyWith(name: name, avatarUrl: avatarFilePath);
+    _profile = _profile.copyWith(
+      name: name,
+      // El fake no sube bytes a un servidor: inventar una URL HTTPS haría que
+      // NetworkImage intente cargar un recurso inexistente. En producción la
+      // URL persistida la devuelve la API tras el PATCH.
+      avatarUrl: _profile.avatarUrl,
+    );
     return _profile;
   }
 

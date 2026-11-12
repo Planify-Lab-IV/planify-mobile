@@ -8,6 +8,7 @@ import '../../../friends/domain/person.dart';
 import '../../../friends/presentation/controllers/friends_providers.dart';
 import '../../../friends/presentation/screens/friends_screen.dart';
 import '../../domain/group_overview.dart';
+import '../controllers/group_management_state.dart';
 import '../controllers/groups_providers.dart';
 
 class GroupAddMemberSheet extends ConsumerStatefulWidget {
@@ -68,14 +69,17 @@ class _GroupAddMemberSheetState extends ConsumerState<GroupAddMemberSheet> {
   }
 
   Future<void> _addMember(Person person) async {
-    final added = await ref
+    final result = await ref
         .read(groupManagementNotifierProvider.notifier)
         .addMember(groupId: widget.group.id, userId: person.id);
     if (!mounted) return;
 
-    final message = added
-        ? AppLocalizations.of(context)!.groupManageMemberAdded
-        : AppLocalizations.of(context)!.groupManageActionError;
+    final i18n = AppLocalizations.of(context)!;
+    final message = switch (result) {
+      GroupMemberAdditionResult.added => i18n.groupManageMemberAdded,
+      GroupMemberAdditionResult.unavailable => i18n.groupManageForbiddenError,
+      _ => i18n.groupManageActionError,
+    };
     final messenger = _sheetMessengerKey.currentState;
     if (messenger == null) return;
     messenger

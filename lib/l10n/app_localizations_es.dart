@@ -75,6 +75,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'No se pudo actualizar el grupo. Intentá nuevamente.';
 
   @override
+  String get groupManageForbiddenError =>
+      'Esta acción ya no está disponible para este grupo. Actualizamos tu lista de grupos.';
+
+  @override
   String get groupManageSearchFriends => 'Buscar amigos';
 
   @override
@@ -609,13 +613,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get draftEventLocation => 'Lugar';
-
-  @override
-  String get generateWithAi => 'Generar con IA';
-
-  @override
-  String get generateWithAiComingSoon =>
-      'Generación de eventos con IA disponible próximamente';
 
   @override
   String get eventDetailTitle => 'Detalle del evento';
@@ -1281,6 +1278,16 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get profileSaveError =>
       'No se pudieron guardar los cambios. Intentá nuevamente.';
+
+  @override
+  String get profileSaveNetworkError =>
+      'No se pudieron guardar los cambios por un problema de conexión. Intentá nuevamente.';
+
+  @override
+  String get profileAvatarInvalidFormat => 'Elegí una imagen JPEG, PNG o WebP.';
+
+  @override
+  String get profileAvatarTooLarge => 'La imagen no puede superar los 2 MB.';
 
   @override
   String get profileAvatarStorageUnavailable =>

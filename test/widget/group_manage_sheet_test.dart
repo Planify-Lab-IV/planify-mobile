@@ -11,6 +11,7 @@ import 'package:planify/features/friends/presentation/controllers/friends_provid
 import 'package:planify/features/friends/presentation/screens/friends_screen.dart';
 import 'package:planify/features/groups/data/fake_group_management_repository.dart';
 import 'package:planify/features/groups/data/fake_groups_overview_repository.dart';
+import 'package:planify/features/groups/domain/group_management_exceptions.dart';
 import 'package:planify/features/groups/domain/group_management_repository.dart';
 import 'package:planify/features/groups/domain/group_overview.dart';
 import 'package:planify/features/groups/presentation/controllers/groups_providers.dart';
@@ -35,10 +36,14 @@ const _friend = Person(
 Widget app({
   required FakeFriendsRepository friendsRepository,
   required GroupManagementRepository managementRepository,
+  FakeGroupsOverviewRepository? overviewRepository,
+  bool observeOverview = false,
 }) {
   return ProviderScope(
     overrides: [
       friendsRepositoryProvider.overrideWithValue(friendsRepository),
+      if (overviewRepository != null)
+        groupsOverviewRepositoryProvider.overrideWithValue(overviewRepository),
       groupManagementRepositoryProvider.overrideWithValue(managementRepository),
     ],
     child: MaterialApp(
@@ -50,15 +55,18 @@ Widget app({
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      home: Builder(
-        builder: (context) => Scaffold(
-          body: Center(
-            child: FilledButton(
-              onPressed: () => GroupManageSheet.show(context, group: _group),
-              child: const Text('Abrir'),
+      home: Consumer(
+        builder: (context, ref, _) {
+          if (observeOverview) ref.watch(groupsOverviewProvider);
+          return Scaffold(
+            body: Center(
+              child: FilledButton(
+                onPressed: () => GroupManageSheet.show(context, group: _group),
+                child: const Text('Abrir'),
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     ),
   );
@@ -182,6 +190,108 @@ void main() {
     );
     expect(
       find.byKey(const Key('group_member_add_button_friend-1')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('avisa y refresca la lista si ya no puede gestionar el grupo', (
+    tester,
+  ) async {
+    final overview = _CountingGroupsOverviewRepository(
+      delay: Duration.zero,
+      initialGroups: [_group],
+    );
+    await tester.pumpWidget(
+      app(
+        friendsRepository: FakeFriendsRepository(
+          delay: Duration.zero,
+          searchablePeople: const [_friend],
+          initialReceivedRequests: const [],
+          initialSentRequests: const [],
+          initialFriends: const [_friend],
+        ),
+        managementRepository: _ForbiddenGroupManagementRepository(),
+        overviewRepository: overview,
+        observeOverview: true,
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(overview.overviewRequests, 1);
+
+    await openSelector(tester);
+    await tester.tap(find.byKey(const Key('group_member_add_button_friend-1')));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(
+        'This action is no longer available for this group. Your groups list was refreshed.',
+      ),
+      findsOneWidget,
+    );
+    expect(overview.overviewRequests, 2);
+  });
+
+  testWidgets('muestra el error neutral si no puede renombrar el grupo', (
+    tester,
+  ) async {
+    final overview = FakeGroupsOverviewRepository(
+      delay: Duration.zero,
+      initialGroups: [_group],
+    );
+    await tester.pumpWidget(
+      app(
+        friendsRepository: FakeFriendsRepository(delay: Duration.zero),
+        managementRepository: _ForbiddenGroupManagementRepository(),
+        overviewRepository: overview,
+      ),
+    );
+
+    await tester.tap(find.text('Abrir'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('group_manage_rename')));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const Key('group_rename_field')),
+      'Familia',
+    );
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('group_rename_save_button')));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(
+        'This action is no longer available for this group. Your groups list was refreshed.',
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('muestra el error neutral si no puede abandonar el grupo', (
+    tester,
+  ) async {
+    final overview = FakeGroupsOverviewRepository(
+      delay: Duration.zero,
+      initialGroups: [_group],
+    );
+    await tester.pumpWidget(
+      app(
+        friendsRepository: FakeFriendsRepository(delay: Duration.zero),
+        managementRepository: _ForbiddenGroupManagementRepository(),
+        overviewRepository: overview,
+      ),
+    );
+
+    await tester.tap(find.text('Abrir'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('group_manage_leave')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('group_leave_confirm_button')));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(
+        'This action is no longer available for this group. Your groups list was refreshed.',
+      ),
       findsOneWidget,
     );
   });
@@ -466,4 +576,36 @@ void main() {
     expect(await overview.getMyGroupsOverview(), isEmpty);
     expect(find.byKey(const Key('group_manage_leave')), findsNothing);
   });
+}
+
+class _ForbiddenGroupManagementRepository implements GroupManagementRepository {
+  @override
+  Future<void> addMember({required String groupId, required String userId}) {
+    throw const GroupForbiddenException();
+  }
+
+  @override
+  Future<void> leaveGroup(String groupId) {
+    throw const GroupForbiddenException();
+  }
+
+  @override
+  Future<void> renameGroup({required String groupId, required String name}) {
+    throw const GroupForbiddenException();
+  }
+}
+
+class _CountingGroupsOverviewRepository extends FakeGroupsOverviewRepository {
+  var overviewRequests = 0;
+
+  _CountingGroupsOverviewRepository({
+    required super.delay,
+    required super.initialGroups,
+  });
+
+  @override
+  Future<List<GroupOverview>> getMyGroupsOverview() {
+    overviewRequests++;
+    return super.getMyGroupsOverview();
+  }
 }

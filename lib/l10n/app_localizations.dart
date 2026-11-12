@@ -206,6 +206,12 @@ abstract class AppLocalizations {
   /// **'No se pudo actualizar el grupo. Intentá nuevamente.'**
   String get groupManageActionError;
 
+  /// No description provided for @groupManageForbiddenError.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta acción ya no está disponible para este grupo. Actualizamos tu lista de grupos.'**
+  String get groupManageForbiddenError;
+
   /// No description provided for @groupManageSearchFriends.
   ///
   /// In es, this message translates to:
@@ -1167,18 +1173,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Lugar'**
   String get draftEventLocation;
-
-  /// No description provided for @generateWithAi.
-  ///
-  /// In es, this message translates to:
-  /// **'Generar con IA'**
-  String get generateWithAi;
-
-  /// No description provided for @generateWithAiComingSoon.
-  ///
-  /// In es, this message translates to:
-  /// **'Generación de eventos con IA disponible próximamente'**
-  String get generateWithAiComingSoon;
 
   /// No description provided for @eventDetailTitle.
   ///
@@ -2333,6 +2327,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No se pudieron guardar los cambios. Intentá nuevamente.'**
   String get profileSaveError;
+
+  /// No description provided for @profileSaveNetworkError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron guardar los cambios por un problema de conexión. Intentá nuevamente.'**
+  String get profileSaveNetworkError;
+
+  /// No description provided for @profileAvatarInvalidFormat.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegí una imagen JPEG, PNG o WebP.'**
+  String get profileAvatarInvalidFormat;
+
+  /// No description provided for @profileAvatarTooLarge.
+  ///
+  /// In es, this message translates to:
+  /// **'La imagen no puede superar los 2 MB.'**
+  String get profileAvatarTooLarge;
 
   /// No description provided for @profileAvatarStorageUnavailable.
   ///
